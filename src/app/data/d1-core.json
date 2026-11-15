@@ -1,52 +1,917 @@
 [
-{"id":"D1-001","sub":"Entra users","type":"mcq","diff":1,"q":"You need to create 25 users in Microsoft Entra ID. Each user must sign in with the suffix @contoso.com. What must you do FIRST?","opts":["Create a Microsoft 365 group named contoso.com","Add and verify the custom domain contoso.com in the tenant","Purchase Entra ID P1 licenses for all 25 users","Create a DNS zone named contoso.com in Azure DNS"],"ans":[1],"exp":"The UPN suffix must be a verified custom domain in the tenant (verified via a TXT record at your registrar). Groups, licenses, and Azure DNS zones do not verify domains.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"},
-{"id":"D1-002","sub":"Entra users","type":"mcq","diff":1,"q":"A user account was deleted 10 days ago. What is the simplest way to get the account back with all its properties and group memberships intact?","opts":["Create a new user with the same UPN","Restore the user from the Deleted users blade","Restore the tenant from a backup","Re-invite the user as a guest"],"ans":[1],"exp":"Within 30 days, soft-deleted users can be restored with all properties and memberships. A new user with the same UPN gets a new object ID and no memberships; tenant restore does not exist.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"},
-{"id":"D1-003","sub":"Entra users","type":"mcq","diff":2,"q":"How long does Microsoft Entra ID keep a deleted user in a restorable (soft-deleted) state?","opts":["14 days","30 days","90 days","7 days"],"ans":[1],"exp":"Deleted users are soft-deleted for 30 days and then permanently removed.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"},
-{"id":"D1-004","sub":"External users","type":"mcq","diff":1,"q":"You invite an external consultant (anna@fabrikam.com) to collaborate. Which statement is true about her account in your tenant?","opts":["You must set an initial password for her","She authenticates with her own organization's credentials; her userType is Guest","She automatically gets the same default permissions as members","She can only be added to Microsoft 365 groups, not security groups"],"ans":[1],"exp":"B2B guests bring their own credentials and get userType=Guest with restricted default directory permissions. Guests can join security groups too.","link":"https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"},
-{"id":"D1-005","sub":"Groups","type":"mcq","diff":2,"q":"Which group configuration requires a Microsoft Entra ID P1 license?","opts":["A security group with assigned membership","A Microsoft 365 group with assigned membership","A security group with dynamic user membership","A group used for sharing a SharePoint site"],"ans":[2],"exp":"Dynamic membership (user or device) requires Entra ID P1. Assigned-membership groups work on the Free tier.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"},
-{"id":"D1-006","sub":"Groups","type":"mcq","diff":2,"q":"You create a dynamic user group with the rule user.department -eq \"Sales\". A user's department attribute is changed from \"HR\" to \"Sales\". What happens?","opts":["Nothing until an admin runs a sync","The user is added to the group automatically after the rule is processed","The user receives an email invitation to join the group","The user is added only after their next sign-in"],"ans":[1],"exp":"Dynamic rules are evaluated automatically on attribute change; membership updates without admin action (processing can take some minutes).","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"},
-{"id":"D1-007","sub":"Groups","type":"mcq","diff":2,"q":"Which group type can contain devices as members?","opts":["Microsoft 365 group","Security group","Distribution group","Mail-enabled security group"],"ans":[1],"exp":"Security groups can contain users, devices, service principals, and other groups. Microsoft 365 groups contain users only.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"},
-{"id":"D1-008","sub":"Groups","type":"multi","diff":2,"q":"A dynamic device group is being designed. Which TWO statements are true?","opts":["A group can use dynamic membership for both users and devices at the same time","A group can have dynamic membership for users OR devices, not both","Dynamic membership rules can reference device properties such as deviceOSType","Device objects can only be placed in Microsoft 365 groups"],"ans":[1,2],"exp":"One dynamic group targets users OR devices, never both; device rules use device properties. Devices go in security groups.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"},
-{"id":"D1-009","sub":"Licenses","type":"mcq","diff":3,"q":"You assign licenses to the group \"Sales-Users\" using group-based licensing. One user shows a licensing error. The most common cause tested is:","opts":["The user is a guest","The user has no usageLocation set","The user is in two groups","The group is a security group"],"ans":[1],"exp":"Group-based licensing fails for users without usageLocation, because many services are region-restricted. Guests can be licensed, and multiple groups merge licenses.","link":"https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-resolve-problems"},
-{"id":"D1-010","sub":"Licenses","type":"mcq","diff":2,"q":"Which features require Microsoft Entra ID P2 rather than P1?","opts":["Conditional Access","Dynamic groups","Privileged Identity Management (PIM) and Identity Protection","Self-service password reset with on-premises writeback"],"ans":[2],"exp":"PIM, Identity Protection, and access reviews are P2. Conditional Access, dynamic groups, and SSPR writeback are P1 features.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/licensing"},
-{"id":"D1-011","sub":"SSPR","type":"mcq","diff":1,"q":"Self-service password reset (SSPR) can be enabled for:","opts":["All users only — no scoping possible","None, selected groups, or all users","Individual users picked one by one","Only users with the Global Administrator role"],"ans":[1],"exp":"SSPR scoping options are None / Selected (one group) / All.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"},
-{"id":"D1-012","sub":"SSPR","type":"mcq","diff":2,"q":"Your hybrid environment syncs users from on-premises AD. Users who reset their password in the cloud must have the new password written back to on-premises AD. What do you need?","opts":["Entra ID Free + Entra Connect","Entra ID P1 (or higher) and password writeback enabled in Entra Connect","Entra ID P2 only","Microsoft Identity Manager"],"ans":[1],"exp":"Password writeback requires P1 or higher plus the writeback option enabled in Entra Connect (and in the Password reset blade).","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-writeback"},
-{"id":"D1-013","sub":"Entra users","type":"yesno","diff":2,"q":"Answer Yes or No to each statement:","stmts":["A guest user can be assigned an Entra ID administrative role","The userType of a user can be changed from Guest to Member after creation","A security group can be an owner of another group","Changing a user's display name changes their sign-in name"],"ans":[true,true,false,false],"exp":"Guests can hold admin roles; userType is editable; group owners must be users or service principals, not groups; display name is separate from UPN.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"},
-{"id":"D1-014","sub":"Entra users","type":"mcq","diff":2,"q":"You need to create 200 users at once in the portal. The supported method is:","opts":["Upload a CSV file using the Bulk create operation in the Users blade","Upload a JSON file in the Users blade","Paste the list into the New user form","Bulk create is only possible with PowerShell"],"ans":[0],"exp":"Bulk create uses a CSV template downloaded from the portal's Users blade.","link":"https://learn.microsoft.com/en-us/entra/identity/users/users-bulk-add"},
-{"id":"D1-015","sub":"Entra users","type":"mcq","diff":3,"q":"Management wants to prevent standard (non-admin) users from registering applications in the tenant. Where do you configure this?","opts":["Conditional Access policy","Azure RBAC on the subscription","Entra ID → Users → User settings → App registrations = No","Azure Policy assignment at tenant root"],"ans":[2],"exp":"\"Users can register applications\" is a tenant User setting. Conditional Access controls sign-in conditions; RBAC and Azure Policy govern Azure resources, not the directory.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"},
-{"id":"D1-016","sub":"Devices","type":"mcq","diff":2,"q":"Which option allows users to join their personal Windows devices to the company directory while keeping personal ownership (BYOD scenario)?","opts":["Microsoft Entra join","Microsoft Entra registered","Hybrid Entra join","Domain join"],"ans":[1],"exp":"Entra registered is for personal/BYOD devices. Entra join is for corporate-owned devices; hybrid join is for on-premises domain-joined corporate machines.","link":"https://learn.microsoft.com/en-us/entra/identity/devices/overview"},
-{"id":"D1-017","sub":"RBAC","type":"mcq","diff":1,"q":"Which built-in role lets a user create and manage all resources in a resource group but NOT grant access to others?","opts":["Owner","Contributor","User Access Administrator","Reader"],"ans":[1],"exp":"Contributor manages resources but cannot assign roles. Owner can also grant access; User Access Administrator manages access only.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-018","sub":"RBAC","type":"mcq","diff":1,"q":"Which built-in role can manage user access to Azure resources but cannot create or modify the resources themselves?","opts":["Owner","Contributor","User Access Administrator","Security Admin"],"ans":[2],"exp":"User Access Administrator manages access (role assignments) only, not resources.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-019","sub":"RBAC","type":"mcq","diff":2,"q":"A role assigned at the subscription scope applies to:","opts":["Only the subscription object itself","The subscription and all resource groups and resources within it (inherited)","Only resource groups created after the assignment","The whole management group"],"ans":[1],"exp":"RBAC scope inherits downward: management group → subscription → resource group → resource.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"},
-{"id":"D1-020","sub":"RBAC","type":"mcq","diff":2,"q":"What are the three elements that make up an Azure role assignment?","opts":["User, password, resource","Security principal, role definition, scope","Role definition, policy, subscription","Group, license, scope"],"ans":[1],"exp":"A role assignment = security principal (who) + role definition (what) + scope (where).","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"},
-{"id":"D1-021","sub":"RBAC","type":"mcq","diff":3,"q":"User1 has Reader on subscription Sub1 and Contributor on resource group RG1 (inside Sub1). What can User1 do in RG1?","opts":["Only read resources (Reader wins — most restrictive)","Create, modify, and delete resources (permissions are additive; Contributor applies in RG1)","Nothing — conflicting assignments cancel out","Only actions common to both roles"],"ans":[1],"exp":"RBAC is additive: the union of assignments applies. Contributor governs inside RG1; Reader applies elsewhere in Sub1. There is no \"most restrictive wins\" rule.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"},
-{"id":"D1-022","sub":"RBAC","type":"mcq","diff":2,"q":"The Global Administrator of the tenant cannot see any Azure resources in a subscription. Why?","opts":["Entra ID roles and Azure RBAC roles are separate; Global Admin has no RBAC role by default","The subscription is disabled","Global Admins are blocked from Azure resources","They need an Entra ID P2 license"],"ans":[0],"exp":"Entra directory roles and Azure resource roles are separate systems. A Global Admin has no automatic subscription access.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/rbac-and-directory-admin-roles"},
-{"id":"D1-023","sub":"RBAC","type":"mcq","diff":3,"q":"A Global Administrator needs temporary access to manage ALL subscriptions in the tenant to fix orphaned access. The supported mechanism is:","opts":["Assign Owner on each subscription one by one","Toggle \"Access management for Azure resources\" (elevate access) to get User Access Administrator at root scope (/)","Create a custom role at tenant scope","Use Azure Policy to grant access"],"ans":[1],"exp":"The documented elevate-access toggle grants User Access Administrator at root scope \"/\" and is intended to be temporary.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin"},
-{"id":"D1-024","sub":"Custom roles","type":"mcq","diff":2,"q":"Which property of a custom RBAC role controls WHERE the role can be assigned?","opts":["Actions","NotActions","AssignableScopes","DataActions"],"ans":[2],"exp":"AssignableScopes lists the management groups, subscriptions, or resource groups where the role may be assigned.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"},
-{"id":"D1-025","sub":"Custom roles","type":"mcq","diff":3,"q":"A custom role must allow all read operations plus restarting VMs, nothing else. Which Actions block is correct?","opts":["\"Actions\": [\"*/read\", \"Microsoft.Compute/virtualMachines/restart/action\"]","\"Actions\": [\"*\"], \"NotActions\": [\"*/write\"]","\"Actions\": [\"Microsoft.Compute/*\"]","\"Actions\": [\"*/read\"], \"DataActions\": [\"restart\"]"],"ans":[0],"exp":"*/read grants all reads; add the specific restart action. \"*\" with NotActions is far too broad; Microsoft.Compute/* grants full compute control.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"},
-{"id":"D1-026","sub":"Custom roles","type":"mcq","diff":2,"q":"NotActions in a role definition:","opts":["Creates an explicit deny that overrides other roles","Subtracts operations from the Actions of the SAME role definition only","Blocks the user tenant-wide","Is only valid in built-in roles"],"ans":[1],"exp":"NotActions only subtracts within the same role; it is NOT a deny — another role assignment can still grant the operation.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"},
-{"id":"D1-027","sub":"RBAC","type":"multi","diff":2,"q":"Which TWO role assignments allow a user to grant other users access to a resource group?","opts":["Owner on the resource group","Contributor on the resource group","User Access Administrator on the resource group","Reader on the subscription"],"ans":[0,2],"exp":"Owner and User Access Administrator include Microsoft.Authorization/roleAssignments/write. Contributor explicitly excludes it.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-028","sub":"RBAC","type":"mcq","diff":1,"q":"Which CLI command assigns the Reader role to user ali@contoso.com on resource group RG1?","opts":["az role assignment create --assignee ali@contoso.com --role Reader --resource-group RG1","az ad role create --user ali --role Reader","az rbac grant --role Reader --rg RG1","az role definition create --role Reader"],"ans":[0],"exp":"az role assignment create takes --assignee, --role, and a scope parameter such as --resource-group.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli"},
-{"id":"D1-029","sub":"RBAC","type":"yesno","diff":3,"q":"Answer Yes or No to each statement:","stmts":["A role assigned at management group scope is inherited by all subscriptions under it","Deleting a user removes their role assignments' effect, but the assignment may remain as \"Identity not found\"","A deny assignment can be created directly by an administrator in the portal","Azure RBAC role assignments apply to Entra ID portal operations like creating users"],"ans":[true,true,false,false],"exp":"MG assignments inherit; orphaned assignments show \"Identity not found\"; deny assignments are created only by Azure (Blueprints/managed apps); directory operations use Entra roles, not RBAC.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/deny-assignments"},
-{"id":"D1-030","sub":"RBAC","type":"mcq","diff":2,"q":"A group \"Ops\" has Contributor at the management group \"Corp\". Sub1 is in \"Corp\". User2 is in group \"Ops\". What is User2's effective role on resource group RG5 in Sub1?","opts":["No access until assigned directly","Contributor (inherited: MG → subscription → RG)","Reader","Owner only on RG5"],"ans":[1],"exp":"Group membership plus a management-group-scope assignment inherits all the way down to RG5.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"},
-{"id":"D1-031","sub":"RBAC","type":"mcq","diff":3,"q":"A user must be able to open support tickets for a subscription and nothing more. Best-practice role?","opts":["Contributor","Support Request Contributor","Owner","Billing Reader"],"ans":[1],"exp":"Support Request Contributor is the least-privilege role for creating support tickets. Billing Reader is for invoices.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-032","sub":"RBAC","type":"order","diff":2,"q":"Put the steps in the correct order to grant a new vendor's engineer access to manage only VMs in RG-App:","items":["Assign the \"Virtual Machine Contributor\" role at the RG-App scope","Invite the engineer as a guest user in Entra ID","The engineer redeems the invitation","Select the guest as the security principal"],"ans":[1,2,3,0],"exp":"Invite the guest → they redeem → select them as the principal → assign Virtual Machine Contributor at the RG scope.","link":"https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"},
-{"id":"D1-033","sub":"Policy","type":"mcq","diff":1,"q":"What is the difference between Azure Policy and Azure RBAC?","opts":["They are the same service","Policy controls WHAT can be done with resources (properties/compliance); RBAC controls WHO can do actions","RBAC controls resource properties; Policy controls identities","Policy applies only to users; RBAC only to groups"],"ans":[1],"exp":"Policy governs resource compliance and properties; RBAC governs identity permissions. Policy denies apply even to Owners.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/overview"},
-{"id":"D1-034","sub":"Policy","type":"mcq","diff":1,"q":"You must prevent anyone from creating virtual machines in regions outside West Europe. What do you use?","opts":["A resource lock","An Azure Policy with the \"Allowed locations\" definition assigned with a Deny effect","An NSG","RBAC custom role"],"ans":[1],"exp":"The built-in \"Allowed locations\" policy with Deny blocks non-compliant deployments. Locks, NSGs, and RBAC cannot filter by region.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/overview"},
-{"id":"D1-035","sub":"Policy","type":"mcq","diff":2,"q":"A policy with the Audit effect finds a non-compliant resource. What happens to the resource?","opts":["It is deleted","It is stopped","Nothing — it is only marked non-compliant in compliance reports","It is automatically fixed"],"ans":[2],"exp":"Audit only logs and flags non-compliance; it never changes or blocks resources.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"},
-{"id":"D1-036","sub":"Policy","type":"mcq","diff":3,"q":"Which policy effect can automatically deploy a missing resource (e.g., deploy the monitoring agent if absent), and what does its remediation require?","opts":["Append; requires nothing extra","DeployIfNotExists; remediation task using a managed identity","Deny; requires Owner role","Modify; requires a service principal secret"],"ans":[1],"exp":"DeployIfNotExists deploys missing configuration; remediation tasks run under a managed identity with the needed role assignments.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"},
-{"id":"D1-037","sub":"Policy","type":"mcq","diff":2,"q":"What is an Azure Policy initiative?","opts":["A policy that cannot be changed","A group of policy definitions assigned together as one unit","A policy assigned at tenant root","A deny assignment"],"ans":[1],"exp":"An initiative (policy set) bundles multiple policy definitions into a single assignment.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure"},
-{"id":"D1-038","sub":"Policy","type":"mcq","diff":3,"q":"A policy denying public IP creation is assigned at the subscription. One resource group RG-Lab must be exempt. The BEST approach is:","opts":["Move RG-Lab to another tenant","Add RG-Lab as an exclusion (or create a policy exemption) on the assignment","Delete the policy","Assign a second policy allowing public IPs on RG-Lab"],"ans":[1],"exp":"Exclusions and exemptions exist for this. A second \"allow\" policy cannot override a Deny — policies only restrict.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure"},
-{"id":"D1-039","sub":"Policy","type":"mcq","diff":2,"q":"Existing non-compliant resources that were created BEFORE a Deny policy was assigned are:","opts":["Deleted automatically","Left running but reported as non-compliant","Stopped automatically","Moved to a quarantine resource group"],"ans":[1],"exp":"Deny blocks new or updated deployments only; existing resources are just flagged non-compliant.","link":"https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"},
-{"id":"D1-040","sub":"Locks","type":"mcq","diff":1,"q":"Which lock type allows users to read and modify a resource but prevents deletion?","opts":["ReadOnly","CanNotDelete (Delete lock)","NoDelete","Protect"],"ans":[1],"exp":"CanNotDelete allows modification but blocks deletion. ReadOnly blocks modification too.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"},
-{"id":"D1-041","sub":"Locks","type":"mcq","diff":3,"q":"A ReadOnly lock is applied to a storage account. Which unexpected side effect is commonly tested?","opts":["Blobs can no longer be read","Operations like listing storage account keys fail, because list keys is a POST action","The account is deleted after 30 days","The firewall is disabled"],"ans":[1],"exp":"ReadOnly restricts callers to GET operations; listKeys is a POST, so key listing (and portal data browsing via keys) fails.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"},
-{"id":"D1-042","sub":"Locks","type":"mcq","diff":2,"q":"A CanNotDelete lock is applied at the resource group level. Which statement is true?","opts":["Only the resource group object is protected; resources inside can be deleted","All resources within the resource group inherit the lock and cannot be deleted","The lock expires after 90 days","Owners can delete resources despite the lock without removing it"],"ans":[1],"exp":"Locks at a parent scope are inherited by all child resources, and nobody — Owner included — bypasses them without removing the lock first.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"},
-{"id":"D1-043","sub":"Locks","type":"mcq","diff":2,"q":"Which roles can create or delete management locks?","opts":["Any Contributor","Owner and User Access Administrator (Microsoft.Authorization/* access)","Reader","Only Global Administrator"],"ans":[1],"exp":"Lock management needs Microsoft.Authorization/locks/* permissions, held by Owner and User Access Administrator.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"},
-{"id":"D1-044","sub":"Tags","type":"mcq","diff":1,"q":"Resource group RG1 has the tag env=prod. VM1 is created inside RG1. What tag does VM1 have?","opts":["env=prod, inherited automatically","No tags — tags are not inherited by default","env=prod but read-only","A system tag linking it to RG1"],"ans":[1],"exp":"Tags are not inherited from resource groups by default; use the built-in inherit-tag policy to force it.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources"},
-{"id":"D1-045","sub":"Tags","type":"mcq","diff":2,"q":"You must ensure every NEW resource gets the tag costcenter copied from its resource group automatically. What do you use?","opts":["A resource lock","The built-in Azure Policy \"Inherit a tag from the resource group\" with the Modify effect","An ARM template","Azure Advisor"],"ans":[1],"exp":"The built-in inherit-a-tag policy (Modify effect, with remediation for existing resources) automates tag inheritance.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies"},
-{"id":"D1-046","sub":"Resource groups","type":"mcq","diff":2,"q":"You move a VM from RG1 to RG2 within the same subscription. Which statement is true?","opts":["The VM's region changes to RG2's region","The VM keeps its region; both resource groups are locked during the move","The VM restarts during the move","Moving VMs between resource groups is not supported"],"ans":[1],"exp":"Moves don't change region or restart the VM; source and destination groups are locked during the operation.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"},
-{"id":"D1-047","sub":"Management groups","type":"mcq","diff":2,"q":"How many levels of depth does a management group hierarchy support (excluding the root management group and subscriptions)?","opts":["3","6","10","Unlimited"],"ans":[1],"exp":"Six levels of depth, not counting the root management group and the subscription level.","link":"https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"},
-{"id":"D1-048","sub":"Management groups","type":"mcq","diff":3,"q":"You assign a policy at the \"Corp\" management group and an RBAC Reader role at the root management group to user Bob. Which statement applies to new subscription Sub9 placed under \"Corp\"?","opts":["Neither applies until manually linked","Both are inherited: Sub9 gets the policy, Bob can read Sub9's resources","Only RBAC inherits, policies never inherit","Only policy inherits, RBAC never inherits"],"ans":[1],"exp":"Both Azure Policy and RBAC assignments inherit down the management group hierarchy to new subscriptions automatically.","link":"https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"},
-{"id":"D1-049","sub":"Cost management","type":"mcq","diff":2,"q":"A monthly budget of $500 with an alert at 80% is configured on a subscription. Spending reaches $500. What happens to the running resources?","opts":["All resources are deallocated automatically","Nothing — budgets alert but never stop resources by themselves","The subscription is cancelled","New deployments are blocked"],"ans":[1],"exp":"Budgets alert (email/action groups) but never deallocate resources; add automation via action groups if you want enforcement.","link":"https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"},
-{"id":"D1-050","sub":"Governance","type":"yesno","diff":3,"ctx":"Contoso has management group MG-Prod containing Sub1. RG-Fin in Sub1 has a CanNotDelete lock. A policy at MG-Prod denies creating resources outside West Europe. User1 has Contributor on Sub1.","q":"Answer Yes or No:","stmts":["User1 can create a storage account in East US in RG-Fin","User1 can delete a VM inside RG-Fin","User1 can create a VM in West Europe in RG-Fin","User1 can remove the lock on RG-Fin"],"ans":[false,false,true,false],"exp":"The policy denies non-West-Europe creates; the inherited CanNotDelete lock blocks deletes; Contributor + compliant region allows the create; Contributor lacks Microsoft.Authorization/locks permissions.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"}
+ {
+  "id": "D1-001",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 1,
+  "q": "You need to create 25 users in Microsoft Entra ID. Each user must sign in with the suffix @contoso.com. What must you do FIRST?",
+  "opts": [
+   "Create a Microsoft 365 group named contoso.com",
+   "Add and verify the custom domain contoso.com in the tenant",
+   "Purchase Entra ID P1 licenses for all 25 users",
+   "Create a DNS zone named contoso.com in Azure DNS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The UPN suffix must be a verified custom domain in the tenant (verified via a TXT record at your registrar). Groups, licenses, and Azure DNS zones do not verify domains.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"
+ },
+ {
+  "id": "D1-002",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 1,
+  "q": "A user account was deleted 10 days ago. What is the simplest way to get the account back with all its properties and group memberships intact?",
+  "opts": [
+   "Create a new user with the same UPN",
+   "Restore the user from the Deleted users blade",
+   "Restore the tenant from a backup",
+   "Re-invite the user as a guest"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Within 30 days, soft-deleted users can be restored with all properties and memberships. A new user with the same UPN gets a new object ID and no memberships; tenant restore does not exist.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"
+ },
+ {
+  "id": "D1-003",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How long does Microsoft Entra ID keep a deleted user in a restorable (soft-deleted) state?",
+  "opts": [
+   "14 days",
+   "30 days",
+   "90 days",
+   "7 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Deleted users are soft-deleted for 30 days and then permanently removed.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"
+ },
+ {
+  "id": "D1-004",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 1,
+  "q": "You invite an external consultant (anna@fabrikam.com) to collaborate. Which statement is true about her account in your tenant?",
+  "opts": [
+   "You must set an initial password for her",
+   "She authenticates with her own organization's credentials; her userType is Guest",
+   "She automatically gets the same default permissions as members",
+   "She can only be added to Microsoft 365 groups, not security groups"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "B2B guests bring their own credentials and get userType=Guest with restricted default directory permissions. Guests can join security groups too.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"
+ },
+ {
+  "id": "D1-005",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which group configuration requires a Microsoft Entra ID P1 license?",
+  "opts": [
+   "A security group with assigned membership",
+   "A Microsoft 365 group with assigned membership",
+   "A security group with dynamic user membership",
+   "A group used for sharing a SharePoint site"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Dynamic membership (user or device) requires Entra ID P1. Assigned-membership groups work on the Free tier.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-006",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You create a dynamic user group with the rule user.department -eq \"Sales\". A user's department attribute is changed from \"HR\" to \"Sales\". What happens?",
+  "opts": [
+   "Nothing until an admin runs a sync",
+   "The user is added to the group automatically after the rule is processed",
+   "The user receives an email invitation to join the group",
+   "The user is added only after their next sign-in"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Dynamic rules are evaluated automatically on attribute change; membership updates without admin action (processing can take some minutes).",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-007",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which group type can contain devices as members?",
+  "opts": [
+   "Microsoft 365 group",
+   "Security group",
+   "Distribution group",
+   "Mail-enabled security group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Security groups can contain users, devices, service principals, and other groups. Microsoft 365 groups contain users only.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"
+ },
+ {
+  "id": "D1-008",
+  "sub": "Groups",
+  "type": "multi",
+  "diff": 2,
+  "q": "A dynamic device group is being designed. Which TWO statements are true?",
+  "opts": [
+   "A group can use dynamic membership for both users and devices at the same time",
+   "A group can have dynamic membership for users OR devices, not both",
+   "Dynamic membership rules can reference device properties such as deviceOSType",
+   "Device objects can only be placed in Microsoft 365 groups"
+  ],
+  "ans": [
+   1,
+   2
+  ],
+  "exp": "One dynamic group targets users OR devices, never both; device rules use device properties. Devices go in security groups.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-009",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You assign licenses to the group \"Sales-Users\" using group-based licensing. One user shows a licensing error. The most common cause tested is:",
+  "opts": [
+   "The user is a guest",
+   "The user has no usageLocation set",
+   "The user is in two groups",
+   "The group is a security group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Group-based licensing fails for users without usageLocation, because many services are region-restricted. Guests can be licensed, and multiple groups merge licenses.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-resolve-problems"
+ },
+ {
+  "id": "D1-010",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which features require Microsoft Entra ID P2 rather than P1?",
+  "opts": [
+   "Conditional Access",
+   "Dynamic groups",
+   "Privileged Identity Management (PIM) and Identity Protection",
+   "Self-service password reset with on-premises writeback"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "PIM, Identity Protection, and access reviews are P2. Conditional Access, dynamic groups, and SSPR writeback are P1 features.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+ },
+ {
+  "id": "D1-011",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Self-service password reset (SSPR) can be enabled for:",
+  "opts": [
+   "All users only — no scoping possible",
+   "None, selected groups, or all users",
+   "Individual users picked one by one",
+   "Only users with the Global Administrator role"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "SSPR scoping options are None / Selected (one group) / All.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+ },
+ {
+  "id": "D1-012",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Your hybrid environment syncs users from on-premises AD. Users who reset their password in the cloud must have the new password written back to on-premises AD. What do you need?",
+  "opts": [
+   "Entra ID Free + Entra Connect",
+   "Entra ID P1 (or higher) and password writeback enabled in Entra Connect",
+   "Entra ID P2 only",
+   "Microsoft Identity Manager"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Password writeback requires P1 or higher plus the writeback option enabled in Entra Connect (and in the Password reset blade).",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-writeback"
+ },
+ {
+  "id": "D1-013",
+  "sub": "Entra users",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each statement:",
+  "stmts": [
+   "A guest user can be assigned an Entra ID administrative role",
+   "The userType of a user can be changed from Guest to Member after creation",
+   "A security group can be an owner of another group",
+   "Changing a user's display name changes their sign-in name"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "Guests can hold admin roles; userType is editable; group owners must be users or service principals, not groups; display name is separate from UPN.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
+ },
+ {
+  "id": "D1-014",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need to create 200 users at once in the portal. The supported method is:",
+  "opts": [
+   "Upload a CSV file using the Bulk create operation in the Users blade",
+   "Upload a JSON file in the Users blade",
+   "Paste the list into the New user form",
+   "Bulk create is only possible with PowerShell"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Bulk create uses a CSV template downloaded from the portal's Users blade.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/users-bulk-add"
+ },
+ {
+  "id": "D1-015",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Management wants to prevent standard (non-admin) users from registering applications in the tenant. Where do you configure this?",
+  "opts": [
+   "Conditional Access policy",
+   "Azure RBAC on the subscription",
+   "Entra ID → Users → User settings → App registrations = No",
+   "Azure Policy assignment at tenant root"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "\"Users can register applications\" is a tenant User setting. Conditional Access controls sign-in conditions; RBAC and Azure Policy govern Azure resources, not the directory.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
+ },
+ {
+  "id": "D1-016",
+  "sub": "Devices",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which option allows users to join their personal Windows devices to the company directory while keeping personal ownership (BYOD scenario)?",
+  "opts": [
+   "Microsoft Entra join",
+   "Microsoft Entra registered",
+   "Hybrid Entra join",
+   "Domain join"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Entra registered is for personal/BYOD devices. Entra join is for corporate-owned devices; hybrid join is for on-premises domain-joined corporate machines.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/overview"
+ },
+ {
+  "id": "D1-017",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which built-in role lets a user create and manage all resources in a resource group but NOT grant access to others?",
+  "opts": [
+   "Owner",
+   "Contributor",
+   "User Access Administrator",
+   "Reader"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Contributor manages resources but cannot assign roles. Owner can also grant access; User Access Administrator manages access only.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-018",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which built-in role can manage user access to Azure resources but cannot create or modify the resources themselves?",
+  "opts": [
+   "Owner",
+   "Contributor",
+   "User Access Administrator",
+   "Security Admin"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "User Access Administrator manages access (role assignments) only, not resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-019",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A role assigned at the subscription scope applies to:",
+  "opts": [
+   "Only the subscription object itself",
+   "The subscription and all resource groups and resources within it (inherited)",
+   "Only resource groups created after the assignment",
+   "The whole management group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "RBAC scope inherits downward: management group → subscription → resource group → resource.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-020",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What are the three elements that make up an Azure role assignment?",
+  "opts": [
+   "User, password, resource",
+   "Security principal, role definition, scope",
+   "Role definition, policy, subscription",
+   "Group, license, scope"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A role assignment = security principal (who) + role definition (what) + scope (where).",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-021",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "User1 has Reader on subscription Sub1 and Contributor on resource group RG1 (inside Sub1). What can User1 do in RG1?",
+  "opts": [
+   "Only read resources (Reader wins — most restrictive)",
+   "Create, modify, and delete resources (permissions are additive; Contributor applies in RG1)",
+   "Nothing — conflicting assignments cancel out",
+   "Only actions common to both roles"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "RBAC is additive: the union of assignments applies. Contributor governs inside RG1; Reader applies elsewhere in Sub1. There is no \"most restrictive wins\" rule.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-022",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "The Global Administrator of the tenant cannot see any Azure resources in a subscription. Why?",
+  "opts": [
+   "Entra ID roles and Azure RBAC roles are separate; Global Admin has no RBAC role by default",
+   "The subscription is disabled",
+   "Global Admins are blocked from Azure resources",
+   "They need an Entra ID P2 license"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Entra directory roles and Azure resource roles are separate systems. A Global Admin has no automatic subscription access.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/rbac-and-directory-admin-roles"
+ },
+ {
+  "id": "D1-023",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A Global Administrator needs temporary access to manage ALL subscriptions in the tenant to fix orphaned access. The supported mechanism is:",
+  "opts": [
+   "Assign Owner on each subscription one by one",
+   "Toggle \"Access management for Azure resources\" (elevate access) to get User Access Administrator at root scope (/)",
+   "Create a custom role at tenant scope",
+   "Use Azure Policy to grant access"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The documented elevate-access toggle grants User Access Administrator at root scope \"/\" and is intended to be temporary.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin"
+ },
+ {
+  "id": "D1-024",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which property of a custom RBAC role controls WHERE the role can be assigned?",
+  "opts": [
+   "Actions",
+   "NotActions",
+   "AssignableScopes",
+   "DataActions"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "AssignableScopes lists the management groups, subscriptions, or resource groups where the role may be assigned.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+ },
+ {
+  "id": "D1-025",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A custom role must allow all read operations plus restarting VMs, nothing else. Which Actions block is correct?",
+  "opts": [
+   "\"Actions\": [\"*/read\", \"Microsoft.Compute/virtualMachines/restart/action\"]",
+   "\"Actions\": [\"*\"], \"NotActions\": [\"*/write\"]",
+   "\"Actions\": [\"Microsoft.Compute/*\"]",
+   "\"Actions\": [\"*/read\"], \"DataActions\": [\"restart\"]"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "*/read grants all reads; add the specific restart action. \"*\" with NotActions is far too broad; Microsoft.Compute/* grants full compute control.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+ },
+ {
+  "id": "D1-026",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "NotActions in a role definition:",
+  "opts": [
+   "Creates an explicit deny that overrides other roles",
+   "Subtracts operations from the Actions of the SAME role definition only",
+   "Blocks the user tenant-wide",
+   "Is only valid in built-in roles"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "NotActions only subtracts within the same role; it is NOT a deny — another role assignment can still grant the operation.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+ },
+ {
+  "id": "D1-027",
+  "sub": "RBAC",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO role assignments allow a user to grant other users access to a resource group?",
+  "opts": [
+   "Owner on the resource group",
+   "Contributor on the resource group",
+   "User Access Administrator on the resource group",
+   "Reader on the subscription"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Owner and User Access Administrator include Microsoft.Authorization/roleAssignments/write. Contributor explicitly excludes it.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-028",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which CLI command assigns the Reader role to user ali@contoso.com on resource group RG1?",
+  "opts": [
+   "az role assignment create --assignee ali@contoso.com --role Reader --resource-group RG1",
+   "az ad role create --user ali --role Reader",
+   "az rbac grant --role Reader --rg RG1",
+   "az role definition create --role Reader"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az role assignment create takes --assignee, --role, and a scope parameter such as --resource-group.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli"
+ },
+ {
+  "id": "D1-029",
+  "sub": "RBAC",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No to each statement:",
+  "stmts": [
+   "A role assigned at management group scope is inherited by all subscriptions under it",
+   "Deleting a user removes their role assignments' effect, but the assignment may remain as \"Identity not found\"",
+   "A deny assignment can be created directly by an administrator in the portal",
+   "Azure RBAC role assignments apply to Entra ID portal operations like creating users"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "MG assignments inherit; orphaned assignments show \"Identity not found\"; you cannot create deny assignments directly — Azure creates them, for example from a deployment stack's deny settings; directory operations use Entra roles, not RBAC.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/deny-assignments"
+ },
+ {
+  "id": "D1-030",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A group \"Ops\" has Contributor at the management group \"Corp\". Sub1 is in \"Corp\". User2 is in group \"Ops\". What is User2's effective role on resource group RG5 in Sub1?",
+  "opts": [
+   "No access until assigned directly",
+   "Contributor (inherited: MG → subscription → RG)",
+   "Reader",
+   "Owner only on RG5"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Group membership plus a management-group-scope assignment inherits all the way down to RG5.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"
+ },
+ {
+  "id": "D1-031",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A user must be able to open support tickets for a subscription and nothing more. Best-practice role?",
+  "opts": [
+   "Contributor",
+   "Support Request Contributor",
+   "Owner",
+   "Billing Reader"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Support Request Contributor is the least-privilege role for creating support tickets. Billing Reader is for invoices.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-032",
+  "sub": "RBAC",
+  "type": "order",
+  "diff": 2,
+  "q": "Put the steps in the correct order to grant a new vendor's engineer access to manage only VMs in RG-App:",
+  "items": [
+   "Assign the \"Virtual Machine Contributor\" role at the RG-App scope",
+   "Invite the engineer as a guest user in Entra ID",
+   "The engineer redeems the invitation",
+   "Select the guest as the security principal"
+  ],
+  "ans": [
+   1,
+   2,
+   3,
+   0
+  ],
+  "exp": "Invite the guest → they redeem → select them as the principal → assign Virtual Machine Contributor at the RG scope.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"
+ },
+ {
+  "id": "D1-033",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What is the difference between Azure Policy and Azure RBAC?",
+  "opts": [
+   "They are the same service",
+   "Policy controls WHAT can be done with resources (properties/compliance); RBAC controls WHO can do actions",
+   "RBAC controls resource properties; Policy controls identities",
+   "Policy applies only to users; RBAC only to groups"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Policy governs resource compliance and properties; RBAC governs identity permissions. Policy denies apply even to Owners.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
+ },
+ {
+  "id": "D1-034",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 1,
+  "q": "You must prevent anyone from creating virtual machines in regions outside West Europe. What do you use?",
+  "opts": [
+   "A resource lock",
+   "An Azure Policy with the \"Allowed locations\" definition assigned with a Deny effect",
+   "An NSG",
+   "RBAC custom role"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The built-in \"Allowed locations\" policy with Deny blocks non-compliant deployments. Locks, NSGs, and RBAC cannot filter by region.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
+ },
+ {
+  "id": "D1-035",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A policy with the Audit effect finds a non-compliant resource. What happens to the resource?",
+  "opts": [
+   "It is deleted",
+   "It is stopped",
+   "Nothing — it is only marked non-compliant in compliance reports",
+   "It is automatically fixed"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Audit only logs and flags non-compliance; it never changes or blocks resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
+ },
+ {
+  "id": "D1-036",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which policy effect can automatically deploy a missing resource (e.g., deploy the monitoring agent if absent), and what does its remediation require?",
+  "opts": [
+   "Append; requires nothing extra",
+   "DeployIfNotExists; remediation task using a managed identity",
+   "Deny; requires Owner role",
+   "Modify; requires a service principal secret"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "DeployIfNotExists deploys missing configuration; remediation tasks run under a managed identity with the needed role assignments.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
+ },
+ {
+  "id": "D1-037",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is an Azure Policy initiative?",
+  "opts": [
+   "A policy that cannot be changed",
+   "A group of policy definitions assigned together as one unit",
+   "A policy assigned at tenant root",
+   "A deny assignment"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "An initiative (policy set) bundles multiple policy definitions into a single assignment.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure"
+ },
+ {
+  "id": "D1-038",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A policy denying public IP creation is assigned at the subscription. One resource group RG-Lab must be exempt. The BEST approach is:",
+  "opts": [
+   "Move RG-Lab to another tenant",
+   "Add RG-Lab as an exclusion (or create a policy exemption) on the assignment",
+   "Delete the policy",
+   "Assign a second policy allowing public IPs on RG-Lab"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Exclusions and exemptions exist for this. A second \"allow\" policy cannot override a Deny — policies only restrict.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure"
+ },
+ {
+  "id": "D1-039",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Existing non-compliant resources that were created BEFORE a Deny policy was assigned are:",
+  "opts": [
+   "Deleted automatically",
+   "Left running but reported as non-compliant",
+   "Stopped automatically",
+   "Moved to a quarantine resource group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Deny blocks new or updated deployments only; existing resources are just flagged non-compliant.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
+ },
+ {
+  "id": "D1-040",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which lock type allows users to read and modify a resource but prevents deletion?",
+  "opts": [
+   "ReadOnly",
+   "CanNotDelete (Delete lock)",
+   "NoDelete",
+   "Protect"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "CanNotDelete allows modification but blocks deletion. ReadOnly blocks modification too.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-041",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A ReadOnly lock is applied to a storage account. Which unexpected side effect is commonly tested?",
+  "opts": [
+   "Blobs can no longer be read",
+   "Operations like listing storage account keys fail, because list keys is a POST action",
+   "The account is deleted after 30 days",
+   "The firewall is disabled"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "ReadOnly restricts callers to GET operations; listKeys is a POST, so key listing (and portal data browsing via keys) fails.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-042",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A CanNotDelete lock is applied at the resource group level. Which statement is true?",
+  "opts": [
+   "Only the resource group object is protected; resources inside can be deleted",
+   "All resources within the resource group inherit the lock and cannot be deleted",
+   "The lock expires after 90 days",
+   "Owners can delete resources despite the lock without removing it"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Locks at a parent scope are inherited by all child resources, and nobody — Owner included — bypasses them without removing the lock first.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-043",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which roles can create or delete management locks?",
+  "opts": [
+   "Any Contributor",
+   "Owner and User Access Administrator (Microsoft.Authorization/* access)",
+   "Reader",
+   "Only Global Administrator"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Lock management needs Microsoft.Authorization/locks/* permissions, held by Owner and User Access Administrator.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-044",
+  "sub": "Tags",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Resource group RG1 has the tag env=prod. VM1 is created inside RG1. What tag does VM1 have?",
+  "opts": [
+   "env=prod, inherited automatically",
+   "No tags — tags are not inherited by default",
+   "env=prod but read-only",
+   "A system tag linking it to RG1"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Tags are not inherited from resource groups by default; use the built-in inherit-tag policy to force it.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources"
+ },
+ {
+  "id": "D1-045",
+  "sub": "Tags",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You must ensure every NEW resource gets the tag costcenter copied from its resource group automatically. What do you use?",
+  "opts": [
+   "A resource lock",
+   "The built-in Azure Policy \"Inherit a tag from the resource group\" with the Modify effect",
+   "An ARM template",
+   "Azure Advisor"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The built-in inherit-a-tag policy (Modify effect, with remediation for existing resources) automates tag inheritance.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies"
+ },
+ {
+  "id": "D1-046",
+  "sub": "Resource groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You move a VM from RG1 to RG2 within the same subscription. Which statement is true?",
+  "opts": [
+   "The VM's region changes to RG2's region",
+   "The VM keeps its region; both resource groups are locked during the move",
+   "The VM restarts during the move",
+   "Moving VMs between resource groups is not supported"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Moves don't change region or restart the VM; source and destination groups are locked during the operation.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"
+ },
+ {
+  "id": "D1-047",
+  "sub": "Management groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How many levels of depth does a management group hierarchy support (excluding the root management group and subscriptions)?",
+  "opts": [
+   "3",
+   "6",
+   "10",
+   "Unlimited"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Six levels of depth, not counting the root management group and the subscription level.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-048",
+  "sub": "Management groups",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You assign a policy at the \"Corp\" management group and an RBAC Reader role at the root management group to user Bob. Which statement applies to new subscription Sub9 placed under \"Corp\"?",
+  "opts": [
+   "Neither applies until manually linked",
+   "Both are inherited: Sub9 gets the policy, Bob can read Sub9's resources",
+   "Only RBAC inherits, policies never inherit",
+   "Only policy inherits, RBAC never inherits"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Both Azure Policy and RBAC assignments inherit down the management group hierarchy to new subscriptions automatically.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-049",
+  "sub": "Cost management",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A monthly budget of $500 with an alert at 80% is configured on a subscription. Spending reaches $500. What happens to the running resources?",
+  "opts": [
+   "All resources are deallocated automatically",
+   "Nothing — budgets alert but never stop resources by themselves",
+   "The subscription is cancelled",
+   "New deployments are blocked"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Budgets alert (email/action groups) but never deallocate resources; add automation via action groups if you want enforcement.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
+ },
+ {
+  "id": "D1-050",
+  "sub": "Governance",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "Contoso has management group MG-Prod containing Sub1. RG-Fin in Sub1 has a CanNotDelete lock. A policy at MG-Prod denies creating resources outside West Europe. User1 has Contributor on Sub1.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "User1 can create a storage account in East US in RG-Fin",
+   "User1 can delete a VM inside RG-Fin",
+   "User1 can create a VM in West Europe in RG-Fin",
+   "User1 can remove the lock on RG-Fin"
+  ],
+  "ans": [
+   false,
+   false,
+   true,
+   false
+  ],
+  "exp": "The policy denies non-West-Europe creates; the inherited CanNotDelete lock blocks deletes; Contributor + compliant region allows the create; Contributor lacks Microsoft.Authorization/locks permissions.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ }
 ]

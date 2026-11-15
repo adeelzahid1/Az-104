@@ -1,52 +1,914 @@
 [
-{"id":"D2-101","sub":"Storage accounts","type":"mcq","diff":1,"q":"Which of these is a valid storage account name?","opts":["contosodata01","Contoso-Data","contoso_data","cd"],"ans":[0],"exp":"Names are 3–24 characters, lowercase letters and numbers only, with no hyphens or underscores.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"},
-{"id":"D2-102","sub":"Storage accounts","type":"mcq","diff":2,"q":"What is the blob endpoint format of a storage account named contosodata?","opts":["https://contosodata.blob.core.windows.net","https://blob.contosodata.azure.com","https://contosodata.azurewebsites.net/blob","https://core.windows.net/contosodata"],"ans":[0],"exp":"Standard endpoints are https://<account>.<service>.core.windows.net.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"},
-{"id":"D2-103","sub":"Storage accounts","type":"mcq","diff":2,"q":"Which CLI command creates a GPv2 account with ZRS?","opts":["az storage account create -n st1 -g RG1 --sku Standard_ZRS --kind StorageV2","az storage create st1 --zrs","az storage account new --redundancy zone","az group create --storage zrs"],"ans":[0],"exp":"--sku sets performance plus redundancy; --kind StorageV2 is GPv2.","link":"https://learn.microsoft.com/en-us/cli/azure/storage/account"},
-{"id":"D2-104","sub":"Storage accounts","type":"mcq","diff":3,"q":"You need a data lake with true directories, atomic directory renames, and POSIX ACLs. What do you enable when creating the account?","opts":["Hierarchical namespace (Data Lake Storage Gen2)","Large file shares","NFS 3.0 only","Versioning"],"ans":[0],"exp":"Hierarchical namespace enables Data Lake Storage Gen2 features.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-namespace"},
-{"id":"D2-105","sub":"Storage accounts","type":"mcq","diff":2,"q":"An old GPv1 account needs access tiers and lifecycle management. What should you do?","opts":["Upgrade it to GPv2 (in-place, one-way)","Recreate it as premium","Enable versioning","Move it to another region"],"ans":[0],"exp":"Upgrading to GPv2 is an in-place, irreversible change that unlocks tiers and lifecycle management.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-upgrade"},
-{"id":"D2-106","sub":"Storage accounts","type":"mcq","diff":3,"q":"How many storage accounts can you create per region per subscription by default?","opts":["250","50","500","Unlimited"],"ans":[0],"exp":"The default limit is 250 storage accounts per region per subscription (an increase can be requested).","link":"https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account"},
-{"id":"D2-107","sub":"Storage accounts","type":"mcq","diff":2,"q":"Which premium account type gives the best performance for workloads with high transaction rates on small objects?","opts":["Premium BlockBlobStorage","Standard GPv2 hot","Premium FileStorage","Standard GPv2 cool"],"ans":[0],"exp":"Premium block blob accounts are SSD-backed and suit high-transaction, low-latency workloads.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium"},
-{"id":"D2-108","sub":"Storage accounts","type":"mcq","diff":3,"q":"You must host a static website (HTML/JS) directly from storage. What do you enable?","opts":["Static website hosting, which serves the $web container","Anonymous container access","Azure Files","CDN only"],"ans":[0],"exp":"Static website hosting serves content from the $web container on a web endpoint.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website"},
-{"id":"D2-109","sub":"Redundancy","type":"mcq","diff":1,"q":"Which redundancy option protects against a single availability zone outage without replicating to another region?","opts":["LRS","ZRS","GRS","RA-GRS"],"ans":[1],"exp":"ZRS replicates synchronously across three zones in one region.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-110","sub":"Redundancy","type":"mcq","diff":2,"q":"The lowest-cost redundancy option is:","opts":["LRS","ZRS","GRS","GZRS"],"ans":[0],"exp":"LRS is cheapest and has the least protection.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-111","sub":"Redundancy","type":"mcq","diff":3,"q":"Which property tells you how far behind the secondary region is in a GRS or RA-GRS account?","opts":["Last Sync Time","Replication lag metric","Change feed","Blob inventory"],"ans":[0],"exp":"Last Sync Time shows the point up to which data is guaranteed written to the secondary.","link":"https://learn.microsoft.com/en-us/azure/storage/common/last-sync-time-get"},
-{"id":"D2-112","sub":"Redundancy","type":"mcq","diff":2,"q":"An app uses RA-GRS. What's the endpoint for reading from the secondary blob service of account st1?","opts":["https://st1-secondary.blob.core.windows.net","https://st1.blob.secondary.windows.net","https://secondary.st1.blob.core.windows.net","https://st1.blob.core.windows.net/secondary"],"ans":[0],"exp":"Secondary endpoints add -secondary to the account name.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-113","sub":"Redundancy","type":"mcq","diff":2,"q":"Which redundancy gives the highest durability and availability, including read access during a regional outage?","opts":["RA-GZRS","GRS","ZRS","LRS"],"ans":[0],"exp":"RA-GZRS combines zone redundancy, geo-replication, and read access to the secondary.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-114","sub":"Redundancy","type":"mcq","diff":3,"q":"Why can account failover on a GRS account cause data loss?","opts":["Replication to the secondary is asynchronous, so recent writes may not have been copied","Failover deletes data","GRS is synchronous","Data is compressed"],"ans":[0],"exp":"Geo-replication is asynchronous; writes after the Last Sync Time can be lost.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"},
-{"id":"D2-115","sub":"Redundancy","type":"mcq","diff":3,"q":"You change an account from LRS to ZRS. How is this done?","opts":["Through a conversion (customer-initiated in the portal, or migration) — it isn't an instant toggle like LRS→GRS","Instantly from the dropdown with no copying","It isn't possible","Only by creating a new tenant"],"ans":[0],"exp":"Changing to or from zone redundancy needs a conversion; adding geo-redundancy is a direct setting change.","link":"https://learn.microsoft.com/en-us/azure/storage/common/redundancy-migration"},
-{"id":"D2-116","sub":"Redundancy","type":"multi","diff":2,"q":"Which TWO redundancy options keep a copy in a secondary region?","opts":["GRS","ZRS","GZRS","LRS"],"ans":[0,2],"exp":"GRS and GZRS (and their RA- variants) replicate to the paired region.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-117","sub":"Redundancy","type":"yesno","diff":2,"q":"Answer Yes or No:","stmts":["GRS keeps 6 copies of data in total","ZRS protects against a full region outage","The secondary region for GRS is chosen by you freely","RA-GRS lets you read the secondary without failover"],"ans":[true,false,false,true],"exp":"GRS = 3 + 3 copies; ZRS stays within one region; the secondary is the paired region; RA-GRS allows reads from the secondary.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-118","sub":"Redundancy","type":"mcq","diff":2,"q":"An app must stay available even if one datacenter in the region fails, and data residency rules forbid leaving the region. Choose:","opts":["ZRS","GRS","RA-GRS","GZRS"],"ans":[0],"exp":"ZRS survives a datacenter or zone failure without copying data outside the region.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-119","sub":"Object replication","type":"mcq","diff":2,"q":"Which blob types does object replication support?","opts":["Block blobs only","Page blobs only","Append and page blobs","All blob types"],"ans":[0],"exp":"Object replication supports block blobs only.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"},
-{"id":"D2-120","sub":"Object replication","type":"mcq","diff":3,"q":"In an object replication policy, which filter limits replication to blobs whose names start with 'invoices/'?","opts":["Prefix match filter","Tag filter","Tier filter","Lifecycle rule"],"ans":[0],"exp":"Replication rules support prefix filters to scope which blobs replicate.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"},
-{"id":"D2-121","sub":"Object replication","type":"mcq","diff":3,"q":"Can blobs in the archive tier be replicated by object replication?","opts":["Yes","No — archive blobs aren't replicated","Only with RA-GRS","Only after 180 days"],"ans":[1],"exp":"Archive tier blobs aren't supported for object replication.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"},
-{"id":"D2-122","sub":"Object replication","type":"mcq","diff":2,"q":"In object replication, what does the destination container become?","opts":["Read-only for clients (replication writes only)","Fully writable","Deleted after sync","Archived"],"ans":[0],"exp":"Destination containers are read-only while a replication policy is in place.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"},
-{"id":"D2-123","sub":"Object replication","type":"order","diff":2,"q":"Order the steps to configure object replication from st-src to st-dst:","items":["Create the replication policy and rules on st-dst / st-src","Enable blob versioning on both accounts","Enable change feed on st-src","Upload a test blob and verify replication status"],"ans":[1,2,0,3],"exp":"Versioning on both → change feed on the source → create the policy → verify.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-configure"},
-{"id":"D2-124","sub":"Encryption","type":"mcq","diff":1,"q":"Which encryption algorithm does Azure Storage SSE use?","opts":["256-bit AES","128-bit DES","RSA-1024","MD5"],"ans":[0],"exp":"Data is encrypted with 256-bit AES.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"},
-{"id":"D2-125","sub":"Encryption","type":"mcq","diff":2,"q":"Where can a customer-managed key for Azure Storage be stored?","opts":["Azure Key Vault or Key Vault Managed HSM","A storage account","An App Service","Entra ID"],"ans":[0],"exp":"CMK keys live in Key Vault or Managed HSM.","link":"https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"},
-{"id":"D2-126","sub":"Encryption","type":"mcq","diff":3,"q":"Compliance requires that the customer, not Microsoft, controls key rotation and can revoke access to all storage data. What do you configure?","opts":["Customer-managed keys in Key Vault","Microsoft-managed keys","Infrastructure encryption only","Secure transfer"],"ans":[0],"exp":"CMK gives you control over key lifecycle and revocation.","link":"https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"},
-{"id":"D2-127","sub":"Encryption","type":"mcq","diff":3,"q":"A client must encrypt data on its side before uploading, so Azure never sees plaintext. Which approach?","opts":["Client-side encryption (Storage client libraries)","SSE with MMK","Infrastructure encryption","Secure transfer"],"ans":[0],"exp":"Client-side encryption encrypts data before it reaches Azure.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/client-side-encryption"},
-{"id":"D2-128","sub":"AzCopy","type":"mcq","diff":2,"q":"Which AzCopy command copies a blob directly between two storage accounts (server-to-server)?","opts":["azcopy copy \"https://src.blob.core.windows.net/c/f?<SAS>\" \"https://dst.blob.core.windows.net/c/f?<SAS>\"","azcopy move src dst","azcopy sync --local","azcopy transfer src dst"],"ans":[0],"exp":"azcopy copy between two URLs uses server-side copy APIs.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-blobs-copy"},
-{"id":"D2-129","sub":"AzCopy","type":"mcq","diff":2,"q":"Which AzCopy option copies a folder and all its subfolders?","opts":["--recursive","--all","--deep","--include-subdirs"],"ans":[0],"exp":"--recursive copies directories recursively.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-copy"},
-{"id":"D2-130","sub":"AzCopy","type":"mcq","diff":3,"q":"An AzCopy job was interrupted halfway. How do you continue it without restarting?","opts":["azcopy jobs resume <job-id>","azcopy copy again with --overwrite","azcopy retry","Delete and start over"],"ans":[0],"exp":"AzCopy tracks jobs in plan files; azcopy jobs resume continues them.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-jobs-resume"},
-{"id":"D2-131","sub":"AzCopy","type":"mcq","diff":3,"q":"azcopy sync with --delete-destination=true does what?","opts":["Deletes files at the destination that no longer exist at the source","Deletes the source after copying","Deletes the whole container","Has no effect"],"ans":[0],"exp":"It mirrors deletions so the destination matches the source.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"},
-{"id":"D2-132","sub":"AzCopy","type":"mcq","diff":2,"q":"Which AzCopy command signs in with an Entra identity?","opts":["azcopy login","azcopy auth","az login --azcopy","azcopy connect"],"ans":[0],"exp":"azcopy login supports interactive sign-in, managed identity (--identity), and service principals.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-login"},
-{"id":"D2-133","sub":"AzCopy","type":"mcq","diff":2,"q":"You sign in with azcopy login. What role must your identity have to upload blobs?","opts":["Storage Blob Data Contributor (or Owner)","Reader","Contributor only","Storage Account Contributor"],"ans":[0],"exp":"Entra auth to blob data requires a data-plane role.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-authorize-azure-active-directory"},
-{"id":"D2-134","sub":"Storage Explorer","type":"mcq","diff":2,"q":"Which ways can Storage Explorer connect to storage?","opts":["Entra sign-in, account name and key, SAS URL, connection string","Only Entra sign-in","Only SAS","Only through the portal"],"ans":[0],"exp":"Storage Explorer supports several connection methods, including the Azurite emulator.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-explorer-support-policy-lifecycle"},
-{"id":"D2-135","sub":"Storage Explorer","type":"mcq","diff":2,"q":"What does Storage Explorer use internally for fast upload and download transfers?","opts":["AzCopy","Robocopy","FTP","rsync"],"ans":[0],"exp":"Storage Explorer uses AzCopy for transfers.","link":"https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"},
-{"id":"D2-136","sub":"Data migration","type":"mcq","diff":2,"q":"Which Data Box family product suits about 40 TB of data?","opts":["Data Box (80 TB usable device)","Data Box Disk only","Data Box Heavy","Import/Export with a single disk"],"ans":[0],"exp":"Data Box (~80 TB usable) fits tens of terabytes. Data Box Disk targets smaller sets, and Data Box Heavy is for very large sets (around 1 PB).","link":"https://learn.microsoft.com/en-us/azure/databox/data-box-overview"},
-{"id":"D2-137","sub":"Data migration","type":"mcq","diff":2,"q":"For the Azure Import/Export service, which tool prepares drives for import?","opts":["WAImportExport tool","AzCopy","Storage Explorer","Robocopy only"],"ans":[0],"exp":"The WAImportExport tool prepares drives and journal files.","link":"https://learn.microsoft.com/en-us/azure/import-export/storage-import-export-service"},
-{"id":"D2-138","sub":"Storage tools","type":"mcq","diff":3,"q":"An analytics team needs a daily CSV listing all blobs with their tier and size for reports. Which feature?","opts":["Blob inventory","Change feed","Storage analytics logging","Lifecycle management"],"ans":[0],"exp":"Blob inventory generates scheduled reports of blobs and their properties.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/blob-inventory"},
-{"id":"D2-139","sub":"Storage tools","type":"mcq","diff":3,"q":"You need an ordered, durable log of every blob create, update, and delete for auditing and downstream processing. Which feature?","opts":["Change feed","Soft delete","Versioning","Snapshots"],"ans":[0],"exp":"Change feed records blob change events in order.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-change-feed"},
-{"id":"D2-140","sub":"Storage accounts","type":"mcq","diff":3,"q":"Which setting can ONLY be chosen when a storage account is created?","opts":["Infrastructure encryption","Default access tier (hot/cool)","Firewall rules","Minimum TLS version"],"ans":[0],"exp":"Infrastructure encryption is creation-time only. Access tier, firewall rules, and TLS version can change anytime.","link":"https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"},
-{"id":"D2-141","sub":"Storage accounts","type":"mcq","diff":2,"q":"Which setting can be changed after a storage account is created?","opts":["Performance tier (Standard ↔ Premium)","Account kind from FileStorage to BlockBlobStorage","Default access tier (hot ↔ cool)","Account name"],"ans":[2],"exp":"The default access tier can be changed; performance tier, kind changes between premium types, and name are fixed.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"},
-{"id":"D2-142","sub":"Storage accounts","type":"mcq","diff":3,"q":"You must move a storage account from West Europe to North Europe. Supported approach?","opts":["Create a new account in North Europe and copy data (for example with AzCopy), or export/redeploy the template","Change the region property","az storage account move --region","Use object replication with failover"],"ans":[0],"exp":"Accounts can't change region; you recreate them and move the data.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-move"},
-{"id":"D2-143","sub":"Monitoring storage","type":"mcq","diff":2,"q":"Which metric helps detect throttling on a storage account?","opts":["Transactions filtered by ResponseType (e.g., ServerBusyError)","Used capacity","Ingress","Blob count"],"ans":[0],"exp":"Splitting Transactions by ResponseType shows throttling errors.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage"},
-{"id":"D2-144","sub":"Monitoring storage","type":"mcq","diff":2,"q":"How do you send storage blob read, write, and delete logs to Log Analytics?","opts":["Create a diagnostic setting on the blob service with the StorageRead/StorageWrite/StorageDelete categories","Enable soft delete","Enable versioning","Install AMA on the storage account"],"ans":[0],"exp":"Resource logs for storage are routed with diagnostic settings at the service level.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage"},
-{"id":"D2-145","sub":"Storage pricing","type":"mcq","diff":2,"q":"Which statement about tier costs is correct?","opts":["Hot has the highest storage cost and lowest access cost; archive has the lowest storage cost and highest access/rehydration cost","Archive is the most expensive to store","All tiers cost the same","Cool has no access cost"],"ans":[0],"exp":"Storage and access costs trade off across tiers.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-146","sub":"Storage pricing","type":"mcq","diff":2,"q":"Data is read frequently for 2 weeks and then rarely touched but must stay instantly available for a year. Cheapest correct approach?","opts":["Upload to hot, then a lifecycle rule moves it to cool (or cold) after 14 days","Upload directly to archive","Keep in hot for a year","Use premium block blob"],"ans":[0],"exp":"Hot suits frequent access; cool/cold are online and cheaper for rarely accessed data. Archive is offline, so it fails the instant-access requirement.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-147","sub":"Storage accounts","type":"mcq","diff":2,"q":"Which PowerShell cmdlet creates a storage account?","opts":["New-AzStorageAccount","New-AzStorage","Add-AzStorageAccount","Set-AzStorageAccount -Create"],"ans":[0],"exp":"New-AzStorageAccount -ResourceGroupName ... -Name ... -SkuName ... -Location ... -Kind StorageV2.","link":"https://learn.microsoft.com/en-us/powershell/module/az.storage/new-azstorageaccount"},
-{"id":"D2-148","sub":"Storage accounts","type":"mcq","diff":3,"q":"You enable 'Allow cross-tenant replication = false'. What is affected?","opts":["Object replication policies can't use accounts in other Entra tenants","Geo-replication stops","Private endpoints fail","SAS stops"],"ans":[0],"exp":"This setting blocks object replication across tenants.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-prevent-cross-tenant-policies"},
-{"id":"D2-149","sub":"Storage design","type":"mcq","diff":3,"ctx":"An application writes telemetry blobs at very high rates and needs single-digit millisecond latency. Data loss of a zone is acceptable, but cost must be reasonable.","q":"Which account configuration fits best?","opts":["Premium BlockBlobStorage with LRS","Standard GPv2 RA-GZRS archive","Premium FileStorage","Standard GPv2 cool LRS"],"ans":[0],"exp":"Premium block blob gives low latency and high transaction rates; LRS keeps cost lower.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium"},
-{"id":"D2-150","sub":"Storage design","type":"yesno","diff":3,"ctx":"Account st1: Standard GPv2, RA-GZRS, versioning on, change feed on, CMK in Key Vault (soft delete + purge protection).","q":"Answer Yes or No:","stmts":["st1 can be the source of an object replication policy","st1 survives a zone outage in the primary region with no data loss","Disabling the key in Key Vault blocks reads of st1 data","st1 can be converted to Premium performance in place"],"ans":[true,true,true,false],"exp":"Versioning + change feed meet the source requirements; zone redundancy is synchronous; CMK revocation blocks access; performance tier can't change in place.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"}
+ {
+  "id": "D2-101",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which of these is a valid storage account name?",
+  "opts": [
+   "contosodata01",
+   "Contoso-Data",
+   "contoso_data",
+   "cd"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Names are 3–24 characters, lowercase letters and numbers only, with no hyphens or underscores.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
+ },
+ {
+  "id": "D2-102",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the blob endpoint format of a storage account named contosodata?",
+  "opts": [
+   "https://contosodata.blob.core.windows.net",
+   "https://blob.contosodata.azure.com",
+   "https://contosodata.azurewebsites.net/blob",
+   "https://core.windows.net/contosodata"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Standard endpoints are https://<account>.<service>.core.windows.net.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
+ },
+ {
+  "id": "D2-103",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a GPv2 account with ZRS?",
+  "opts": [
+   "az storage account create -n st1 -g RG1 --sku Standard_ZRS --kind StorageV2",
+   "az storage create st1 --zrs",
+   "az storage account new --redundancy zone",
+   "az group create --storage zrs"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "--sku sets performance plus redundancy; --kind StorageV2 is GPv2.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/storage/account"
+ },
+ {
+  "id": "D2-104",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You need a data lake with true directories, atomic directory renames, and POSIX ACLs. What do you enable when creating the account?",
+  "opts": [
+   "Hierarchical namespace (Data Lake Storage Gen2)",
+   "Large file shares",
+   "NFS 3.0 only",
+   "Versioning"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Hierarchical namespace enables Data Lake Storage Gen2 features.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-namespace"
+ },
+ {
+  "id": "D2-105",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An old GPv1 account needs access tiers and lifecycle management. What should you do?",
+  "opts": [
+   "Upgrade it to GPv2 (in-place, one-way)",
+   "Recreate it as premium",
+   "Enable versioning",
+   "Move it to another region"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Upgrading to GPv2 is an in-place, irreversible change that unlocks tiers and lifecycle management.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-upgrade"
+ },
+ {
+  "id": "D2-106",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How many storage accounts can you create per region per subscription by default?",
+  "opts": [
+   "250",
+   "50",
+   "500",
+   "Unlimited"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The default limit is 250 storage accounts per region per subscription (an increase can be requested).",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account"
+ },
+ {
+  "id": "D2-107",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which premium account type gives the best performance for workloads with high transaction rates on small objects?",
+  "opts": [
+   "Premium BlockBlobStorage",
+   "Standard GPv2 hot",
+   "Premium FileStorage",
+   "Standard GPv2 cool"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Premium block blob accounts are SSD-backed and suit high-transaction, low-latency workloads.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium"
+ },
+ {
+  "id": "D2-108",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You must host a static website (HTML/JS) directly from storage. What do you enable?",
+  "opts": [
+   "Static website hosting, which serves the $web container",
+   "Anonymous container access",
+   "Azure Files",
+   "CDN only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Static website hosting serves content from the $web container on a web endpoint.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website"
+ },
+ {
+  "id": "D2-109",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which redundancy option protects against a single availability zone outage without replicating to another region?",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "RA-GRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "ZRS replicates synchronously across three zones in one region.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-110",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "The lowest-cost redundancy option is:",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "GZRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "LRS is cheapest and has the least protection.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-111",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which property tells you how far behind the secondary region is in a GRS or RA-GRS account?",
+  "opts": [
+   "Last Sync Time",
+   "Replication lag metric",
+   "Change feed",
+   "Blob inventory"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Last Sync Time shows the point up to which data is guaranteed written to the secondary.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/last-sync-time-get"
+ },
+ {
+  "id": "D2-112",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An app uses RA-GRS. What's the endpoint for reading from the secondary blob service of account st1?",
+  "opts": [
+   "https://st1-secondary.blob.core.windows.net",
+   "https://st1.blob.secondary.windows.net",
+   "https://secondary.st1.blob.core.windows.net",
+   "https://st1.blob.core.windows.net/secondary"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Secondary endpoints add -secondary to the account name.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-113",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which redundancy gives the highest durability and availability, including read access during a regional outage?",
+  "opts": [
+   "RA-GZRS",
+   "GRS",
+   "ZRS",
+   "LRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "RA-GZRS combines zone redundancy, geo-replication, and read access to the secondary.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-114",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Why can account failover on a GRS account cause data loss?",
+  "opts": [
+   "Replication to the secondary is asynchronous, so recent writes may not have been copied",
+   "Failover deletes data",
+   "GRS is synchronous",
+   "Data is compressed"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Geo-replication is asynchronous; writes after the Last Sync Time can be lost.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"
+ },
+ {
+  "id": "D2-115",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You change an account from LRS to ZRS. How is this done?",
+  "opts": [
+   "Through a conversion (customer-initiated in the portal, or migration) — it isn't an instant toggle like LRS→GRS",
+   "Instantly from the dropdown with no copying",
+   "It isn't possible",
+   "Only by creating a new tenant"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Changing to or from zone redundancy needs a conversion; adding geo-redundancy is a direct setting change.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/redundancy-migration"
+ },
+ {
+  "id": "D2-116",
+  "sub": "Redundancy",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO redundancy options keep a copy in a secondary region?",
+  "opts": [
+   "GRS",
+   "ZRS",
+   "GZRS",
+   "LRS"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "GRS and GZRS (and their RA- variants) replicate to the paired region.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-117",
+  "sub": "Redundancy",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "GRS keeps 6 copies of data in total",
+   "ZRS protects against a full region outage",
+   "The secondary region for GRS is chosen by you freely",
+   "RA-GRS lets you read the secondary without failover"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "GRS = 3 + 3 copies; ZRS stays within one region; the secondary is the paired region; RA-GRS allows reads from the secondary.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-118",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An app must stay available even if one datacenter in the region fails, and data residency rules forbid leaving the region. Choose:",
+  "opts": [
+   "ZRS",
+   "GRS",
+   "RA-GRS",
+   "GZRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ZRS survives a datacenter or zone failure without copying data outside the region.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-119",
+  "sub": "Object replication",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which blob types does object replication support?",
+  "opts": [
+   "Block blobs only",
+   "Page blobs only",
+   "Append and page blobs",
+   "All blob types"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Object replication supports block blobs only.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
+ },
+ {
+  "id": "D2-120",
+  "sub": "Object replication",
+  "type": "mcq",
+  "diff": 3,
+  "q": "In an object replication policy, which filter limits replication to blobs whose names start with 'invoices/'?",
+  "opts": [
+   "Prefix match filter",
+   "Tag filter",
+   "Tier filter",
+   "Lifecycle rule"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Replication rules support prefix filters to scope which blobs replicate.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
+ },
+ {
+  "id": "D2-121",
+  "sub": "Object replication",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can blobs in the archive tier be replicated by object replication?",
+  "opts": [
+   "Yes",
+   "No — archive blobs aren't replicated",
+   "Only with RA-GRS",
+   "Only after 180 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Archive tier blobs aren't supported for object replication.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
+ },
+ {
+  "id": "D2-122",
+  "sub": "Object replication",
+  "type": "mcq",
+  "diff": 2,
+  "q": "In object replication, what does the destination container become?",
+  "opts": [
+   "Read-only for clients (replication writes only)",
+   "Fully writable",
+   "Deleted after sync",
+   "Archived"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Destination containers are read-only while a replication policy is in place.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
+ },
+ {
+  "id": "D2-123",
+  "sub": "Object replication",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps to configure object replication from st-src to st-dst:",
+  "items": [
+   "Create the replication policy and rules on st-dst / st-src",
+   "Enable blob versioning on both accounts",
+   "Enable change feed on st-src",
+   "Upload a test blob and verify replication status"
+  ],
+  "ans": [
+   1,
+   2,
+   0,
+   3
+  ],
+  "exp": "Versioning on both → change feed on the source → create the policy → verify.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-configure"
+ },
+ {
+  "id": "D2-124",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which encryption algorithm does Azure Storage SSE use?",
+  "opts": [
+   "256-bit AES",
+   "128-bit DES",
+   "RSA-1024",
+   "MD5"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Data is encrypted with 256-bit AES.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+ },
+ {
+  "id": "D2-125",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Where can a customer-managed key for Azure Storage be stored?",
+  "opts": [
+   "Azure Key Vault or Key Vault Managed HSM",
+   "A storage account",
+   "An App Service",
+   "Entra ID"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "CMK keys live in Key Vault or Managed HSM.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"
+ },
+ {
+  "id": "D2-126",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Compliance requires that the customer, not Microsoft, controls key rotation and can revoke access to all storage data. What do you configure?",
+  "opts": [
+   "Customer-managed keys in Key Vault",
+   "Microsoft-managed keys",
+   "Infrastructure encryption only",
+   "Secure transfer"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "CMK gives you control over key lifecycle and revocation.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"
+ },
+ {
+  "id": "D2-127",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A client must encrypt data on its side before uploading, so Azure never sees plaintext. Which approach?",
+  "opts": [
+   "Client-side encryption (Storage client libraries)",
+   "SSE with MMK",
+   "Infrastructure encryption",
+   "Secure transfer"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Client-side encryption encrypts data before it reaches Azure.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/client-side-encryption"
+ },
+ {
+  "id": "D2-128",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which AzCopy command copies a blob directly between two storage accounts (server-to-server)?",
+  "opts": [
+   "azcopy copy \"https://src.blob.core.windows.net/c/f?<SAS>\" \"https://dst.blob.core.windows.net/c/f?<SAS>\"",
+   "azcopy move src dst",
+   "azcopy sync --local",
+   "azcopy transfer src dst"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "azcopy copy between two URLs uses server-side copy APIs.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-blobs-copy"
+ },
+ {
+  "id": "D2-129",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which AzCopy option copies a folder and all its subfolders?",
+  "opts": [
+   "--recursive",
+   "--all",
+   "--deep",
+   "--include-subdirs"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "--recursive copies directories recursively.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-copy"
+ },
+ {
+  "id": "D2-130",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An AzCopy job was interrupted halfway. How do you continue it without restarting?",
+  "opts": [
+   "azcopy jobs resume <job-id>",
+   "azcopy copy again with --overwrite",
+   "azcopy retry",
+   "Delete and start over"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "AzCopy tracks jobs in plan files; azcopy jobs resume continues them.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-jobs-resume"
+ },
+ {
+  "id": "D2-131",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "azcopy sync with --delete-destination=true does what?",
+  "opts": [
+   "Deletes files at the destination that no longer exist at the source",
+   "Deletes the source after copying",
+   "Deletes the whole container",
+   "Has no effect"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "It mirrors deletions so the destination matches the source.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"
+ },
+ {
+  "id": "D2-132",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which AzCopy command signs in with an Entra identity?",
+  "opts": [
+   "azcopy login",
+   "azcopy auth",
+   "az login --azcopy",
+   "azcopy connect"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "azcopy login supports interactive sign-in, managed identity (--identity), and service principals.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-login"
+ },
+ {
+  "id": "D2-133",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You sign in with azcopy login. What role must your identity have to upload blobs?",
+  "opts": [
+   "Storage Blob Data Contributor (or Owner)",
+   "Reader",
+   "Contributor only",
+   "Storage Account Contributor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Entra auth to blob data requires a data-plane role.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-authorize-azure-active-directory"
+ },
+ {
+  "id": "D2-134",
+  "sub": "Storage Explorer",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which ways can Storage Explorer connect to storage?",
+  "opts": [
+   "Entra sign-in, account name and key, SAS URL, connection string",
+   "Only Entra sign-in",
+   "Only SAS",
+   "Only through the portal"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Storage Explorer supports several connection methods, including the Azurite emulator.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-explorer-support-policy-lifecycle"
+ },
+ {
+  "id": "D2-135",
+  "sub": "Storage Explorer",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What does Storage Explorer use internally for fast upload and download transfers?",
+  "opts": [
+   "AzCopy",
+   "Robocopy",
+   "FTP",
+   "rsync"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Storage Explorer uses AzCopy for transfers.",
+  "link": "https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"
+ },
+ {
+  "id": "D2-136",
+  "sub": "Data migration",
+  "type": "mcq",
+  "diff": 2,
+  "q": "About 40 TB must be moved to Azure from a site with a slow internet link. Which option is designed for this?",
+  "opts": [
+   "Azure Data Box (an appliance shipped to the site)",
+   "AzCopy over the existing internet link",
+   "Azure File Sync",
+   "Azure Storage Explorer"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Data Box is an offline transfer appliance: you copy data to it on site and ship it to Microsoft, which avoids weeks of uploading over a slow link. AzCopy, File Sync and Storage Explorer all depend on the network.",
+  "link": "https://learn.microsoft.com/en-us/azure/databox/data-box-overview"
+ },
+ {
+  "id": "D2-137",
+  "sub": "Data migration",
+  "type": "mcq",
+  "diff": 2,
+  "q": "For the Azure Import/Export service, which tool prepares drives for import?",
+  "opts": [
+   "WAImportExport tool",
+   "AzCopy",
+   "Storage Explorer",
+   "Robocopy only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The WAImportExport tool prepares drives and journal files.",
+  "link": "https://learn.microsoft.com/en-us/azure/import-export/storage-import-export-service"
+ },
+ {
+  "id": "D2-138",
+  "sub": "Storage tools",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An analytics team needs a daily CSV listing all blobs with their tier and size for reports. Which feature?",
+  "opts": [
+   "Blob inventory",
+   "Change feed",
+   "Storage analytics logging",
+   "Lifecycle management"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Blob inventory generates scheduled reports of blobs and their properties.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/blob-inventory"
+ },
+ {
+  "id": "D2-139",
+  "sub": "Storage tools",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You need an ordered, durable log of every blob create, update, and delete for auditing and downstream processing. Which feature?",
+  "opts": [
+   "Change feed",
+   "Soft delete",
+   "Versioning",
+   "Snapshots"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Change feed records blob change events in order.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-change-feed"
+ },
+ {
+  "id": "D2-140",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which setting can ONLY be chosen when a storage account is created?",
+  "opts": [
+   "Infrastructure encryption",
+   "Default access tier (hot/cool)",
+   "Firewall rules",
+   "Minimum TLS version"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Infrastructure encryption is creation-time only. Access tier, firewall rules, and TLS version can change anytime.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"
+ },
+ {
+  "id": "D2-141",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which setting can be changed after a storage account is created?",
+  "opts": [
+   "Performance tier (Standard ↔ Premium)",
+   "Account kind from FileStorage to BlockBlobStorage",
+   "Default access tier (hot ↔ cool)",
+   "Account name"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "The default access tier can be changed; performance tier, kind changes between premium types, and name are fixed.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
+ },
+ {
+  "id": "D2-142",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You must move a storage account from West Europe to North Europe. Supported approach?",
+  "opts": [
+   "Create a new account in North Europe and copy data (for example with AzCopy), or export/redeploy the template",
+   "Change the region property",
+   "az storage account move --region",
+   "Use object replication with failover"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Accounts can't change region; you recreate them and move the data.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-move"
+ },
+ {
+  "id": "D2-143",
+  "sub": "Monitoring storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which metric helps detect throttling on a storage account?",
+  "opts": [
+   "Transactions filtered by ResponseType (e.g., ServerBusyError)",
+   "Used capacity",
+   "Ingress",
+   "Blob count"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Splitting Transactions by ResponseType shows throttling errors.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage"
+ },
+ {
+  "id": "D2-144",
+  "sub": "Monitoring storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you send storage blob read, write, and delete logs to Log Analytics?",
+  "opts": [
+   "Create a diagnostic setting on the blob service with the StorageRead/StorageWrite/StorageDelete categories",
+   "Enable soft delete",
+   "Enable versioning",
+   "Install AMA on the storage account"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Resource logs for storage are routed with diagnostic settings at the service level.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage"
+ },
+ {
+  "id": "D2-145",
+  "sub": "Storage pricing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which statement about tier costs is correct?",
+  "opts": [
+   "Hot has the highest storage cost and lowest access cost; archive has the lowest storage cost and highest access/rehydration cost",
+   "Archive is the most expensive to store",
+   "All tiers cost the same",
+   "Cool has no access cost"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Storage and access costs trade off across tiers.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-146",
+  "sub": "Storage pricing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Data is read frequently for 2 weeks and then rarely touched but must stay instantly available for a year. Cheapest correct approach?",
+  "opts": [
+   "Upload to hot, then a lifecycle rule moves it to cool (or cold) after 14 days",
+   "Upload directly to archive",
+   "Keep in hot for a year",
+   "Use premium block blob"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Hot suits frequent access; cool/cold are online and cheaper for rarely accessed data. Archive is offline, so it fails the instant-access requirement.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-147",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which PowerShell cmdlet creates a storage account?",
+  "opts": [
+   "New-AzStorageAccount",
+   "New-AzStorage",
+   "Add-AzStorageAccount",
+   "Set-AzStorageAccount -Create"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "New-AzStorageAccount -ResourceGroupName ... -Name ... -SkuName ... -Location ... -Kind StorageV2.",
+  "link": "https://learn.microsoft.com/en-us/powershell/module/az.storage/new-azstorageaccount"
+ },
+ {
+  "id": "D2-148",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You enable 'Allow cross-tenant replication = false'. What is affected?",
+  "opts": [
+   "Object replication policies can't use accounts in other Entra tenants",
+   "Geo-replication stops",
+   "Private endpoints fail",
+   "SAS stops"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "This setting blocks object replication across tenants.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-prevent-cross-tenant-policies"
+ },
+ {
+  "id": "D2-149",
+  "sub": "Storage design",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "An application writes telemetry blobs at very high rates and needs single-digit millisecond latency. Data loss of a zone is acceptable, but cost must be reasonable.",
+  "q": "Which account configuration fits best?",
+  "opts": [
+   "Premium BlockBlobStorage with LRS",
+   "Standard GPv2 RA-GZRS archive",
+   "Premium FileStorage",
+   "Standard GPv2 cool LRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Premium block blob gives low latency and high transaction rates; LRS keeps cost lower.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium"
+ },
+ {
+  "id": "D2-150",
+  "sub": "Storage design",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "Account st1: Standard GPv2, RA-GZRS, versioning on, change feed on, CMK in Key Vault (soft delete + purge protection).",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "st1 can be the source of an object replication policy",
+   "st1 survives a zone outage in the primary region with no data loss",
+   "Disabling the key in Key Vault blocks reads of st1 data",
+   "st1 can be converted to Premium performance in place"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "Versioning + change feed meet the source requirements; zone redundancy is synchronous; CMK revocation blocks access; performance tier can't change in place.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ }
 ]

@@ -70,7 +70,7 @@
   "ans": [
    1
   ],
-  "exp": "Partners have no Entra accounts, which rules out a user delegation SAS. A service SAS tied to a stored access policy can be revoked by changing or deleting the policy, without rotating keys and breaking other tokens.",
+  "exp": "A service SAS tied to a stored access policy can be revoked on its own by changing or deleting the policy, without affecting other tokens. User delegation and account SAS cannot use stored access policies; revoking them means revoking all user delegation keys or rotating account keys, which breaks other tokens too.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
  },
  {

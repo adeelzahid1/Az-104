@@ -1,52 +1,920 @@
 [
-{"id":"D1-101","sub":"RBAC","type":"mcq","diff":1,"q":"Which built-in role lets a user view everything in a subscription but change nothing?","opts":["Reader","Contributor","Owner","User Access Administrator"],"ans":[0],"exp":"Reader can view all resources but cannot make changes.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-102","sub":"RBAC","type":"mcq","diff":2,"q":"Which types of security principal can receive an Azure role assignment?","opts":["Users only","Users, groups, service principals, and managed identities","Users and devices","Groups and subscriptions"],"ans":[1],"exp":"Role assignments target users, groups, service principals, or managed identities. Devices cannot be assigned roles.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"},
-{"id":"D1-103","sub":"RBAC","type":"mcq","diff":2,"q":"What is the smallest scope at which you can assign an Azure role?","opts":["Management group","Subscription","Resource group","An individual resource"],"ans":[3],"exp":"Roles can be assigned at management group, subscription, resource group, or individual resource scope.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"},
-{"id":"D1-104","sub":"RBAC","type":"mcq","diff":3,"q":"A developer must manage virtual machines in RG-Dev but must NOT be able to manage the virtual network or the storage accounts. Least-privilege role?","opts":["Contributor on RG-Dev","Virtual Machine Contributor on RG-Dev","Owner on the VMs","Network Contributor on RG-Dev"],"ans":[1],"exp":"Virtual Machine Contributor manages VMs but not the VNet or storage accounts they connect to.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"},
-{"id":"D1-105","sub":"RBAC","type":"mcq","diff":2,"q":"An engineer needs to manage VNets, NSGs, and load balancers in a subscription without access to VMs. Which role?","opts":["Network Contributor","Virtual Machine Contributor","Contributor","Security Admin"],"ans":[0],"exp":"Network Contributor manages networking resources only.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/networking"},
-{"id":"D1-106","sub":"RBAC","type":"mcq","diff":3,"q":"An app needs to read blobs in a storage account using Microsoft Entra authentication. Which role assignment is least privileged?","opts":["Reader on the storage account","Storage Account Contributor","Storage Blob Data Reader on the container or account","Owner on the resource group"],"ans":[2],"exp":"Blob data access needs a data-plane role such as Storage Blob Data Reader. Reader and Storage Account Contributor are control-plane roles.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"},
-{"id":"D1-107","sub":"RBAC","type":"mcq","diff":2,"q":"A finance user must view invoices and billing data but not resources. Which role?","opts":["Billing Reader","Reader","Cost Management Contributor","Owner"],"ans":[0],"exp":"Billing Reader grants read access to billing data only.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/management-and-governance"},
-{"id":"D1-108","sub":"RBAC","type":"mcq","diff":2,"q":"A user must view cost data and create budgets but not modify resources. Which role fits best?","opts":["Cost Management Contributor","Contributor","Billing Reader","Reader"],"ans":[0],"exp":"Cost Management Contributor can view costs and manage cost configuration such as budgets and exports.","link":"https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-work-scopes"},
-{"id":"D1-109","sub":"RBAC","type":"mcq","diff":1,"q":"In the portal, where do you add a role assignment for a resource group?","opts":["Resource group → Access control (IAM) → Add role assignment","Entra ID → Roles and administrators","Resource group → Policies","Subscription → Usage + quotas"],"ans":[0],"exp":"Access control (IAM) is the RBAC blade on every scope.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal"},
-{"id":"D1-110","sub":"RBAC","type":"mcq","diff":2,"q":"You want to find out what roles a specific user has on a resource group, including inherited ones. Fastest portal tool?","opts":["Access control (IAM) → Check access","Activity log","Azure Advisor","Policy compliance"],"ans":[0],"exp":"Check access shows a principal's assignments and inherited access at that scope.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/check-access"},
-{"id":"D1-111","sub":"RBAC","type":"mcq","diff":3,"q":"Which CLI command lists all role assignments for a user, including those inherited from higher scopes?","opts":["az role assignment list --assignee user@contoso.com --all --include-inherited","az ad user show --roles","az role definition list --user","az account list --roles"],"ans":[0],"exp":"az role assignment list with --assignee, --all and --include-inherited returns assignments across scopes including inherited ones.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-cli"},
-{"id":"D1-112","sub":"RBAC","type":"mcq","diff":2,"q":"Which PowerShell cmdlet assigns a role?","opts":["New-AzRoleAssignment","Add-AzRole","Set-AzRbac","New-AzRoleDefinition"],"ans":[0],"exp":"New-AzRoleAssignment creates a role assignment; New-AzRoleDefinition creates a custom role.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-powershell"},
-{"id":"D1-113","sub":"RBAC","type":"mcq","diff":3,"q":"A subscription reaches its role assignment limit. What's the recommended way to reduce assignments?","opts":["Assign roles to groups instead of individual users","Create more subscriptions","Use deny assignments","Use Azure Policy"],"ans":[0],"exp":"Each subscription has a role assignment limit (4,000). Assigning roles to groups uses fewer assignments.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/troubleshoot-limits"},
-{"id":"D1-114","sub":"RBAC","type":"mcq","diff":3,"q":"User1 is Owner of RG1. An administrator applies a ReadOnly lock to RG1. Can User1 delete a VM in RG1?","opts":["Yes — Owner overrides locks","No — locks apply to all users regardless of role","Yes, but only after 24 hours","Only with PowerShell"],"ans":[1],"exp":"Locks override RBAC permissions for everyone. The lock must be removed first (Owner can remove it).","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"},
-{"id":"D1-115","sub":"RBAC","type":"mcq","diff":2,"q":"Azure RBAC is built on which service?","opts":["Azure Resource Manager","Azure Policy","Microsoft Entra Connect","Azure Monitor"],"ans":[0],"exp":"Azure RBAC is an authorization system built on Azure Resource Manager.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"},
-{"id":"D1-116","sub":"RBAC","type":"multi","diff":3,"q":"User1 has Contributor on Sub1. Which TWO actions can User1 NOT perform?","opts":["Create a VM in any resource group of Sub1","Assign the Reader role to User2 on Sub1","Delete a resource group in Sub1","Create a resource lock on a resource group"],"ans":[1,3],"exp":"Contributor cannot write to Microsoft.Authorization, which covers role assignments and locks.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-117","sub":"RBAC","type":"yesno","diff":2,"q":"Answer Yes or No to each statement:","stmts":["A role can be assigned to a managed identity","Role assignments to a group apply to its members","A Reader at the subscription scope can read resources in every resource group of that subscription","Removing a user from Entra ID automatically deletes their role assignments"],"ans":[true,true,true,false],"exp":"Managed identities and groups can hold roles; Reader inherits down; deleting a user leaves orphaned 'Identity not found' assignments that should be cleaned up.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-remove"},
-{"id":"D1-118","sub":"RBAC","type":"mcq","diff":3,"q":"After moving a subscription to a different Entra tenant, users from the old tenant can no longer manage resources. Why?","opts":["Resources are deleted on transfer","All role assignments are permanently removed when a subscription changes tenant","Policies block access","The subscription is disabled for 30 days"],"ans":[1],"exp":"Changing the directory removes all Azure RBAC role assignments; you must recreate them in the new tenant.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/transfer-subscription"},
-{"id":"D1-119","sub":"RBAC","type":"mcq","diff":2,"q":"What do Azure RBAC 'conditions' (ABAC) allow you to do on top of role assignments?","opts":["Add attribute-based checks, for example limiting blob access by blob index tags","Deny all access to a tenant","Schedule role assignments","Enable MFA"],"ans":[0],"exp":"Role assignment conditions add fine-grained ABAC checks, for example on storage blob attributes.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-overview"},
-{"id":"D1-120","sub":"RBAC","type":"mcq","diff":3,"q":"Admins must activate the Owner role only when needed, for a limited time, with approval. Which feature?","opts":["Microsoft Entra Privileged Identity Management (eligible assignments)","Resource locks","Azure Policy","Access reviews only"],"ans":[0],"exp":"PIM provides eligible, time-bound, approval-based role activation. It requires P2/Governance licensing.","link":"https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"},
-{"id":"D1-121","sub":"RBAC","type":"mcq","diff":2,"q":"Which built-in role allows managing resource locks and role assignments but not other resources?","opts":["User Access Administrator","Contributor","Reader","Virtual Machine Contributor"],"ans":[0],"exp":"User Access Administrator has Microsoft.Authorization/* rights, which cover assignments and locks.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-122","sub":"RBAC","type":"mcq","diff":3,"q":"A role is assigned at the root management group ('/' tenant root group). What does it cover?","opts":["Only the root group object","All management groups, subscriptions, and resources in the tenant","Only Entra ID objects","Nothing; assignments at root aren't allowed"],"ans":[1],"exp":"The tenant root group is the top of the hierarchy, so assignments there inherit to everything below.","link":"https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"},
-{"id":"D1-123","sub":"RBAC","type":"mcq","diff":2,"q":"Which statement best describes the Owner role?","opts":["Full access to manage all resources, including assigning roles in Azure RBAC","Full access except deleting resources","Read-only plus role assignments","Manage billing only"],"ans":[0],"exp":"Owner = Contributor rights + role assignment rights.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-124","sub":"RBAC","type":"mcq","diff":3,"q":"A user is in Group A (Reader on RG1) and Group B (Contributor on RG1). There is no deny assignment. Effective permission on RG1?","opts":["Reader","Contributor","No access","Access Denied — conflicting roles"],"ans":[1],"exp":"RBAC is additive. The union of Reader and Contributor gives Contributor capabilities.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"},
-{"id":"D1-125","sub":"RBAC","type":"mcq","diff":2,"q":"What happens when a deny assignment conflicts with a role assignment that allows the same action?","opts":["The role assignment wins","The deny assignment wins — deny takes precedence","The newest wins","The user is prompted"],"ans":[1],"exp":"Deny assignments block actions even if a role assignment grants them.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/deny-assignments"},
-{"id":"D1-126","sub":"Custom roles","type":"mcq","diff":2,"q":"Which section of a custom role controls data-plane operations such as reading blob contents?","opts":["Actions","DataActions","AssignableScopes","Permissions.Scope"],"ans":[1],"exp":"DataActions and NotDataActions define data-plane operations; Actions covers the control plane.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"},
-{"id":"D1-127","sub":"Custom roles","type":"mcq","diff":2,"q":"What is the quickest way to create a custom role similar to an existing built-in role in the portal?","opts":["IAM → Roles → select a built-in role → Clone","Entra ID → Roles → New","Azure Policy → Definitions → Duplicate","Subscription → Properties"],"ans":[0],"exp":"The portal lets you clone a role and then edit its permissions.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-portal"},
-{"id":"D1-128","sub":"Custom roles","type":"mcq","diff":2,"q":"Which CLI command creates a custom role from a JSON file?","opts":["az role definition create --role-definition role.json","az role assignment create --file role.json","az ad role create role.json","az policy definition create --rules role.json"],"ans":[0],"exp":"az role definition create accepts a JSON role definition.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli"},
-{"id":"D1-129","sub":"Custom roles","type":"mcq","diff":3,"q":"Can a custom role use the root scope \"/\" in AssignableScopes?","opts":["Yes, always","No — custom roles can't use root scope; only built-in roles are available there","Only with P2 license","Only for data actions"],"ans":[1],"exp":"Custom roles can list management groups, subscriptions, and resource groups, but not the root scope \"/\".","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"},
-{"id":"D1-130","sub":"Custom roles","type":"mcq","diff":3,"q":"How many management groups can a custom role list in AssignableScopes?","opts":["Unlimited","Only one","Up to 5","Management groups aren't allowed"],"ans":[1],"exp":"A custom role can include only one management group in AssignableScopes.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"},
-{"id":"D1-131","sub":"Custom roles","type":"mcq","diff":2,"q":"A custom role has Actions [\"Microsoft.Compute/*\"] and NotActions [\"Microsoft.Compute/virtualMachines/delete\"]. The user also has Contributor on the same scope. Can they delete a VM?","opts":["No — NotActions is a deny","Yes — NotActions doesn't block permissions granted by another role","No — custom roles override built-in roles","Only if the VM is stopped"],"ans":[1],"exp":"NotActions just removes permissions from that one role's grant. Contributor still grants delete.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"},
-{"id":"D1-132","sub":"Custom roles","type":"mcq","diff":2,"q":"What does the wildcard in \"Microsoft.Storage/storageAccounts/*\" grant?","opts":["Only read on storage accounts","All operations on storage accounts and their child control-plane resources","Data access to all blobs","Access to all resource providers"],"ans":[1],"exp":"The wildcard grants every control-plane operation under that resource type path. Data access requires DataActions.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"},
-{"id":"D1-133","sub":"Custom roles","type":"mcq","diff":3,"q":"Which operation string allows a user to start virtual machines?","opts":["Microsoft.Compute/virtualMachines/start/action","Microsoft.Compute/virtualMachines/write","Microsoft.Compute/start","Microsoft.VM/start"],"ans":[0],"exp":"VM operations follow the Microsoft.Compute/virtualMachines/<operation>/action format.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/compute"},
-{"id":"D1-134","sub":"Custom roles","type":"order","diff":2,"q":"Order the steps to create and use a custom role via CLI:","items":["Assign the role with az role assignment create","Write the role definition JSON (Actions, AssignableScopes)","Run az role definition create","Verify it with az role definition list --custom-role-only"],"ans":[1,2,3,0],"exp":"Write the JSON → create the definition → verify it exists → assign it.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli"},
-{"id":"D1-135","sub":"Custom roles","type":"yesno","diff":3,"q":"Answer Yes or No about custom roles:","stmts":["Custom roles can be shared across subscriptions that trust the same tenant","A custom role can be assigned outside its AssignableScopes","Custom roles require Entra ID P1 or P2","Custom roles can include DataActions"],"ans":[true,false,false,true],"exp":"Custom roles are usable within listed scopes in the same tenant; they cannot be assigned outside AssignableScopes; no Entra premium license is needed; DataActions are supported.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"},
-{"id":"D1-136","sub":"RBAC","type":"mcq","diff":2,"q":"Which role should a monitoring team get to view metrics and logs and create alert rules, without changing resources?","opts":["Monitoring Contributor","Contributor","Owner","Log Analytics Reader"],"ans":[0],"exp":"Monitoring Contributor can read monitoring data and edit monitoring settings, such as alerts and diagnostic settings.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/roles-permissions-security"},
-{"id":"D1-137","sub":"RBAC","type":"mcq","diff":2,"q":"A user must only read monitoring data such as metrics and logs. Which role?","opts":["Monitoring Reader","Monitoring Contributor","Reader and Data Access","Log Analytics Contributor"],"ans":[0],"exp":"Monitoring Reader can read all monitoring data.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/roles-permissions-security"},
-{"id":"D1-138","sub":"RBAC","type":"mcq","diff":3,"q":"A backup operator must manage backups (start backup, restore) but not delete backup data or vaults. Which role?","opts":["Backup Operator","Backup Contributor","Backup Reader","Contributor"],"ans":[0],"exp":"Backup Operator can manage backup and restore but cannot remove backup or create vaults. Backup Contributor can do more, though it still can't delete vaults or grant access.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-rbac-rs-vault"},
-{"id":"D1-139","sub":"RBAC","type":"mcq","diff":3,"q":"Which role lets a user connect to a VM via Microsoft Entra login with administrator privileges inside the OS?","opts":["Virtual Machine Administrator Login","Virtual Machine Contributor","Virtual Machine User Login","Owner"],"ans":[0],"exp":"Entra-based VM login uses Virtual Machine Administrator Login (admin rights in the OS) or Virtual Machine User Login (standard user). VM Contributor doesn't grant OS login.","link":"https://learn.microsoft.com/en-us/entra/identity/devices/howto-vm-sign-in-azure-ad-windows"},
-{"id":"D1-140","sub":"RBAC","type":"mcq","diff":2,"q":"You assign the Reader role to a guest user on RG1. What does the guest see in the Azure portal?","opts":["Nothing — guests can't use Azure","The resources in RG1, after switching to your directory","Your entire tenant's resources","Only billing"],"ans":[1],"exp":"Guests switch directories in the portal and see only resources where they have role assignments.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-external-users"},
-{"id":"D1-141","sub":"RBAC","type":"mcq","diff":3,"ctx":"Assignments: User1 — Owner on RG-A. User2 — User Access Administrator on Sub1 (contains RG-A). User3 — Contributor on Sub1.","q":"Which users can grant User4 the Reader role on RG-A?","opts":["User1 only","User1 and User2","User1, User2, and User3","User2 and User3"],"ans":[1],"exp":"Owner and User Access Administrator can write role assignments; UAA at Sub1 inherits to RG-A. Contributor cannot.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"},
-{"id":"D1-142","sub":"RBAC","type":"yesno","diff":3,"ctx":"User1 has Reader on management group MG1 (contains Sub1) and Virtual Machine Contributor on RG-VMs in Sub1.","q":"Answer Yes or No:","stmts":["User1 can restart a VM in RG-VMs","User1 can create a virtual network in RG-VMs","User1 can view storage accounts in other resource groups of Sub1","User1 can assign Reader to another user on RG-VMs"],"ans":[true,false,true,false],"exp":"VM Contributor covers VM restart but not creating VNets; Reader inherited from MG1 covers all of Sub1; neither role writes role assignments.","link":"https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"},
-{"id":"D1-143","sub":"Entra roles","type":"mcq","diff":2,"q":"Where are Microsoft Entra directory roles (like User Administrator) assigned?","opts":["Entra ID → Roles and administrators","Subscription → Access control (IAM)","Azure Policy","Management groups"],"ans":[0],"exp":"Directory roles are managed in Entra ID's Roles and administrators blade, not in Azure IAM.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/manage-roles-portal"},
-{"id":"D1-144","sub":"Entra roles","type":"mcq","diff":2,"q":"Which Entra role is the most privileged and should be assigned to as few people as possible?","opts":["Global Administrator","User Administrator","Groups Administrator","Billing Administrator"],"ans":[0],"exp":"Global Administrator has full access to all directory features. Microsoft recommends fewer than five.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices"},
-{"id":"D1-145","sub":"Entra roles","type":"mcq","diff":3,"q":"Can a group be assigned a Microsoft Entra directory role?","opts":["No, never","Yes, if the group was created as role-assignable (isAssignableToRole = true)","Yes, any group","Only dynamic groups"],"ans":[1],"exp":"Only role-assignable groups (a flag set at creation, which can't be dynamic) can receive Entra roles.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-concept"},
-{"id":"D1-146","sub":"Entra roles","type":"mcq","diff":2,"q":"A user needs to manage app registrations and enterprise applications only. Least-privilege Entra role?","opts":["Application Administrator","Global Administrator","User Administrator","Cloud Device Administrator"],"ans":[0],"exp":"Application Administrator manages app registrations and enterprise apps.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"},
-{"id":"D1-147","sub":"Managed identities","type":"mcq","diff":2,"q":"A VM-hosted app must access Key Vault without storing credentials in code. What should you use?","opts":["A managed identity for the VM, granted access to Key Vault","A storage account key","A user's password in app settings","A SAS token"],"ans":[0],"exp":"Managed identities provide Azure-managed credentials for Entra authentication; you grant the identity RBAC roles on the target.","link":"https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"},
-{"id":"D1-148","sub":"Managed identities","type":"mcq","diff":3,"q":"Five VMs need the SAME identity with the same permissions, and the identity must survive if a VM is deleted. Which type?","opts":["System-assigned managed identity","User-assigned managed identity","Service principal with a secret","Guest user"],"ans":[1],"exp":"User-assigned identities are standalone resources, can be shared across resources, and have an independent lifecycle. System-assigned identities are deleted with their resource.","link":"https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"},
-{"id":"D1-149","sub":"Managed identities","type":"mcq","diff":2,"q":"What happens to a system-assigned managed identity when its VM is deleted?","opts":["It remains for 30 days","It is deleted automatically","It is converted to user-assigned","It must be deleted manually"],"ans":[1],"exp":"System-assigned identities are tied to the resource lifecycle and are removed with it.","link":"https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"},
-{"id":"D1-150","sub":"RBAC","type":"order","diff":3,"q":"Order the steps so a web app can read secrets from Key Vault (RBAC permission model) without credentials:","items":["Assign 'Key Vault Secrets User' to the identity on the vault","Enable a system-assigned managed identity on the web app","Reference the secret from the app using its identity","Confirm the vault uses the Azure RBAC permission model"],"ans":[1,3,0,2],"exp":"Enable the identity → confirm the vault uses RBAC → assign the data role → the app reads secrets with its identity.","link":"https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"}
+ {
+  "id": "D1-101",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which built-in role lets a user view everything in a subscription but change nothing?",
+  "opts": [
+   "Reader",
+   "Contributor",
+   "Owner",
+   "User Access Administrator"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Reader can view all resources but cannot make changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-102",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which types of security principal can receive an Azure role assignment?",
+  "opts": [
+   "Users only",
+   "Users, groups, service principals, and managed identities",
+   "Users and devices",
+   "Groups and subscriptions"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Role assignments target users, groups, service principals, or managed identities. Devices cannot be assigned roles.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-103",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the smallest scope at which you can assign an Azure role?",
+  "opts": [
+   "Management group",
+   "Subscription",
+   "Resource group",
+   "An individual resource"
+  ],
+  "ans": [
+   3
+  ],
+  "exp": "Roles can be assigned at management group, subscription, resource group, or individual resource scope.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"
+ },
+ {
+  "id": "D1-104",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A developer must manage virtual machines in RG-Dev but must NOT be able to manage the virtual network or the storage accounts. Least-privilege role?",
+  "opts": [
+   "Contributor on RG-Dev",
+   "Virtual Machine Contributor on RG-Dev",
+   "Owner on the VMs",
+   "Network Contributor on RG-Dev"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Virtual Machine Contributor manages VMs but not the VNet or storage accounts they connect to.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
+ },
+ {
+  "id": "D1-105",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An engineer needs to manage VNets, NSGs, and load balancers in a subscription without access to VMs. Which role?",
+  "opts": [
+   "Network Contributor",
+   "Virtual Machine Contributor",
+   "Contributor",
+   "Security Admin"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Network Contributor manages networking resources only.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/networking"
+ },
+ {
+  "id": "D1-106",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An app needs to read blobs in a storage account using Microsoft Entra authentication. Which role assignment is least privileged?",
+  "opts": [
+   "Reader on the storage account",
+   "Storage Account Contributor",
+   "Storage Blob Data Reader on the container or account",
+   "Owner on the resource group"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Blob data access needs a data-plane role such as Storage Blob Data Reader. Reader and Storage Account Contributor are control-plane roles.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
+ },
+ {
+  "id": "D1-107",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A finance user must view invoices and billing data but not resources. Which role?",
+  "opts": [
+   "Billing Reader",
+   "Reader",
+   "Cost Management Contributor",
+   "Owner"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Billing Reader grants read access to billing data only.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/management-and-governance"
+ },
+ {
+  "id": "D1-108",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A user must view cost data and create budgets but not modify resources. Which role fits best?",
+  "opts": [
+   "Cost Management Contributor",
+   "Contributor",
+   "Billing Reader",
+   "Reader"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Cost Management Contributor can view costs and manage cost configuration such as budgets and exports.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-work-scopes"
+ },
+ {
+  "id": "D1-109",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 1,
+  "q": "In the portal, where do you add a role assignment for a resource group?",
+  "opts": [
+   "Resource group → Access control (IAM) → Add role assignment",
+   "Entra ID → Roles and administrators",
+   "Resource group → Policies",
+   "Subscription → Usage + quotas"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Access control (IAM) is the RBAC blade on every scope.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal"
+ },
+ {
+  "id": "D1-110",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You want to find out what roles a specific user has on a resource group, including inherited ones. Fastest portal tool?",
+  "opts": [
+   "Access control (IAM) → Check access",
+   "Activity log",
+   "Azure Advisor",
+   "Policy compliance"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Check access shows a principal's assignments and inherited access at that scope.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/check-access"
+ },
+ {
+  "id": "D1-111",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which CLI command lists all role assignments for a user, including those inherited from higher scopes?",
+  "opts": [
+   "az role assignment list --assignee user@contoso.com --all --include-inherited",
+   "az ad user show --roles",
+   "az role definition list --user",
+   "az account list --roles"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az role assignment list with --assignee, --all and --include-inherited returns assignments across scopes including inherited ones.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-cli"
+ },
+ {
+  "id": "D1-112",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which PowerShell cmdlet assigns a role?",
+  "opts": [
+   "New-AzRoleAssignment",
+   "Add-AzRole",
+   "Set-AzRbac",
+   "New-AzRoleDefinition"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "New-AzRoleAssignment creates a role assignment; New-AzRoleDefinition creates a custom role.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-powershell"
+ },
+ {
+  "id": "D1-113",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A subscription reaches its role assignment limit. What's the recommended way to reduce assignments?",
+  "opts": [
+   "Assign roles to groups instead of individual users",
+   "Create more subscriptions",
+   "Use deny assignments",
+   "Use Azure Policy"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Each subscription has a role assignment limit (4,000). Assigning roles to groups uses fewer assignments.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/troubleshoot-limits"
+ },
+ {
+  "id": "D1-114",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "User1 is Owner of RG1. An administrator applies a ReadOnly lock to RG1. Can User1 delete a VM in RG1?",
+  "opts": [
+   "Yes — Owner overrides locks",
+   "No — locks apply to all users regardless of role",
+   "Yes, but only after 24 hours",
+   "Only with PowerShell"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Locks override RBAC permissions for everyone. The lock must be removed first (Owner can remove it).",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-115",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Azure RBAC is built on which service?",
+  "opts": [
+   "Azure Resource Manager",
+   "Azure Policy",
+   "Microsoft Entra Connect",
+   "Azure Monitor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure RBAC is an authorization system built on Azure Resource Manager.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-116",
+  "sub": "RBAC",
+  "type": "multi",
+  "diff": 3,
+  "q": "User1 has Contributor on Sub1. Which TWO actions can User1 NOT perform?",
+  "opts": [
+   "Create a VM in any resource group of Sub1",
+   "Assign the Reader role to User2 on Sub1",
+   "Delete a resource group in Sub1",
+   "Create a resource lock on a resource group"
+  ],
+  "ans": [
+   1,
+   3
+  ],
+  "exp": "Contributor cannot write to Microsoft.Authorization, which covers role assignments and locks.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-117",
+  "sub": "RBAC",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each statement:",
+  "stmts": [
+   "A role can be assigned to a managed identity",
+   "Role assignments to a group apply to its members",
+   "A Reader at the subscription scope can read resources in every resource group of that subscription",
+   "Removing a user from Entra ID automatically deletes their role assignments"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "Managed identities and groups can hold roles; Reader inherits down; deleting a user leaves orphaned 'Identity not found' assignments that should be cleaned up.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-remove"
+ },
+ {
+  "id": "D1-118",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After moving a subscription to a different Entra tenant, users from the old tenant can no longer manage resources. Why?",
+  "opts": [
+   "Resources are deleted on transfer",
+   "All role assignments are permanently removed when a subscription changes tenant",
+   "Policies block access",
+   "The subscription is disabled for 30 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Changing the directory removes all Azure RBAC role assignments; you must recreate them in the new tenant.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/transfer-subscription"
+ },
+ {
+  "id": "D1-119",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What do Azure RBAC 'conditions' (ABAC) allow you to do on top of role assignments?",
+  "opts": [
+   "Add attribute-based checks, for example limiting blob access by blob index tags",
+   "Deny all access to a tenant",
+   "Schedule role assignments",
+   "Enable MFA"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Role assignment conditions add fine-grained ABAC checks, for example on storage blob attributes.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-overview"
+ },
+ {
+  "id": "D1-120",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Admins must activate the Owner role only when needed, for a limited time, with approval. Which feature?",
+  "opts": [
+   "Microsoft Entra Privileged Identity Management (eligible assignments)",
+   "Resource locks",
+   "Azure Policy",
+   "Access reviews only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "PIM provides eligible, time-bound, approval-based role activation. It requires P2/Governance licensing.",
+  "link": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"
+ },
+ {
+  "id": "D1-121",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which built-in role allows managing resource locks and role assignments but not other resources?",
+  "opts": [
+   "User Access Administrator",
+   "Contributor",
+   "Reader",
+   "Virtual Machine Contributor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "User Access Administrator has Microsoft.Authorization/* rights, which cover assignments and locks.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-122",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A role is assigned at the Tenant Root Group management group. What does it cover?",
+  "opts": [
+   "Only the root group object",
+   "All management groups, subscriptions, and resources in the tenant",
+   "Only Entra ID objects",
+   "Nothing; assignments at root aren't allowed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The tenant root group is the top of the hierarchy, so assignments there inherit to everything below.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-123",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which statement best describes the Owner role?",
+  "opts": [
+   "Full access to manage all resources, including assigning roles in Azure RBAC",
+   "Full access except deleting resources",
+   "Read-only plus role assignments",
+   "Manage billing only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Owner = Contributor rights + role assignment rights.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-124",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A user is in Group A (Reader on RG1) and Group B (Contributor on RG1). There is no deny assignment. Effective permission on RG1?",
+  "opts": [
+   "Reader",
+   "Contributor",
+   "No access",
+   "Access Denied — conflicting roles"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "RBAC is additive. The union of Reader and Contributor gives Contributor capabilities.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-125",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What happens when a deny assignment conflicts with a role assignment that allows the same action?",
+  "opts": [
+   "The role assignment wins",
+   "The deny assignment wins — deny takes precedence",
+   "The newest wins",
+   "The user is prompted"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Deny assignments block actions even if a role assignment grants them.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/deny-assignments"
+ },
+ {
+  "id": "D1-126",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which section of a custom role controls data-plane operations such as reading blob contents?",
+  "opts": [
+   "Actions",
+   "DataActions",
+   "AssignableScopes",
+   "Permissions.Scope"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "DataActions and NotDataActions define data-plane operations; Actions covers the control plane.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+ },
+ {
+  "id": "D1-127",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the quickest way to create a custom role similar to an existing built-in role in the portal?",
+  "opts": [
+   "IAM → Roles → select a built-in role → Clone",
+   "Entra ID → Roles → New",
+   "Azure Policy → Definitions → Duplicate",
+   "Subscription → Properties"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The portal lets you clone a role and then edit its permissions.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-portal"
+ },
+ {
+  "id": "D1-128",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a custom role from a JSON file?",
+  "opts": [
+   "az role definition create --role-definition role.json",
+   "az role assignment create --file role.json",
+   "az ad role create role.json",
+   "az policy definition create --rules role.json"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az role definition create accepts a JSON role definition.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli"
+ },
+ {
+  "id": "D1-129",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can a custom role use the root scope \"/\" in AssignableScopes?",
+  "opts": [
+   "Yes, always",
+   "No — custom roles can't use root scope; only built-in roles are available there",
+   "Only with P2 license",
+   "Only for data actions"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Custom roles can list management groups, subscriptions, and resource groups, but not the root scope \"/\".",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+ },
+ {
+  "id": "D1-130",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How many management groups can a custom role list in AssignableScopes?",
+  "opts": [
+   "Unlimited",
+   "Only one",
+   "Up to 5",
+   "Management groups aren't allowed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A custom role can include only one management group in AssignableScopes.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+ },
+ {
+  "id": "D1-131",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A custom role has Actions [\"Microsoft.Compute/*\"] and NotActions [\"Microsoft.Compute/virtualMachines/delete\"]. The user also has Contributor on the same scope. Can they delete a VM?",
+  "opts": [
+   "No — NotActions is a deny",
+   "Yes — NotActions doesn't block permissions granted by another role",
+   "No — custom roles override built-in roles",
+   "Only if the VM is stopped"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "NotActions just removes permissions from that one role's grant. Contributor still grants delete.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+ },
+ {
+  "id": "D1-132",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What does the wildcard in \"Microsoft.Storage/storageAccounts/*\" grant?",
+  "opts": [
+   "Only read on storage accounts",
+   "All operations on storage accounts and their child control-plane resources",
+   "Data access to all blobs",
+   "Access to all resource providers"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The wildcard grants every control-plane operation under that resource type path. Data access requires DataActions.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+ },
+ {
+  "id": "D1-133",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which operation string allows a user to start virtual machines?",
+  "opts": [
+   "Microsoft.Compute/virtualMachines/start/action",
+   "Microsoft.Compute/virtualMachines/write",
+   "Microsoft.Compute/start",
+   "Microsoft.VM/start"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "VM operations follow the Microsoft.Compute/virtualMachines/<operation>/action format.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/compute"
+ },
+ {
+  "id": "D1-134",
+  "sub": "Custom roles",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps to create and use a custom role via CLI:",
+  "items": [
+   "Assign the role with az role assignment create",
+   "Write the role definition JSON (Actions, AssignableScopes)",
+   "Run az role definition create",
+   "Verify it with az role definition list --custom-role-only"
+  ],
+  "ans": [
+   1,
+   2,
+   3,
+   0
+  ],
+  "exp": "Write the JSON → create the definition → verify it exists → assign it.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli"
+ },
+ {
+  "id": "D1-135",
+  "sub": "Custom roles",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No about custom roles:",
+  "stmts": [
+   "Custom roles can be shared across subscriptions that trust the same tenant",
+   "A custom role can be assigned outside its AssignableScopes",
+   "Custom roles require Entra ID P1 or P2",
+   "Custom roles can include DataActions"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "Custom roles are usable within listed scopes in the same tenant; they cannot be assigned outside AssignableScopes; no Entra premium license is needed; DataActions are supported.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+ },
+ {
+  "id": "D1-136",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which role should a monitoring team get to view metrics and logs and create alert rules, without changing resources?",
+  "opts": [
+   "Monitoring Contributor",
+   "Contributor",
+   "Owner",
+   "Log Analytics Reader"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Monitoring Contributor can read monitoring data and edit monitoring settings, such as alerts and diagnostic settings.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/roles-permissions-security"
+ },
+ {
+  "id": "D1-137",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A user must only read monitoring data such as metrics and logs. Which role?",
+  "opts": [
+   "Monitoring Reader",
+   "Monitoring Contributor",
+   "Reader and Data Access",
+   "Log Analytics Contributor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Monitoring Reader can read all monitoring data.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/roles-permissions-security"
+ },
+ {
+  "id": "D1-138",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A backup operator must manage backups (start backup, restore) but not delete backup data or vaults. Which role?",
+  "opts": [
+   "Backup Operator",
+   "Backup Contributor",
+   "Backup Reader",
+   "Contributor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Backup Operator can run backups and restores but cannot remove backup data, create vaults or grant access. Backup Contributor can also manage backup policies and remove backup data.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-rbac-rs-vault"
+ },
+ {
+  "id": "D1-139",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which role lets a user connect to a VM via Microsoft Entra login with administrator privileges inside the OS?",
+  "opts": [
+   "Virtual Machine Administrator Login",
+   "Virtual Machine Contributor",
+   "Virtual Machine User Login",
+   "Owner"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Entra-based VM login uses Virtual Machine Administrator Login (admin rights in the OS) or Virtual Machine User Login (standard user). VM Contributor doesn't grant OS login.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/howto-vm-sign-in-azure-ad-windows"
+ },
+ {
+  "id": "D1-140",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You assign the Reader role to a guest user on RG1. What does the guest see in the Azure portal?",
+  "opts": [
+   "Nothing — guests can't use Azure",
+   "The resources in RG1, after switching to your directory",
+   "Your entire tenant's resources",
+   "Only billing"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Guests switch directories in the portal and see only resources where they have role assignments.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-external-users"
+ },
+ {
+  "id": "D1-141",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "Assignments: User1 — Owner on RG-A. User2 — User Access Administrator on Sub1 (contains RG-A). User3 — Contributor on Sub1.",
+  "q": "Which users can grant User4 the Reader role on RG-A?",
+  "opts": [
+   "User1 only",
+   "User1 and User2",
+   "User1, User2, and User3",
+   "User2 and User3"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Owner and User Access Administrator can write role assignments; UAA at Sub1 inherits to RG-A. Contributor cannot.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-142",
+  "sub": "RBAC",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "User1 has Reader on management group MG1 (contains Sub1) and Virtual Machine Contributor on RG-VMs in Sub1.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "User1 can restart a VM in RG-VMs",
+   "User1 can create a virtual network in RG-VMs",
+   "User1 can view storage accounts in other resource groups of Sub1",
+   "User1 can assign Reader to another user on RG-VMs"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "VM Contributor covers VM restart but not creating VNets; Reader inherited from MG1 covers all of Sub1; neither role writes role assignments.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
+ },
+ {
+  "id": "D1-143",
+  "sub": "Entra roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Where are Microsoft Entra directory roles (like User Administrator) assigned?",
+  "opts": [
+   "Entra ID → Roles and administrators",
+   "Subscription → Access control (IAM)",
+   "Azure Policy",
+   "Management groups"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Directory roles are managed in Entra ID's Roles and administrators blade, not in Azure IAM.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/manage-roles-portal"
+ },
+ {
+  "id": "D1-144",
+  "sub": "Entra roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Entra role is the most privileged and should be assigned to as few people as possible?",
+  "opts": [
+   "Global Administrator",
+   "User Administrator",
+   "Groups Administrator",
+   "Billing Administrator"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Global Administrator has full access to all directory features. Microsoft recommends fewer than five.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices"
+ },
+ {
+  "id": "D1-145",
+  "sub": "Entra roles",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can a group be assigned a Microsoft Entra directory role?",
+  "opts": [
+   "No, never",
+   "Yes, if the group was created as role-assignable (isAssignableToRole = true)",
+   "Yes, any group",
+   "Only dynamic groups"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Only role-assignable groups (a flag set at creation, which can't be dynamic) can receive Entra roles.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-concept"
+ },
+ {
+  "id": "D1-146",
+  "sub": "Entra roles",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A user needs to manage app registrations and enterprise applications only. Least-privilege Entra role?",
+  "opts": [
+   "Application Administrator",
+   "Global Administrator",
+   "User Administrator",
+   "Cloud Device Administrator"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Application Administrator manages app registrations and enterprise apps.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"
+ },
+ {
+  "id": "D1-147",
+  "sub": "Managed identities",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A VM-hosted app must access Key Vault without storing credentials in code. What should you use?",
+  "opts": [
+   "A managed identity for the VM, granted access to Key Vault",
+   "A storage account key",
+   "A user's password in app settings",
+   "A SAS token"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Managed identities provide Azure-managed credentials for Entra authentication; you grant the identity RBAC roles on the target.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
+ },
+ {
+  "id": "D1-148",
+  "sub": "Managed identities",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Five VMs need the SAME identity with the same permissions, and the identity must survive if a VM is deleted. Which type?",
+  "opts": [
+   "System-assigned managed identity",
+   "User-assigned managed identity",
+   "Service principal with a secret",
+   "Guest user"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "User-assigned identities are standalone resources, can be shared across resources, and have an independent lifecycle. System-assigned identities are deleted with their resource.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
+ },
+ {
+  "id": "D1-149",
+  "sub": "Managed identities",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What happens to a system-assigned managed identity when its VM is deleted?",
+  "opts": [
+   "It remains for 30 days",
+   "It is deleted automatically",
+   "It is converted to user-assigned",
+   "It must be deleted manually"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "System-assigned identities are tied to the resource lifecycle and are removed with it.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
+ },
+ {
+  "id": "D1-150",
+  "sub": "RBAC",
+  "type": "order",
+  "diff": 3,
+  "q": "Order the steps so a web app can read secrets from Key Vault (RBAC permission model) without credentials:",
+  "items": [
+   "Assign 'Key Vault Secrets User' to the identity on the vault",
+   "Enable a system-assigned managed identity on the web app",
+   "Reference the secret from the app using its identity",
+   "Confirm the vault uses the Azure RBAC permission model"
+  ],
+  "ans": [
+   1,
+   3,
+   0,
+   2
+  ],
+  "exp": "Enable the identity → confirm the vault uses RBAC → assign the data role → the app reads secrets with its identity.",
+  "link": "https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"
+ }
 ]

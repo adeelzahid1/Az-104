@@ -1,52 +1,912 @@
 [
-{"id":"D2-001","sub":"Storage firewall","type":"mcq","diff":1,"q":"You enable the storage account firewall and add VNet1/SubnetA. VMs in SubnetA still cannot reach the storage account. The most likely missing step is:","opts":["A private endpoint","The Microsoft.Storage service endpoint on SubnetA","An NSG rule allowing port 445","A public IP on each VM"],"ans":[1],"exp":"VNet firewall rules require the Microsoft.Storage service endpoint on the subnet. A private endpoint is a different mechanism.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"},
-{"id":"D2-002","sub":"Storage firewall","type":"mcq","diff":2,"q":"After enabling the storage firewall with 'selected networks', Azure Backup and some Microsoft services stop working. Which setting fixes this without opening the account to the internet?","opts":["Allow trusted Microsoft services to access this storage account","Add 0.0.0.0/0 to the IP rules","Disable the firewall","Enable anonymous blob access"],"ans":[0],"exp":"The trusted Microsoft services exception lets selected Azure services through the firewall.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"},
-{"id":"D2-003","sub":"Storage firewall","type":"mcq","diff":2,"q":"You administer the storage account from your office (public IP 203.0.113.10) while the firewall is enabled. What do you add?","opts":["A VNet rule for your office","Your office public IP (or range) to the firewall's IP address rules","A private endpoint at the office","Port 443 to the NSG"],"ans":[1],"exp":"Public IP ranges go in the firewall IP rules. VNet rules are for Azure subnets.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"},
-{"id":"D2-004","sub":"SAS","type":"mcq","diff":1,"q":"Which SAS fields limit a token so that it works only from a given IP range and only over HTTPS?","opts":["Signed services","Signed IP and signed protocol","Stored access policy name","Access tier"],"ans":[1],"exp":"SAS supports signedIp and signedProtocol (HTTPS only) restrictions.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"},
-{"id":"D2-005","sub":"SAS","type":"mcq","diff":2,"q":"You issued ad-hoc service SAS tokens valid for 1 year. One token leaked. How do you revoke it?","opts":["Delete the container","Regenerate the account key that signed it (this invalidates all SAS signed with that key)","Remove the user from Entra ID","Set the blob tier to Archive"],"ans":[1],"exp":"An ad-hoc SAS can't be revoked individually; regenerating the signing key kills it (and all others signed with that key). Use stored access policies to avoid this.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"},
-{"id":"D2-006","sub":"Stored access policy","type":"mcq","diff":2,"q":"What is the main benefit of creating SAS tokens from a stored access policy?","opts":["Tokens never expire","You can modify or revoke the policy afterwards, which immediately affects all SAS tied to it","Tokens work without a signature","Tokens bypass the firewall"],"ans":[1],"exp":"Policy-based SAS inherit the policy's constraints; change or delete the policy to adjust or revoke them all.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"},
-{"id":"D2-007","sub":"Stored access policy","type":"mcq","diff":3,"q":"How many stored access policies can you define per container?","opts":["1","5","10","Unlimited"],"ans":[1],"exp":"A container, share, queue, or table can have at most 5 stored access policies.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"},
-{"id":"D2-008","sub":"SAS","type":"mcq","diff":2,"q":"Which SAS type is signed with Microsoft Entra credentials instead of the storage account key?","opts":["Account SAS","Service SAS","User delegation SAS","Stored access policy SAS"],"ans":[2],"exp":"A user delegation SAS is secured with a user delegation key obtained via Entra ID.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"},
-{"id":"D2-009","sub":"SAS","type":"mcq","diff":2,"q":"A user delegation SAS can be created for which service(s)?","opts":["Blob (and Data Lake Storage) only","Files only","All storage services","Queues and tables only"],"ans":[0],"exp":"User delegation SAS is supported for Blob storage, including Data Lake Storage Gen2.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"},
-{"id":"D2-010","sub":"Access keys","type":"mcq","diff":1,"q":"How many access keys does a storage account have, and why?","opts":["1, for simplicity","2, so you can rotate one key while clients use the other","3: primary, secondary, tertiary","5, one per service"],"ans":[1],"exp":"Two keys allow rotation without downtime.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"},
-{"id":"D2-011","sub":"Access keys","type":"mcq","diff":2,"q":"Which service stores storage keys securely for applications and can help automate rotation?","opts":["Azure Advisor","Azure Key Vault (plus a key expiration policy on the storage account)","Azure Monitor","Network Watcher"],"ans":[1],"exp":"Key Vault stores and rotates secrets; storage accounts support a key expiration policy that reminds you to rotate.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"},
-{"id":"D2-012","sub":"Azure Files identity","type":"mcq","diff":3,"q":"Azure file share users must authenticate with their on-premises AD DS identities over SMB. Besides enabling AD DS authentication on the account, what must be configured for users to access files?","opts":["Nothing else","Share-level permissions (RBAC roles such as Storage File Data SMB Share Contributor) AND NTFS permissions on files and directories","A SAS token per user","Anonymous access on the share"],"ans":[1],"exp":"Access requires both layers: share-level RBAC and NTFS ACLs.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"},
-{"id":"D2-013","sub":"Azure Files identity","type":"multi","diff":3,"q":"Which THREE identity sources are supported for Azure Files SMB identity-based authentication?","opts":["On-premises Active Directory Domain Services","Microsoft Entra Domain Services","Microsoft Entra Kerberos (hybrid identities)","Google Workspace identities","Local Windows accounts"],"ans":[0,1,2],"exp":"AD DS, Entra Domain Services, and Entra Kerberos are supported.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"},
-{"id":"D2-014","sub":"Data-plane RBAC","type":"mcq","diff":2,"q":"Which built-in role allows reading blob data using Entra ID authentication, without granting account management rights?","opts":["Reader","Storage Blob Data Reader","Contributor","Storage Account Contributor"],"ans":[1],"exp":"Storage Blob Data Reader is the data-plane read role. Storage Account Contributor is control-plane.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"},
-{"id":"D2-015","sub":"Data-plane RBAC","type":"mcq","diff":3,"q":"A user with the Reader role on a storage account browses blobs in the portal using 'Microsoft Entra user account' authentication. What happens?","opts":["Full blob read access","Access denied to blob data, because Reader is a control-plane role","Write access","Access to $logs only"],"ans":[1],"exp":"Control-plane Reader doesn't grant data access; a Storage Blob Data role is needed.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"},
-{"id":"D2-016","sub":"Anonymous access","type":"mcq","diff":1,"q":"To let anyone on the internet read blobs by URL without listing the container, set the container's anonymous access level to:","opts":["Private","Blob","Container","Public-All"],"ans":[1],"exp":"Blob = anonymous read of blobs only. Container also allows listing.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure"},
-{"id":"D2-017","sub":"Storage access","type":"yesno","diff":2,"q":"Answer Yes or No to each statement:","stmts":["Regenerating an account key invalidates every SAS signed with it","A SAS can grant more permissions than the stored access policy it references","Unless exceptions are configured, the storage firewall applies to all networks, including Azure services","Entra ID authentication is supported for Blob and Queue data operations"],"ans":[true,false,true,true],"exp":"A key rotation kills its SAS tokens; SAS can only narrow a policy; the firewall applies broadly; Blob and Queue support Entra auth.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"},
-{"id":"D2-018","sub":"Storage accounts","type":"mcq","diff":1,"q":"Which storage account type should you create for general scenarios that need blobs, files, queues, and tables with all redundancy options?","opts":["Standard general-purpose v2","Premium block blob","Premium file share (FileStorage)","BlobStorage (legacy)"],"ans":[0],"exp":"GPv2 supports all services, tiers, and redundancy options.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"},
-{"id":"D2-019","sub":"Storage accounts","type":"mcq","diff":2,"q":"You need the lowest latency for an SMB file share used by a database workload. Which account kind?","opts":["Standard GPv2 with hot tier","Premium FileStorage","Premium BlockBlobStorage","GPv1"],"ans":[1],"exp":"Premium file shares run on FileStorage accounts (SSD-backed).","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"},
-{"id":"D2-020","sub":"Redundancy","type":"mcq","diff":1,"q":"Which redundancy option keeps three copies of data within a single datacenter only?","opts":["ZRS","LRS","GRS","GZRS"],"ans":[1],"exp":"LRS keeps 3 synchronous copies in one datacenter.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-021","sub":"Redundancy","type":"mcq","diff":2,"q":"Data must survive a full region outage AND the app must be able to read from the secondary region at any time. Minimum redundancy?","opts":["LRS","ZRS","GRS","RA-GRS"],"ans":[3],"exp":"RA-GRS adds read access to the secondary. A plain GRS secondary is readable only after failover.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-022","sub":"Redundancy","type":"mcq","diff":2,"q":"Which redundancy option replicates synchronously across three availability zones in the primary region AND asynchronously to a secondary region?","opts":["ZRS","GRS","GZRS","RA-LRS"],"ans":[2],"exp":"GZRS = ZRS in the primary + geo-replication to the secondary.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-023","sub":"Redundancy","type":"mcq","diff":3,"q":"During a prolonged primary-region outage on a GRS account, who can initiate the failover, and what is the redundancy afterwards?","opts":["Microsoft only; it remains GRS","The customer can initiate it; the account becomes LRS in the new primary region","It's automatic after 1 hour; ZRS","Failover isn't possible"],"ans":[1],"exp":"Customer-managed failover is available; afterwards the account is LRS until you re-enable geo-redundancy.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"},
-{"id":"D2-024","sub":"Redundancy","type":"mcq","diff":2,"q":"Which redundancy options can a Premium (block blob / file) storage account use?","opts":["All six options","LRS and ZRS only","GRS and RA-GRS only","LRS only, always"],"ans":[1],"exp":"Premium accounts support LRS and ZRS (in supported regions), with no geo options.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"},
-{"id":"D2-025","sub":"Object replication","type":"mcq","diff":3,"q":"Object replication between two storage accounts requires which prerequisites?","opts":["Nothing special","Blob versioning on source and destination, and change feed on the source","Soft delete on both","Both accounts in the same region"],"ans":[1],"exp":"Versioning on both accounts and change feed on the source are required.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"},
-{"id":"D2-026","sub":"Object replication","type":"mcq","diff":2,"q":"Which statement best describes object replication?","opts":["Synchronous copy of all blob types","Asynchronous copy of block blobs between accounts, which can be in different regions or subscriptions","Works only inside one account","Requires the archive tier"],"ans":[1],"exp":"Object replication copies block blobs asynchronously across accounts.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"},
-{"id":"D2-027","sub":"Encryption","type":"mcq","diff":1,"q":"Azure Storage service-side encryption at rest is:","opts":["Optional and off by default","Always enabled and cannot be disabled","Only for Premium accounts","Enabled per container"],"ans":[1],"exp":"SSE with Microsoft-managed keys is always on.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"},
-{"id":"D2-028","sub":"Encryption","type":"mcq","diff":2,"q":"To use customer-managed keys for a storage account, the key vault must have which two protections enabled?","opts":["RBAC and tags","Soft delete and purge protection","Firewall and private endpoint","HSM and geo-replication"],"ans":[1],"exp":"CMK requires soft delete and purge protection on the vault.","link":"https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"},
-{"id":"D2-029","sub":"Encryption","type":"mcq","diff":3,"q":"Infrastructure (double) encryption for a storage account can be enabled:","opts":["Any time in the Encryption blade","Only at account creation","Only through a support ticket","Per blob"],"ans":[1],"exp":"Infrastructure encryption is a creation-time setting.","link":"https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"},
-{"id":"D2-030","sub":"AzCopy","type":"mcq","diff":1,"q":"Which AzCopy command uploads C:\\data to a container and copies only files that changed since last time?","opts":["azcopy copy with --overwrite=false","azcopy sync \"C:\\data\" \"https://acct.blob.core.windows.net/container?<SAS>\"","azcopy move","azcopy benchmark"],"ans":[1],"exp":"azcopy sync compares source and destination and transfers differences.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"},
-{"id":"D2-031","sub":"AzCopy","type":"mcq","diff":2,"q":"AzCopy can authenticate to Blob storage using:","opts":["SAS tokens only","Entra ID (azcopy login) or SAS tokens","The account name only","SSH keys"],"ans":[1],"exp":"AzCopy supports Entra ID login and SAS tokens.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10"},
-{"id":"D2-032","sub":"Storage Explorer","type":"mcq","diff":1,"q":"Azure Storage Explorer is best described as:","opts":["A web-only monitoring dashboard","A free cross-platform desktop app to manage blobs, files, queues, tables, and Data Lake","A paid Visual Studio extension","A PowerShell module"],"ans":[1],"exp":"Storage Explorer is a free desktop app for Windows, macOS, and Linux.","link":"https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"},
-{"id":"D2-033","sub":"Data migration","type":"mcq","diff":2,"q":"You must copy 60 TB of data to Azure from a site with very low bandwidth. The practical option is:","opts":["AzCopy over the weekend","Azure Import/Export or Azure Data Box (ship physical drives)","Storage Explorer upload","RDP file copy to a VM"],"ans":[1],"exp":"Offline transfer is designed for large datasets over limited bandwidth.","link":"https://learn.microsoft.com/en-us/azure/databox/data-box-overview"},
-{"id":"D2-034","sub":"Storage accounts","type":"yesno","diff":2,"q":"Answer Yes or No to each statement:","stmts":["A storage account name must be globally unique, 3–24 characters, lowercase letters and numbers only","You can change LRS to GRS on a standard GPv2 account without recreating it","A storage account can be moved to another resource group","The account's default access tier (hot/cool) applies to Azure file shares"],"ans":[true,true,true,false],"exp":"Naming rules, in-place redundancy changes, and RG moves are supported; blob access tiers don't apply to file shares.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"},
-{"id":"D2-035","sub":"Azure Files","type":"mcq","diff":1,"q":"Azure Files SMB shares use which port, which many ISPs block?","opts":["80","443","445","3389"],"ans":[2],"exp":"SMB uses TCP 445.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview"},
-{"id":"D2-036","sub":"Azure Files","type":"mcq","diff":2,"q":"On-premises users can't reach an SMB file share because the ISP blocks port 445. What's a practical solution?","opts":["Switch to HTTP","Use VPN/ExpressRoute (or Azure File Sync) so SMB doesn't go directly over the internet","Open port 80","Use RA-GRS"],"ans":[1],"exp":"Tunnel SMB over VPN/ExpressRoute with a private endpoint, or cache locally with Azure File Sync.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview"},
-{"id":"D2-037","sub":"Azure Files","type":"mcq","diff":2,"q":"Which file share protocol is available only on premium (FileStorage) accounts and is used from Linux?","opts":["SMB 3.1.1","NFS 4.1","FTP","WebDAV"],"ans":[1],"exp":"NFS 4.1 shares require premium FileStorage accounts.","link":"https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol"},
-{"id":"D2-038","sub":"File Sync","type":"mcq","diff":2,"q":"What is the correct hierarchy of Azure File Sync components?","opts":["Storage Sync Service → sync group → one cloud endpoint + server endpoints","Sync group → storage account → agent","Recovery vault → sync group → share","Storage Sync Service → server endpoint → many cloud endpoints per group"],"ans":[0],"exp":"Each sync group has exactly one cloud endpoint (an Azure file share) and one or more server endpoints.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"},
-{"id":"D2-039","sub":"File Sync","type":"mcq","diff":3,"q":"What does cloud tiering in Azure File Sync do?","opts":["Moves blobs to the archive tier","Keeps frequently used files on the local server while cold files become pointers, with full copies in Azure","Compresses files locally","Replicates files between two servers"],"ans":[1],"exp":"Cloud tiering caches hot files locally and replaces cold files with stubs that are recalled on access.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-overview"},
-{"id":"D2-040","sub":"Blob storage","type":"mcq","diff":1,"q":"Which blob type is used for virtual machine disks (VHDs)?","opts":["Block blob","Append blob","Page blob","Table blob"],"ans":[2],"exp":"Page blobs handle random read/write workloads such as VHDs.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"},
-{"id":"D2-041","sub":"Access tiers","type":"mcq","diff":1,"q":"Which access tier is offline, so a blob can't be read until it's rehydrated?","opts":["Hot","Cool","Cold","Archive"],"ans":[3],"exp":"Archive is the only offline tier.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-042","sub":"Access tiers","type":"mcq","diff":2,"q":"Rehydrating an archived blob with Standard priority typically takes:","opts":["Seconds","Up to 1 hour","Up to 15 hours","7 days"],"ans":[2],"exp":"Standard priority takes up to 15 hours; High priority can finish in under an hour for blobs under 10 GB.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"},
-{"id":"D2-043","sub":"Access tiers","type":"mcq","diff":3,"q":"What are the early-deletion periods for the cool, cold, and archive tiers?","opts":["30 / 90 / 180 days","7 / 30 / 90 days","60 / 120 / 365 days","No penalties exist"],"ans":[0],"exp":"Cool 30, cold 90, archive 180 days.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-044","sub":"Access tiers","type":"mcq","diff":2,"q":"Which tiers can be set as the default account-level access tier?","opts":["Hot, cool, cold, and archive","Hot and cool only","Archive only","Hot only"],"ans":[1],"exp":"The default account tier is hot or cool. Archive (and cold) are set at the blob level.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-045","sub":"Lifecycle","type":"mcq","diff":2,"q":"Blobs should move to cool after 30 days without modification, to archive after 90, and be deleted after 365. What do you configure?","opts":["A lifecycle management policy with rules based on last modified time","An Azure Policy","A budget","Object replication"],"ans":[0],"exp":"Lifecycle management rules can tier and delete based on age.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-046","sub":"Lifecycle","type":"mcq","diff":3,"q":"After you create a new lifecycle management rule, roughly how long until its actions first run?","opts":["Immediately","Within minutes","Up to 24–48 hours","Next calendar month"],"ans":[2],"exp":"A new policy can take up to 24 hours to take effect, and a run can take additional time.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-047","sub":"Versioning","type":"mcq","diff":2,"q":"What's the key difference between blob versioning and blob snapshots?","opts":["No difference","Versioning creates a version automatically on every write or delete; snapshots are manual point-in-time copies","Snapshots are automatic; versions are manual","Versioning requires the archive tier"],"ans":[1],"exp":"Versioning is automatic, while snapshots are created explicitly.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"},
-{"id":"D2-048","sub":"Soft delete","type":"mcq","diff":2,"q":"Blob soft delete is set to 14 days. What does that mean?","opts":["Blobs are archived after 14 days","Deleted blobs can be undeleted within 14 days","Blobs can't be deleted for 14 days","The container is locked for 14 days"],"ans":[1],"exp":"Soft delete keeps deleted data recoverable for the retention period.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview"},
-{"id":"D2-049","sub":"Azure Files","type":"mcq","diff":2,"q":"Share snapshots for Azure Files are:","opts":["Read-only point-in-time copies of the whole share, incremental in storage use","Full copies billed at 100% each time","Automatic every hour and not configurable","Only available with NFS"],"ans":[0],"exp":"Share snapshots are read-only and incremental.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"},
-{"id":"D2-050","sub":"Storage design","type":"mcq","diff":3,"ctx":"Invoices (block blobs) are stored in a GPv2 RA-GRS account. They must be instantly readable for 6 months and retained 7 years total. Instant access isn't needed after 6 months.","q":"Which tier strategy is cheapest for months 7–84?","opts":["Keep in hot","Move to cool","Move to archive with a lifecycle rule after 6 months","Delete and re-upload when needed"],"ans":[2],"exp":"Archive is the cheapest storage tier for long retention when instant access isn't required. Lifecycle rules automate the move.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"}
+ {
+  "id": "D2-001",
+  "sub": "Storage firewall",
+  "type": "mcq",
+  "diff": 1,
+  "q": "You enable the storage account firewall and add VNet1/SubnetA. VMs in SubnetA still cannot reach the storage account. The most likely missing step is:",
+  "opts": [
+   "A private endpoint",
+   "The Microsoft.Storage service endpoint on SubnetA",
+   "An NSG rule allowing port 445",
+   "A public IP on each VM"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "VNet firewall rules require the Microsoft.Storage service endpoint on the subnet. A private endpoint is a different mechanism.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
+ },
+ {
+  "id": "D2-002",
+  "sub": "Storage firewall",
+  "type": "mcq",
+  "diff": 2,
+  "q": "After enabling the storage firewall with 'selected networks', Azure Backup and some Microsoft services stop working. Which setting fixes this without opening the account to the internet?",
+  "opts": [
+   "Allow trusted Microsoft services to access this storage account",
+   "Add 0.0.0.0/0 to the IP rules",
+   "Disable the firewall",
+   "Enable anonymous blob access"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The trusted Microsoft services exception lets selected Azure services through the firewall.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
+ },
+ {
+  "id": "D2-003",
+  "sub": "Storage firewall",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You administer the storage account from your office (public IP 203.0.113.10) while the firewall is enabled. What do you add?",
+  "opts": [
+   "A VNet rule for your office",
+   "Your office public IP (or range) to the firewall's IP address rules",
+   "A private endpoint at the office",
+   "Port 443 to the NSG"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Public IP ranges go in the firewall IP rules. VNet rules are for Azure subnets.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
+ },
+ {
+  "id": "D2-004",
+  "sub": "SAS",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which SAS fields limit a token so that it works only from a given IP range and only over HTTPS?",
+  "opts": [
+   "Signed services",
+   "Signed IP and signed protocol",
+   "Stored access policy name",
+   "Access tier"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "SAS supports signedIp and signedProtocol (HTTPS only) restrictions.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
+ },
+ {
+  "id": "D2-005",
+  "sub": "SAS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You issued ad-hoc service SAS tokens valid for 1 year. One token leaked. How do you revoke it?",
+  "opts": [
+   "Delete the container",
+   "Regenerate the account key that signed it (this invalidates all SAS signed with that key)",
+   "Remove the user from Entra ID",
+   "Set the blob tier to Archive"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "An ad-hoc SAS can't be revoked individually; regenerating the signing key kills it (and all others signed with that key). Use stored access policies to avoid this.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
+ },
+ {
+  "id": "D2-006",
+  "sub": "Stored access policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the main benefit of creating SAS tokens from a stored access policy?",
+  "opts": [
+   "Tokens never expire",
+   "You can modify or revoke the policy afterwards, which immediately affects all SAS tied to it",
+   "Tokens work without a signature",
+   "Tokens bypass the firewall"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Policy-based SAS inherit the policy's constraints; change or delete the policy to adjust or revoke them all.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"
+ },
+ {
+  "id": "D2-007",
+  "sub": "Stored access policy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How many stored access policies can you define per container?",
+  "opts": [
+   "1",
+   "5",
+   "10",
+   "Unlimited"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A container, share, queue, or table can have at most 5 stored access policies.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"
+ },
+ {
+  "id": "D2-008",
+  "sub": "SAS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which SAS type is signed with Microsoft Entra credentials instead of the storage account key?",
+  "opts": [
+   "Account SAS",
+   "Service SAS",
+   "User delegation SAS",
+   "Stored access policy SAS"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "A user delegation SAS is secured with a user delegation key obtained via Entra ID.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"
+ },
+ {
+  "id": "D2-009",
+  "sub": "SAS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "According to current Microsoft Learn documentation, which services support a user delegation SAS?",
+  "opts": [
+   "Blob storage (including Data Lake) only",
+   "Blob (including Data Lake), Queue, Table and Azure Files",
+   "Azure Files only",
+   "Queue and Table only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A user delegation SAS is supported for Blob storage (including Data Lake), Queue, Table and Azure Files. Older study material says Blob only, because support for the other services was added later.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"
+ },
+ {
+  "id": "D2-010",
+  "sub": "Access keys",
+  "type": "mcq",
+  "diff": 1,
+  "q": "How many access keys does a storage account have, and why?",
+  "opts": [
+   "1, for simplicity",
+   "2, so you can rotate one key while clients use the other",
+   "3: primary, secondary, tertiary",
+   "5, one per service"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Two keys allow rotation without downtime.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"
+ },
+ {
+  "id": "D2-011",
+  "sub": "Access keys",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which service stores storage keys securely for applications and can help automate rotation?",
+  "opts": [
+   "Azure Advisor",
+   "Azure Key Vault (plus a key expiration policy on the storage account)",
+   "Azure Monitor",
+   "Network Watcher"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Key Vault stores and rotates secrets; storage accounts support a key expiration policy that reminds you to rotate.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"
+ },
+ {
+  "id": "D2-012",
+  "sub": "Azure Files identity",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Azure file share users must authenticate with their on-premises AD DS identities over SMB. Besides enabling AD DS authentication on the account, what must be configured for users to access files?",
+  "opts": [
+   "Nothing else",
+   "Share-level permissions (RBAC roles such as Storage File Data SMB Share Contributor) AND NTFS permissions on files and directories",
+   "A SAS token per user",
+   "Anonymous access on the share"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Access requires both layers: share-level RBAC and NTFS ACLs.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"
+ },
+ {
+  "id": "D2-013",
+  "sub": "Azure Files identity",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which THREE identity sources are supported for Azure Files SMB identity-based authentication?",
+  "opts": [
+   "On-premises Active Directory Domain Services",
+   "Microsoft Entra Domain Services",
+   "Microsoft Entra Kerberos (hybrid identities)",
+   "Google Workspace identities",
+   "Local Windows accounts"
+  ],
+  "ans": [
+   0,
+   1,
+   2
+  ],
+  "exp": "AD DS, Entra Domain Services, and Entra Kerberos are supported.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"
+ },
+ {
+  "id": "D2-014",
+  "sub": "Data-plane RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which built-in role allows reading blob data using Entra ID authentication, without granting account management rights?",
+  "opts": [
+   "Reader",
+   "Storage Blob Data Reader",
+   "Contributor",
+   "Storage Account Contributor"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Storage Blob Data Reader is the data-plane read role. Storage Account Contributor is control-plane.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
+ },
+ {
+  "id": "D2-015",
+  "sub": "Data-plane RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A user with the Reader role on a storage account browses blobs in the portal using 'Microsoft Entra user account' authentication. What happens?",
+  "opts": [
+   "Full blob read access",
+   "Access denied to blob data, because Reader is a control-plane role",
+   "Write access",
+   "Access to $logs only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Control-plane Reader doesn't grant data access; a Storage Blob Data role is needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
+ },
+ {
+  "id": "D2-016",
+  "sub": "Anonymous access",
+  "type": "mcq",
+  "diff": 1,
+  "q": "To let anyone on the internet read blobs by URL without listing the container, set the container's anonymous access level to:",
+  "opts": [
+   "Private",
+   "Blob",
+   "Container",
+   "Public-All"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Blob = anonymous read of blobs only. Container also allows listing.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure"
+ },
+ {
+  "id": "D2-017",
+  "sub": "Storage access",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each statement:",
+  "stmts": [
+   "Regenerating an account key invalidates every SAS signed with it",
+   "A SAS can grant more permissions than the stored access policy it references",
+   "Unless exceptions are configured, the storage firewall applies to all networks, including Azure services",
+   "Entra ID authentication is supported for Blob and Queue data operations"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "A key rotation kills its SAS tokens; SAS can only narrow a policy; the firewall applies broadly; Blob and Queue support Entra auth.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
+ },
+ {
+  "id": "D2-018",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which storage account type should you create for general scenarios that need blobs, files, queues, and tables with all redundancy options?",
+  "opts": [
+   "Standard general-purpose v2",
+   "Premium block blob",
+   "Premium file share (FileStorage)",
+   "BlobStorage (legacy)"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "GPv2 supports all services, tiers, and redundancy options.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
+ },
+ {
+  "id": "D2-019",
+  "sub": "Storage accounts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need the lowest latency for an SMB file share used by a database workload. Which account kind?",
+  "opts": [
+   "Standard GPv2 with hot tier",
+   "Premium FileStorage",
+   "Premium BlockBlobStorage",
+   "GPv1"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Premium file shares run on FileStorage accounts (SSD-backed).",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
+ },
+ {
+  "id": "D2-020",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which redundancy option keeps three copies of data within a single datacenter only?",
+  "opts": [
+   "ZRS",
+   "LRS",
+   "GRS",
+   "GZRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "LRS keeps 3 synchronous copies in one datacenter.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-021",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Data must survive a full region outage AND the app must be able to read from the secondary region at any time. Minimum redundancy?",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "RA-GRS"
+  ],
+  "ans": [
+   3
+  ],
+  "exp": "RA-GRS adds read access to the secondary. A plain GRS secondary is readable only after failover.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-022",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which redundancy option replicates synchronously across three availability zones in the primary region AND asynchronously to a secondary region?",
+  "opts": [
+   "ZRS",
+   "GRS",
+   "GZRS",
+   "RA-LRS"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "GZRS = ZRS in the primary + geo-replication to the secondary.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-023",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "During a prolonged primary-region outage on a GRS account, who can initiate the failover, and what is the redundancy afterwards?",
+  "opts": [
+   "Microsoft only; it remains GRS",
+   "The customer can initiate it; the account becomes LRS in the new primary region",
+   "It's automatic after 1 hour; ZRS",
+   "Failover isn't possible"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Customer-managed failover is available; afterwards the account is LRS until you re-enable geo-redundancy.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"
+ },
+ {
+  "id": "D2-024",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which redundancy options can a Premium (block blob / file) storage account use?",
+  "opts": [
+   "All six options",
+   "LRS and ZRS only",
+   "GRS and RA-GRS only",
+   "LRS only, always"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Premium accounts support LRS and ZRS (in supported regions), with no geo options.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-025",
+  "sub": "Object replication",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Object replication between two storage accounts requires which prerequisites?",
+  "opts": [
+   "Nothing special",
+   "Blob versioning on source and destination, and change feed on the source",
+   "Soft delete on both",
+   "Both accounts in the same region"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Versioning on both accounts and change feed on the source are required.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
+ },
+ {
+  "id": "D2-026",
+  "sub": "Object replication",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which statement best describes object replication?",
+  "opts": [
+   "Synchronous copy of all blob types",
+   "Asynchronous copy of block blobs between accounts, which can be in different regions or subscriptions",
+   "Works only inside one account",
+   "Requires the archive tier"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Object replication copies block blobs asynchronously across accounts.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
+ },
+ {
+  "id": "D2-027",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Azure Storage service-side encryption at rest is:",
+  "opts": [
+   "Optional and off by default",
+   "Always enabled and cannot be disabled",
+   "Only for Premium accounts",
+   "Enabled per container"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "SSE with Microsoft-managed keys is always on.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+ },
+ {
+  "id": "D2-028",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 2,
+  "q": "To use customer-managed keys for a storage account, the key vault must have which two protections enabled?",
+  "opts": [
+   "RBAC and tags",
+   "Soft delete and purge protection",
+   "Firewall and private endpoint",
+   "HSM and geo-replication"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "CMK requires soft delete and purge protection on the vault.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"
+ },
+ {
+  "id": "D2-029",
+  "sub": "Encryption",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Infrastructure (double) encryption for a storage account can be enabled:",
+  "opts": [
+   "Any time in the Encryption blade",
+   "Only at account creation",
+   "Only through a support ticket",
+   "Per blob"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Infrastructure encryption is a creation-time setting.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"
+ },
+ {
+  "id": "D2-030",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which AzCopy command uploads C:\\data to a container and copies only files that changed since last time?",
+  "opts": [
+   "azcopy copy with --overwrite=false",
+   "azcopy sync \"C:\\data\" \"https://acct.blob.core.windows.net/container?<SAS>\"",
+   "azcopy move",
+   "azcopy benchmark"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "azcopy sync compares source and destination and transfers differences.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"
+ },
+ {
+  "id": "D2-031",
+  "sub": "AzCopy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "AzCopy can authenticate to Blob storage using:",
+  "opts": [
+   "SAS tokens only",
+   "Entra ID (azcopy login) or SAS tokens",
+   "The account name only",
+   "SSH keys"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "AzCopy supports Entra ID login and SAS tokens.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10"
+ },
+ {
+  "id": "D2-032",
+  "sub": "Storage Explorer",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Azure Storage Explorer is best described as:",
+  "opts": [
+   "A web-only monitoring dashboard",
+   "A free cross-platform desktop app to manage blobs, files, queues, tables, and Data Lake",
+   "A paid Visual Studio extension",
+   "A PowerShell module"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Storage Explorer is a free desktop app for Windows, macOS, and Linux.",
+  "link": "https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"
+ },
+ {
+  "id": "D2-033",
+  "sub": "Data migration",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You must copy 60 TB of data to Azure from a site with very low bandwidth. The practical option is:",
+  "opts": [
+   "AzCopy over the weekend",
+   "Azure Import/Export or Azure Data Box (ship physical drives)",
+   "Storage Explorer upload",
+   "RDP file copy to a VM"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Offline transfer is designed for large datasets over limited bandwidth.",
+  "link": "https://learn.microsoft.com/en-us/azure/databox/data-box-overview"
+ },
+ {
+  "id": "D2-034",
+  "sub": "Storage accounts",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each statement:",
+  "stmts": [
+   "A storage account name must be globally unique, 3–24 characters, lowercase letters and numbers only",
+   "You can change LRS to GRS on a standard GPv2 account without recreating it",
+   "A storage account can be moved to another resource group",
+   "The account's default access tier (hot/cool) applies to Azure file shares"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "Naming rules, in-place redundancy changes, and RG moves are supported; blob access tiers don't apply to file shares.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
+ },
+ {
+  "id": "D2-035",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Azure Files SMB shares use which port, which many ISPs block?",
+  "opts": [
+   "80",
+   "443",
+   "445",
+   "3389"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "SMB uses TCP 445.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview"
+ },
+ {
+  "id": "D2-036",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "On-premises users can't reach an SMB file share because the ISP blocks port 445. What's a practical solution?",
+  "opts": [
+   "Switch to HTTP",
+   "Use VPN/ExpressRoute (or Azure File Sync) so SMB doesn't go directly over the internet",
+   "Open port 80",
+   "Use RA-GRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Tunnel SMB over VPN/ExpressRoute with a private endpoint, or cache locally with Azure File Sync.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview"
+ },
+ {
+  "id": "D2-037",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which file share protocol is available only on premium (FileStorage) accounts and is used from Linux?",
+  "opts": [
+   "SMB 3.1.1",
+   "NFS 4.1",
+   "FTP",
+   "WebDAV"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "NFS 4.1 shares require premium FileStorage accounts.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol"
+ },
+ {
+  "id": "D2-038",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the correct hierarchy of Azure File Sync components?",
+  "opts": [
+   "Storage Sync Service → sync group → one cloud endpoint + server endpoints",
+   "Sync group → storage account → agent",
+   "Recovery vault → sync group → share",
+   "Storage Sync Service → server endpoint → many cloud endpoints per group"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Each sync group has exactly one cloud endpoint (an Azure file share) and one or more server endpoints.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"
+ },
+ {
+  "id": "D2-039",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What does cloud tiering in Azure File Sync do?",
+  "opts": [
+   "Moves blobs to the archive tier",
+   "Keeps frequently used files on the local server while cold files become pointers, with full copies in Azure",
+   "Compresses files locally",
+   "Replicates files between two servers"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Cloud tiering caches hot files locally and replaces cold files with stubs that are recalled on access.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-overview"
+ },
+ {
+  "id": "D2-040",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which blob type is used for virtual machine disks (VHDs)?",
+  "opts": [
+   "Block blob",
+   "Append blob",
+   "Page blob",
+   "Table blob"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Page blobs handle random read/write workloads such as VHDs.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"
+ },
+ {
+  "id": "D2-041",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which access tier is offline, so a blob can't be read until it's rehydrated?",
+  "opts": [
+   "Hot",
+   "Cool",
+   "Cold",
+   "Archive"
+  ],
+  "ans": [
+   3
+  ],
+  "exp": "Archive is the only offline tier.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-042",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Rehydrating an archived blob with Standard priority typically takes:",
+  "opts": [
+   "Seconds",
+   "Up to 1 hour",
+   "Up to 15 hours",
+   "7 days"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Standard priority takes up to 15 hours; High priority can finish in under an hour for blobs under 10 GB.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"
+ },
+ {
+  "id": "D2-043",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What are the early-deletion periods for the cool, cold, and archive tiers?",
+  "opts": [
+   "30 / 90 / 180 days",
+   "7 / 30 / 90 days",
+   "60 / 120 / 365 days",
+   "No penalties exist"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Cool 30, cold 90, archive 180 days.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-044",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which tiers can be set as the default account-level access tier?",
+  "opts": [
+   "Hot, cool, cold and archive",
+   "Hot, cool or cold",
+   "Archive only",
+   "Hot only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The default account access tier can be hot, cool or cold (hot is the default for new GPv2 accounts). Archive is set per blob and can never be the default.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-045",
+  "sub": "Lifecycle",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Blobs should move to cool after 30 days without modification, to archive after 90, and be deleted after 365. What do you configure?",
+  "opts": [
+   "A lifecycle management policy with rules based on last modified time",
+   "An Azure Policy",
+   "A budget",
+   "Object replication"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Lifecycle management rules can tier and delete based on age.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-046",
+  "sub": "Lifecycle",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After you create a new lifecycle management rule, roughly how long until its actions first run?",
+  "opts": [
+   "Immediately",
+   "Within minutes",
+   "Up to 24–48 hours",
+   "Next calendar month"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "A new policy can take up to 24 hours to take effect, and a run can take additional time.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-047",
+  "sub": "Versioning",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's the key difference between blob versioning and blob snapshots?",
+  "opts": [
+   "No difference",
+   "Versioning creates a version automatically on every write or delete; snapshots are manual point-in-time copies",
+   "Snapshots are automatic; versions are manual",
+   "Versioning requires the archive tier"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Versioning is automatic, while snapshots are created explicitly.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"
+ },
+ {
+  "id": "D2-048",
+  "sub": "Soft delete",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Blob soft delete is set to 14 days. What does that mean?",
+  "opts": [
+   "Blobs are archived after 14 days",
+   "Deleted blobs can be undeleted within 14 days",
+   "Blobs can't be deleted for 14 days",
+   "The container is locked for 14 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Soft delete keeps deleted data recoverable for the retention period.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview"
+ },
+ {
+  "id": "D2-049",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Share snapshots for Azure Files are:",
+  "opts": [
+   "Read-only point-in-time copies of the whole share, incremental in storage use",
+   "Full copies billed at 100% each time",
+   "Automatic every hour and not configurable",
+   "Only available with NFS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Share snapshots are read-only and incremental.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"
+ },
+ {
+  "id": "D2-050",
+  "sub": "Storage design",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "Invoices (block blobs) are stored in a GPv2 RA-GRS account. They must be instantly readable for 6 months and retained 7 years total. Instant access isn't needed after 6 months.",
+  "q": "Which tier strategy is cheapest for months 7–84?",
+  "opts": [
+   "Keep in hot",
+   "Move to cool",
+   "Move to archive with a lifecycle rule after 6 months",
+   "Delete and re-upload when needed"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Archive is the cheapest storage tier for long retention when instant access isn't required. Lifecycle rules automate the move.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ }
 ]
