@@ -1,0 +1,101 @@
+@let s = session();
+
+@if (!s) {
+  <section class="card empty">
+    <h1>No quiz in progress</h1>
+    <p>Start a practice set or a mock exam first.</p>
+    <p class="row">
+      <a class="btn primary" routerLink="/practice">Practice</a>
+      <a class="btn" routerLink="/mock">Mock exam</a>
+    </p>
+  </section>
+} @else if (s.finishedAt !== null) {
+  <section class="card empty">
+    <h1>This quiz is finished</h1>
+    <p class="row">
+      <a class="btn primary" routerLink="/results">View results</a>
+      <a class="btn" routerLink="/practice">Start another</a>
+    </p>
+  </section>
+} @else {
+  <div class="quiz-head">
+    <div>
+      <p class="eyebrow">{{ isExam() ? 'Mock exam' : 'Practice' }}</p>
+      <h1>Question {{ index() + 1 }} <span class="muted">of {{ total() }}</span></h1>
+      <p class="muted meta">{{ meta() }}</p>
+    </div>
+    @if (remainingLabel()) {
+      <div class="timer" [class.low]="lowTime()" role="timer" aria-label="Time remaining">
+        {{ remainingLabel() }}
+      </div>
+    }
+  </div>
+
+  <div class="progress-bar" aria-hidden="true">
+    <span [style.width.%]="((index() + 1) / total()) * 100"></span>
+  </div>
+
+  @if (question(); as q) {
+    <section class="card">
+      <app-question-view
+        [question]="q"
+        [answer]="currentAnswer()"
+        [reveal]="!isExam() && checked()"
+        (answerChange)="onAnswer($event)"
+      />
+    </section>
+  }
+
+  <div class="actions">
+    <button type="button" class="btn" [disabled]="index() === 0" (click)="goTo(index() - 1)">
+      ← Previous
+    </button>
+
+    @if (!isExam() && !checked()) {
+      <button type="button" class="btn primary" [disabled]="!canCheck()" (click)="check()">
+        Check answer
+      </button>
+    }
+
+    @if (index() < total() - 1) {
+      <button
+        type="button"
+        class="btn"
+        [class.primary]="isExam() || checked()"
+        (click)="goTo(index() + 1)"
+      >
+        Next →
+      </button>
+    } @else {
+      <button type="button" class="btn primary" (click)="finish()">
+        {{ isExam() ? 'Submit exam' : 'Finish' }}
+      </button>
+    }
+  </div>
+
+  @if (isExam()) {
+    <section class="palette-wrap">
+      <p class="muted">
+        {{ answeredCount() }} of {{ total() }} answered. Jump to any question:
+      </p>
+      <nav class="palette" aria-label="Question navigator">
+        @for (done of answered(); track $index) {
+          <button
+            type="button"
+            [class.done]="done"
+            [class.current]="$index === index()"
+            [attr.aria-current]="$index === index() ? 'step' : null"
+            (click)="goTo($index)"
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+      </nav>
+      <button type="button" class="btn finish-early" (click)="finish()">Submit exam now</button>
+    </section>
+  } @else {
+    <p class="muted end-link">
+      <button type="button" class="link" (click)="finish()">End practice and see results</button>
+    </p>
+  }
+}

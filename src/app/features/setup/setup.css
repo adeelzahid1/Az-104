@@ -1,0 +1,65 @@
+.lead {
+  margin-top: -6px;
+  max-width: 60ch;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: grid;
+  gap: 8px;
+}
+
+legend {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  cursor: pointer;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.check input {
+  margin-top: 4px;
+  accent-color: var(--accent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.dist ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.dist li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--surface-2);
+}
+
+.end {
+  justify-content: flex-end;
+}

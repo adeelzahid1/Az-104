@@ -1,0 +1,105 @@
+.quiz-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.quiz-head h1 {
+  margin: 0;
+}
+
+.meta {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.timer {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.timer.low {
+  color: var(--bad);
+  border-color: var(--bad);
+}
+
+.progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  margin: 14px 0 16px;
+  overflow: hidden;
+}
+
+.progress-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.actions .btn:first-child {
+  margin-right: auto;
+}
+
+.palette-wrap {
+  margin-top: 28px;
+}
+
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 14px;
+}
+
+.palette button {
+  width: 38px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.palette button.done {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.palette button.current {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  font-weight: 700;
+}
+
+.end-link {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty .row {
+  justify-content: center;
+}

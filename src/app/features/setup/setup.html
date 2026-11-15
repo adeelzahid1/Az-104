@@ -1,0 +1,94 @@
+@let exam = mode() === 'exam';
+
+<h1>{{ exam ? 'Mock exam' : 'Practice' }}</h1>
+<p class="muted lead">
+  @if (exam) {
+    Questions are drawn across domains in line with the official exam weights. Answers are revealed
+    only after you submit, like the real exam.
+  } @else {
+    Pick what you want to drill. Each answer is checked straight away, with an explanation and a
+    Microsoft Learn link.
+  }
+</p>
+
+<form class="card" [formGroup]="form" (ngSubmit)="start()">
+  <fieldset formGroupName="domains">
+    <legend>Domains</legend>
+    @for (d of domains; track d.id) {
+      <label class="check">
+        <input type="checkbox" [formControlName]="'' + d.id" />
+        <span>
+          <strong>{{ d.id }}. {{ d.name }}</strong>
+          <span class="muted"> · {{ d.weightLabel }}</span>
+        </span>
+      </label>
+    }
+  </fieldset>
+
+  <div class="grid">
+    <label class="field">
+      <span>Number of questions</span>
+      <select formControlName="count">
+        @for (n of countOptions(); track n) {
+          <option [ngValue]="n">{{ n }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Difficulty</span>
+      <select formControlName="diff">
+        <option [ngValue]="0">{{ exam ? 'Real-exam mix' : 'Any' }}</option>
+        <option [ngValue]="1">Easy</option>
+        <option [ngValue]="2">Medium</option>
+        <option [ngValue]="3">Hard</option>
+      </select>
+    </label>
+
+    @if (!exam) {
+      <label class="field">
+        <span>Question type</span>
+        <select formControlName="type">
+          <option value="all">All types</option>
+          <option value="mcq">Single answer</option>
+          <option value="multi">Choose 2 or 3</option>
+          <option value="yesno">Yes/No series</option>
+          <option value="order">Ordering</option>
+        </select>
+      </label>
+    }
+  </div>
+
+  @if (exam) {
+    <label class="check">
+      <input type="checkbox" formControlName="timed" />
+      <span>Timed (2 minutes per question, like the real exam's ~100 minutes for ~50)</span>
+    </label>
+
+    @if (distribution().length) {
+      <div class="dist">
+        <p class="muted">Questions per domain:</p>
+        <ul>
+          @for (d of distribution(); track d.name) {
+            <li><span>{{ d.name }}</span><strong>{{ d.n }}</strong></li>
+          }
+        </ul>
+      </div>
+    }
+  } @else {
+    <label class="check">
+      <input type="checkbox" formControlName="mistakesOnly" />
+      <span>Only questions I got wrong last time ({{ mistakeCount() }} saved)</span>
+    </label>
+  }
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="row end">
+    <button type="submit" class="btn primary" [disabled]="busy()">
+      {{ busy() ? 'Loading questions…' : exam ? 'Start mock exam' : 'Start practice' }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,126 @@
+@let q = question();
+
+@if (q.ctx) {
+  <p class="ctx">{{ q.ctx }}</p>
+}
+<p class="stem">{{ q.q }}</p>
+
+@switch (q.type) {
+  @case ('mcq') {
+    <div class="options" role="radiogroup" [attr.aria-label]="q.q">
+      @for (opt of q.opts ?? []; track $index) {
+        <label class="opt" [class]="optionState($index)" [class.selected]="picks().includes($index)">
+          <input
+            type="radio"
+            [name]="q.id"
+            [checked]="picks().includes($index)"
+            [disabled]="reveal()"
+            (change)="choose($index)"
+          />
+          <span class="letter">{{ letters[$index] }}</span>
+          <span>{{ opt }}</span>
+        </label>
+      }
+    </div>
+  }
+  @case ('multi') {
+    <p class="hint">Choose {{ expectedIndices().length }}.</p>
+    <div class="options">
+      @for (opt of q.opts ?? []; track $index) {
+        <label class="opt" [class]="optionState($index)" [class.selected]="picks().includes($index)">
+          <input
+            type="checkbox"
+            [checked]="picks().includes($index)"
+            [disabled]="reveal()"
+            (change)="choose($index)"
+          />
+          <span class="letter">{{ letters[$index] }}</span>
+          <span>{{ opt }}</span>
+        </label>
+      }
+    </div>
+  }
+  @case ('yesno') {
+    <div class="yesno">
+      @for (stmt of q.stmts ?? []; track $index) {
+        <div class="yn-row" [class]="yesNoState($index)">
+          <span class="yn-text">{{ $index + 1 }}. {{ stmt }}</span>
+          <span class="yn-choices" role="radiogroup" [attr.aria-label]="'Statement ' + ($index + 1)">
+            <label>
+              <input
+                type="radio"
+                [name]="q.id + '-' + $index"
+                [checked]="yesNo()[$index] === true"
+                [disabled]="reveal()"
+                (change)="setYesNo($index, true)"
+              />
+              Yes
+            </label>
+            <label>
+              <input
+                type="radio"
+                [name]="q.id + '-' + $index"
+                [checked]="yesNo()[$index] === false"
+                [disabled]="reveal()"
+                (change)="setYesNo($index, false)"
+              />
+              No
+            </label>
+          </span>
+        </div>
+      }
+    </div>
+  }
+  @case ('order') {
+    <p class="hint">Use the arrows to put the steps in the correct order.</p>
+    <ol class="order">
+      @for (itemIndex of order(); track itemIndex; let pos = $index, first = $first, last = $last) {
+        <li>
+          <div class="order-row">
+            <span>{{ q.items?.[itemIndex] }}</span>
+            <span class="order-buttons">
+              <button
+                type="button"
+                class="icon"
+                [disabled]="first || reveal()"
+                [attr.aria-label]="'Move step ' + (pos + 1) + ' up'"
+                (click)="move(pos, -1)"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                class="icon"
+                [disabled]="last || reveal()"
+                [attr.aria-label]="'Move step ' + (pos + 1) + ' down'"
+                (click)="move(pos, 1)"
+              >
+                ↓
+              </button>
+            </span>
+          </div>
+        </li>
+      }
+    </ol>
+  }
+}
+
+@if (reveal()) {
+  <div class="verdict" [class.ok]="isRight()" [class.bad]="!isRight()" role="status">
+    <p class="verdict-title">
+      <strong>{{ isRight() ? 'Correct' : 'Incorrect' }}</strong>
+      @if (answerText()) {
+        <span> — answer: {{ answerText() }}</span>
+      }
+    </p>
+    @if (q.type === 'order') {
+      <ol class="correct-order">
+        @for (step of correctOrder(); track $index) {
+          <li>{{ step }}</li>
+        }
+      </ol>
+    }
+    <p>{{ q.exp }}</p>
+    <a [href]="q.link" target="_blank" rel="noopener">Microsoft Learn reference ↗</a>
+  </div>
+}

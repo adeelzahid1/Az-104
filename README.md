@@ -1,59 +1,68 @@
-# Az104
+# AZ-104 Prep
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.43.
+An Angular study app for the **AZ-104 Microsoft Azure Administrator** exam: 1,000 original practice
+questions, timed mock exams weighted like the real exam, and weak-area tracking.
 
-## Development server
+Questions are written from Microsoft Learn documentation against the official skills outline
+(skills measured as of October 26, 2023). They are not exam dumps. Every answer has an
+explanation and a Microsoft Learn link.
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
-```
+- **Practice** — filter by domain, difficulty and question type; each answer is checked immediately
+  with an explanation.
+- **Mock exam** — 10–60 questions split across domains by the official weights, optional timer
+  (2 minutes per question), answers revealed only after you submit.
+- **Results** — estimated score out of 1000 (pass mark 700), per-domain accuracy, and a review of
+  every question.
+- **Weak areas** — accuracy per domain and subtopic, and a mistakes pool you can drill until each
+  question is answered correctly.
+- **Question types** — single answer, choose 2 or 3, yes/no series, and ordering.
+- Options are shuffled every session, so the position of the correct answer carries no meaning.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Progress is stored in your browser's `localStorage` only.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Run it
 
 ```bash
-ng build
+npm install
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+Then open http://localhost:4200/.
 
-For end-to-end (e2e) testing, run:
+## Build and test
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+```bash
+npm test
+```
 
-## Additional Resources
+## Project layout
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Path | Contents |
+|---|---|
+| `src/app/data/` | Question bank as JSON (200 per domain) and the `schema.ts` data model |
+| `src/app/core/` | Question loading, quiz engine, scoring and progress tracking |
+| `src/app/shared/question-view.*` | Renders all four question types and the answer feedback |
+| `src/app/features/` | Dashboard, practice/mock setup, quiz, results and weak-areas pages |
+| `study-notes/` | Exam cheat sheets for each domain |
+| `question-bank/` | The original 250 questions as readable markdown with answer keys |
+
+## Exam domains
+
+| Domain | Weight |
+|---|---|
+| Manage Azure identities and governance | 20–25% |
+| Implement and manage storage | 15–20% |
+| Deploy and manage Azure compute resources | 20–25% |
+| Implement and manage virtual networking | 15–20% |
+| Monitor and maintain Azure resources | 10–15% |
+
+Source: [AZ-104 study guide](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-104).

@@ -1,0 +1,166 @@
+:host {
+  display: block;
+}
+
+.ctx {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 0 0 12px;
+}
+
+.stem {
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.hint {
+  color: var(--muted);
+  margin: -6px 0 10px;
+  font-size: 0.9rem;
+}
+
+.options {
+  display: grid;
+  gap: 8px;
+}
+
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--surface);
+  line-height: 1.45;
+}
+
+.opt:hover {
+  border-color: var(--accent);
+}
+
+.opt.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.opt input {
+  margin-top: 4px;
+  accent-color: var(--accent);
+}
+
+.letter {
+  font-weight: 700;
+  color: var(--muted);
+  min-width: 1.2em;
+}
+
+.opt.correct,
+.yn-row.correct {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.opt.wrong,
+.yn-row.wrong {
+  border-color: var(--bad);
+  background: var(--bad-soft);
+}
+
+.opt.missed {
+  border: 1px dashed var(--ok);
+}
+
+.yesno {
+  display: grid;
+  gap: 8px;
+}
+
+.yn-row {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.yn-choices {
+  display: flex;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.yn-choices label {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.order {
+  display: grid;
+  gap: 8px;
+  padding-left: 1.4em;
+  margin: 0;
+}
+
+.order li {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-buttons {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.verdict {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+.verdict.ok {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.verdict.bad {
+  border-color: var(--bad);
+  background: var(--bad-soft);
+}
+
+.verdict-title {
+  margin-top: 0;
+}
+
+.correct-order {
+  margin: 0 0 8px;
+}
+
+@media (max-width: 600px) {
+  .yn-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

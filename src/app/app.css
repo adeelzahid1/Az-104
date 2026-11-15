@@ -1,0 +1,100 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip:focus {
+  left: 12px;
+  top: 12px;
+  z-index: 10;
+  background: var(--surface);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topbar-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 800;
+}
+
+nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+nav a:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+nav a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.page {
+  flex: 1;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  box-sizing: border-box;
+}
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
