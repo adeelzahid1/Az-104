@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { DOMAINS, Question } from '../data/schema';
+import { CaseStudy, DOMAINS, Question } from '../data/schema';
 import { Progress } from './progress';
 import { QuestionBank } from './question-bank';
 import {
@@ -46,8 +46,11 @@ export class QuizService {
   private readonly bank = inject(QuestionBank);
   private readonly progress = inject(Progress);
   private readonly state = signal<Session | null>(null);
+  private readonly caseStudies = signal<Record<string, CaseStudy>>({});
 
   readonly session = this.state.asReadonly();
+  /** Case study texts for the questions in the current session. */
+  readonly cases = this.caseStudies.asReadonly();
 
   readonly result = computed<QuizResult | null>(() => {
     const s = this.state();
@@ -82,11 +85,15 @@ export class QuizService {
 
   /** Builds a new session. Resolves to the number of questions selected (0 = none matched). */
   async start(config: QuizConfig): Promise<number> {
-    const pool = await this.bank.domains(config.domains);
+    const [pool, cases] = await Promise.all([
+      this.bank.domains(config.domains),
+      this.bank.cases(),
+    ]);
     const questions = pickQuestions(pool, config, new Set(this.progress.mistakeIds())).map((q) =>
       shuffleOptions(q),
     );
     if (!questions.length) return 0;
+    this.caseStudies.set(cases);
     const now = Date.now();
     this.state.set({
       config,

@@ -1,7 +1,14 @@
 import { DOMAINS, Difficulty, Question, QuestionType } from '../data/schema';
 
-/** mcq/multi/order: option or item indices. yesno: one boolean (or null if unanswered) per statement. */
-export type Answer = number[] | (boolean | null)[];
+/**
+ * mcq/multi/order: option or item indices.
+ * dropdown/match: one chosen index (or null) per blank or item.
+ * yesno: one boolean (or null) per statement.
+ */
+export type Answer = (number | null)[] | (boolean | null)[];
+
+/** 'case' selects whole case studies; a question type selects standalone questions of that type. */
+export type TypeFilter = 'all' | 'case' | QuestionType;
 
 export interface QuizConfig {
   mode: 'practice' | 'exam';
@@ -9,17 +16,35 @@ export interface QuizConfig {
   count: number;
   /** 0 = any difficulty */
   diff: 0 | Difficulty;
-  type: 'all' | QuestionType;
+  type: TypeFilter;
   mistakesOnly: boolean;
   timed: boolean;
 }
 
+/** Mock exams of at least this many questions include one case study, like the real exam. */
+export const CASE_STUDY_MIN_EXAM_SIZE = 30;
+
 export const domainOf = (q: Question): number => Number(q.id.charAt(1));
+
+/** Number of separate answers a question needs, or undefined when one selection is enough. */
+function slotCount(q: Question): number | undefined {
+  switch (q.type) {
+    case 'yesno':
+      return q.stmts?.length ?? 0;
+    case 'dropdown':
+      return q.blanks?.length ?? 0;
+    case 'match':
+      return q.items?.length ?? 0;
+    default:
+      return undefined;
+  }
+}
 
 export function isAnswered(q: Question, a: Answer | null): boolean {
   if (!a || a.length === 0) return false;
-  if (q.type === 'yesno') return a.length === (q.stmts?.length ?? 0) && a.every((v) => v !== null);
-  return true;
+  const slots = slotCount(q);
+  if (slots === undefined) return true;
+  return a.length === slots && a.every((v) => v !== null);
 }
 
 export function isCorrect(q: Question, a: Answer | null): boolean {
@@ -61,29 +86,83 @@ export function domainQuotas(domains: number[], count: number): Map<number, numb
   return quotas;
 }
 
+/** Groups case-study parts into one unit (kept in authored order); other questions stand alone. */
+export function toUnits(questions: Question[]): Question[][] {
+  const units: Question[][] = [];
+  const byCase = new Map<string, Question[]>();
+  for (const q of questions) {
+    if (!q.caseId) {
+      units.push([q]);
+      continue;
+    }
+    let unit = byCase.get(q.caseId);
+    if (!unit) {
+      unit = [];
+      byCase.set(q.caseId, unit);
+      units.push(unit);
+    }
+    unit.push(q);
+  }
+  return units;
+}
+
+/** Takes whole units in order until `count` questions are reached, skipping units that would overshoot. */
+function fill(units: Question[][], count: number): Question[] {
+  const out: Question[] = [];
+  for (const unit of units) {
+    if (out.length >= count) break;
+    if (out.length === 0 || out.length + unit.length <= count) out.push(...unit);
+  }
+  return out;
+}
+
 export function pickQuestions(
   pool: Question[],
   config: QuizConfig,
   mistakes: ReadonlySet<string>,
   rnd: () => number = Math.random,
 ): Question[] {
-  const eligible = pool.filter(
-    (q) =>
-      config.domains.includes(domainOf(q)) &&
-      (config.diff === 0 || q.diff === config.diff) &&
-      (config.type === 'all' || q.type === config.type) &&
-      (!config.mistakesOnly || mistakes.has(q.id)),
-  );
-  if (config.mode === 'practice') return shuffle(eligible, rnd).slice(0, config.count);
+  const inDomains = (q: Question) => config.domains.includes(domainOf(q));
+  const diffOk = (q: Question) => config.diff === 0 || q.diff === config.diff;
 
-  const quotas = domainQuotas(config.domains, config.count);
+  if (config.mistakesOnly) {
+    const missed = pool.filter(
+      (q) =>
+        inDomains(q) &&
+        diffOk(q) &&
+        mistakes.has(q.id) &&
+        (config.type === 'all' ||
+          (config.type === 'case' ? !!q.caseId : q.type === config.type)),
+    );
+    return shuffle(missed, rnd).slice(0, config.count);
+  }
+
+  const units = toUnits(pool).filter((u) => u.every(inDomains));
+  const caseUnits = units.filter((u) => !!u[0]?.caseId);
+  const singles = units
+    .filter((u) => !u[0]?.caseId)
+    .map((u) => u[0])
+    .filter((q) => diffOk(q) && (config.type === 'all' || q.type === config.type));
+
+  if (config.mode === 'practice') {
+    if (config.type === 'case') return fill(shuffle(caseUnits, rnd), config.count);
+    const candidates =
+      config.type === 'all' ? [...singles.map((q) => [q]), ...caseUnits] : singles.map((q) => [q]);
+    return fill(shuffle(candidates, rnd), config.count);
+  }
+
+  const caseUnit =
+    config.type === 'all' && config.count >= CASE_STUDY_MIN_EXAM_SIZE
+      ? shuffle(caseUnits, rnd)[0]
+      : undefined;
+  const quotas = domainQuotas(config.domains, config.count - (caseUnit?.length ?? 0));
   const picked = config.domains.flatMap((d) =>
     shuffle(
-      eligible.filter((q) => domainOf(q) === d),
+      singles.filter((q) => domainOf(q) === d),
       rnd,
     ).slice(0, quotas.get(d) ?? 0),
   );
-  return shuffle(picked, rnd);
+  return [...shuffle(picked, rnd), ...(caseUnit ?? [])];
 }
 
 /**

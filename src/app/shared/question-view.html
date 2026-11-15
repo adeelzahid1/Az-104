@@ -4,8 +4,57 @@
   <p class="ctx">{{ q.ctx }}</p>
 }
 <p class="stem">{{ q.q }}</p>
+@if (q.code) {
+  <pre class="code"><code>{{ q.code }}</code></pre>
+}
 
 @switch (q.type) {
+  @case ('dropdown') {
+    <div class="tpl" [class.mono]="q.mono">
+      @for (part of tplParts(); track $index) {
+        @if (part.blank === null) {
+          <span>{{ part.text }}</span>
+        } @else {
+          <span class="blank" [class]="slotState(part.blank)">
+            <select
+              #pick
+              [attr.aria-label]="'Drop-down ' + (part.blank + 1)"
+              [disabled]="reveal()"
+              (change)="setSlot(part.blank, pick.value)"
+            >
+              <option value="" disabled [selected]="slots()[part.blank] === null">Select…</option>
+              @for (choice of q.blanks?.[part.blank] ?? []; track $index) {
+                <option [value]="$index" [selected]="slots()[part.blank] === $index">
+                  {{ choice }}
+                </option>
+              }
+            </select>
+          </span>
+        }
+      }
+    </div>
+  }
+  @case ('match') {
+    <p class="hint">Choose a match for each item. A choice may be used once, more than once, or not at all.</p>
+    <div class="match">
+      @for (item of q.items ?? []; track $index; let i = $index) {
+        <div class="match-row" [class]="slotState(i)">
+          <span>{{ item }}</span>
+          <select
+            #pick
+            [attr.aria-label]="'Match for: ' + item"
+            [disabled]="reveal()"
+            (change)="setSlot(i, pick.value)"
+          >
+            <option value="" disabled [selected]="slots()[i] === null">Select…</option>
+            @for (target of q.targets ?? []; track $index) {
+              <option [value]="$index" [selected]="slots()[i] === $index">{{ target }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+  }
   @case ('mcq') {
     <div class="options" role="radiogroup" [attr.aria-label]="q.q">
       @for (opt of q.opts ?? []; track $index) {
@@ -113,6 +162,17 @@
         <span> — answer: {{ answerText() }}</span>
       }
     </p>
+    @if (q.type === 'dropdown') {
+      <p class="correct-label">Correct answer:</p>
+      <p class="filled" [class.mono]="q.mono">{{ filledTemplate() }}</p>
+    }
+    @if (q.type === 'match') {
+      <ul class="correct-matches">
+        @for (m of correctMatches(); track $index) {
+          <li>{{ m.item }} → <strong>{{ m.target }}</strong></li>
+        }
+      </ul>
+    }
     @if (q.type === 'order') {
       <ol class="correct-order">
         @for (step of correctOrder(); track $index) {

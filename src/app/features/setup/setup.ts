@@ -11,10 +11,13 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DOMAINS, Difficulty, QuestionType } from '../../data/schema';
+import { DOMAINS, Difficulty } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuizService } from '../../core/quiz';
-import { domainQuotas } from '../../core/quiz-logic';
+import { CASE_STUDY_MIN_EXAM_SIZE, TypeFilter, domainQuotas } from '../../core/quiz-logic';
+
+/** Every case study in the bank has this many questions (checked by the bank validation script). */
+const CASE_STUDY_PARTS = 5;
 
 @Component({
   selector: 'app-setup',
@@ -46,7 +49,7 @@ export class Setup implements OnInit {
     domains: this.fb.group({ '1': true, '2': true, '3': true, '4': true, '5': true }),
     count: 20,
     diff: 0 as 0 | Difficulty,
-    type: 'all' as 'all' | QuestionType,
+    type: 'all' as TypeFilter,
     mistakesOnly: false,
     timed: true,
   });
@@ -80,12 +83,15 @@ export class Setup implements OnInit {
 
   private updateDistribution(): void {
     if (this.mode() !== 'exam') return;
-    const quotas = domainQuotas(this.selectedDomains(), this.form.controls.count.value);
+    const count = this.form.controls.count.value;
+    const caseSize = count >= CASE_STUDY_MIN_EXAM_SIZE ? CASE_STUDY_PARTS : 0;
+    const quotas = domainQuotas(this.selectedDomains(), count - caseSize);
+    const rows = DOMAINS.filter((d) => quotas.has(d.id)).map((d) => ({
+      name: d.name,
+      n: quotas.get(d.id) ?? 0,
+    }));
     this.distribution.set(
-      DOMAINS.filter((d) => quotas.has(d.id)).map((d) => ({
-        name: d.name,
-        n: quotas.get(d.id) ?? 0,
-      })),
+      caseSize ? [...rows, { name: 'Case study section (at the end)', n: caseSize }] : rows,
     );
   }
 

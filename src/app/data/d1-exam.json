@@ -1,0 +1,950 @@
+[
+ {
+  "id": "D1-201",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C1",
+  "q": "What should you create to meet requirement 1?",
+  "opts": [
+   "A Microsoft 365 group with assigned membership",
+   "An administrative unit for the Sales department",
+   "A security group with dynamic user membership based on user.department",
+   "A security group with assigned membership, updated by a Logic App"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "A dynamic user group with a rule such as user.department -eq \"Sales\" adds and removes members automatically. Contoso already has Entra ID P1, which dynamic groups require. A Logic App works but adds administrative effort.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-202",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C1",
+  "q": "Which role assignment meets requirement 2?",
+  "opts": [
+   "Owner at the Sub-Dev scope",
+   "Contributor at the Sub-Dev scope",
+   "Contributor at the MG-Contoso scope",
+   "User Access Administrator at the Sub-Dev scope"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Contributor can manage every resource but cannot assign roles. Scoping it to Sub-Dev limits it to development; MG-Contoso would also cover Sub-Prod. Owner and User Access Administrator can grant access.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-203",
+  "sub": "Policy",
+  "type": "dropdown",
+  "diff": 2,
+  "caseId": "C1",
+  "q": "Complete the statement to meet requirement 3.",
+  "tpl": "Assign [[0]] at the [[1]] scope.",
+  "blanks": [
+   [
+    "a CanNotDelete lock",
+    "the Allowed locations policy",
+    "the Reader role",
+    "a budget"
+   ],
+   [
+    "RG-Core resource group",
+    "Sub-Prod subscription",
+    "MG-Contoso management group",
+    "Microsoft Entra tenant"
+   ]
+  ],
+  "ans": [
+   1,
+   2
+  ],
+  "exp": "The built-in Allowed locations policy (Deny) blocks other regions. Assigning it at MG-Contoso covers both subscriptions and any subscription added under that management group later, with a single assignment.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-204",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 1,
+  "caseId": "C1",
+  "q": "What should you configure to meet requirement 4?",
+  "opts": [
+   "A ReadOnly lock on RG-Core",
+   "An Azure Policy with the Deny effect on RG-Core",
+   "A CanNotDelete lock on RG-Core",
+   "Remove the Owner role from all administrators"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "CanNotDelete blocks deletion of the resource group and everything in it while still allowing changes. ReadOnly would also block configuration changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-205",
+  "sub": "SSPR",
+  "type": "yesno",
+  "diff": 2,
+  "caseId": "C1",
+  "q": "For requirement 5, answer Yes or No:",
+  "stmts": [
+   "Contoso's current licensing supports password writeback",
+   "Password writeback must be enabled in Microsoft Entra Connect",
+   "Security questions must be enabled as an SSPR method for writeback to work",
+   "Password writeback requires Microsoft Entra ID P2"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "Writeback needs Entra ID P1 or higher (Contoso has P1) and must be enabled in Entra Connect and in the Password reset settings. It does not depend on security questions, and P2 is not required.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-writeback"
+ },
+ {
+  "id": "D1-206",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C2",
+  "q": "How should you give the auditor access (requirement 4)?",
+  "opts": [
+   "Create a member account auditor@fabrikam.com and assign Reader on Sub1",
+   "Invite the auditor as a B2B guest and assign Reader on Sub1",
+   "Invite the auditor as a B2B guest and assign Contributor on Sub1",
+   "Share the subscription owner's credentials for the audit period"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A B2B guest signs in with their own Northwind credentials. Reader at the subscription scope lets them view everything in Sub1 without changing it.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-external-users"
+ },
+ {
+  "id": "D1-207",
+  "sub": "RBAC",
+  "type": "dropdown",
+  "diff": 2,
+  "caseId": "C2",
+  "q": "Complete the role assignment for WebOps (requirement 1).",
+  "tpl": "Assign [[0]] scoped to [[1]].",
+  "blanks": [
+   [
+    "Contributor",
+    "Owner",
+    "Virtual Machine Contributor",
+    "Network Contributor"
+   ],
+   [
+    "Sub1",
+    "RG-Web",
+    "RG-Shared",
+    "RG-Data"
+   ]
+  ],
+  "ans": [
+   2,
+   1
+  ],
+  "exp": "Virtual Machine Contributor manages VMs but not the virtual networks they connect to. Scoping it to RG-Web keeps WebOps away from the other resource groups.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
+ },
+ {
+  "id": "D1-208",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C2",
+  "q": "Which role should the DBA team get (requirement 2)?",
+  "opts": [
+   "Contributor on RG-Data",
+   "Owner on RG-Data",
+   "User Access Administrator on Sub1",
+   "Contributor on Sub1"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Owner gives full control of the resources and lets the team assign roles to junior DBAs. Contributor cannot assign roles; anything at Sub1 scope is broader than needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-209",
+  "sub": "Cost management",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C2",
+  "q": "Which role should Finance get (requirement 3)?",
+  "opts": [
+   "Billing Reader",
+   "Reader",
+   "Contributor",
+   "Cost Management Contributor"
+  ],
+  "ans": [
+   3
+  ],
+  "exp": "Cost Management Contributor can view costs and manage budgets and other cost configuration without managing resources. Billing Reader and Reader cannot create budgets.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-work-scopes"
+ },
+ {
+  "id": "D1-210",
+  "sub": "Governance",
+  "type": "yesno",
+  "diff": 2,
+  "caseId": "C2",
+  "q": "For requirements 5 and 6, answer Yes or No:",
+  "stmts": [
+   "A budget with an 80% alert condition stops resources when the threshold is reached",
+   "The built-in policy \"Require a tag on resource groups\" with the Deny effect meets requirement 6",
+   "Tags on a resource group are inherited automatically by the resources inside it",
+   "A budget alert can trigger an action group as well as send email"
+  ],
+  "ans": [
+   false,
+   true,
+   false,
+   true
+  ],
+  "exp": "Budgets only notify; they never stop resources. The Require-a-tag policy with Deny blocks resource groups without the tag. Tags are not inherited by default. Budget alerts can call action groups.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
+ },
+ {
+  "id": "D1-211",
+  "sub": "RBAC",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command so user1 can view all resources in resource group RG1 only.",
+  "tpl": "az role assignment create \\\n  --assignee user1@contoso.com \\\n  --role [[0]] \\\n  --scope [[1]]",
+  "blanks": [
+   [
+    "Contributor",
+    "Reader",
+    "Owner",
+    "Monitoring Reader"
+   ],
+   [
+    "/subscriptions/<sub-id>",
+    "/subscriptions/<sub-id>/resourceGroups/RG1",
+    "/providers/Microsoft.Management/managementGroups/RG1",
+    "RG1"
+   ]
+  ],
+  "ans": [
+   1,
+   1
+  ],
+  "exp": "Reader grants view-only access. The resource group scope is the full path /subscriptions/<id>/resourceGroups/RG1 (you could also use --resource-group RG1). The subscription scope would be too broad.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli"
+ },
+ {
+  "id": "D1-212",
+  "sub": "Locks",
+  "type": "dropdown",
+  "diff": 1,
+  "mono": true,
+  "q": "Complete the command to stop anyone deleting RG1 while still allowing changes.",
+  "tpl": "New-AzResourceLock -LockName NoDelete -LockLevel [[0]] -ResourceGroupName RG1",
+  "blanks": [
+   [
+    "ReadOnly",
+    "CanNotDelete",
+    "Delete",
+    "Protect"
+   ]
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "In PowerShell and the API the delete lock level is CanNotDelete (shown as \"Delete\" in the portal). ReadOnly would also block changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-213",
+  "sub": "Policy",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Choose the policy effect for each goal.",
+  "tpl": "Block VMs with sizes that are not allowed: [[0]]\nOnly report storage accounts without HTTPS-only: [[1]]\nAdd a missing tag while resources are created or updated: [[2]]",
+  "blanks": [
+   [
+    "Audit",
+    "Deny",
+    "Modify",
+    "DeployIfNotExists"
+   ],
+   [
+    "Audit",
+    "Deny",
+    "Modify",
+    "DeployIfNotExists"
+   ],
+   [
+    "Audit",
+    "Deny",
+    "Modify",
+    "DeployIfNotExists"
+   ]
+  ],
+  "ans": [
+   1,
+   0,
+   2
+  ],
+  "exp": "Deny blocks non-compliant requests, Audit only reports, and Modify adds or changes properties such as tags during create or update. DeployIfNotExists deploys a related resource.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
+ },
+ {
+  "id": "D1-214",
+  "sub": "Licenses",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Choose the minimum licence for each feature.",
+  "tpl": "Dynamic membership groups: [[0]]\nPrivileged Identity Management: [[1]]\nConditional Access: [[2]]",
+  "blanks": [
+   [
+    "Microsoft Entra ID Free",
+    "Microsoft Entra ID P1",
+    "Microsoft Entra ID P2"
+   ],
+   [
+    "Microsoft Entra ID Free",
+    "Microsoft Entra ID P1",
+    "Microsoft Entra ID P2"
+   ],
+   [
+    "Microsoft Entra ID Free",
+    "Microsoft Entra ID P1",
+    "Microsoft Entra ID P2"
+   ]
+  ],
+  "ans": [
+   1,
+   2,
+   1
+  ],
+  "exp": "Dynamic groups and Conditional Access need P1. PIM is a P2 (or Entra ID Governance) feature.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+ },
+ {
+  "id": "D1-215",
+  "sub": "Custom roles",
+  "type": "dropdown",
+  "diff": 3,
+  "mono": true,
+  "q": "Complete the custom role so it can view VMs and restart them, and can be assigned anywhere in one subscription.",
+  "tpl": "{\n  \"Name\": \"VM Restarter\",\n  \"Actions\": [\n    \"[[0]]\",\n    \"Microsoft.Compute/virtualMachines/restart/action\"\n  ],\n  \"AssignableScopes\": [ \"[[1]]\" ]\n}",
+  "blanks": [
+   [
+    "Microsoft.Compute/*",
+    "Microsoft.Compute/virtualMachines/read",
+    "*",
+    "Microsoft.Authorization/*"
+   ],
+   [
+    "/",
+    "/subscriptions/<subscription-id>",
+    "contoso.com",
+    "westeurope"
+   ]
+  ],
+  "ans": [
+   1,
+   1
+  ],
+  "exp": "The read action lets the role see VMs; the restart action allows restarts. Microsoft.Compute/* or * would grant far more. Custom roles cannot use the root scope \"/\"; a subscription ID is a valid assignable scope.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+ },
+ {
+  "id": "D1-216",
+  "sub": "SSPR",
+  "type": "dropdown",
+  "diff": 1,
+  "q": "Complete the SSPR registration settings.",
+  "tpl": "To make users register their methods at next sign-in, set \"Require users to register when signing in\" to [[0]]. By default, users are asked to reconfirm their information every [[1]] days.",
+  "blanks": [
+   [
+    "Yes",
+    "No"
+   ],
+   [
+    "30",
+    "90",
+    "180",
+    "365"
+   ]
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Turning on required registration prompts users at sign-in. The default reconfirmation period is 180 days.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+ },
+ {
+  "id": "D1-217",
+  "sub": "Groups",
+  "type": "dropdown",
+  "diff": 3,
+  "mono": true,
+  "q": "Complete the dynamic membership rule to include Sales department users whose licence usage location is Pakistan.",
+  "tpl": "(user.[[0]] -eq \"Sales\") -and (user.[[1]] -eq \"PK\")",
+  "blanks": [
+   [
+    "jobTitle",
+    "department",
+    "companyName",
+    "userType"
+   ],
+   [
+    "country",
+    "city",
+    "usageLocation",
+    "preferredLanguage"
+   ]
+  ],
+  "ans": [
+   1,
+   2
+  ],
+  "exp": "department holds the department name. usageLocation is the two-letter country code used for licensing (PK). The country attribute is free text such as \"Pakistan\".",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-218",
+  "sub": "Management groups",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the commands to create a management group and place Sub1 under it.",
+  "tpl": "az account management-group [[0]] --name MG-Prod\naz account management-group subscription [[1]] --name MG-Prod --subscription Sub1",
+  "blanks": [
+   [
+    "new",
+    "create",
+    "add",
+    "deploy"
+   ],
+   [
+    "move",
+    "link",
+    "add",
+    "attach"
+   ]
+  ],
+  "ans": [
+   1,
+   2
+  ],
+  "exp": "az account management-group create creates the group, and az account management-group subscription add places a subscription under it.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/account/management-group"
+ },
+ {
+  "id": "D1-219",
+  "sub": "Tags",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command so env=prod is added to RG1 without removing its existing tags.",
+  "tpl": "az tag update --resource-id $rgId --operation [[0]] --tags env=prod",
+  "blanks": [
+   [
+    "Replace",
+    "Merge",
+    "Delete",
+    "Append"
+   ]
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Merge adds or updates the given tags and keeps the others. Replace would remove every tag not in the list.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources-cli"
+ },
+ {
+  "id": "D1-220",
+  "sub": "External users",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement.",
+  "tpl": "To stop ordinary members from inviting guests, change [[0]] in [[1]].",
+  "blanks": [
+   [
+    "the Conditional Access policy",
+    "the guest invite settings",
+    "an Azure Policy assignment",
+    "a resource lock"
+   ],
+   [
+    "External collaboration settings",
+    "User settings → App registrations",
+    "Azure RBAC",
+    "Management groups"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "Guest invite settings in Microsoft Entra External collaboration settings control who can invite guests.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/external-collaboration-settings-configure"
+ },
+ {
+  "id": "D1-221",
+  "sub": "Governance",
+  "type": "match",
+  "diff": 1,
+  "q": "Match each requirement to the Azure feature that meets it.",
+  "items": [
+   "Organise costs by department",
+   "Prevent deletion of a resource group",
+   "Apply governance to many subscriptions at once",
+   "Restrict which regions resources can use"
+  ],
+  "targets": [
+   "Resource lock",
+   "Azure Policy",
+   "Tags",
+   "Management groups",
+   "Budgets"
+  ],
+  "ans": [
+   2,
+   0,
+   3,
+   1
+  ],
+  "exp": "Tags group costs; locks prevent deletion; management groups organise subscriptions for inherited governance; Azure Policy restricts properties such as location.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/"
+ },
+ {
+  "id": "D1-222",
+  "sub": "RBAC",
+  "type": "match",
+  "diff": 1,
+  "q": "Match each description to the built-in role.",
+  "items": [
+   "Manage resources but not access",
+   "Manage access but not resources",
+   "View only",
+   "Manage resources and access"
+  ],
+  "targets": [
+   "Owner",
+   "Contributor",
+   "Reader",
+   "User Access Administrator"
+  ],
+  "ans": [
+   1,
+   3,
+   2,
+   0
+  ],
+  "exp": "Contributor manages resources; User Access Administrator manages access; Reader views; Owner does both.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
+ },
+ {
+  "id": "D1-223",
+  "sub": "Licenses",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each feature to the minimum Microsoft Entra licence.",
+  "items": [
+   "Conditional Access",
+   "Privileged Identity Management",
+   "Group-based licensing",
+   "Basic user and group management",
+   "Risk-based policies (Identity Protection)"
+  ],
+  "targets": [
+   "Free",
+   "P1",
+   "P2"
+  ],
+  "ans": [
+   1,
+   2,
+   1,
+   0,
+   2
+  ],
+  "exp": "Conditional Access and group-based licensing need P1. PIM and Identity Protection need P2. Basic user and group management is included in Free.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+ },
+ {
+  "id": "D1-224",
+  "sub": "Devices",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each device to the right Microsoft Entra device identity.",
+  "items": [
+   "Corporate PC already joined to on-premises AD",
+   "Employee's personal Android phone",
+   "New corporate laptop, cloud-only"
+  ],
+  "targets": [
+   "Microsoft Entra registered",
+   "Microsoft Entra joined",
+   "Microsoft Entra hybrid joined"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "Hybrid join is for devices joined to on-premises AD. Registered is for personal (BYOD) devices. Entra join is for organisation-owned cloud devices.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/overview"
+ },
+ {
+  "id": "D1-225",
+  "sub": "Policy",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each behaviour to the Azure Policy effect.",
+  "items": [
+   "Blocks the request",
+   "Only reports non-compliance",
+   "Changes properties during deployment",
+   "Deploys a related resource when it is missing"
+  ],
+  "targets": [
+   "Audit",
+   "Deny",
+   "Modify",
+   "DeployIfNotExists",
+   "Disabled"
+  ],
+  "ans": [
+   1,
+   0,
+   2,
+   3
+  ],
+  "exp": "Deny blocks, Audit reports, Modify changes properties, and DeployIfNotExists deploys missing related resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
+ },
+ {
+  "id": "D1-226",
+  "sub": "Entra roles",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each task to the least-privileged Microsoft Entra role.",
+  "items": [
+   "Manage app registrations",
+   "Full control of the tenant",
+   "Reset passwords for non-admin users",
+   "Create users and groups"
+  ],
+  "targets": [
+   "Helpdesk Administrator",
+   "User Administrator",
+   "Application Administrator",
+   "Global Administrator"
+  ],
+  "ans": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "exp": "Application Administrator manages apps; Global Administrator has full control; Helpdesk Administrator resets non-admin passwords; User Administrator creates users and groups.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"
+ },
+ {
+  "id": "D1-227",
+  "sub": "Managed identities",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each description to the identity type.",
+  "items": [
+   "An invited external person",
+   "Deleted automatically with its Azure resource",
+   "Standalone and can be shared by several resources"
+  ],
+  "targets": [
+   "System-assigned managed identity",
+   "User-assigned managed identity",
+   "Guest user",
+   "Service principal with a client secret"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "Guests are invited external users. A system-assigned identity shares its resource's lifecycle. A user-assigned identity is its own resource and can be attached to many resources.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
+ },
+ {
+  "id": "D1-228",
+  "sub": "Cost management",
+  "type": "match",
+  "diff": 1,
+  "q": "Match each need to the cost tool.",
+  "items": [
+   "Get right-sizing recommendations for idle VMs",
+   "Analyse what you actually spent last month",
+   "Estimate the cost of a planned deployment",
+   "Compare on-premises costs with Azure"
+  ],
+  "targets": [
+   "Pricing calculator",
+   "TCO calculator",
+   "Cost analysis",
+   "Azure Advisor"
+  ],
+  "ans": [
+   3,
+   2,
+   0,
+   1
+  ],
+  "exp": "Advisor recommends savings; Cost analysis shows actual spend; the pricing calculator estimates new deployments; the TCO calculator compares on-premises with Azure.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/"
+ },
+ {
+  "id": "D1-229",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "code": "Principal            Role         Scope\n-------------------  -----------  ----------------------------------------\nuser1@contoso.com    Reader       /subscriptions/1111\nOps-Group            Contributor  /subscriptions/1111/resourceGroups/RG1",
+  "q": "user1 is a member of Ops-Group. What can user1 do in resource group RG2 (in the same subscription)?",
+  "opts": [
+   "Create, change and delete resources",
+   "Only view resources",
+   "Nothing",
+   "Assign roles to other users"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "In RG2 only the subscription-scope Reader assignment applies, so user1 can view but not change. The Contributor assignment applies only to RG1.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-cli"
+ },
+ {
+  "id": "D1-230",
+  "sub": "Custom roles",
+  "type": "yesno",
+  "diff": 3,
+  "code": "{\n  \"Name\": \"Storage Operator\",\n  \"Actions\": [ \"Microsoft.Storage/storageAccounts/*\" ],\n  \"NotActions\": [ \"Microsoft.Storage/storageAccounts/delete\" ],\n  \"DataActions\": [],\n  \"AssignableScopes\": [ \"/subscriptions/1111\" ]\n}",
+  "q": "Review the custom role. Answer Yes or No for a user who has ONLY this role:",
+  "stmts": [
+   "The user can create storage accounts",
+   "The user can delete storage accounts",
+   "The user can read blob contents using Microsoft Entra authorisation",
+   "The role can be assigned to a resource group in subscription 1111"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "storageAccounts/* includes write (create and update), but NotActions removes delete. There are no DataActions, so no blob data access. A resource group inside the assignable subscription is a valid scope.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
+ },
+ {
+  "id": "D1-231",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "code": "\"policyRule\": {\n  \"if\": {\n    \"not\": {\n      \"field\": \"location\",\n      \"in\": \"[parameters('allowedLocations')]\"\n    }\n  },\n  \"then\": { \"effect\": \"deny\" }\n}",
+  "q": "This policy is assigned to a subscription with allowedLocations = [\"westeurope\", \"northeurope\"]. What happens when someone deploys a VM to East US?",
+  "opts": [
+   "The VM is created and flagged as non-compliant",
+   "The VM is created and moved to West Europe",
+   "The deployment is denied",
+   "The VM is created and tagged with the allowed locations"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "The rule matches any location not in the allowed list and applies the deny effect, so the request is rejected.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure-policy-rule"
+ },
+ {
+  "id": "D1-232",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "code": "\"then\": { \"effect\": \"deny\" }",
+  "q": "The same deny policy is assigned today. A storage account was created in East US last month. What happens to it?",
+  "opts": [
+   "It is deleted at the next evaluation",
+   "It keeps running and is reported as non-compliant",
+   "It is stopped",
+   "It is moved to West Europe automatically"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Deny only blocks new create and update requests. Existing resources are evaluated and shown as non-compliant, but they are not changed.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deny"
+ },
+ {
+  "id": "D1-233",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 2,
+  "code": "resource lock 'Microsoft.Authorization/locks@2020-05-01' = {\n  name: 'protect-rg'\n  properties: {\n    level: 'ReadOnly'\n    notes: 'Production'\n  }\n}",
+  "q": "This Bicep file is deployed to resource group RG-Prod. An administrator then tries to scale out an App Service plan in RG-Prod. What happens?",
+  "opts": [
+   "The scale-out succeeds because locks only block deletion",
+   "The scale-out fails because ReadOnly blocks all write operations",
+   "The scale-out succeeds for Owners only",
+   "The lock is removed automatically"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A ReadOnly lock at the resource group scope applies to every resource in it and blocks all write operations, including scaling, for everyone until the lock is removed.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-234",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "code": "(user.department -eq \"IT\") -or (user.jobTitle -contains \"Engineer\")",
+  "q": "Which user becomes a member of the group with this dynamic rule?",
+  "opts": [
+   "department \"IT Operations\", jobTitle \"Manager\"",
+   "department \"Finance\", jobTitle \"Analyst\"",
+   "department \"HR\", jobTitle \"Senior Engineer\"",
+   "department \"Sales\", jobTitle \"Account Manager\""
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "-contains matches \"Engineer\" inside \"Senior Engineer\", and the rule uses -or. -eq needs an exact match, so \"IT Operations\" does not equal \"IT\".",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-235",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "code": "AzureActivity\n| where OperationNameValue == \"MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/WRITE\"\n| where ActivityStatusValue == \"Success\"\n| project TimeGenerated, Caller, ResourceGroup",
+  "q": "What does this Log Analytics query return?",
+  "opts": [
+   "Every failed sign-in to the tenant",
+   "Successful role assignment creations, with who made them and where",
+   "All users who have the Owner role",
+   "Resource locks that were removed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "roleAssignments/write is the operation for creating role assignments. The query keeps successful ones and shows the time, the caller and the resource group.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity"
+ },
+ {
+  "id": "D1-236",
+  "sub": "Management groups",
+  "type": "yesno",
+  "diff": 2,
+  "code": "Tenant Root Group\n└── MG-Corp        (Policy: Allowed locations = westeurope)\n    ├── MG-Prod    (RBAC: Ops-Group = Contributor)\n    │   └── Sub-Prod\n    └── MG-Dev\n        └── Sub-Dev",
+  "q": "Review the hierarchy and its assignments. Answer Yes or No:",
+  "stmts": [
+   "The Allowed locations policy applies to Sub-Dev",
+   "Ops-Group can create resources in Sub-Dev",
+   "Ops-Group can create resources in Sub-Prod in West Europe",
+   "A new subscription moved under MG-Prod gets both the policy and the role assignment"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "Policy and RBAC assignments inherit down the hierarchy. MG-Corp's policy reaches both subscriptions. Ops-Group's Contributor role is on MG-Prod only, so it covers Sub-Prod and any subscription later placed under MG-Prod.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-237",
+  "sub": "Cost management",
+  "type": "mcq",
+  "diff": 3,
+  "code": "\"notifications\": {\n  \"Actual_GreaterThan_80_Percent\": {\n    \"enabled\": true, \"operator\": \"GreaterThan\", \"threshold\": 80,\n    \"thresholdType\": \"Actual\", \"contactEmails\": [ \"finops@contoso.com\" ]\n  },\n  \"Forecasted_GreaterThan_100_Percent\": {\n    \"enabled\": true, \"operator\": \"GreaterThan\", \"threshold\": 100,\n    \"thresholdType\": \"Forecasted\", \"contactEmails\": [ \"finops@contoso.com\" ]\n  }\n}",
+  "q": "A monthly budget of 1,000 USD has these notifications. Actual spend is 600 USD, but Azure forecasts 1,150 USD for the month. What happens?",
+  "opts": [
+   "Nothing until actual spend passes 800 USD",
+   "An email is sent because forecasted spend is above 100% of the budget",
+   "Resources are stopped when the forecast passes 1,000 USD",
+   "Both notifications fire at the end of the month only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Forecasted notifications fire when the forecast exceeds the threshold, even if actual spend is lower. Budgets never stop resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
+ },
+ {
+  "id": "D1-238",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "code": "New-AzRoleAssignment -ObjectId $groupId `\n  -RoleDefinitionName \"Virtual Machine Contributor\" `\n  -ResourceGroupName \"RG-App\"",
+  "q": "After this command runs, what can members of the group do?",
+  "opts": [
+   "Manage VMs in RG-App, but not the virtual networks they connect to, and not assign roles",
+   "Manage every resource in RG-App",
+   "Manage VMs in every resource group of the subscription",
+   "Only start and stop VMs in RG-App"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Virtual Machine Contributor manages VMs but not their VNets or storage accounts, and cannot assign roles. The scope is the resource group RG-App.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
+ },
+ {
+  "id": "D1-239",
+  "sub": "Entra users",
+  "type": "yesno",
+  "diff": 2,
+  "code": "DisplayName  UserPrincipalName                               UserType  AccountEnabled  UsageLocation\nAli Khan     ali@contoso.com                                 Member    True            PK\nSara Ahmed   sara_fabrikam.com#EXT#@contoso.onmicrosoft.com  Guest     True\nBilal Raza   bilal@contoso.com                               Member    False           AE",
+  "q": "Review the user list. Answer Yes or No:",
+  "stmts": [
+   "Sara signs in with her Fabrikam credentials",
+   "Bilal can sign in",
+   "Group-based licensing will fail for Sara until a usage location is set",
+   "Ali can be assigned a licence"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "Sara is a B2B guest, so she authenticates with her home organisation. Bilal's account is disabled. Licences need a usage location, which Sara lacks. Ali has one.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-resolve-problems"
+ },
+ {
+  "id": "D1-240",
+  "sub": "Tags",
+  "type": "mcq",
+  "diff": 3,
+  "code": "az policy assignment create --name inherit-costcenter \\\n  --policy <id of \"Inherit a tag from the resource group\"> \\\n  --scope /subscriptions/1111 \\\n  --mi-system-assigned --location westeurope \\\n  --params '{ \"tagName\": { \"value\": \"costcenter\" } }'",
+  "q": "Why does this policy assignment include a managed identity?",
+  "opts": [
+   "Policy assignments always need an identity",
+   "The Modify effect needs an identity to change tags on existing resources through remediation",
+   "The identity is needed to read the tag value from the resource group",
+   "It lets the policy bypass resource locks"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "\"Inherit a tag from the resource group\" uses the Modify effect. Remediation tasks change existing resources by acting as the assignment's managed identity, which needs a role such as Tag Contributor.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
+ }
+]

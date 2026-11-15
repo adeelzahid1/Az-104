@@ -1,0 +1,150 @@
+[
+ {
+  "id": "C1",
+  "title": "Contoso Pharmaceuticals",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Contoso Pharmaceuticals has its head office in Karachi and a branch in Dubai. All Azure resources are in one Microsoft Entra tenant (contoso.onmicrosoft.com). The custom domain contoso.com is verified in the tenant."
+   },
+   {
+    "heading": "Existing environment",
+    "body": "Two subscriptions, Sub-Prod and Sub-Dev, sit under the management group MG-Contoso. Users are synchronised from on-premises Active Directory with Microsoft Entra Connect. Every user has a Microsoft Entra ID P1 licence. Existing security groups: IT-Admins and Finance (both with assigned membership). The resource group RG-Core in Sub-Prod hosts shared production services."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. Sales staff must be added to a group automatically, based on their department attribute.\n2. Developers must manage all resources in Sub-Dev but must not be able to grant access to anyone.\n3. No resource may be created outside West Europe or UAE North in any subscription, including subscriptions added in the future.\n4. RG-Core must be protected against accidental deletion, while still allowing configuration changes.\n5. Passwords that users reset in the cloud must be written back to on-premises Active Directory.\n6. Administrative effort must be minimised."
+   }
+  ]
+ },
+ {
+  "id": "C2",
+  "title": "Fabrikam Retail",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Fabrikam Retail runs its online shop in one Azure subscription, Sub1, with three resource groups: RG-Web (web VMs), RG-Data (databases) and RG-Shared (networking)."
+   },
+   {
+    "heading": "Teams",
+    "body": "WebOps manages the web servers. The DBA team manages databases and onboards junior DBAs. Finance tracks cloud spending. An external auditor from Northwind Traders (northwind.com) reviews the environment each quarter."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. WebOps must manage VMs in RG-Web but must not change virtual networks.\n2. The DBA team must have full control of RG-Data, including granting access to junior DBAs.\n3. Finance must view costs and create budgets, but must not manage resources.\n4. The auditor must be able to read everything in Sub1 using their existing Northwind credentials.\n5. Finance must be emailed when monthly spending reaches 80% of 2,000 USD.\n6. Every new resource group must have a costcenter tag; creation without it must fail.\n7. Follow the principle of least privilege."
+   }
+  ]
+ },
+ {
+  "id": "C3",
+  "title": "Litware Media",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Litware Media produces video content. Its Azure resources are in West Europe. An on-premises Windows file server in Lahore holds 20 TB of shared documents. Users sign in with on-premises Active Directory accounts that are synchronised to Microsoft Entra ID."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. Raw video uploads are used heavily for 30 days, rarely afterwards, and must be kept for 5 years at the lowest possible cost.\n2. Video data must stay readable even if the West Europe region is unavailable, without performing a failover.\n3. Partner studios must upload files to one container for 7 days without Microsoft Entra accounts. Access must be revocable at any time without affecting other access tokens.\n4. The Lahore office needs fast local access to the shared documents, with a central copy in Azure, and existing NTFS permissions must keep working.\n5. Blob storage must not be reachable from the internet. VMs in VNet-Prod and on-premises clients connected over VPN must still reach it."
+   }
+  ]
+ },
+ {
+  "id": "C4",
+  "title": "Northwind Health",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Northwind Health stores patient reports as block blobs in the container \"reports\" of the GPv2 storage account stnwhealth (LRS) in West Europe."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. Reports must not be modified or deleted for 7 years after they are written (regulatory WORM requirement).\n2. If a report is accidentally overwritten, the previous content must be recoverable.\n3. If a container is deleted by mistake, it must be recoverable for 14 days.\n4. Reports must be copied asynchronously to a separate analytics storage account in North Europe.\n5. The reporting app runs on an Azure VM and must read reports without storing any secrets.\n6. Data must be encrypted with keys that Northwind controls and can revoke."
+   }
+  ]
+ },
+ {
+  "id": "C5",
+  "title": "Adatum Software",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Adatum Software runs a customer-facing .NET web app and a nightly data-processing job packaged as a container. All resources are in West Europe. A SQL Server VM in VNet-Prod holds the app database."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. New versions of the web app must be deployed without downtime, and a new version must first be tested with 10% of real users.\n2. The web app must scale out automatically on CPU load, up to 8 instances.\n3. The app must use the custom domain www.adatum.com with a free TLS certificate.\n4. The app must reach the SQL Server VM on its private IP address.\n5. The nightly job runs for about 30 minutes; Adatum wants to pay only while it runs and to manage as little infrastructure as possible.\n6. Container images must be stored privately and replicated to North Europe.\n7. Costs must be minimised."
+   }
+  ]
+ },
+ {
+  "id": "C6",
+  "title": "Tailspin Toys",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Tailspin Toys runs four web VMs and two SQL Server VMs in the resource group RG-Shop in West Europe, a region that supports availability zones. Development VMs run in RG-Dev."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. The web tier must achieve a 99.99% VM connectivity SLA.\n2. SQL VM disks must be encrypted inside the guest OS with BitLocker, using keys stored in a Tailspin key vault.\n3. One reporting VM must be moved to North Europe.\n4. Development VMs must shut down automatically every evening to save money.\n5. The web tier must scale automatically based on CPU.\n6. The OS disk of one VM must grow from 128 GB to 256 GB."
+   }
+  ]
+ },
+ {
+  "id": "C7",
+  "title": "Woodgrove Bank",
+  "sections": [
+   {
+    "heading": "Network",
+    "body": "Woodgrove Bank uses a hub-and-spoke network in West Europe. The hub VNet (10.0.0.0/16) contains a VPN gateway connected to the on-premises network (192.168.0.0/16) and an Azure Firewall with the private IP 10.0.1.4. Two spoke VNets, VNet-App (10.1.0.0/16) and VNet-Data (10.2.0.0/16), are each peered only with the hub."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. Both spokes must reach on-premises through the hub VPN gateway.\n2. Traffic from VNet-App to VNet-Data must be inspected by the firewall.\n3. Administrators must RDP to VMs from a browser, and no VM may have a public IP address.\n4. An Azure SQL Database must be reachable only over private IP addresses, including from on-premises.\n5. Web VMs behind a Standard public load balancer must accept only HTTPS from the internet.\n6. Management effort must be minimised."
+   }
+  ]
+ },
+ {
+  "id": "C8",
+  "title": "Proseware",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Proseware owns the domain proseware.com, registered with an external registrar. Its public web app runs on three VMs spread across availability zones 1, 2 and 3 in West Europe. An internal API runs on two other VMs."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. The public DNS zone for proseware.com must be hosted in Azure.\n2. The apex name proseware.com must resolve to the load balancer's public IP and keep working if that IP resource changes.\n3. VMs must be resolvable by name in the internal zone corp.proseware.internal, with records created automatically.\n4. The internal API must be load-balanced on TCP 8443 and reachable only from inside the network.\n5. Administrators must RDP to web VM 1 through the load balancer's public IP on port 50001.\n6. The public load balancer must survive the loss of an availability zone."
+   }
+  ]
+ },
+ {
+  "id": "C9",
+  "title": "Margie's Travel",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Margie's Travel runs 30 Windows and Linux VMs, an App Service app and several storage accounts in the resource group RG-Prod in West Europe. The operations team works from Lahore."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. Windows event logs and performance counters from all VMs must be collected centrally.\n2. The operations team must receive an email and an SMS when any VM in RG-Prod, including VMs added later, has average CPU above 85% for 10 minutes.\n3. Notifications must be silenced every Sunday from 01:00 to 03:00 during maintenance, without disabling any alert rules.\n4. Collected logs must be kept for 1 year.\n5. Records of who deleted Azure resources must be kept for 2 years.\n6. The team must be told when VMs cannot reach the payment API (api.payments.contoso.com:443), monitored continuously."
+   }
+  ]
+ },
+ {
+  "id": "C10",
+  "title": "Lucerne Publishing",
+  "sections": [
+   {
+    "heading": "Overview",
+    "body": "Lucerne Publishing runs 12 VMs in North Europe, including a SQL Server VM. It also uses an Azure file share named \"contracts\" and an on-premises Windows file server."
+   },
+   {
+    "heading": "Requirements",
+    "body": "1. VMs must be backed up daily; daily backups kept 30 days and monthly backups kept 12 months.\n2. SQL Server databases need transaction log backups every 15 minutes.\n3. The contracts file share must be backed up daily.\n4. Folders on the on-premises file server must be backed up directly to Azure.\n5. After a regional disaster, the VMs must run in West Europe within 1 hour.\n6. Disaster recovery drills must run every quarter with no impact on production.\n7. Backups must also be restorable in the paired region without a failover."
+   }
+  ]
+ }
+]

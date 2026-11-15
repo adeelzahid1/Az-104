@@ -43,6 +43,36 @@ export class QuestionView {
     () =>
       (this.draft() as (boolean | null)[] | null) ?? (this.question().stmts ?? []).map(() => null),
   );
+  /** dropdown/match: the chosen index (or null) for each blank or item. */
+  protected readonly slots = computed(() => {
+    const q = this.question();
+    const size = (q.type === 'dropdown' ? q.blanks?.length : q.items?.length) ?? 0;
+    return (this.draft() as (number | null)[] | null) ?? Array<number | null>(size).fill(null);
+  });
+
+  /** dropdown: the template split into text runs and drop-down positions. */
+  protected readonly tplParts = computed(() =>
+    (this.question().tpl ?? '')
+      .split(/\[\[(\d+)\]\]/)
+      .map((part, i) => (i % 2 === 0 ? { text: part, blank: null } : { text: '', blank: Number(part) })),
+  );
+
+  /** dropdown: the template with every drop-down replaced by its correct choice. */
+  protected readonly filledTemplate = computed(() => {
+    const q = this.question();
+    const ans = q.ans as number[];
+    return this.tplParts()
+      .map((p) => (p.blank === null ? p.text : (q.blanks?.[p.blank]?.[ans[p.blank]] ?? '')))
+      .join('');
+  });
+
+  /** match: each item with its correct target. */
+  protected readonly correctMatches = computed(() => {
+    const q = this.question();
+    const ans = q.ans as number[];
+    return (q.items ?? []).map((item, i) => ({ item, target: q.targets?.[ans[i]] ?? '' }));
+  });
+
   protected readonly expectedIndices = computed(() => this.question().ans as number[]);
   protected readonly expectedYesNo = computed(() => this.question().ans as boolean[]);
   protected readonly isRight = computed(() => isCorrect(this.question(), this.answer()));
@@ -74,6 +104,17 @@ export class QuestionView {
   protected yesNoState(i: number): 'correct' | 'wrong' | '' {
     if (!this.reveal()) return '';
     return this.yesNo()[i] === this.expectedYesNo()[i] ? 'correct' : 'wrong';
+  }
+
+  protected slotState(i: number): 'correct' | 'wrong' | '' {
+    if (!this.reveal()) return '';
+    return this.slots()[i] === this.expectedIndices()[i] ? 'correct' : 'wrong';
+  }
+
+  protected setSlot(i: number, value: string): void {
+    if (this.reveal()) return;
+    const choice = value === '' ? null : Number(value);
+    this.commit(this.slots().map((v, idx) => (idx === i ? choice : v)));
   }
 
   protected choose(i: number): void {

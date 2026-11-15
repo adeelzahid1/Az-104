@@ -35,6 +35,10 @@
     <span [style.width.%]="((index() + 1) / total()) * 100"></span>
   </div>
 
+  @if (caseStudy(); as cs) {
+    <app-case-panel [caseStudy]="cs" [partLabel]="casePart()" />
+  }
+
   @if (question(); as q) {
     <section class="card">
       <app-question-view

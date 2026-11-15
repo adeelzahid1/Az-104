@@ -1,0 +1,919 @@
+[
+ {
+  "id": "D3-201",
+  "sub": "App Service plans",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C5",
+  "q": "What is the lowest App Service plan tier that meets requirements 1–4?",
+  "opts": [
+   "Free (F1)",
+   "Basic (B1)",
+   "Standard (S1)",
+   "Premium v3 (P1v3)"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Deployment slots, rule-based autoscale (Standard allows up to 10 instances), free managed certificates and VNet integration are all available in Standard. Basic has no slots or autoscale.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ },
+ {
+  "id": "D3-202",
+  "sub": "Deployment slots",
+  "type": "dropdown",
+  "diff": 2,
+  "caseId": "C5",
+  "q": "Complete the plan for requirement 1.",
+  "tpl": "Deploy the new version to a [[0]], then use [[1]] to send 10% of users to it before swapping.",
+  "blanks": [
+   [
+    "new App Service plan",
+    "deployment slot",
+    "container group",
+    "VM scale set"
+   ],
+   [
+    "traffic routing (Testing in production)",
+    "Traffic Manager weighted routing",
+    "access restrictions",
+    "ARR affinity"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "A staging slot holds the new version. Testing in production routes a percentage of traffic to the slot, and a swap then promotes it with no downtime.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
+ },
+ {
+  "id": "D3-203",
+  "sub": "Containers",
+  "type": "mcq",
+  "diff": 3,
+  "caseId": "C5",
+  "q": "Which service best meets requirement 5?",
+  "opts": [
+   "Azure Container Instances with the restart policy Always",
+   "An Azure Container Apps job with a schedule trigger",
+   "An AKS cluster with a CronJob",
+   "A VM that runs the container from Task Scheduler"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A Container Apps job with a cron schedule runs the container to completion and bills only while it runs, with no infrastructure to manage. Restart policy Always would keep ACI running. AKS and VMs need more management.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/jobs"
+ },
+ {
+  "id": "D3-204",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 1,
+  "caseId": "C5",
+  "q": "Which registry option meets requirement 6?",
+  "opts": [
+   "Azure Container Registry Basic",
+   "Azure Container Registry Standard",
+   "Azure Container Registry Premium with geo-replication",
+   "Docker Hub public repository"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Geo-replication needs the Premium SKU. Docker Hub public repositories are not private.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus"
+ },
+ {
+  "id": "D3-205",
+  "sub": "App Service",
+  "type": "yesno",
+  "diff": 2,
+  "caseId": "C5",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A free App Service managed certificate can secure www.adatum.com",
+   "A free managed certificate can secure *.adatum.com",
+   "Regional VNet integration lets the app reach the SQL Server VM's private IP",
+   "App settings marked as deployment slot settings move with the code during a swap"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Managed certificates cover custom domains but not wildcards. VNet integration provides outbound access into the VNet. Slot settings stay with their slot.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate"
+ },
+ {
+  "id": "D3-206",
+  "sub": "VM availability",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C6",
+  "q": "How should you deploy the web tier for requirement 1?",
+  "opts": [
+   "Four VMs in one availability set",
+   "Four VMs spread across availability zones, behind a Standard load balancer",
+   "One large VM with Premium SSD disks",
+   "Four VMs in a proximity placement group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Two or more VMs across availability zones give a 99.99% SLA. An availability set gives 99.95%, and a single VM gives 99.9%.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
+ },
+ {
+  "id": "D3-207",
+  "sub": "Disk encryption",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C6",
+  "q": "What must be true of the key vault for requirement 2?",
+  "opts": [
+   "It can be in any region",
+   "It must be in the same region and subscription as the VMs and be enabled for disk encryption",
+   "It must be a storage account with customer-managed keys",
+   "It must be in the paired region"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure Disk Encryption uses BitLocker inside Windows. The key vault must be in the same region and subscription as the VM, with the disk encryption access policy enabled.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-key-vault"
+ },
+ {
+  "id": "D3-208",
+  "sub": "VM move",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C6",
+  "q": "What should you use for requirement 3?",
+  "opts": [
+   "Change the VM's location property in the portal",
+   "Azure Resource Mover",
+   "az resource move with --destination-group",
+   "Export the template and redeploy, with disks copied automatically"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Resource Mover moves VMs and their dependencies across regions. Resource group or subscription moves never change the region.",
+  "link": "https://learn.microsoft.com/en-us/azure/resource-mover/overview"
+ },
+ {
+  "id": "D3-209",
+  "sub": "VM operations",
+  "type": "dropdown",
+  "diff": 2,
+  "caseId": "C6",
+  "q": "Complete the plan for requirements 4 and 5.",
+  "tpl": "Use [[0]] for the development VMs, and [[1]] for the web tier.",
+  "blanks": [
+   [
+    "a budget",
+    "auto-shutdown",
+    "Azure Advisor",
+    "a resource lock"
+   ],
+   [
+    "a VM scale set with CPU-based autoscale",
+    "an availability set",
+    "Azure Site Recovery",
+    "a proximity placement group"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "Auto-shutdown stops VMs on a schedule. A scale set with autoscale rules adds and removes instances based on CPU.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/auto-shutdown-vm"
+ },
+ {
+  "id": "D3-210",
+  "sub": "VM disks",
+  "type": "yesno",
+  "diff": 2,
+  "caseId": "C6",
+  "q": "For requirement 6, answer Yes or No:",
+  "stmts": [
+   "The OS disk can be increased to 256 GB",
+   "The disk can later be shrunk back to 128 GB",
+   "After resizing, the partition must be extended inside the operating system",
+   "Resizing the disk requires creating a new VM"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Managed disks can grow but never shrink. The extra space must be claimed inside the OS. The VM itself is kept.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-os-disk"
+ },
+ {
+  "id": "D3-211",
+  "sub": "VM creation",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command to create a Linux VM in availability zone 1 with SSH keys.",
+  "tpl": "az vm create -g RG1 -n vm1 --image Ubuntu2204 \\\n  --size Standard_B2s --zone [[0]] \\\n  --admin-username azureuser --[[1]]",
+  "blanks": [
+   [
+    "westeurope",
+    "1",
+    "AS1",
+    "*"
+   ],
+   [
+    "generate-ssh-keys",
+    "enable-rdp",
+    "public-ip-none",
+    "ssh-only"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "--zone takes the zone number. --generate-ssh-keys creates a key pair if none exists.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/vm"
+ },
+ {
+  "id": "D3-212",
+  "sub": "ARM templates",
+  "type": "dropdown",
+  "diff": 3,
+  "mono": true,
+  "q": "Complete the template so the storage account name is globally unique and the account is in the resource group's region.",
+  "tpl": "\"resources\": [ {\n  \"type\": \"Microsoft.Storage/storageAccounts\",\n  \"apiVersion\": \"2023-01-01\",\n  \"name\": \"[[0]]\",\n  \"location\": \"[[1]]\",\n  \"sku\": { \"name\": \"Standard_LRS\" },\n  \"kind\": \"StorageV2\"\n} ]",
+  "blanks": [
+   [
+    "StorageAccount01",
+    "[concat('st', uniqueString(resourceGroup().id))]",
+    "st-unique",
+    "[newGuid()]"
+   ],
+   [
+    "[resourceGroup().location]",
+    "[subscription().location]",
+    "westeurope-1",
+    "[location()]"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "uniqueString() builds a deterministic lowercase hash for a unique name. Storage names cannot contain capitals or hyphens, and newGuid() can only be used as a parameter default. resourceGroup().location returns the group's region.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-string"
+ },
+ {
+  "id": "D3-213",
+  "sub": "ARM templates",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command so resources in RG1 that are not in the template are deleted.",
+  "tpl": "az deployment group create -g RG1 --template-file main.bicep --mode [[0]]",
+  "blanks": [
+   [
+    "Incremental",
+    "Complete",
+    "Validate",
+    "WhatIf"
+   ]
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Complete mode deletes resources in the resource group that the template does not define. Incremental is the default and never deletes.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes"
+ },
+ {
+  "id": "D3-214",
+  "sub": "Bicep",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the Bicep parameter declarations.",
+  "tpl": "@[[0]](['Standard_LRS', 'Standard_GRS'])\nparam skuName string = 'Standard_LRS'\n\n@[[1]]()\nparam adminPassword string",
+  "blanks": [
+   [
+    "values",
+    "allowed",
+    "enum",
+    "options"
+   ],
+   [
+    "secure",
+    "hidden",
+    "password",
+    "encrypted"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "@allowed restricts a parameter to listed values. @secure() keeps the value out of logs and deployment history.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/parameters"
+ },
+ {
+  "id": "D3-215",
+  "sub": "App Service plans",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command with the cheapest SKU that supports the slot command that follows.",
+  "tpl": "az appservice plan create -g RG1 -n plan1 --sku [[0]] --is-linux\naz webapp deployment slot create -g RG1 -n app1 --slot staging",
+  "blanks": [
+   [
+    "F1",
+    "B1",
+    "S1",
+    "D1"
+   ]
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Deployment slots start at the Standard tier (S1). Free, Shared and Basic have no slots.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
+ },
+ {
+  "id": "D3-216",
+  "sub": "ACI",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command so the container runs once and then stops (and stops billing).",
+  "tpl": "az container create -g RG1 -n job1 \\\n  --image myacr.azurecr.io/batch:1 \\\n  --restart-policy [[0]] --cpu 1 --memory 1.5",
+  "blanks": [
+   [
+    "Always",
+    "Never",
+    "Continuous",
+    "Scheduled"
+   ]
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Never (or OnFailure) suits run-to-completion tasks. Always restarts the container whenever it exits.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-restart-policy"
+ },
+ {
+  "id": "D3-217",
+  "sub": "VMSS",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement about this autoscale setting.",
+  "tpl": "Minimum 2, maximum 10, default 2. There are 10 instances and CPU is at 90%. After the next scale-out evaluation there will be [[0]] instances.",
+  "blanks": [
+   [
+    "10",
+    "11",
+    "12",
+    "2"
+   ]
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Autoscale never goes above the maximum, so the count stays at 10.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
+ },
+ {
+  "id": "D3-218",
+  "sub": "ACR",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement.",
+  "tpl": "To let an app's managed identity pull images from the registry, assign it the [[0]] role on the registry.",
+  "blanks": [
+   [
+    "AcrPush",
+    "Reader",
+    "AcrPull",
+    "Owner"
+   ]
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "AcrPull is the least-privileged role for pulling images. AcrPush also allows pushing.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-roles"
+ },
+ {
+  "id": "D3-219",
+  "sub": "Custom domains",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the DNS records for the custom domain www.adatum.com.",
+  "tpl": "Create a [[0]] record for www pointing to adatum-web.azurewebsites.net, and a TXT record named [[1]] with the app's verification ID.",
+  "blanks": [
+   [
+    "A",
+    "CNAME",
+    "MX",
+    "NS"
+   ],
+   [
+    "asuid.www",
+    "_verify.www",
+    "www.txt",
+    "adatum-verify"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "Subdomains use a CNAME to the default hostname. App Service checks ownership with a TXT record named asuid.<subdomain>.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain"
+ },
+ {
+  "id": "D3-220",
+  "sub": "VM availability",
+  "type": "dropdown",
+  "diff": 1,
+  "q": "Complete the statement about availability sets.",
+  "tpl": "An availability set supports up to [[0]] fault domains and up to [[1]] update domains.",
+  "blanks": [
+   [
+    "2",
+    "3",
+    "5",
+    "20"
+   ],
+   [
+    "5",
+    "10",
+    "20",
+    "100"
+   ]
+  ],
+  "ans": [
+   1,
+   2
+  ],
+  "exp": "Availability sets support up to 3 fault domains (depending on region) and up to 20 update domains.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+ },
+ {
+  "id": "D3-221",
+  "sub": "Containers",
+  "type": "match",
+  "diff": 1,
+  "q": "Match each need to the Azure service.",
+  "items": [
+   "Store private container images",
+   "Run one container quickly for a short task",
+   "Full control of Kubernetes",
+   "Microservices that scale to zero"
+  ],
+  "targets": [
+   "Azure Container Instances",
+   "Azure Container Apps",
+   "Azure Kubernetes Service",
+   "Azure Container Registry",
+   "App Service"
+  ],
+  "ans": [
+   3,
+   0,
+   2,
+   1
+  ],
+  "exp": "ACR stores images; ACI runs quick standalone containers; AKS gives full Kubernetes; Container Apps scales microservices to zero.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/compare-options"
+ },
+ {
+  "id": "D3-222",
+  "sub": "VM disks",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each workload to the most suitable disk type.",
+  "items": [
+   "Dev/test at the lowest cost",
+   "Production SQL needing very high IOPS with adjustable throughput",
+   "General production workloads that need SSD reliability",
+   "Lightly used web server"
+  ],
+  "targets": [
+   "Standard HDD",
+   "Standard SSD",
+   "Premium SSD",
+   "Ultra Disk"
+  ],
+  "ans": [
+   0,
+   3,
+   2,
+   1
+  ],
+  "exp": "Standard HDD is cheapest; Ultra Disk handles the most demanding IOPS; Premium SSD suits general production; Standard SSD suits light production.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types"
+ },
+ {
+  "id": "D3-223",
+  "sub": "ARM templates",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each description to the deployment feature.",
+  "items": [
+   "Default mode; never deletes resources",
+   "Generate a template from existing resources",
+   "Preview changes before deploying",
+   "Delete resources missing from the template"
+  ],
+  "targets": [
+   "What-if",
+   "Complete mode",
+   "Incremental mode",
+   "Export template"
+  ],
+  "ans": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "exp": "Incremental is the default; Export template captures existing resources; what-if previews; Complete mode deletes what is not in the template.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes"
+ },
+ {
+  "id": "D3-224",
+  "sub": "VM availability",
+  "type": "match",
+  "diff": 1,
+  "q": "Match each deployment to its VM SLA.",
+  "items": [
+   "Two or more VMs across availability zones",
+   "Single VM with all Premium SSD disks",
+   "Two or more VMs in an availability set"
+  ],
+  "targets": [
+   "99.9%",
+   "99.95%",
+   "99.99%"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "Zones give 99.99%, availability sets 99.95%, and a single VM with premium disks 99.9%.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
+ },
+ {
+  "id": "D3-225",
+  "sub": "App Service plans",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each capability to the lowest App Service tier that provides it.",
+  "items": [
+   "Deployment slots and autoscale",
+   "Free development and testing",
+   "Custom domain with TLS, manual scaling only",
+   "Isolated environment in your own VNet (App Service Environment)"
+  ],
+  "targets": [
+   "Free",
+   "Basic",
+   "Standard",
+   "Isolated"
+  ],
+  "ans": [
+   2,
+   0,
+   1,
+   3
+  ],
+  "exp": "Standard adds slots and autoscale; Free is for testing; Basic adds custom domains and TLS; Isolated runs in an App Service Environment.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ },
+ {
+  "id": "D3-226",
+  "sub": "Disk encryption",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each description to the encryption option.",
+  "items": [
+   "Always-on platform encryption of managed disks",
+   "BitLocker or dm-crypt inside the guest OS",
+   "Hypervisor-level encryption that also covers temp disks, with no agent"
+  ],
+  "targets": [
+   "Azure Disk Encryption",
+   "Encryption at host",
+   "Server-side encryption (SSE)",
+   "Transparent Data Encryption"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "SSE is always on; Azure Disk Encryption works inside the guest; encryption at host works on the host and covers temp disks and caches.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
+ },
+ {
+  "id": "D3-227",
+  "sub": "Bicep",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each purpose to the Bicep keyword.",
+  "items": [
+   "Return a value from the deployment",
+   "Declare an input",
+   "Reuse another Bicep file",
+   "Reference a resource that is already deployed"
+  ],
+  "targets": [
+   "param",
+   "existing",
+   "module",
+   "output",
+   "var"
+  ],
+  "ans": [
+   3,
+   0,
+   2,
+   1
+  ],
+  "exp": "output returns values; param declares inputs; module reuses files; existing references deployed resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/file"
+ },
+ {
+  "id": "D3-228",
+  "sub": "VM operations",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each need to the VM operation.",
+  "items": [
+   "Run a script inside the VM without RDP",
+   "Reset a forgotten local administrator password",
+   "Move the VM to a new host while keeping its disks",
+   "Fix a VM stuck in a failed state by reapplying its configuration"
+  ],
+  "targets": [
+   "Redeploy",
+   "Reapply",
+   "Run Command",
+   "Reset password"
+  ],
+  "ans": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "exp": "Run Command executes scripts through the VM agent; Reset password uses the VMAccess extension; Redeploy moves the VM to a new node; Reapply re-runs the last configuration.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/troubleshooting/redeploy-to-new-node-windows"
+ },
+ {
+  "id": "D3-229",
+  "sub": "ARM templates",
+  "type": "mcq",
+  "diff": 2,
+  "code": "{\n  \"type\": \"Microsoft.Compute/virtualMachines\",\n  \"apiVersion\": \"2023-03-01\",\n  \"name\": \"vm1\",\n  \"dependsOn\": [\n    \"[resourceId('Microsoft.Network/networkInterfaces', 'vm1-nic')]\"\n  ],\n  \"properties\": { }\n}",
+  "q": "What does the dependsOn element in this template do?",
+  "opts": [
+   "It makes sure the network interface is deployed before the VM",
+   "It deletes the network interface when the VM is deleted",
+   "It deploys the VM and the NIC in parallel",
+   "It places the VM in the same resource group as the NIC"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "dependsOn sets deployment order: Resource Manager waits for the NIC before creating the VM.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/resource-dependency"
+ },
+ {
+  "id": "D3-230",
+  "sub": "Bicep",
+  "type": "yesno",
+  "diff": 2,
+  "code": "param location string = resourceGroup().location\nparam count int = 3\n\nresource st 'Microsoft.Storage/storageAccounts@2023-01-01' = [for i in range(0, count): {\n  name: 'st${i}${uniqueString(resourceGroup().id)}'\n  location: location\n  sku: { name: 'Standard_LRS' }\n  kind: 'StorageV2'\n}]",
+  "q": "Review the Bicep file. Answer Yes or No:",
+  "stmts": [
+   "By default it deploys three storage accounts",
+   "Passing count=5 deploys five storage accounts",
+   "The accounts are always created in West Europe",
+   "All the accounts get the same name"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "The loop runs count times (default 3). location comes from the resource group. ${i} makes each name different.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/loops"
+ },
+ {
+  "id": "D3-231",
+  "sub": "ARM templates",
+  "type": "mcq",
+  "diff": 3,
+  "code": "Resource and property changes are indicated with these symbols:\n  - Delete\n  + Create\n  = Nochange\n\nScope: /subscriptions/1111/resourceGroups/RG1\n  - Microsoft.Compute/virtualMachines/vm-old\n  + Microsoft.Network/publicIPAddresses/pip-new\n  = Microsoft.Network/virtualNetworks/vnet1\n\nResource changes: 1 to delete, 1 to create, 1 no change.",
+  "q": "A what-if run shows this output. Why will vm-old be deleted?",
+  "opts": [
+   "The template sets vm-old to be deleted",
+   "The deployment uses Complete mode, and vm-old is not defined in the template",
+   "What-if always deletes stopped VMs",
+   "The resource group has a CanNotDelete lock"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Only Complete mode deletes resources that are missing from the template. A CanNotDelete lock would make the deletion fail.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-what-if"
+ },
+ {
+  "id": "D3-232",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 2,
+  "code": "param deployDiag bool = false\n\nresource diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (deployDiag) {\n  name: 'send-to-law'\n  scope: webApp\n  properties: { }\n}",
+  "q": "This file is deployed with default parameter values. Is the diagnostic setting created?",
+  "opts": [
+   "Yes, always",
+   "No, because deployDiag defaults to false",
+   "Only if the resource group already has diagnostics",
+   "The deployment fails because of the condition"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "if (deployDiag) deploys the resource only when the parameter is true.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/conditional-resource-deployment"
+ },
+ {
+  "id": "D3-233",
+  "sub": "Deployment slots",
+  "type": "yesno",
+  "diff": 3,
+  "code": "$ az webapp config appsettings list -n app1 -g RG1 --slot staging\n[\n  { \"name\": \"DB_CONN\",   \"value\": \"Server=staging-db;...\", \"slotSetting\": true },\n  { \"name\": \"FEATURE_X\", \"value\": \"on\",                   \"slotSetting\": false }\n]",
+  "q": "These are the staging slot's app settings. You swap staging into production. Answer Yes or No:",
+  "stmts": [
+   "Production gets FEATURE_X=on after the swap",
+   "Production's DB_CONN becomes the staging database value",
+   "DB_CONN stays with the staging slot",
+   "Production instances serve requests cold, with no warm-up"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Normal settings travel with the code; slot settings (slotSetting: true) stay put. Swaps warm up the source slot's instances before switching.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
+ },
+ {
+  "id": "D3-234",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "code": "apiVersion: 2021-10-01\nlocation: westeurope\nname: web-group\ntype: Microsoft.ContainerInstance/containerGroups\nproperties:\n  osType: Linux\n  restartPolicy: Always\n  ipAddress:\n    type: Public\n    ports: [ { protocol: tcp, port: 80 } ]\n  containers:\n  - name: web\n    properties:\n      image: myacr.azurecr.io/web:1\n      ports: [ { port: 80 } ]\n      resources: { requests: { cpu: 1, memoryInGB: 1.5 } }\n  - name: logger\n    properties:\n      image: myacr.azurecr.io/logger:1\n      resources: { requests: { cpu: 0.5, memoryInGB: 0.5 } }",
+  "q": "Which statement about this container group is true?",
+  "opts": [
+   "The two containers run on separate hosts",
+   "The logger container can reach the web container on localhost:80",
+   "Each container gets its own public IP",
+   "The group can also run Windows containers"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Containers in a group share the host, lifecycle and network namespace, so they talk over localhost. The group has one IP. Multi-container groups are Linux only.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-container-groups"
+ },
+ {
+  "id": "D3-235",
+  "sub": "VMSS",
+  "type": "mcq",
+  "diff": 3,
+  "code": "\"capacity\": { \"minimum\": \"2\", \"maximum\": \"6\", \"default\": \"2\" },\n\"rules\": [ {\n  \"metricTrigger\": {\n    \"metricName\": \"Percentage CPU\", \"timeAggregation\": \"Average\",\n    \"timeWindow\": \"PT10M\", \"operator\": \"GreaterThan\", \"threshold\": 70\n  },\n  \"scaleAction\": {\n    \"direction\": \"Increase\", \"type\": \"ChangeCount\", \"value\": \"2\", \"cooldown\": \"PT5M\"\n  }\n} ]",
+  "q": "The scale set has 5 instances and average CPU has been 85% for 15 minutes. How many instances will it have after this rule runs?",
+  "opts": [
+   "5",
+   "6",
+   "7",
+   "2"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The rule adds 2 instances, but the maximum is 6, so autoscale stops at 6.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
+ },
+ {
+  "id": "D3-236",
+  "sub": "VM sizing",
+  "type": "mcq",
+  "diff": 2,
+  "code": "(OperationNotAllowed) Operation 'resize' is not allowed since the VM size\nStandard_M64s is not available on the current hardware cluster.",
+  "q": "You see this error when resizing a running VM. What should you do?",
+  "opts": [
+   "Open a support ticket to add the size to the cluster",
+   "Stop (deallocate) the VM, then resize it",
+   "Move the VM to another resource group",
+   "Delete and recreate the VM with the same name"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Sizes that are not on the current hardware cluster need the VM to be deallocated first, so Azure can place it on suitable hardware.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/resize-vm"
+ },
+ {
+  "id": "D3-237",
+  "sub": "ARM templates",
+  "type": "mcq",
+  "diff": 2,
+  "code": "\"outputs\": {\n  \"webUrl\": {\n    \"type\": \"string\",\n    \"value\": \"[reference(resourceId('Microsoft.Web/sites', parameters('siteName'))).defaultHostName]\"\n  }\n}",
+  "q": "What does this template output return?",
+  "opts": [
+   "The resource ID of the web app",
+   "The web app's default host name, for example app1.azurewebsites.net",
+   "The App Service plan name",
+   "The publishing password"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "reference() returns the deployed resource's runtime properties, and defaultHostName is the azurewebsites.net host name.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-resource"
+ },
+ {
+  "id": "D3-238",
+  "sub": "ACR",
+  "type": "yesno",
+  "diff": 2,
+  "code": "$ az acr show -n myacr --query \"{sku:sku.name, admin:adminUserEnabled, public:publicNetworkAccess}\"\n{\n  \"admin\": true,\n  \"public\": \"Enabled\",\n  \"sku\": \"Standard\"\n}",
+  "q": "Review the registry. Answer Yes or No:",
+  "stmts": [
+   "You can add a geo-replica in North Europe without changing the SKU",
+   "A shared user name and password can be used to push images",
+   "You can build images in the cloud with az acr build",
+   "You can add a private endpoint without changing the SKU"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   false
+  ],
+  "exp": "Geo-replication and private endpoints need Premium. The admin user is enabled, which gives a shared credential. ACR Tasks (az acr build) work on all SKUs.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus"
+ },
+ {
+  "id": "D3-239",
+  "sub": "App Service scaling",
+  "type": "mcq",
+  "diff": 2,
+  "code": "Name    Sku   Workers  Apps\n------  ----  -------  ----------\nplan1   B1    1        app1, app2",
+  "q": "app2 needs rule-based autoscale. What must change?",
+  "opts": [
+   "Enable Always On for app2",
+   "The plan that runs app2 must be Standard or higher, for example by scaling plan1 up to S1 or moving app2 to an S1 plan",
+   "Add a second worker to plan1",
+   "Create a deployment slot for app2"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Autoscale rules need the Standard tier or higher. Scaling plan1 up affects app1 as well, because both apps share the plan.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-scale-up"
+ },
+ {
+  "id": "D3-240",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 2,
+  "code": "module net './network.bicep' = {\n  name: 'networkDeploy'\n  params: {\n    vnetName: 'vnet-prod'\n    addressPrefix: '10.0.0.0/16'\n  }\n}\n\noutput subnetId string = net.outputs.subnetId",
+  "q": "What does this Bicep code do?",
+  "opts": [
+   "It deploys network.bicep as a nested deployment and outputs the subnet ID that module returns",
+   "It imports network.bicep's resources without deploying them",
+   "It deletes the network if it already exists",
+   "It runs network.bicep in a separate subscription"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A module deploys another Bicep file with the given parameters, and its outputs can be used by the parent file.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules"
+ }
+]

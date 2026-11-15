@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Question } from '../data/schema';
+import { CaseStudy, Question } from '../data/schema';
 
 type JsonModule = { default: unknown };
 
@@ -13,6 +13,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d1-ext1.json'),
       import('../data/d1-ext2.json'),
       import('../data/d1-ext3.json'),
+      import('../data/d1-exam.json'),
     ]).then(toQuestions),
   2: () =>
     Promise.all([
@@ -20,6 +21,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d2-ext1.json'),
       import('../data/d2-ext2.json'),
       import('../data/d2-ext3.json'),
+      import('../data/d2-exam.json'),
     ]).then(toQuestions),
   3: () =>
     Promise.all([
@@ -27,6 +29,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d3-ext1.json'),
       import('../data/d3-ext2.json'),
       import('../data/d3-ext3.json'),
+      import('../data/d3-exam.json'),
     ]).then(toQuestions),
   4: () =>
     Promise.all([
@@ -34,6 +37,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d4-ext1.json'),
       import('../data/d4-ext2.json'),
       import('../data/d4-ext3.json'),
+      import('../data/d4-exam.json'),
     ]).then(toQuestions),
   5: () =>
     Promise.all([
@@ -41,6 +45,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d5-ext1.json'),
       import('../data/d5-ext2.json'),
       import('../data/d5-ext3.json'),
+      import('../data/d5-exam.json'),
     ]).then(toQuestions),
 };
 
@@ -48,6 +53,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
 @Injectable({ providedIn: 'root' })
 export class QuestionBank {
   private readonly cache = new Map<number, Promise<Question[]>>();
+  private casesPromise: Promise<Record<string, CaseStudy>> | null = null;
 
   domain(id: number): Promise<Question[]> {
     let pending = this.cache.get(id);
@@ -62,5 +68,13 @@ export class QuestionBank {
   async domains(ids: number[]): Promise<Question[]> {
     const sets = await Promise.all(ids.map((id) => this.domain(id)));
     return sets.flat();
+  }
+
+  /** Case study texts, keyed by id. */
+  cases(): Promise<Record<string, CaseStudy>> {
+    this.casesPromise ??= import('../data/cases.json').then((m) =>
+      Object.fromEntries((m.default as CaseStudy[]).map((c) => [c.id, c])),
+    );
+    return this.casesPromise;
   }
 }

@@ -1,11 +1,12 @@
 /**
  * AZ-104 question bank data model.
  *
- * Each domain has 4 JSON files of 50 questions (core = converted from the
- * markdown bank, ext1-3 = additional sets). Loaded lazily per domain.
+ * Each domain has JSON files loaded lazily: core (converted from the markdown bank),
+ * ext1-3 (additional sets) and exam (exam-style formats: drop-downs, matching, code reading
+ * and case studies). Case study texts live in cases.json.
  */
 
-export type QuestionType = 'mcq' | 'multi' | 'yesno' | 'order';
+export type QuestionType = 'mcq' | 'multi' | 'yesno' | 'order' | 'dropdown' | 'match';
 
 /** 1 = easy, 2 = medium, 3 = hard */
 export type Difficulty = 1 | 2 | 3;
@@ -21,24 +22,44 @@ export interface Question {
   ctx?: string;
   /** Question text. For yesno, the lead-in instruction. */
   q: string;
-  /** mcq/multi options. Absent for yesno/order. */
+  /** Code, command or output shown with the question (Bicep, JSON, KQL, CLI, tables). */
+  code?: string;
+  /** Case study this question belongs to (see cases.json). Parts of a case are served together. */
+  caseId?: string;
+  /** mcq/multi options. */
   opts?: string[];
   /** yesno statements. */
   stmts?: string[];
-  /** order items, in the scrambled order presented. */
+  /** order: items in the scrambled order presented. match: the items to be matched. */
   items?: string[];
+  /** match: the choices each item can be matched to (a choice may be used more than once). */
+  targets?: string[];
+  /** dropdown: text with [[0]], [[1]], … where each drop-down appears. */
+  tpl?: string;
+  /** dropdown: render the template as code (monospace, line breaks kept). */
+  mono?: boolean;
+  /** dropdown: the options for each drop-down, in [[n]] order. */
+  blanks?: string[][];
   /**
    * Correct answer:
    * - mcq: [index]
    * - multi: [index, index, ...]
    * - yesno: boolean[] aligned with stmts
    * - order: item indices in correct sequence
+   * - dropdown: chosen option index for each blank
+   * - match: target index for each item
    */
   ans: number[] | boolean[];
   /** Explanation: why correct is correct (and key wrong-option notes). */
   exp: string;
   /** Official Microsoft Learn/docs link. */
   link: string;
+}
+
+export interface CaseStudy {
+  id: string;
+  title: string;
+  sections: { heading: string; body: string }[];
 }
 
 export interface DomainInfo {

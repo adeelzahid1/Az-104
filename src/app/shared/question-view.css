@@ -132,6 +132,84 @@
   flex-shrink: 0;
 }
 
+.code,
+.tpl.mono,
+.filled.mono {
+  font-family: 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 0.88rem;
+  white-space: pre-wrap;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+.code {
+  margin: 0 0 14px;
+}
+
+.tpl {
+  line-height: 2.4;
+}
+
+.blank select {
+  max-width: 100%;
+  margin: 0 2px;
+  padding: 4px 8px;
+}
+
+.blank.correct select,
+.match-row.correct select {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+}
+
+.blank.wrong select,
+.match-row.wrong select {
+  border-color: var(--bad);
+  background: var(--bad-soft);
+}
+
+.match {
+  display: grid;
+  gap: 8px;
+}
+
+.match-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(180px, 40%);
+  gap: 12px;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.match-row.correct {
+  border-color: var(--ok);
+}
+
+.match-row.wrong {
+  border-color: var(--bad);
+}
+
+.correct-label {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.filled {
+  margin-top: 0;
+}
+
+.correct-matches {
+  margin: 0 0 8px;
+  padding-left: 1.2em;
+}
+
 .verdict {
   margin-top: 18px;
   padding: 14px 16px;
@@ -162,5 +240,9 @@
   .yn-row {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .match-row {
+    grid-template-columns: 1fr;
   }
 }

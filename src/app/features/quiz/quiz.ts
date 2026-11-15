@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { DOMAINS } from '../../data/schema';
 import { QuizService } from '../../core/quiz';
 import { Answer, domainOf, isAnswered } from '../../core/quiz-logic';
+import { CasePanel } from '../../shared/case-panel';
 import { QuestionView } from '../../shared/question-view';
 
 const DIFFICULTY = ['', 'Easy', 'Medium', 'Hard'];
@@ -19,7 +20,7 @@ const DIFFICULTY = ['', 'Easy', 'Medium', 'Hard'];
 @Component({
   selector: 'app-quiz',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionView, RouterLink],
+  imports: [QuestionView, CasePanel, RouterLink],
   templateUrl: './quiz.html',
   styleUrl: './quiz.css',
 })
@@ -53,6 +54,19 @@ export class Quiz {
     return s ? s.questions.map((q, i) => isAnswered(q, s.answers[i])) : [];
   });
   protected readonly answeredCount = computed(() => this.answered().filter(Boolean).length);
+  protected readonly caseStudy = computed(() => {
+    const id = this.question()?.caseId;
+    return id ? (this.quiz.cases()[id] ?? null) : null;
+  });
+  /** e.g. "question 2 of 5" within the current case study. */
+  protected readonly casePart = computed(() => {
+    const s = this.session();
+    const id = this.question()?.caseId;
+    if (!s || !id) return '';
+    const parts = s.questions.map((q, i) => ({ q, i })).filter((x) => x.q.caseId === id);
+    const position = parts.findIndex((x) => x.i === s.current) + 1;
+    return `question ${position} of ${parts.length}`;
+  });
   protected readonly meta = computed(() => {
     const q = this.question();
     if (!q) return '';

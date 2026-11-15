@@ -7,6 +7,7 @@ import {
   isCorrect,
   pickQuestions,
   shuffleOptions,
+  toUnits,
 } from './quiz-logic';
 
 const base = { sub: 'Test', diff: 2 as const, q: 'Q', exp: 'E', link: 'https://learn.microsoft.com' };
@@ -47,6 +48,104 @@ describe('isCorrect', () => {
   it('requires the exact sequence for ordering questions', () => {
     expect(isCorrect(order, [2, 0, 3, 1])).toBeTrue();
     expect(isCorrect(order, [0, 2, 3, 1])).toBeFalse();
+  });
+});
+
+describe('drop-down and matching questions', () => {
+  const dropdown: Question = {
+    ...base,
+    id: 'D1-201',
+    type: 'dropdown',
+    tpl: 'Assign [[0]] at [[1]].',
+    blanks: [
+      ['a', 'b'],
+      ['c', 'd', 'e'],
+    ],
+    ans: [1, 2],
+  };
+  const match: Question = {
+    ...base,
+    id: 'D1-202',
+    type: 'match',
+    items: ['x', 'y', 'z'],
+    targets: ['t1', 't2'],
+    ans: [0, 1, 0],
+  };
+
+  it('needs every drop-down chosen before it counts as answered', () => {
+    expect(isAnswered(dropdown, [1, null])).toBeFalse();
+    expect(isAnswered(dropdown, [1, 2])).toBeTrue();
+  });
+
+  it('checks each drop-down choice', () => {
+    expect(isCorrect(dropdown, [1, 2])).toBeTrue();
+    expect(isCorrect(dropdown, [1, 1])).toBeFalse();
+  });
+
+  it('allows a target to be used more than once in matching', () => {
+    expect(isCorrect(match, [0, 1, 0])).toBeTrue();
+    expect(isCorrect(match, [0, 0, 0])).toBeFalse();
+    expect(isAnswered(match, [0, null, 0])).toBeFalse();
+  });
+});
+
+describe('case studies', () => {
+  const part = (n: number, caseId: string): Question => ({
+    ...mcq,
+    id: `D1-${String(300 + n).padStart(3, '0')}`,
+    caseId,
+  });
+  const caseA = [1, 2, 3, 4, 5].map((n) => part(n, 'CA'));
+  const caseB = [6, 7, 8, 9, 10].map((n) => part(n, 'CB'));
+  const singles = Array.from({ length: 60 }, (_, i): Question => ({
+    ...mcq,
+    id: `D${(i % 5) + 1}-${String(i).padStart(3, '0')}`,
+  }));
+  const pool = [...singles, ...caseA, ...caseB];
+  const config: QuizConfig = {
+    mode: 'practice',
+    domains: [1, 2, 3, 4, 5],
+    count: 10,
+    diff: 0,
+    type: 'case',
+    mistakesOnly: false,
+    timed: false,
+  };
+
+  it('groups case parts into one unit in authored order', () => {
+    const units = toUnits(pool);
+    const unitA = units.find((u) => u[0].caseId === 'CA');
+    expect(unitA?.map((q) => q.id)).toEqual(caseA.map((q) => q.id));
+  });
+
+  it('serves whole case studies together in practice', () => {
+    const picked = pickQuestions(pool, config, new Set(), seeded(4));
+    expect(picked.length).toBe(10);
+    expect(picked.slice(0, 5).every((q) => q.caseId === picked[0].caseId)).toBeTrue();
+    expect(picked.slice(5).every((q) => q.caseId === picked[5].caseId)).toBeTrue();
+  });
+
+  it('adds exactly one case study at the end of a large mock exam', () => {
+    const picked = pickQuestions(
+      pool,
+      { ...config, mode: 'exam', type: 'all', count: 30 },
+      new Set(),
+      seeded(5),
+    );
+    expect(picked.length).toBe(30);
+    const caseParts = picked.filter((q) => q.caseId);
+    expect(caseParts.length).toBe(5);
+    expect(picked.slice(25).every((q) => q.caseId === caseParts[0].caseId)).toBeTrue();
+  });
+
+  it('leaves case studies out of small mock exams', () => {
+    const picked = pickQuestions(
+      pool,
+      { ...config, mode: 'exam', type: 'all', count: 20 },
+      new Set(),
+      seeded(6),
+    );
+    expect(picked.some((q) => q.caseId)).toBeFalse();
   });
 });
 

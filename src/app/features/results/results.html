@@ -70,6 +70,9 @@
     @for (item of reviewItems(); track item.q.id) {
       <article class="card review-item">
         <p class="muted q-num">Question {{ item.n }} · {{ item.q.id }}</p>
+        @if (item.caseStudy; as cs) {
+          <app-case-panel [caseStudy]="cs" [open]="false" />
+        }
         <app-question-view [question]="item.q" [answer]="item.answer" [reveal]="true" />
       </article>
     } @empty {

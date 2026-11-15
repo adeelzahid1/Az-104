@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { Router, RouterLink } from '@angular/router';
 import { DOMAINS } from '../../data/schema';
 import { PASS_MARK, QuizService } from '../../core/quiz';
+import { CasePanel } from '../../shared/case-panel';
 import { QuestionView } from '../../shared/question-view';
 
 @Component({
   selector: 'app-results',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionView, RouterLink],
+  imports: [QuestionView, CasePanel, RouterLink],
   templateUrl: './results.html',
   styleUrl: './results.css',
 })
@@ -23,7 +24,12 @@ export class Results {
   protected readonly reviewItems = computed(() => {
     const r = this.result();
     if (!r) return [];
-    const numbered = r.items.map((item, i) => ({ ...item, n: i + 1 }));
+    const cases = this.quiz.cases();
+    const numbered = r.items.map((item, i) => ({
+      ...item,
+      n: i + 1,
+      caseStudy: item.q.caseId ? (cases[item.q.caseId] ?? null) : null,
+    }));
     return this.onlyWrong() ? numbered.filter((i) => !i.correct) : numbered;
   });
 

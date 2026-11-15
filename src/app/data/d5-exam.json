@@ -1,0 +1,947 @@
+[
+ {
+  "id": "D5-201",
+  "sub": "Agents",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C9",
+  "q": "What meets requirement 1?",
+  "opts": [
+   "Enable boot diagnostics on every VM",
+   "Install the Azure Monitor Agent and create a data collection rule that sends events and counters to a Log Analytics workspace",
+   "Create diagnostic settings on each VM that send to a storage account",
+   "Use the Activity log"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Guest OS logs and performance counters are collected by the Azure Monitor Agent, configured by data collection rules. The Activity log only records control-plane operations.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/agents/agents-overview"
+ },
+ {
+  "id": "D5-202",
+  "sub": "Alerts",
+  "type": "dropdown",
+  "diff": 2,
+  "caseId": "C9",
+  "q": "Complete the plan for requirement 2.",
+  "tpl": "Create one [[0]] scoped to RG-Prod for all VMs, and attach an [[1]] that sends email and SMS.",
+  "blanks": [
+   [
+    "log search alert per VM",
+    "metric alert rule",
+    "budget",
+    "activity log alert"
+   ],
+   [
+    "action group",
+    "alert processing rule",
+    "data collection rule",
+    "workbook"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "A metric alert scoped to a resource group can monitor every VM in it, including future ones. Action groups deliver notifications.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-multiple-time-series-single-rule"
+ },
+ {
+  "id": "D5-203",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C9",
+  "q": "What meets requirement 3?",
+  "opts": [
+   "Disable the alert rules every Sunday with a runbook",
+   "An alert processing rule that suppresses notifications on a weekly schedule",
+   "Remove the SMS receivers from the action group on Sundays",
+   "Set the alert severity to 4"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Alert processing rules can suppress action groups during scheduled windows while the alerts themselves still fire.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ },
+ {
+  "id": "D5-204",
+  "sub": "Log Analytics",
+  "type": "yesno",
+  "diff": 2,
+  "caseId": "C9",
+  "q": "For requirements 4 and 5, answer Yes or No:",
+  "stmts": [
+   "The workspace's interactive retention can be set to 1 year",
+   "The Activity log keeps 2 years of events in the portal by default",
+   "Sending the Activity log to a Log Analytics workspace (or storage) with a diagnostic setting supports the 2-year requirement",
+   "Deleting a VM also deletes its logs from the workspace"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Interactive retention can be up to 730 days. The Activity log keeps 90 days unless you export it. Logs stay in the workspace for their retention period after the VM is deleted.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"
+ },
+ {
+  "id": "D5-205",
+  "sub": "Connection Monitor",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C9",
+  "q": "What meets requirement 6?",
+  "opts": [
+   "IP flow verify",
+   "Connection Monitor, testing from the VMs to api.payments.contoso.com on port 443",
+   "Packet capture on every VM",
+   "An Activity log alert"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Connection Monitor tests connectivity and latency continuously and can alert. IP flow verify only checks NSG rules at a single point in time.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/connection-monitor-overview"
+ },
+ {
+  "id": "D5-206",
+  "sub": "Backup vaults",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C10",
+  "q": "Where must the vault that backs up the North Europe VMs be?",
+  "opts": [
+   "A Recovery Services vault in North Europe",
+   "A Recovery Services vault in West Europe",
+   "A Backup vault in any region",
+   "A storage account in North Europe"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure VM backups go to a Recovery Services vault in the same region as the VMs.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"
+ },
+ {
+  "id": "D5-207",
+  "sub": "Backup",
+  "type": "dropdown",
+  "diff": 2,
+  "caseId": "C10",
+  "q": "Complete the plan for requirements 2 and 4.",
+  "tpl": "Protect SQL Server with [[0]], and the on-premises folders with [[1]].",
+  "blanks": [
+   [
+    "VM backup only",
+    "Azure Site Recovery",
+    "Azure Backup for SQL Server in Azure VMs",
+    "the MARS agent"
+   ],
+   [
+    "the MARS agent",
+    "Azure File Sync",
+    "Azure Site Recovery",
+    "AzCopy"
+   ]
+  ],
+  "ans": [
+   2,
+   0
+  ],
+  "exp": "SQL Server workload backup supports frequent log backups and point-in-time restore. The MARS agent backs up Windows files and folders directly to Azure.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-sql-database"
+ },
+ {
+  "id": "D5-208",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "caseId": "C10",
+  "q": "What meets requirement 5?",
+  "opts": [
+   "Azure Backup with cross-region restore",
+   "Azure Site Recovery replicating the VMs to West Europe, with the vault in West Europe and a recovery plan",
+   "Geo-redundant storage for the VM disks",
+   "Daily VM snapshots copied to West Europe"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Site Recovery replicates continuously and fails over within minutes. For Azure-to-Azure disaster recovery the vault belongs in the target region.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-enable-replication"
+ },
+ {
+  "id": "D5-209",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 1,
+  "caseId": "C10",
+  "q": "What meets requirement 6?",
+  "opts": [
+   "A planned failover every quarter",
+   "A test failover into an isolated virtual network",
+   "Restoring a backup to a new VM",
+   "Stopping replication during the drill"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A test failover starts replica VMs in an isolated network without affecting production or ongoing replication.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"
+ },
+ {
+  "id": "D5-210",
+  "sub": "Backup and ASR",
+  "type": "yesno",
+  "diff": 3,
+  "caseId": "C10",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "Cross-region restore needs a GRS vault with cross-region restore enabled",
+   "The contracts file share is backed up with a Recovery Services vault",
+   "The same North Europe vault should be used for both VM backup and Site Recovery of those VMs",
+   "The vault's storage redundancy can be changed after items are protected"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "CRR needs GRS plus the CRR setting. Azure Files backup uses a Recovery Services vault. The Site Recovery vault belongs in the target region (West Europe), unlike the backup vault. Redundancy is locked once items are protected.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-create-recovery-services-vault"
+ },
+ {
+  "id": "D5-211",
+  "sub": "KQL",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the query to show average CPU per computer over the last hour.",
+  "tpl": "Perf\n| where TimeGenerated > [[0]](1h)\n| where CounterName == \"% Processor Time\"\n| [[1]] avg(CounterValue) by Computer",
+  "blanks": [
+   [
+    "now",
+    "ago",
+    "bin",
+    "last"
+   ],
+   [
+    "summarize",
+    "project",
+    "extend",
+    "where"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "ago(1h) means one hour before now. summarize aggregates rows.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
+ },
+ {
+  "id": "D5-212",
+  "sub": "KQL",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the query to chart events in 15-minute buckets.",
+  "tpl": "Event\n| summarize count() by bin(TimeGenerated, [[0]])\n| [[1]] timechart",
+  "blanks": [
+   [
+    "15m",
+    "15min",
+    "PT15M",
+    "00:15"
+   ],
+   [
+    "plot",
+    "render",
+    "chart",
+    "draw"
+   ]
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "KQL timespans use forms like 15m. render draws the results as a chart.",
+  "link": "https://learn.microsoft.com/en-us/kusto/query/render-operator"
+ },
+ {
+  "id": "D5-213",
+  "sub": "Alerts",
+  "type": "dropdown",
+  "diff": 1,
+  "q": "Complete the statement about alerts.",
+  "tpl": "Severity [[0]] is the most critical. A fired alert moves from New to [[1]] to Closed.",
+  "blanks": [
+   [
+    "4",
+    "0",
+    "1",
+    "10"
+   ],
+   [
+    "Acknowledged",
+    "Resolved",
+    "Fired",
+    "Muted"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "Severity runs from 0 (critical) to 4 (verbose). The user response states are New, Acknowledged and Closed.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
+ },
+ {
+  "id": "D5-214",
+  "sub": "Metrics",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement about default retention.",
+  "tpl": "Platform metrics are kept for about [[0]] days, and the Activity log for [[1]] days.",
+  "blanks": [
+   [
+    "30",
+    "93",
+    "90",
+    "365"
+   ],
+   [
+    "30",
+    "90",
+    "93",
+    "730"
+   ]
+  ],
+  "ans": [
+   1,
+   1
+  ],
+  "exp": "Platform metrics are kept for 93 days and Activity log events for 90 days. Use diagnostic settings to keep them longer.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-platform-metrics"
+ },
+ {
+  "id": "D5-215",
+  "sub": "Backup",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement about Azure VM backup.",
+  "tpl": "Backup soft delete keeps deleted backup data for [[0]] days. Instant restore snapshots are kept for [[1]] days by default.",
+  "blanks": [
+   [
+    "7",
+    "14",
+    "30",
+    "90"
+   ],
+   [
+    "1",
+    "2",
+    "5",
+    "7"
+   ]
+  ],
+  "ans": [
+   1,
+   1
+  ],
+  "exp": "Soft delete keeps deleted backup data for 14 days by default. Instant restore snapshots default to 2 days (1–5 with the Standard policy).",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-instant-restore-capability"
+ },
+ {
+  "id": "D5-216",
+  "sub": "Network Watcher",
+  "type": "dropdown",
+  "diff": 1,
+  "q": "Choose the tool for each question.",
+  "tpl": "Why is this flow denied? [[0]]\nWhere does this traffic go next? [[1]]",
+  "blanks": [
+   [
+    "IP flow verify",
+    "Next hop",
+    "Topology",
+    "Packet capture"
+   ],
+   [
+    "IP flow verify",
+    "Next hop",
+    "Topology",
+    "Connection Monitor"
+   ]
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "IP flow verify names the NSG rule that allows or denies a flow. Next hop shows the routing decision.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"
+ },
+ {
+  "id": "D5-217",
+  "sub": "Site Recovery",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement about Azure-to-Azure disaster recovery.",
+  "tpl": "Create the Recovery Services vault in the [[0]] region. Crash-consistent recovery points are created every [[1]].",
+  "blanks": [
+   [
+    "source",
+    "target",
+    "any"
+   ],
+   [
+    "5 minutes",
+    "1 hour",
+    "24 hours",
+    "15 seconds"
+   ]
+  ],
+  "ans": [
+   1,
+   0
+  ],
+  "exp": "The vault must survive a source-region outage, so it goes in the target region. Crash-consistent points are created every 5 minutes.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"
+ },
+ {
+  "id": "D5-218",
+  "sub": "Diagnostic settings",
+  "type": "dropdown",
+  "diff": 2,
+  "mono": true,
+  "q": "Complete the command to send a key vault's audit logs to a Log Analytics workspace.",
+  "tpl": "az monitor diagnostic-settings create --resource $kvId -n kvdiag \\\n  --[[0]] $lawId \\\n  --logs '[{\"category\":\"AuditEvent\",\"enabled\":true}]'",
+  "blanks": [
+   [
+    "storage-account",
+    "workspace",
+    "event-hub",
+    "destination"
+   ]
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "--workspace sends logs to Log Analytics. --storage-account and --event-hub are the other destinations.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/monitor/diagnostic-settings"
+ },
+ {
+  "id": "D5-219",
+  "sub": "Log Analytics",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement about Log Analytics retention.",
+  "tpl": "Default interactive retention is [[0]] days, and the maximum interactive retention is [[1]] days.",
+  "blanks": [
+   [
+    "7",
+    "30",
+    "90",
+    "365"
+   ],
+   [
+    "365",
+    "730",
+    "2555",
+    "4383"
+   ]
+  ],
+  "ans": [
+   1,
+   1
+  ],
+  "exp": "Most tables keep data interactively for 30 days by default, configurable up to 730 days. Long-term retention can extend further.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"
+ },
+ {
+  "id": "D5-220",
+  "sub": "MARS",
+  "type": "dropdown",
+  "diff": 2,
+  "q": "Complete the statement about the MARS agent.",
+  "tpl": "The MARS agent backs up [[0]] up to [[1]] times a day.",
+  "blanks": [
+   [
+    "entire Hyper-V hosts",
+    "Windows files, folders and system state",
+    "Linux file systems",
+    "Azure SQL databases"
+   ],
+   [
+    "1",
+    "3",
+    "6",
+    "24"
+   ]
+  ],
+  "ans": [
+   1,
+   1
+  ],
+  "exp": "MARS protects Windows files, folders and system state, up to three times a day.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-about-mars"
+ },
+ {
+  "id": "D5-221",
+  "sub": "Azure Monitor",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each question to the data source that answers it.",
+  "items": [
+   "Who read or wrote blobs in a storage account?",
+   "Who deleted a resource?",
+   "What do the Windows event logs on the VMs show?",
+   "What was a VM's CPU trend over 24 hours?"
+  ],
+  "targets": [
+   "Activity log",
+   "Platform metrics",
+   "Azure Monitor Agent + DCR to Log Analytics",
+   "Storage resource logs via diagnostic settings"
+  ],
+  "ans": [
+   3,
+   0,
+   2,
+   1
+  ],
+  "exp": "Storage resource logs record data-plane operations; the Activity log records control-plane changes; guest logs need the agent; platform metrics show CPU.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/data-sources"
+ },
+ {
+  "id": "D5-222",
+  "sub": "Alerts",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each condition to the alert type.",
+  "items": [
+   "A KQL query returns results",
+   "An Azure outage in your region",
+   "CPU above 90%",
+   "A resource is deleted"
+  ],
+  "targets": [
+   "Metric alert",
+   "Activity log alert",
+   "Log search alert",
+   "Service Health alert"
+  ],
+  "ans": [
+   2,
+   3,
+   0,
+   1
+  ],
+  "exp": "Log search alerts run KQL; Service Health alerts cover Azure incidents; metric alerts watch numbers like CPU; Activity log alerts watch operations such as deletions.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-types"
+ },
+ {
+  "id": "D5-223",
+  "sub": "Backup vaults",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each workload to the vault type that protects it.",
+  "items": [
+   "Azure VM",
+   "Azure Blob storage",
+   "Azure managed disk",
+   "Azure file share",
+   "SQL Server in an Azure VM"
+  ],
+  "targets": [
+   "Recovery Services vault",
+   "Backup vault"
+  ],
+  "ans": [
+   0,
+   1,
+   1,
+   0,
+   0
+  ],
+  "exp": "Recovery Services vaults protect VMs, file shares and SQL in VMs. Backup vaults protect blobs, managed disks and Azure Database for PostgreSQL.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-vault-overview"
+ },
+ {
+  "id": "D5-224",
+  "sub": "Restore",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each scenario to the restore option.",
+  "items": [
+   "Restore a VM in the paired region",
+   "Recover one deleted file",
+   "Roll back the disks of the same VM",
+   "Rebuild a VM with a different size"
+  ],
+  "targets": [
+   "File-level recovery",
+   "Restore disks plus template",
+   "Replace existing",
+   "Cross-region restore",
+   "Test failover"
+  ],
+  "ans": [
+   3,
+   0,
+   2,
+   1
+  ],
+  "exp": "Cross-region restore uses the secondary region; file recovery mounts a recovery point; Replace existing swaps disks; restoring disks with a template allows changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-arm-restore-vms"
+ },
+ {
+  "id": "D5-225",
+  "sub": "Site Recovery",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each goal to the failover recovery point option.",
+  "items": [
+   "Application-consistent data",
+   "Lowest data loss (RPO)",
+   "Fastest failover (RTO)"
+  ],
+  "targets": [
+   "Latest",
+   "Latest processed",
+   "Latest app-consistent",
+   "Custom"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "Latest processes all pending data for the lowest RPO; Latest processed skips that for the lowest RTO; Latest app-consistent uses the last app-consistent point.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-failover"
+ },
+ {
+  "id": "D5-226",
+  "sub": "Azure Monitor",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each need to the Azure Monitor feature.",
+  "items": [
+   "Define what the Azure Monitor Agent collects",
+   "Build an interactive report with queries and charts",
+   "Silence notifications during maintenance",
+   "Send email and SMS and run a runbook"
+  ],
+  "targets": [
+   "Alert processing rule",
+   "Action group",
+   "Workbook",
+   "Data collection rule"
+  ],
+  "ans": [
+   3,
+   2,
+   0,
+   1
+  ],
+  "exp": "Data collection rules drive the agent; workbooks are reports; alert processing rules suppress actions; action groups notify and automate.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/overview"
+ },
+ {
+  "id": "D5-227",
+  "sub": "KQL",
+  "type": "match",
+  "diff": 1,
+  "q": "Match each task to the KQL operator.",
+  "items": [
+   "Add a calculated column",
+   "Filter rows",
+   "Choose columns to show",
+   "Aggregate rows"
+  ],
+  "targets": [
+   "where",
+   "summarize",
+   "project",
+   "extend",
+   "render"
+  ],
+  "ans": [
+   3,
+   0,
+   2,
+   1
+  ],
+  "exp": "extend adds columns; where filters; project selects columns; summarize aggregates.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
+ },
+ {
+  "id": "D5-228",
+  "sub": "Backup",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each description to the backup component.",
+  "items": [
+   "Coordinates snapshots for Azure VM backup",
+   "Backs up on-premises Windows files directly to Azure",
+   "App-aware backup of on-premises SQL Server and Hyper-V"
+  ],
+  "targets": [
+   "MARS agent",
+   "MABS / DPM",
+   "VM backup extension",
+   "Azure Monitor Agent"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "The VM backup extension handles Azure VM snapshots; MARS backs up Windows files; MABS and DPM provide app-aware on-premises backup.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-architecture"
+ },
+ {
+  "id": "D5-229",
+  "sub": "KQL",
+  "type": "mcq",
+  "diff": 2,
+  "code": "Event\n| where EventLevelName == \"Error\"\n| summarize Errors = count() by Computer\n| top 5 by Errors desc",
+  "q": "What does this query return?",
+  "opts": [
+   "The five computers with the most error events",
+   "The first five error events",
+   "Computers with exactly five errors",
+   "Error counts for every computer, sorted A–Z"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "It filters error events, counts them per computer, and keeps the top five by count.",
+  "link": "https://learn.microsoft.com/en-us/kusto/query/top-operator"
+ },
+ {
+  "id": "D5-230",
+  "sub": "Alerts",
+  "type": "yesno",
+  "diff": 3,
+  "code": "\"scopes\": [ \"/subscriptions/1111/resourceGroups/RG-Prod\" ],\n\"targetResourceType\": \"Microsoft.Compute/virtualMachines\",\n\"criteria\": { \"allOf\": [ {\n  \"metricName\": \"Percentage CPU\", \"operator\": \"GreaterThan\",\n  \"threshold\": 85, \"timeAggregation\": \"Average\"\n} ] },\n\"windowSize\": \"PT10M\",\n\"evaluationFrequency\": \"PT1M\",\n\"autoMitigate\": true,\n\"actions\": [ { \"actionGroupId\": \".../actionGroups/ag-ops\" } ]",
+  "q": "Review the metric alert rule. Answer Yes or No:",
+  "stmts": [
+   "It covers VMs created later in RG-Prod",
+   "It is evaluated every minute over a 10-minute window",
+   "It resolves automatically when CPU drops",
+   "It fires when a single sample is above 85%, even if the 10-minute average is lower"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "Scoping to a resource group with a target resource type covers new VMs. windowSize and evaluationFrequency set the window and frequency. autoMitigate resolves the alert. The condition uses the average, not individual samples.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-overview"
+ },
+ {
+  "id": "D5-231",
+  "sub": "Activity log",
+  "type": "mcq",
+  "diff": 2,
+  "code": "AzureActivity\n| where OperationNameValue endswith \"DELETE\"\n| where TimeGenerated > ago(7d)\n| project TimeGenerated, Caller, ResourceGroup, _ResourceId",
+  "q": "What does this query return, and what must be set up first?",
+  "opts": [
+   "Resources deleted in the last 7 days and who deleted them; the Activity log must be sent to the workspace",
+   "Failed deployments; nothing needs setting up",
+   "Deleted blobs; the storage account needs diagnostic settings",
+   "Deleted users; Entra ID P2 is needed"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "AzureActivity holds control-plane operations once a diagnostic setting sends the Activity log to the workspace. The query filters delete operations from the last 7 days.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log"
+ },
+ {
+  "id": "D5-232",
+  "sub": "Backup",
+  "type": "yesno",
+  "diff": 2,
+  "code": "$ az backup job list -g RG1 -v rsv1 -o table\nOperation  Status      Item Name  Start Time UTC        Duration\n---------  ----------  ---------  --------------------  --------\nBackup     Completed   vm-web1    2026-11-15T22:00:05   0:12:44\nBackup     Failed      vm-sql1    2026-11-15T22:00:07   0:00:31\nRestore    InProgress  vm-app2    2026-11-16T08:12:10   0:05:02",
+  "q": "Review the backup jobs. Answer Yes or No:",
+  "stmts": [
+   "vm-sql1 has a new recovery point from last night",
+   "A restore is running now",
+   "vm-web1's backup took about 13 minutes",
+   "Failed backup jobs can raise built-in Azure Monitor alerts"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "vm-sql1's backup failed, so it has no new recovery point. The Restore job is in progress. 0:12:44 is about 13 minutes. Azure Backup has built-in Azure Monitor alerts for job failures.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-monitoring-built-in-monitor"
+ },
+ {
+  "id": "D5-233",
+  "sub": "Backup policy",
+  "type": "mcq",
+  "diff": 2,
+  "code": "\"schedulePolicy\": {\n  \"scheduleRunFrequency\": \"Daily\",\n  \"scheduleRunTimes\": [ \"2026-01-01T23:00:00Z\" ]\n},\n\"retentionPolicy\": {\n  \"dailySchedule\":   { \"retentionDuration\": { \"count\": 30, \"durationType\": \"Days\" } },\n  \"monthlySchedule\": { \"retentionDuration\": { \"count\": 12, \"durationType\": \"Months\" } }\n},\n\"instantRpRetentionRangeInDays\": 2",
+  "q": "Which statement describes this backup policy?",
+  "opts": [
+   "Backups run daily at 23:00 UTC; daily points are kept 30 days and monthly points 12 months; snapshots stay local for 2 days",
+   "Backups run every 2 days and are kept 30 days",
+   "Backups run hourly and are kept 12 months",
+   "Only monthly backups are kept"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The schedule runs daily at 23:00 UTC. The retention policy keeps 30 daily and 12 monthly points, and instantRpRetentionRangeInDays keeps snapshots locally for 2 days.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"
+ },
+ {
+  "id": "D5-234",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "code": "Name     Replication health  Status     RPO\nvm-web1  Healthy             Protected  2 min\nvm-sql1  Critical            Protected  3 h 10 min",
+  "q": "What does this replication status mean for vm-sql1?",
+  "opts": [
+   "It is fully protected with no data at risk",
+   "A failover now could lose about 3 hours of data, so replication needs investigating",
+   "It has already failed over",
+   "Its backups have failed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "RPO shows how far behind replication is. A 3-hour RPO with Critical health means recent changes have not reached the target region.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-monitor-and-troubleshoot"
+ },
+ {
+  "id": "D5-235",
+  "sub": "Connection Monitor",
+  "type": "yesno",
+  "diff": 2,
+  "code": "Test group:   tg-payment\nSource:       vm-app1\nDestination:  api.payments.contoso.com:443\nChecks failed (%):     0.0\nRound-trip time (ms):  avg 38, max 210",
+  "q": "Review the Connection Monitor results. Answer Yes or No:",
+  "stmts": [
+   "Connectivity to the payment API is currently healthy",
+   "An alert can fire when round-trip time passes a threshold",
+   "The results are stored in Log Analytics",
+   "Connection Monitor captures full packet contents"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "0% failed checks means connectivity is healthy. Connection Monitor exposes metrics for alerting and stores data in Log Analytics. It does not capture packets; packet capture does.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/connection-monitor-overview"
+ },
+ {
+  "id": "D5-236",
+  "sub": "Agents",
+  "type": "mcq",
+  "diff": 3,
+  "code": "\"dataSources\": {\n  \"windowsEventLogs\": [ {\n    \"name\": \"sec\", \"streams\": [ \"Microsoft-Event\" ],\n    \"xPathQueries\": [ \"Security!*[System[(EventID=4624 or EventID=4625)]]\" ]\n  } ],\n  \"performanceCounters\": [ {\n    \"name\": \"perf\", \"streams\": [ \"Microsoft-Perf\" ],\n    \"samplingFrequencyInSeconds\": 60,\n    \"counterSpecifiers\": [\n      \"\\\\Processor(_Total)\\\\% Processor Time\",\n      \"\\\\Memory\\\\Available MBytes\"\n    ]\n  } ]\n},\n\"destinations\": { \"logAnalytics\": [ { \"name\": \"law\", \"workspaceResourceId\": \".../workspaces/law-prod\" } ] }",
+  "q": "What does this data collection rule collect?",
+  "opts": [
+   "All Windows events and all performance counters",
+   "Only successful and failed logon security events, plus CPU and available memory every 60 seconds, sent to law-prod",
+   "Only Linux syslog",
+   "Activity log events"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The XPath query keeps only event IDs 4624 (successful logon) and 4625 (failed logon). Two counters are sampled every 60 seconds and sent to the workspace.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-windows-events"
+ },
+ {
+  "id": "D5-237",
+  "sub": "Activity log",
+  "type": "mcq",
+  "diff": 2,
+  "code": "{\n  \"operationName\": \"Microsoft.Compute/virtualMachines/delete\",\n  \"caller\": \"ali@contoso.com\",\n  \"status\": \"Succeeded\",\n  \"eventTimestamp\": \"2026-11-15T14:03:22Z\",\n  \"resourceId\": \"/subscriptions/1111/resourceGroups/RG-Prod/providers/Microsoft.Compute/virtualMachines/vm-old\"\n}",
+  "q": "What does this Activity log event show?",
+  "opts": [
+   "ali@contoso.com successfully deleted the VM vm-old",
+   "vm-old crashed",
+   "ali@contoso.com tried to delete vm-old, but a lock stopped it",
+   "vm-old was moved to another resource group"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The operation is a VM delete, the caller is Ali, and the status is Succeeded.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log-schema"
+ },
+ {
+  "id": "D5-238",
+  "sub": "Alerts",
+  "type": "yesno",
+  "diff": 2,
+  "code": "Scope:      /subscriptions/1111/resourceGroups/RG-Prod\nRule type:  Suppress notifications\nSchedule:   Weekly, Sunday 01:00–03:00 (UTC+05:00)",
+  "q": "Review the alert processing rule. Answer Yes or No:",
+  "stmts": [
+   "Alerts still fire and show in Azure Monitor during the window",
+   "Action groups do not send email during the window",
+   "The rule affects alerts for resources in other resource groups",
+   "The alert rules are disabled during the window"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "Suppression stops action groups only; alerts still fire. The scope limits the rule to RG-Prod, and the alert rules stay enabled.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ },
+ {
+  "id": "D5-239",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 2,
+  "code": "Next hop type:  VirtualAppliance\nIP address:     10.0.1.4\nRoute table ID: /subscriptions/1111/resourceGroups/RG-Net/providers/Microsoft.Network/routeTables/rt-spoke-app",
+  "q": "What does this next hop result tell you?",
+  "opts": [
+   "The traffic goes straight to the internet",
+   "A user-defined route in rt-spoke-app sends the traffic to the network virtual appliance at 10.0.1.4",
+   "An NSG blocks the traffic",
+   "The traffic uses VNet peering only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The next hop type is VirtualAppliance, and the route table ID shows which route table sets it.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/next-hop-overview"
+ },
+ {
+  "id": "D5-240",
+  "sub": "Backup reports",
+  "type": "mcq",
+  "diff": 3,
+  "code": "AddonAzureBackupJobs\n| where JobOperation == \"Backup\" and JobStatus == \"Failed\"\n| summarize Failures = count() by BackupItemUniqueId",
+  "q": "This query returns no rows even though backups have failed. What is the most likely reason?",
+  "opts": [
+   "Backup jobs are never logged",
+   "The vault has no diagnostic setting sending Azure Backup data (resource-specific tables) to this workspace",
+   "The query needs Entra ID P2",
+   "Failed jobs are deleted after 1 hour"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The AddonAzureBackup* tables are filled only when the vault's diagnostic settings send backup report data to the workspace in resource-specific mode.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-diagnostic-events"
+ }
+]
