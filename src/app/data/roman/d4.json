@@ -1,1 +1,2400 @@
-{}
+{
+ "D4-001": {
+  "q": "Azure har subnet mein kitne IP addresses reserve karta hai?",
+  "opts": [
+   "2",
+   "3",
+   "5",
+   "10"
+  ],
+  "exp": "Azure har subnet mein 5 addresses reserve karta hai: pehla (network address), doosra (default gateway), teesra aur chautha (Azure DNS), aur aakhri (broadcast). 10.0.1.0/24 mein yeh .0, .1, .2, .3 aur .255 hain. Is liye har subnet mein us ke size se 5 kam usable addresses hote hain."
+ },
+ "D4-002": {
+  "q": "Ek subnet 10.1.1.0/27 hai. Is mein kitne usable IP addresses hain?",
+  "opts": [
+   "32",
+   "30",
+   "27",
+   "29"
+  ],
+  "exp": "/27 mein 2^(32−27) = 32 addresses hote hain. Azure har subnet mein 5 reserve karta hai (network, gateway, do DNS aur broadcast), is liye VMs aur doosre resources ke liye 27 bachte hain. 30 aam ghair-Azure jawab hota, jo sirf 2 reserve karta hai."
+ },
+ "D4-003": {
+  "q": "Do VNets dono 10.0.0.0/16 use karte hain aur unhein peer karna hai. Masla kya hai?",
+  "opts": [
+   "Kuch nahi; peering chalegi",
+   "Peering ke liye address spaces overlap nahi hone chahiye, aur yeh poori tarah overlap karte hain",
+   "Peering sirf regions ke aar paar chalti hai",
+   "/16 peer karne ke liye bohat bara hai"
+  ],
+  "exp": "Peered VNets ke address spaces overlap nahi ho sakte, kyun ke routing yeh nahi bata sakti ke address kis network ka hai. Dono 10.0.0.0/16 use karne wale VNets poori tarah overlap karte hain, is liye peering reject hoti hai. Kisi ek ko dobara address karein, maslan 10.1.0.0/16. Region aur VNet size masla nahi."
+ },
+ "D4-004": {
+  "q": "VNet-A VNet-B se peered hai, aur VNet-B VNet-C se. Kya sirf in peerings se VNet-A ki VM VNet-C ki VM tak pohanch sakti hai?",
+  "opts": [
+   "Haan, khud ba khud",
+   "Nahi — peering non-transitive hai; A–C peering ya NVA ya gateway ke zariye routing chahiye",
+   "Haan, agar ek hi region mein hon",
+   "Sirf Basic load balancer ke sath"
+  ],
+  "exp": "VNet peering transitive nahi. A↔B aur B↔C se A↔C nahi banta. A aur C ko jorne ke liye ya to unhein seedha peer karein ya B mein network virtual appliance ya gateway ke zariye route karein, user-defined routes aur 'Allow forwarded traffic' ke sath. Ek region mein hona is ko nahi badalta."
+ },
+ "D4-005": {
+  "q": "Kaun si peering settings spoke VNets ko hub VNet ka VPN gateway use karne deti hain?",
+  "opts": [
+   "Hub: Allow gateway transit · Spoke: Use remote gateways",
+   "Dono taraf: sirf Allow forwarded traffic",
+   "Hub: Use remote gateways · Spoke: Allow gateway transit",
+   "Koi setting nahi chahiye"
+  ],
+  "exp": "Hub VPN gateway ka malik hai, is liye har peering ki us ki taraf usay share karne ke liye 'Allow gateway transit' enable karti hai. Har spoke ki taraf usay use karne ke liye 'Use remote gateways' enable karti hai, aur phir spokes on-premises routes seekh lete hain. Settings ulti karne se kaam nahi chalta, aur akela 'Allow forwarded traffic' gateway share nahi karta."
+ },
+ "D4-006": {
+  "q": "Global VNet peering kya jorti hai?",
+  "opts": [
+   "Sirf ek hi region ke VNets",
+   "Alag Azure regions ke VNets",
+   "VNets ko on-premises se",
+   "Do subscriptions sirf agar ek tenant mein hon"
+  ],
+  "exp": "Global VNet peering alag Azure regions ke VNets ko Microsoft backbone par jorti hai. Regional peering ek hi region ke VNets jorti hai. On-premises connections VPN ya ExpressRoute use karte hain, aur peering subscriptions aur tenants ke aar paar bhi chalti hai."
+ },
+ "D4-007": {
+  "q": "Kaun si baat Standard SKU public IP ko bayan karti hai?",
+  "opts": [
+   "Dynamic aur default mein khula",
+   "Static allocation, default mein mehfooz (traffic allow karne ke liye NSG chahiye), zone-redundancy support ke sath",
+   "Muft aur dynamic",
+   "Sirf IPv6"
+  ],
+  "exp": "Standard SKU public IPs hamesha static allocation use karte hain. Yeh default mein mehfooz hain — NSG allow karne tak inbound traffic block rehta hai — aur zone-redundant ya zonal deployment support karte hain. Basic SKU public IPs, jo dynamic ho sakte the aur default mein khule the, September 2025 mein retire ho gaye. Public IPv4 addresses muft nahi."
+ },
+ "D4-008": {
+  "q": "Subnet ke effective route table mein ek hi prefix ke liye system route, BGP route aur user-defined route hai. Kaun jeetta hai?",
+  "opts": [
+   "System route",
+   "BGP route",
+   "User-defined route",
+   "Sab se purana route"
+  ],
+  "exp": "Azure pehle sab se lambe (sab se specific) prefix wala route chunta hai. Jab kai routes ka prefix ek ho, user-defined route BGP route se jeetta hai, aur BGP system route se. Isi tarah UDR traffic ko firewall se guzarne par majboor kar sakta hai chahe gateway wahi range advertise kare. Route ki umar se farq nahi parta."
+ },
+ "D4-009": {
+  "q": "SubnetA ka tamam outbound internet traffic 10.0.100.4 par firewall NVA se guzarna chahiye. Kaun sa UDR?",
+  "opts": [
+   "0.0.0.0/0 → Internet",
+   "0.0.0.0/0 → Virtual appliance (10.0.100.4)",
+   "10.0.100.4/32 → Virtual network",
+   "0.0.0.0/0 → None"
+  ],
+  "exp": "SubnetA ki route table par prefix 0.0.0.0/0 (tamam destinations) aur 10.0.100.4 par next hop type Virtual appliance wala user-defined route tamam outbound traffic firewall ko bhejta hai. Next hop Internet firewall ko bypass karega, None sab drop kar dega, aur /32 route sirf firewall ke apne address ko cover karta hai."
+ },
+ "D4-010": {
+  "q": "Next hop type 'None' kya karta hai?",
+  "opts": [
+   "Default routing use karta hai",
+   "Traffic drop karta hai",
+   "Internet par bhejta hai",
+   "VNet gateway ko bhejta hai"
+  ],
+  "exp": "Next hop type None route ke prefix ka tamam traffic drop kar deta hai — jaan boojh kar blackhole, maslan kisi range ko block karne ke liye. Yeh default routing par wapas nahi jata ya traffic kahin nahi bhejta."
+ },
+ "D4-011": {
+  "q": "Ek VM ko aisa IP chahiye jo kabhi na badle, kyun ke partner usay firewall rules mein use karta hai. Kya configure karein?",
+  "opts": [
+   "Dynamic private IP",
+   "Static public IP (Standard SKU)",
+   "Koi bhi public IP; yeh kabhi nahi badalte",
+   "DNS CNAME"
+  ],
+  "exp": "Static public IP IP resource delete hone tak wahi address rakhta hai, chahe VM stop ya redeploy ho, is liye partner usay apne firewall mein mehfooz tareeqe se allow kar sakta hai. Standard SKU public IPs hamesha static hote hain. Private IP internet se pohanch mein nahi, aur CNAME IP ke bajaye naam hai."
+ },
+ "D4-012": {
+  "q": "VM1 peered VNet ki VM2 tak nahi pohanch sakti, aur aap ko routing ke masle ka shak hai. Kaun sa feature VM1 ke NIC par asal mein lage routes dikhata hai?",
+  "opts": [
+   "IP flow verify",
+   "Effective routes",
+   "Topology",
+   "Packet capture"
+  ],
+  "exp": "Effective routes (VM ke network interface par, ya Network Watcher mein) NIC par lagi asal route table dikhate hain: system routes, gateways se BGP routes aur user-defined routes, aur har prefix ke liye kaun jeetta hai. IP flow verify NSG rules check karta hai, topology diagram banata hai, aur packet capture traffic record karta hai."
+ },
+ "D4-013": {
+  "q": "Ek hi VNet ki VMs ko Azure-provided DNS se ek doosre ko hostname se resolve karna hai. Yeh kaise kaam karta hai?",
+  "opts": [
+   "Sirf custom DNS server ke sath",
+   "Usi VNet ke andar khud ba khud (168.63.129.16)",
+   "Kabhi nahi",
+   "Sirf public DNS zones ke sath"
+  ],
+  "exp": "Azure-provided DNS, 168.63.129.16 par, ek hi VNet ki VMs ke hostnames baghair setup ke khud resolve karta hai. VNets ke aar paar private DNS zone ya apna DNS server chahiye, lekin ek VNet ke andar yeh bas chal jata hai."
+ },
+ "D4-014": {
+  "q": "VNet peering ke bare mein kaun si DO baatein sahi hain?",
+  "opts": [
+   "Peered VNets ke darmiyan traffic Microsoft backbone par rehta hai, public internet par nahi",
+   "Peering status dono taraf 'Connected' hona chahiye",
+   "Peered VNets khud ba khud DNS settings share karte hain",
+   "Peering tamam traffic ko IPsec se encrypt karti hai"
+  ],
+  "exp": "Peered VNets Microsoft ke private backbone par baat karte hain, kabhi public internet par nahi. Peering tabhi chalti hai jab dono taraf ban jayen aur Connected dikhayen. Peering DNS settings share nahi karti ya traffic IPsec se encrypt nahi karti (is ke liye VPN, ya application mein encryption use karein)."
+ },
+ "D4-015": {
+  "q": "Kaun se resources ko makhsoos naam wala apna dedicated subnet chahiye?",
+  "opts": [
+   "VMs",
+   "Azure Bastion (AzureBastionSubnet) aur VPN Gateway (GatewaySubnet)",
+   "Storage accounts",
+   "NSGs"
+  ],
+  "exp": "Kuch Azure services ko bilkul makhsoos naam wale dedicated subnet mein deploy karna hota hai: Azure Bastion ko AzureBastionSubnet chahiye, aur VPN aur ExpressRoute gateways ko GatewaySubnet (Azure Firewall ko AzureFirewallSubnet). VMs koi bhi subnet use kar sakti hain, storage accounts subnets mein nahi rehte, aur NSGs subnets se jurte hain."
+ },
+ "D4-016": {
+  "q": "VNet kitne area mein phaila hota hai?",
+  "opts": [
+   "Kai regions",
+   "Ek region, us ke tamam availability zones samet",
+   "Sirf ek datacenter",
+   "Har subscription mein ek VNet"
+  ],
+  "exp": "VNet regional resource hai: yeh ek region mein hota hai aur us ke tamam availability zones cover karta hai, is liye alag zones ki VMs ek VNet share kar sakti hain. Regions jorne ke liye global peering use karein. Ek subscription mein bohat se VNets ho sakte hain."
+ },
+ "D4-017": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "VNet banne ke baad us mein address space add ki ja sakti hai",
+   "Ek subnet ek se zyada route tables se associate ho sakta hai",
+   "Alag subscriptions ke VNets peer ho sakte hain",
+   "Subnet ki pehli VM x.x.x.1 address le sakti hai"
+  ],
+  "exp": "VNet banne ke baad us mein address space add ki ja sakti hai. Subnet ek waqt mein sirf ek route table se associate ho sakta hai. Alag subscriptions (balke alag tenants) ke VNets peer ho sakte hain. Azure har subnet mein .0 se .3 reserve karta hai, is liye pehli VM ko .4 milta hai, .1 nahi."
+ },
+ "D4-018": {
+  "q": "Spoke1 ki VMs ko hub ke VPN gateway ke zariye on-premises tak pohanchane ke steps tarteeb mein lagayen:",
+  "items": [
+   "Spoke1 ki taraf 'Use remote gateways' enable karein",
+   "Hub↔Spoke1 VNet peering banayen",
+   "Spoke1 VM ke effective routes mein on-prem prefixes verify karein",
+   "Hub ki taraf 'Allow gateway transit' enable karein"
+  ],
+  "exp": "Pehle hub aur Spoke1 ke darmiyan peering banayen. Phir hub ki taraf 'Allow gateway transit' aur Spoke1 ki taraf 'Use remote gateways' enable karein (spoke use kar sake is se pehle hub ko transit allow karna hota hai). Aakhir mein Spoke1 VM ke effective routes check karein taa ke confirm ho on-premises prefixes gateway se seekhe gaye."
+ },
+ "D4-019": {
+  "q": "NSG rules kis tarteeb mein process hote hain?",
+  "opts": [
+   "Alphabetically",
+   "Priority ke hisaab se, sab se kam number pehle; pehle match par processing ruk jati hai",
+   "Randomly",
+   "Sab se bara number pehle"
+  ],
+  "exp": "NSG rules priority ki tarteeb mein process hote hain, sab se kam number pehle (100 pehle 200 se). Jaise hi koi rule traffic se match kare, processing ruk jati hai aur us rule ka allow ya deny lagta hai. Alphabetical tarteeb aur rule ke naam se farq nahi parta."
+ },
+ "D4-020": {
+  "q": "Ek VM ke subnet aur NIC dono par NSGs hain. INBOUND traffic ka evaluation order kya hai?",
+  "opts": [
+   "Pehle NIC NSG, phir subnet NSG",
+   "Pehle subnet NSG, phir NIC NSG — dono allow karein",
+   "Sirf NIC NSG apply hota hai",
+   "Jis ki priorities kam hon"
+  ],
+  "exp": "Inbound traffic ke liye Azure pehle subnet ka NSG aur phir NIC ka NSG check karta hai; outbound ke liye pehle NIC ka NSG aur phir subnet ka. Dono surat mein traffic tabhi guzarta hai jab dono NSGs allow karein. Priority numbers sirf ek NSG ke andar compare hote hain."
+ },
+ "D4-021": {
+  "q": "Kaun sa default NSG rule VNet ki VMs ko baghair custom rules ke ek doosre se baat karne deta hai?",
+  "opts": [
+   "AllowInternetInBound",
+   "AllowVnetInBound (priority 65000)",
+   "DenyAllInBound",
+   "AllowRDP"
+  ],
+  "exp": "Har NSG mein default rule AllowVnetInBound (priority 65000) hota hai, jo virtual network (aur peered ya connected networks) mein kahin se bhi traffic allow karta hai, is liye VMs baghair custom rules ke baat kar sakti hain. DenyAllInBound (65500) baqi sab block karta hai. Internet ya RDP allow karne wala koi default rule nahi."
+ },
+ "D4-022": {
+  "q": "NSG mein port 3389 ke liye priority 200 par inbound DENY aur priority 150 par aap ke office IP se 3389 ka ALLOW hai. Office se RDP:",
+  "opts": [
+   "Block hoga; deny hamesha jeetta hai",
+   "Chalega; priority 150 ka allow pehle match karta hai aur processing ruk jati hai",
+   "Sirf reboot ke baad chalega",
+   "Fail hoga; office IPs allow nahi ho sakte"
+  ],
+  "exp": "NSG rules sab se kam priority number se check hote hain. 150 ka allow office ke RDP se pehle match karta hai, is liye traffic allowed hai aur 200 ka deny kabhi nahi pohanchta. Deny sirf tab jeetta hai jab us ka number kam ho. Reboots is par asar nahi dalte."
+ },
+ "D4-023": {
+  "q": "NSGs ke stateful hone ka kya matlab hai?",
+  "opts": [
+   "Har inbound allow ke liye matching outbound rule banana hota hai",
+   "Allowed connection ka wapsi traffic khud allow hota hai",
+   "Delete hone ke baad bhi rules yaad rakhte hain",
+   "Har rule din mein ek baar apply hota hai"
+  ],
+  "exp": "Stateful ka matlab NSG connections track karta hai: agar inbound traffic allowed hai to us ka wapsi traffic khud outbound allowed hota hai, aur ulta bhi. Doosri direction mein matching rule ki zaroorat nahi. Is ka matlab yeh nahi ke rules delete hone ke baad rehte hain ya din mein ek baar apply hote hain."
+ },
+ "D4-024": {
+  "q": "Application security groups aap ko kya karne dete hain?",
+  "opts": [
+   "Apps ke darmiyan traffic encrypt karna",
+   "VM NICs ko role ke hisaab se group karna aur NSG rules mein IPs ke bajaye un groups ko source ya destination banana",
+   "NSGs ki poori jagah lena",
+   "Applications scale karna"
+  ],
+  "exp": "Application security group (ASG) ek label hai jo aap VM network interfaces par lagate hain, maslan asg-web ya asg-db. Phir NSG rules IP addresses ke bajaye ASG ko source ya destination ke taur par use kar sakte hain, is liye nayi VMs sirf ASG join kar ke cover ho jati hain. ASGs traffic encrypt nahi karte, NSGs ki jagah nahi lete ya apps scale nahi karte."
+ },
+ "D4-025": {
+  "q": "Jab ek NSG rule do ASGs (ek source, ek destination) use kare to kaun si shart lagti hai?",
+  "opts": [
+   "Kabhi allowed nahi",
+   "Dono ASGs ke tamam NICs EK HI virtual network mein hone chahiye",
+   "ASGs alag regions mein hone chahiye",
+   "Premium SKU chahiye"
+  ],
+  "exp": "Jab NSG rule ASGs ko source aur destination dono ke taur par use kare to un ASGs ke tamam network interfaces ek hi virtual network mein hone chahiye. Is tarah sath use hone wale ASGs VNets ke aar paar nahi ja sakte. Alag regions ya Premium SKU ka is se koi taluq nahi."
+ },
+ "D4-026": {
+  "q": "NSG rules mein service tags ke bare mein kaun si baat sahi hai?",
+  "opts": [
+   "Service tags deprecated hain",
+   "Service tags IP prefixes ke Microsoft-managed groups hain (maslan Storage ya AzureLoadBalancer) jo IP ranges ki jagah use ho sakte hain",
+   "Tags sirf Azure Firewall mein chalte hain",
+   "Tag IPs manually update karne hote hain"
+  ],
+  "exp": "Storage, Sql, AzureLoadBalancer ya Internet jaise service tags IP prefixes ke groups hain jinhein Microsoft up to date rakhta hai. NSG rule mein ek use karne ka matlab (maslan 'Storage ki taraf outbound allow') aap ko kabhi khud IP lists maintain nahi karni. Yeh mojooda hain, NSGs aur Azure Firewall mein chalte hain, aur khud update hote hain."
+ },
+ "D4-027": {
+  "q": "Azure Bastion kya deta hai?",
+  "opts": [
+   "VNets tak VPN access",
+   "Portal ke zariye TLS 443 par VMs tak RDP/SSH, VMs par public IPs ke baghair",
+   "Web application firewall",
+   "DNS resolution"
+  ],
+  "exp": "Azure Bastion aap ke VNet mein managed service hai jo aap ko Azure portal se TLS (port 443) par VMs mein RDP ya SSH karne deti hai. VMs ko public IPs ya internet ke liye khule management ports ki zaroorat nahi. Yeh VPN access, web application firewall ya DNS nahi deti."
+ },
+ "D4-028": {
+  "q": "VNet mein Azure Bastion deploy karne ke liye kya zaroori hai?",
+  "opts": [
+   "Kam az kam /26 ka AzureBastionSubnet naam ka subnet, sath mein Bastion ke liye Standard public IP",
+   "Koi bhi subnet naam, /29 theek hai",
+   "Tamam target VMs par public IPs",
+   "ExpressRoute circuit"
+  ],
+  "exp": "Azure Bastion ko bilkul AzureBastionSubnet naam ka dedicated subnet chahiye, kam az kam /26, aur Bastion host ke liye Standard SKU public IP. Target VMs ko public IPs nahi chahiye, aur ExpressRoute zaroori nahi. Developer SKU exception hai: woh shared hai aur apna subnet nahi chahiye."
+ },
+ "D4-029": {
+  "q": "Kaun si salahiyat ke liye Basic ke bajaye Bastion Standard SKU chahiye?",
+  "opts": [
+   "Browser mein RDP",
+   "Native client support (az network bastion rdp/ssh tunneling), shareable links aur IP-based connections",
+   "Browser mein SSH",
+   "Ek VM se connect karna"
+  ],
+  "exp": "Bastion ki Standard (aur Premium) SKU native client support (aap ke apne RDP ya SSH client se az network bastion rdp/ssh), shareable links, IP address se connect karna aur scale out add karti hai. Browser mein VM tak RDP aur SSH Basic par pehle se chalte hain."
+ },
+ "D4-030": {
+  "q": "Subnet par Microsoft.Storage service endpoint enable karne se kya hota hai?",
+  "opts": [
+   "Storage account ko subnet mein private IP milta hai",
+   "Us subnet se Azure Storage ka traffic subnet ki identity ke sath backbone use karta hai, taa ke storage firewall usay allow kar sake — lekin service ka PUBLIC endpoint rehta hai",
+   "Tamam internet access block ho jata hai",
+   "Storage publicly readable ho jata hai"
+  ],
+  "exp": "Service endpoint subnet se Azure Storage ka traffic Microsoft backbone par bhejta hai aur usay us subnet se aane wala pehchanta hai, is liye storage firewall VNet rule se subnet allow kar sakta hai. Storage account apna public endpoint aur IP rakhta hai; kisi ko private IP nahi milta. Us ke liye private endpoint use karein."
+ },
+ "D4-031": {
+  "q": "Private endpoint aur service endpoint mein asal farq kya hai?",
+  "opts": [
+   "Koi farq nahi",
+   "Private endpoint PaaS resource ke liye AAP KE VNet mein private IP wala NIC banata hai, jo VPN par on-premises se bhi pohanch mein hota hai",
+   "Private endpoints muft hain; service endpoints ke paise lagte hain",
+   "Service endpoints on-premises se chalte hain"
+  ],
+  "exp": "Private endpoint ek PaaS resource ke samne aap ke VNet ke private IP wala network interface rakhta hai, is liye us tak traffic private rehta hai. On-premises clients VPN ya ExpressRoute par us tak pohanch sakte hain. Service endpoint sirf subnet traffic ko service ke firewall ke liye mark karta hai, public IP rakhta hai, aur on-premises se kaam nahi karta. Private endpoints ke paise lagte hain, jab ke service endpoints muft hain."
+ },
+ "D4-032": {
+  "q": "Storage account contoso1 (blob) ka private endpoint banane ke baad VNet clients ko contoso1.blob.core.windows.net ko private IP par resolve karna hai. Standard hal?",
+  "opts": [
+   "Har client ki hosts file edit karein",
+   "VNet se linked privatelink.blob.core.windows.net private DNS zone, endpoint ke A record ke sath",
+   "Public DNS CNAME",
+   "Kuch nahi; har case mein automatic hai"
+  ],
+  "exp": "Private endpoint banne ke baad contoso1.blob.core.windows.net contoso1.privatelink.blob.core.windows.net ka CNAME hota hai. VNet se linked aur endpoint ka A record rakhne wala privatelink.blob.core.windows.net naam ka private DNS zone isay private IP par resolve karta hai. Har hosts file edit karna scale nahi hota, aur public DNS public IP dega."
+ },
+ "D4-033": {
+  "q": "Ek VM port 8080 par traffic nahi le pa rahi aur kai NSGs shamil hain. VM ke NIC par lage TAMAM rules ka sab se tez view?",
+  "opts": [
+   "Azure Advisor",
+   "Effective security rules",
+   "Activity log",
+   "Service Health"
+  ],
+  "exp": "Effective security rules (VM ke NIC par, ya Network Watcher mein) subnet NSG aur NIC NSG ko mila kar us NIC par lage rules ki asal list dikhate hain, is liye aap dekh sakte hain ke kaun sa rule port 8080 par asar dal raha hai. Advisor, Activity log aur Service Health NSG evaluation nahi dikhate."
+ },
+ "D4-034": {
+  "q": "Network Watcher ka IP flow verify aap ko kya batata hai?",
+  "opts": [
+   "Link bandwidth",
+   "VM tak ya VM se ek makhsoos 5-tuple flow allowed hai ya denied, aur kis NSG rule ne faisla kiya",
+   "DNS resolution ke nateeje",
+   "Traffic ki cost"
+  ],
+  "exp": "IP flow verify VM ke NIC tak ya us se ek makhsoos flow — source aur destination IP, port aur protocol — test karta hai, aur batata hai ke NSGs usay allow karte hain ya deny, aur bilkul kis rule ne faisla kiya. Yeh bandwidth nahi napta, DNS test nahi karta ya costs calculate nahi karta."
+ },
+ "D4-035": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Ek NSG kai subnets se associate ho sakta hai",
+   "NSGs service tags aur ASGs se traffic filter kar sakte hain",
+   "Azure Bastion ko target VM tak internet se RDP allow karne wala NSG rule chahiye",
+   "Ek NSG ek hi waqt mein NIC aur subnet dono se associate ho sakta hai"
+  ],
+  "exp": "NSGs subnets mein dobara use ho sakte hain aur tags aur ASGs support karte hain; Bastion privately connect karta hai, is liye VMs ko sirf Bastion subnet se RDP/SSH chahiye; NIC aur subnet NSGs sath reh sakte hain."
+ },
+ "D4-036": {
+  "q": "Aap ne registrar se contoso.com khareeda aur chahte hain ke Azure DNS zone host kare. Registrar par kya configure karenge?",
+  "opts": [
+   "Azure ki taraf point karte A records",
+   "Domain ke NS records, aap ke zone ke chaar Azure DNS name servers par set",
+   "MX records",
+   "Kuch nahi"
+  ],
+  "exp": "Azure DNS mein contoso.com host karne ke liye Azure mein zone banayen, phir registrar par domain ke name server (NS) records ko aap ke zone ke chaar Azure DNS name servers se badal dein. Phir internet domain ke har record ke liye Azure se poochta hai. A aur MX records zone ke andar bante hain, registrar par nahi."
+ },
+ "D4-037": {
+  "q": "Azure DNS public zone in mein se kya NAHI kar sakta?",
+  "opts": [
+   "A, AAAA, CNAME, TXT aur MX records host karna",
+   "Domain registrar ka kaam karna (domains khareedna)",
+   "Azure public IPs ki taraf point karte alias records use karna",
+   "TXT verification records rakhna"
+  ],
+  "exp": "Azure DNS DNS zones host karta hai: is mein A, AAAA, CNAME, TXT, MX aur doosre records, aur Azure resources ki taraf point karte alias records ho sakte hain. Yeh domain registrar nahi, is liye aap domain kahin aur se khareedte hain (maslan App Service Domains ya doosra registrar) aur Azure DNS ko delegate karte hain."
+ },
+ "D4-038": {
+  "q": "Private DNS zone ke VNet link par auto-registration kya karti hai?",
+  "opts": [
+   "On-premises servers register karti hai",
+   "Linked VNet ki VMs ke liye A records khud banati aur update karti hai",
+   "TLS certificates jari karti hai",
+   "Public DNS block karti hai"
+  ],
+  "exp": "Jab VNet auto-registration enabled ke sath private DNS zone se linked ho, Azure us VNet ki har VM ka A record khud banata hai aur VM badalne ya delete hone par usay update ya hata deta hai. Yeh on-premises servers register nahi karti, certificates jari nahi karti ya public DNS block nahi karti."
+ },
+ "D4-039": {
+  "q": "Ek private DNS zone ke liye registration-enabled VNet links aur sirf resolution wale links ki limits kaise hain?",
+  "opts": [
+   "Dono unlimited",
+   "Registration links (100) resolution links (1,000) se zyada mehdood hain",
+   "Kul ek VNet",
+   "Registration 1,000, resolution 100"
+  ],
+  "exp": "Private DNS zone name resolution ke liye 1,000 tak VNets se link ho sakta hai, lekin un mein se sirf 100 tak links par auto-registration enabled ho sakti hai. Registration links kam milne wali qisam hain. (Alag se, har VNet sirf ek private zone ke sath auto-registration rakh sakta hai.)"
+ },
+ "D4-040": {
+  "q": "Azure DNS mein alias record set kyun faidemand hai?",
+  "opts": [
+   "Yeh sasta hai",
+   "Yeh zone apex (contoso.com) ko public IP jaise Azure resource ki taraf point kar sakta hai aur IP badalne par khud update hota hai",
+   "Yeh har jagah CNAMEs ki jagah leta hai",
+   "Yeh DNS providers ke aar paar chalta hai"
+  ],
+  "exp": "Alias record DNS naam ko fixed value ke bajaye Azure resource, jaise public IP, Traffic Manager profile ya Front Door, ki taraf point karta hai. Yeh zone apex (contoso.com) par chalta hai, jahan CNAMEs allowed nahi, aur resource ka IP badalne par khud update hota hai. Yeh sirf Azure DNS ke andar Azure resources ke liye chalta hai."
+ },
+ "D4-041": {
+  "q": "Azure Load Balancer kis layer par kaam karta hai?",
+  "opts": [
+   "Layer 7 (HTTP)",
+   "Layer 4 (TCP/UDP)",
+   "Sirf Layer 3",
+   "Layer 2"
+  ],
+  "exp": "Azure Load Balancer Layer 4 par kaam karta hai: yeh TCP aur UDP traffic ko IP address aur port se baantta hai, HTTP content dekhe baghair. URL path routing, TLS termination ya web application firewall jaise Layer 7 features ke liye Application Gateway ya Front Door use karein."
+ },
+ "D4-042": {
+  "q": "Kaun si load balancer SKU availability zones support karti hai aur SLA rakhti hai, aur us ke public IP par kya lagta hai?",
+  "opts": [
+   "Basic; koi bhi IP",
+   "Standard; us ka public IP bhi Standard SKU hona chahiye",
+   "Premium; Basic IP",
+   "Gateway; koi IP nahi"
+  ],
+  "exp": "Standard Load Balancer availability zones, bare backend pools aur HA ports support karta hai, aur 99.99% SLA rakhta hai. Is ka public frontend IP bhi Standard SKU hona chahiye — Basic aur Standard resources mix nahi ho sakte. Basic Load Balancer retire ho chuka hai, aur koi Premium SKU nahi."
+ },
+ "D4-043": {
+  "q": "Ek backend VM ka health probe fail hota hai. Standard load balancer kya karta hai?",
+  "opts": [
+   "VM delete karta hai",
+   "Probe dobara kamyab hone tak us VM ko NAYE connections bhejna band karta hai",
+   "VM restart karta hai",
+   "Owner ko khud email karta hai"
+  ],
+  "exp": "Jab backend VM apna health probe fail kare, load balancer probe dobara kamyab hone tak us ko naye connections bhejna band kar deta hai. Mojooda connections zabardasti nahi kaate jate. Load balancer kabhi VMs delete ya restart nahi karta, aur email nahi bhejta (is ke liye Azure Monitor alerts use karein)."
+ },
+ "D4-044": {
+  "q": "Users ko apne session ke liye hamesha WAHI backend VM tak pohanchna hai (local session state wali purani app). Kya configure karein?",
+  "opts": [
+   "Floating IP",
+   "Session persistence: Client IP (ya Client IP and protocol)",
+   "HA ports",
+   "Zyada probes"
+  ],
+  "exp": "Default mein load balancer 5-tuple hash se traffic baantta hai, is liye ek user alag VMs par ja sakta hai. Session persistence ko Client IP (ya Client IP and protocol) par set karne se client ka IP hamesha usi backend VM par jata hai, jo local session state rakhne wali apps ko chahiye. Floating IP aur HA ports affinity nahi banate."
+ },
+ "D4-045": {
+  "q": "Internal Standard load balancer public wale se kaise mukhtalif hai?",
+  "opts": [
+   "Yeh VNet subnet ka private frontend IP use karta hai aur sirf network ke andar se (VNet, VPN, peering) pohanch mein hota hai",
+   "Yeh Layer 7 hai",
+   "Is ke health probes nahi ho sakte",
+   "Is ke liye Basic SKU chahiye"
+  ],
+  "exp": "Internal Standard load balancer ka private frontend IP subnet se liya jata hai, is liye sirf VNet ya connected networks (peering, VPN, ExpressRoute) ke andar ke clients us tak pohanch sakte hain. Yeh phir bhi Layer 4 hai, health probes support karta hai aur Standard SKU use karta hai."
+ },
+ "D4-046": {
+  "q": "HA ports rule (frontendPort=0, backendPort=0, protocol All) kis liye use hota hai, aur kahan available hai?",
+  "opts": [
+   "Web apps; public LB",
+   "TAMAM ports aur protocols load balance karne ke liye, aam tor par NVA clusters; sirf INTERNAL Standard LB",
+   "DNS servers; Basic LB",
+   "Port mirroring; koi bhi LB"
+  ],
+  "exp": "HA ports rule (protocol All, ports 0) ek rule se har TCP aur UDP port load-balance karta hai. Yeh zyada tar network virtual appliances (firewalls) ko load balancer ke peeche rakhne ke liye use hota hai. Yeh sirf internal Standard load balancer par available hai, public ya Basic par nahi."
+ },
+ "D4-047": {
+  "q": "Aap load balancer ke ek public IP ke peeche ek makhsoos VM mein RDP karna chahte hain (port 50001 → VM1:3389). Kya configure karein?",
+  "opts": [
+   "Load-balancing rule",
+   "Inbound NAT rule",
+   "Outbound rule",
+   "UDR"
+  ],
+  "exp": "Inbound NAT rule load balancer ka ek frontend port ek backend VM ke makhsoos port par forward karta hai — yahan 50001 se VM1:3389. Load-balancing rules traffic poore pool mein baantte hain, outbound rules outgoing SNAT control karte hain, aur UDRs subnets ke darmiyan traffic route karte hain."
+ },
+ "D4-048": {
+  "q": "HTTP requests URL path se route honi chahiye (/images → pool1, /video → pool2), TLS termination aur WAF ke sath. Azure Load Balancer ghalat choice kyun hai?",
+  "opts": [
+   "Yeh scale nahi kar sakta",
+   "Path routing, TLS termination aur WAF Layer 7 features hain — WAF ke sath Application Gateway use karein",
+   "Yeh bohat mehnga hai",
+   "Yeh health probes nahi kar sakta"
+  ],
+  "exp": "Azure Load Balancer Layer 4 par kaam karta hai aur URLs nahi dekh sakta, TLS terminate nahi kar sakta ya requests inspect nahi kar sakta. Path-based routing, TLS termination aur web application firewall Layer 7 features hain jo WAF wala Application Gateway deta hai. Load Balancer acha scale karta hai aur health probes rakhta hai, is liye yeh wajahen nahi."
+ },
+ "D4-049": {
+  "q": "Naye Standard public LB ke peeche backend VMs ko koi traffic nahi milta. VMs healthy hain aur rules theek lagte hain. Aam wajah kya hai?",
+  "opts": [
+   "Bohat zyada VMs",
+   "Koi NSG rule traffic allow nahi karta — Standard LB default mein mehfooz hai",
+   "LB ko restart chahiye",
+   "ISP port 445 block karta hai"
+  ],
+  "exp": "Standard Load Balancer aur Standard public IPs default mein mehfooz hain: inbound traffic tab tak block rehta hai jab tak backend subnet ya NICs par NSG usay allow na kare. Port allow karne wale NSG rule (maslan TCP 80) ke baghair healthy VMs ko kabhi traffic nahi milta. Load balancers ko restart nahi chahiye, aur port 445 ka is se taluq nahi."
+ },
+ "D4-050": {
+  "ctx": "Hub VNet (10.0.0.0/16) mein firewall NVA (10.0.1.4) hai. Spokes VNet-App (10.1.0.0/16) aur VNet-Db (10.2.0.0/16) har ek sirf hub se peered hain.",
+  "q": "App VMs firewall ke zariye Db VMs tak kaise pohanch sakti hain?",
+  "opts": [
+   "Spoke subnets par UDRs jo doosre spoke ka prefix 10.0.1.4 ko bhejein, sath mein peerings par forwarded traffic allow aur NVA par IP forwarding",
+   "Kuch nahi — peering transitive hai",
+   "Service endpoint",
+   "Private DNS zone"
+  ],
+  "exp": "Peering transitive nahi, is liye spokes khud hub ke zariye ek doosre tak nahi pohanch sakte. Har spoke ke subnets par user-defined routes add karein jo doosre spoke ka prefix firewall (10.0.1.4) ko bhejein. Peerings par forwarded traffic allow karein, aur yaqeeni banayen ke firewall ke NIC par IP forwarding enabled ho. Service endpoints aur DNS traffic route nahi karte."
+ },
+ "D4-201": {
+  "q": "Requirement 1 ke liye peering settings mukammal karein.",
+  "tpl": "Hub-to-spoke peerings par [[0]] enable karein. Spoke-to-hub peerings par [[1]] enable karein.",
+  "exp": "Hub VPN gateway ka malik hai aur apni peering par 'Allow gateway transit' enable kar ke usay share karta hai. Har spoke apni peering par 'Use remote gateways' enable karta hai taa ke us ka on-premises traffic hub ka gateway use kare. Phir spokes ko apne gateways ki zaroorat nahi."
+ },
+ "D4-202": {
+  "q": "Requirement 2 kya poori karta hai?",
+  "opts": [
+   "VNet-App ko seedha VNet-Data se peer karein",
+   "Spoke subnets par route tables add karein jo doosre spoke ka prefix next hop type Virtual appliance 10.0.1.4 ko bhejein",
+   "Dono spokes par service endpoint enable karein",
+   "VNet-App se VNet-Data allow karne wale NSG rules add karein"
+  ],
+  "exp": "Peering transitive nahi, is liye spokes khud hub ke zariye ek doosre tak nahi pohanch sakte. Har spoke subnet par route table doosre spoke ka prefix firewall (next hop type Virtual appliance, 10.0.1.4) ko bhejti hai, jo usay aage bhejta hai. Seedhi peering firewall ko bypass kar degi, aur service endpoints aur NSG rules traffic route nahi karte."
+ },
+ "D4-203": {
+  "q": "Sab se kam management mehnat se requirement 3 kya poori karta hai?",
+  "opts": [
+   "Hub mein public IP wali jump box VM",
+   "Hub VNet mein Azure Bastion, jo peered spokes ki VMs tak pohanch sakta hai",
+   "Har VM par public IP, sirf office se RDP allowed",
+   "Har administrator ke liye point-to-site VPN"
+  ],
+  "exp": "Hub mein Azure Bastion VMs par public IPs ke baghair TLS par browser-based RDP aur SSH deta hai, aur (Standard SKU ya upar ke sath) peered spokes ki VMs tak pohanch sakta hai. Jump box ya public IPs attack surface aur patching ka kaam barhate hain, aur har admin ka VPN manage karna zyada hai."
+ },
+ "D4-204": {
+  "q": "Requirement 4 kya poori karta hai?",
+  "opts": [
+   "Spoke subnets par Microsoft.Sql ka service endpoint",
+   "SQL server ka private endpoint, privatelink private DNS zone, aur on-premises clients ke liye DNS forwarding",
+   "On-premises se TCP 1433 allow karne wala NSG rule",
+   "On-premises public IP tak mehdood public endpoint"
+  ],
+  "exp": "Private endpoint SQL server ko private IP deta hai jis tak on-premises clients VPN ya ExpressRoute par pohanch sakte hain. Privatelink private DNS zone us ka naam us IP par resolve karta hai, aur DNS forwarding on-premises DNS servers ko zone use karne deti hai. Service endpoints on-premises se kaam nahi karte, aur NSG rules ya public endpoints traffic public rakhte hain."
+ },
+ "D4-205": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Web VMs ko TCP 443 allow karne wala NSG rule chahiye, kyun ke Standard load balancer default mein mehfooz hai",
+   "VNet-App baghair kisi route ke hub peerings ke zariye VNet-Data tak pohanch sakta hai",
+   "Hub ka Azure Firewall subnet koi bhi naam rakh sakta hai",
+   "Hub ka gateway use karne wala spoke (Use remote gateways) apna VPN gateway bhi rakh sakta hai"
+  ],
+  "exp": "Standard load balancers ko traffic andar aane dene ke liye NSG rules chahiye. Peering transitive nahi. Azure Firewall ko AzureFirewallSubnet naam ka subnet chahiye. Remote gateways use karne wala VNet apna gateway nahi rakh sakta."
+ },
+ "D4-206": {
+  "q": "Requirement 1 ke liye registrar par aap ko kya karna hoga?",
+  "opts": [
+   "Azure ki taraf point karta A record banayen",
+   "Domain ke NS records ko proseware.com zone ke chaar Azure DNS name servers se badlein",
+   "Azure subscription ID wala TXT record add karein",
+   "Kuch nahi; Azure DNS khud sambhal leta hai"
+  ],
+  "exp": "Domain ko Azure DNS ko delegate karne ke liye registrar par domain ke NS records ko proseware.com zone ko assign hue chaar Azure DNS name servers se badlein. Phir internet resolvers domain ke liye Azure DNS se poochte hain. A ya TXT records kuch delegate nahi karte, aur Azure khud domain nahi sambhal sakta."
+ },
+ "D4-207": {
+  "q": "Kaun sa record requirement 2 poora karta hai?",
+  "opts": [
+   "Apex par load balancer ki taraf CNAME record",
+   "Apex par alias A record jo load balancer ke public IP resource ko target kare",
+   "Mojooda IP address wala static A record",
+   "MX record"
+  ],
+  "exp": "Zone apex (khud proseware.com) par CNAME records allowed nahi. Apex par alias A record load balancer ke public IP resource ki taraf point kar sakta hai aur IP badalne par khud update hota hai. Static A record ko haath se update karna parta, aur MX mail ke liye hai."
+ },
+ "D4-208": {
+  "q": "Requirement 3 ke liye plan mukammal karein.",
+  "tpl": "corp.proseware.internal naam ka [[0]] DNS zone banayen, aur usay [[1]] enabled ke sath VNet se link karein.",
+  "exp": "Private DNS zone naam sirf us se linked VNets ke andar resolve karta hai. Link par auto-registration on hone se Azure us VNet ki VMs ke A records khud banata aur update karta hai, is liye IPs badalne par naam sahi rehte hain."
+ },
+ "D4-209": {
+  "q": "Requirement 4 kya poori karta hai?",
+  "opts": [
+   "TCP 8443 rule wala public Standard load balancer",
+   "Private frontend IP aur TCP 8443 rule wala internal Standard load balancer",
+   "Public listener wala Application Gateway",
+   "Do endpoints wala Traffic Manager"
+  ],
+  "exp": "Internal Standard load balancer ka private frontend IP hota hai jis tak sirf VNet aur connected networks pohanch sakte hain, aur yeh 8443 jaisa koi bhi TCP port balance kar sakta hai. Public load balancer ya public Application Gateway listener app ko internet par zahir kar dega, aur Traffic Manager public DNS ke sath kaam karta hai."
+ },
+ "D4-210": {
+  "q": "Requirement 5 kya poori karta hai?",
+  "opts": [
+   "Port 50001 se port 3389 tak load-balancing rule",
+   "Frontend port 50001 se VM 1 ke port 3389 tak inbound NAT rule",
+   "Outbound rule",
+   "HTTPS rule par Floating IP"
+  ],
+  "exp": "Inbound NAT rule ek frontend port (50001) ko makhsoos backend VM ke makhsoos port (3389) par forward karta hai, is liye admins us ek VM tak pohanch sakte hain. Load-balancing rule traffic poore pool mein baantta hai, outbound rules outgoing traffic handle karte hain, aur Floating IP SQL clusters jaise khaas cases ke liye hai."
+ },
+ "D4-211": {
+  "q": "Command mukammal karein taa ke rule priority 300 wale mojooda custom Deny-All rule se pehle evaluate ho aur internet se HTTPS allow kare.",
+  "tpl": "az network nsg rule create -g RG1 --nsg-name nsg-web -n allow-https \\\n  --priority [[0]] --direction Inbound --access Allow --protocol Tcp \\\n  --destination-port-ranges 443 --source-address-prefixes [[1]]",
+  "exp": "Kam numbers pehle evaluate hote hain, is liye 200 pehle aata hai 300 se. Custom priorities 100 se 4096 tak hoti hain. Internet service tag VNet ke bahar ke addresses ko represent karta hai."
+ },
+ "D4-212": {
+  "q": "Route mukammal karein taa ke tamam internet-bound traffic 10.0.1.4 par firewall se guzre.",
+  "tpl": "az network route-table route create -g RG1 --route-table-name rt-spoke -n to-fw \\\n  --address-prefix 0.0.0.0/0 --next-hop-type [[0]] --next-hop-ip-address 10.0.1.4",
+  "exp": "Next hop type VirtualAppliance match karne wala traffic aap ke diye IP par bhejta hai — yahan 10.0.1.4 par firewall. 0.0.0.0/0 ke sath yeh tamam internet-bound traffic ko firewall se guzarne par majboor karta hai. None traffic drop kar dega, aur Internet firewall ko bypass karega."
+ },
+ "D4-213": {
+  "q": "Subnet 10.0.2.0/28 ke bare mein statement mukammal karein.",
+  "tpl": "Subnet mein [[0]] usable addresses hain, aur is mein deploy hone wali pehli VM ko [[1]] milta hai.",
+  "exp": "/28 mein 16 addresses hote hain. Azure har subnet mein 5 reserve karta hai: network address (.0), default gateway ke liye .1, Azure DNS ke liye .2 aur .3, aur broadcast address (.15). Is se 11 usable addresses bachte hain, 10.0.2.4 se shuru."
+ },
+ "D4-214": {
+  "q": "Azure Bastion ke bare mein statement mukammal karein.",
+  "tpl": "Azure Bastion (Basic ya Standard) ko [[0]] naam ka subnet chahiye jis ka prefix [[1]] ya us se bara ho.",
+  "exp": "Azure Bastion (Basic, Standard aur Premium) ko bilkul AzureBastionSubnet naam ke dedicated subnet mein deploy karna hota hai, aur subnet /26 ya bara hona chahiye taa ke Bastion scale ho sake. /27 jaisa chhota prefix ya alag naam deployment fail kar deta hai."
+ },
+ "D4-215": {
+  "q": "Peering ki hub wali taraf ki command mukammal karein, taa ke spokes hub ka VPN gateway use kar sakein.",
+  "tpl": "az network vnet peering create -g RG1 -n hub-to-app \\\n  --vnet-name vnet-hub --remote-vnet vnet-app \\\n  --allow-vnet-access --[[0]]",
+  "exp": "Hub VPN gateway ka malik hai, is liye peering ki us ki taraf --allow-gateway-transit set karti hai. Har spoke ki taraf --use-remote-gateways set karti hai. Spokes ko hub ke zariye on-premises tak pohanchne ke liye dono chahiye."
+ },
+ "D4-216": {
+  "q": "Har zaroorat ke liye record type chunein.",
+  "tpl": "Domain ki email route karna: [[0]]\nDomain ki ownership sabit karna: [[1]]\nwww ko app.azurewebsites.net ki taraf point karna: [[2]]",
+  "exp": "MX records doosre mail servers ko batate hain ke domain ki email kahan deliver karni hai. TXT records text rakhte hain, aksar verification ke liye (jaise SPF ya domain ownership sabit karna). CNAME records ek naam ko doosre naam se map karte hain."
+ },
+ "D4-217": {
+  "q": "Statement mukammal karein.",
+  "tpl": "Blob service ka private endpoint private DNS zone [[0]] use karta hai.",
+  "exp": "Blob storage ke private endpoints private DNS zone privatelink.blob.core.windows.net use karte hain. Public naam privatelink naam ka CNAME ban jata hai, jise zone private IP par resolve karta hai. Har service aur sub-resource ka apna privatelink zone hai."
+ },
+ "D4-218": {
+  "q": "Azure Load Balancer ke bare mein statement mukammal karein.",
+  "tpl": "Default mein traffic [[0]] hash se baanta jata hai. Client ko usi backend VM par rakhne ke liye session persistence [[1]] par set karein.",
+  "exp": "Default mein Azure Load Balancer 5-tuple hash se traffic baantta hai: source IP, source port, destination IP, destination port aur protocol. Client IP session persistence (2-tuple) chunne se har client usi backend VM par rehta hai."
+ },
+ "D4-219": {
+  "q": "Subnet par storage service endpoint enable karne wali command mukammal karein.",
+  "tpl": "az network vnet subnet update -g RG1 --vnet-name vnet1 -n app \\\n  --service-endpoints [[0]]",
+  "exp": "Service endpoints service ke resource provider ke naam par hote hain, is liye storage endpoint Microsoft.Storage hai (doosre Microsoft.Sql aur Microsoft.KeyVault hain). Yeh subnet par enable hota hai, aur phir storage firewall us subnet ko allow kar sakta hai."
+ },
+ "D4-220": {
+  "q": "Route selection ke bare mein statement mukammal karein.",
+  "tpl": "Ek jaise prefixes ke liye Azure BGP aur system routes par [[0]] routes ko tarjeeh deta hai. Alag prefixes mein [[1]] prefix jeetta hai.",
+  "exp": "Azure pehle sab se lambe (sab se specific) prefix wala route chunta hai. Sirf jab kai routes ka prefix ek ho tab sources ka muqabla karta hai: user-defined routes BGP routes se jeette hain, jo system routes se jeette hain."
+ },
+ "D4-221": {
+  "q": "Har sawal ko Network Watcher tool se match karein.",
+  "items": [
+   "Kya API tak latency waqt ke sath kharab ho rahi hai?",
+   "Is NIC par asal mein kaun se NSG rules lagte hain?",
+   "Kya yeh makhsoos flow allowed hai ya denied?",
+   "Is address ka traffic aage kahan jata hai?"
+  ],
+  "targets": [
+   "IP flow verify",
+   "Next hop",
+   "Effective security rules",
+   "Connection Monitor",
+   "Packet capture"
+  ],
+  "exp": "Connection Monitor waqt ke sath latency aur reachability track karta hai. Effective security rules NIC par lagne wale mile hue NSG rules dikhate hain. IP flow verify check karta hai ke ek makhsoos flow allowed hai ya denied. Next hop dikhata hai ke address ka traffic aage kahan jata hai."
+ },
+ "D4-222": {
+  "q": "Har zaroorat ko service se match karein.",
+  "items": [
+   "Regions ke darmiyan DNS-based global routing",
+   "VNet ke andar TCP 1433",
+   "Caching aur WAF ke sath global HTTP entry point",
+   "Ek region mein WAF ke sath URL path-based routing"
+  ],
+  "targets": [
+   "Internal Load Balancer",
+   "Application Gateway",
+   "Azure Front Door",
+   "Traffic Manager",
+   "NAT Gateway"
+  ],
+  "exp": "Traffic Manager DNS ke zariye kaam karta hai; internal LB private TCP handle karta hai; Front Door global HTTP edge hai; Application Gateway regional Layer 7 balancer hai."
+ },
+ "D4-223": {
+  "q": "Har service ko us subnet naam se match karein jo use chahiye.",
+  "items": [
+   "Azure Firewall",
+   "VPN gateway",
+   "Azure Bastion"
+  ],
+  "targets": [
+   "GatewaySubnet",
+   "AzureBastionSubnet",
+   "AzureFirewallSubnet",
+   "AppGatewaySubnet"
+  ],
+  "exp": "In services ko bilkul makhsoos naam wale dedicated subnets chahiye: Azure Firewall AzureFirewallSubnet use karta hai, VPN aur ExpressRoute gateways GatewaySubnet, aur Azure Bastion AzureBastionSubnet. Subnet ka koi aur naam ho to deployments fail hote hain."
+ },
+ "D4-224": {
+  "q": "Har nateeje ko next hop type se match karein.",
+  "items": [
+   "Seedha internet par bhejna",
+   "Traffic drop karna",
+   "Gateway ke zariye on-premises bhejna",
+   "Firewall VM ko bhejna"
+  ],
+  "targets": [
+   "None",
+   "Virtual appliance",
+   "Virtual network gateway",
+   "Internet",
+   "Virtual network"
+  ],
+  "exp": "User-defined routes mein Internet traffic seedha internet par bhejta hai, None usay drop karta hai, Virtual network gateway usay VPN ya ExpressRoute gateway ke zariye on-premises bhejta hai, aur Virtual appliance usay firewall VM jaise IP par bhejta hai."
+ },
+ "D4-225": {
+  "q": "Har requirement ko connectivity option se match karein.",
+  "items": [
+   "Ek laptop se VPN",
+   "Do Azure VNets ko gateways ke baghair backbone par jorna",
+   "Office se internet par encrypted tunnel",
+   "Azure tak private, dedicated circuit"
+  ],
+  "targets": [
+   "Site-to-site VPN",
+   "ExpressRoute",
+   "Point-to-site VPN",
+   "VNet peering"
+  ],
+  "exp": "Point-to-site VPN ek device, jaise laptop, ko jorta hai. VNet peering do Azure VNets ko gateways ke baghair Microsoft backbone par jorti hai. Site-to-site VPN office se internet par encrypted tunnel banata hai. ExpressRoute private, dedicated circuit hai jo internet use nahi karta."
+ },
+ "D4-226": {
+  "q": "Har zaroorat ko DNS record se match karein.",
+  "items": [
+   "Domain ownership verification",
+   "Apex ko Azure public IP ki taraf point karna",
+   "Subdomain delegate karna",
+   "Host name ko doosre naam se map karna"
+  ],
+  "targets": [
+   "Alias record",
+   "CNAME",
+   "NS",
+   "TXT",
+   "MX"
+  ],
+  "exp": "TXT record verification text rakhta hai jo sabit karta hai ke domain aap ka hai. Alias record apex (contoso.com) ko Azure public IP ki taraf point karne deta hai, jahan CNAMEs allowed nahi. NS record subdomain ko doosre name servers ko delegate karta hai. CNAME ek host name ko doosre se map karta hai."
+ },
+ "D4-227": {
+  "q": "Har description ko feature se match karein.",
+  "items": [
+   "Subnet ya NIC par basic stateful allow/deny filtering",
+   "NSG rules mein NICs ko application role ke hisaab se group karna",
+   "FQDN rules aur threat intelligence ke sath stateful filtering",
+   "IP prefixes ke Microsoft-maintained groups"
+  ],
+  "targets": [
+   "Application security group",
+   "Service tag",
+   "Azure Firewall",
+   "Network security group"
+  ],
+  "exp": "Network security group subnet ya NIC par basic stateful allow/deny filtering karta hai. Application security group NICs ko role ke hisaab se group karta hai taa ke rules IPs ke bajaye unhein refer kar sakein. Azure Firewall FQDN rules aur threat intelligence wala managed stateful firewall hai. Service tags Azure services ke IP prefixes ke Microsoft-maintained groups hain."
+ },
+ "D4-228": {
+  "q": "Har zaroorat ko Load Balancer feature se match karein.",
+  "items": [
+   "Backend VMs ke liye explicit outbound SNAT",
+   "Client ko usi backend par rakhna",
+   "Frontend ke zariye ek makhsoos VM mein RDP",
+   "NVAs ke liye tamam ports load-balance karna"
+  ],
+  "targets": [
+   "Inbound NAT rule",
+   "HA ports",
+   "Outbound rule",
+   "Session persistence",
+   "Floating IP"
+  ],
+  "exp": "Outbound rules SNAT configure karte hain; session persistence clients ko ek jagah rakhti hai; inbound NAT ek VM ko forward karta hai; HA ports internal load balancers par har port balance karte hain."
+ },
+ "D4-229": {
+  "q": "Yeh web VM ke inbound effective security rules hain. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "203.0.113.20 wala client port 443 par VM tak pohanch sakta hai",
+   "198.51.100.10 VM mein RDP kar sakta hai",
+   "198.51.100.11 VM mein RDP kar sakta hai",
+   "Usi VNet ki doosri VM port 22 par connect ho sakti hai"
+  ],
+  "exp": "Rules sab se kam number se process hote hain. Rule 100 har internet address se 443 allow karta hai, is se pehle ke 200 par Deny-Office rule tak pohanche. Sirf 198.51.100.10 RDP rule se match karta hai. AllowVnetInBound kisi bhi port par VNet traffic allow karta hai."
+ },
+ "D4-230": {
+  "q": "Yeh VNet-App ki VM ke effective routes hain. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "10.0.5.10 ka traffic peering ke zariye seedha hub jata hai",
+   "10.2.3.4 ka traffic 10.0.1.4 par firewall se guzarta hai",
+   "8.8.8.8 ka traffic seedha internet jata hai",
+   "Internet ka system default route invalid hai kyun ke user-defined route usay override karta hai"
+  ],
+  "exp": "10.0.0.0/16 peering route se match karta hai. 10.2.0.0/16 firewall wale user-defined route se match karta hai. 0.0.0.0/0 firewall ki taraf point karta hai, jo default internet route ki jagah le leta hai."
+ },
+ "D4-231": {
+  "q": "IP flow verify yeh nateeja deta hai. Traffic allow karne ke liye aap ko kya karna chahiye?",
+  "opts": [
+   "Database subnet par route table add karein",
+   "Deny-SQL-From-Web se kam priority number wala Allow rule add karein, ya woh rule badlein",
+   "Database VM restart karein",
+   "Microsoft.Sql ka service endpoint enable karein"
+  ],
+  "exp": "IP flow verify us NSG rule ka naam batata hai jis ne flow deny kiya: Deny-SQL-From-Web. Traffic allow karne ke liye us rule se kam priority number (yani zyada priority) wala Allow rule add karein, ya khud rule badlein. Routes, restarts aur service endpoints NSG faisle nahi badalte."
+ },
+ "D4-232": {
+  "q": "Aap VNet ki ek VM par yeh command chalate hain. Output kya dikhata hai?",
+  "opts": [
+   "Storage account apne public endpoint se pohancha jata hai",
+   "Private endpoint DNS kaam karta hai: naam privatelink zone ke zariye private IP par resolve hota hai",
+   "DNS toota hua hai kyun ke naam badal gaya",
+   "Service endpoint configured hai"
+  ],
+  "exp": "Public storage naam CNAME ke zariye privatelink naam par resolve hota hai, aur private DNS zone private IP ke sath jawab deta hai. Private endpoint DNS bilkul isi tarah kaam karna chahiye, is liye traffic VNet ke andar rehta hai. Public endpoint ke sath public IP dikhta, aur service endpoints DNS nahi badalte."
+ },
+ "D4-233": {
+  "q": "Yeh NSG rule kya allow karta hai?",
+  "opts": [
+   "Internet se asg-web application security group ke NICs tak HTTP aur HTTPS",
+   "asg-web se internet tak tamam traffic",
+   "Sirf VNet se HTTP aur HTTPS",
+   "Kuch nahi, kyun ke ASGs destinations ke taur par use nahi ho sakte"
+  ],
+  "exp": "Rule Internet service tag se asg-web application security group ke har network interface tak ports 80 aur 443 par inbound TCP allow karta hai. ASGs sources ya destinations ke taur par use ho sakte hain, yahi un ka maqsad hai. Yeh outbound traffic allow nahi karta ya source ko VNet tak mehdood nahi karta."
+ },
+ "D4-234": {
+  "q": "Load balancer configuration dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Frontend ek availability zone khone se bach jata hai",
+   "Ek hi client ki har request hamesha usi VM tak pohanchti hai",
+   "Administrators frontend ke zariye port 50001 par vm1 mein RDP kar sakte hain",
+   "Agar vm2 par /health HTTP 500 de to naye connections phir bhi vm2 par jate hain"
+  ],
+  "exp": "Teen zones ki VMs ke sath zone-redundant frontend zone khone se bach jata hai. Default distribution mein koi persistence nahi. Inbound NAT rule 50001 ko vm1 par forward karta hai. Fail hota probe vm2 ko rotation se nikal deta hai."
+ },
+ "D4-235": {
+  "q": "Is private DNS zone ke bare mein kaun si baat sahi hai?",
+  "opts": [
+   "Teeno records auto-registration se bane",
+   "vm-web1 aur vm-sql1 registration-enabled VNet link ke zariye auto-registration se bane; api manually bana",
+   "Zone ke liye auto-registration disabled hai",
+   "Records internet se resolve ho sakte hain"
+  ],
+  "exp": "AutoRegistered = True dikhata hai ke record registration-enabled link se aaya. Manually bane records False dikhate hain. Private zones sirf linked VNets ke andar resolve hote hain."
+ },
+ "D4-236": {
+  "q": "vnet-data ki VMs hub tak kyun nahi pohanch saktin?",
+  "opts": [
+   "Gateway transit enabled hai",
+   "vnet-data ki taraf peering abhi bani nahi, is liye us ki state Initiated hai",
+   "Forwarded traffic allowed hai",
+   "Hub mein bohat zyada peerings hain"
+  ],
+  "exp": "Peering ke liye dono VNets par link banna chahiye. State Initiated ka matlab sirf ek taraf bani hai — yahan vnet-data wali taraf missing hai. Dono taraf ban jane par dono Connected dikhate hain aur traffic chalta hai. Gateway transit, forwarded traffic aur peering limits wajah nahi."
+ },
+ "D4-237": {
+  "q": "Connection troubleshoot yeh nateeja deta hai. Wajah kya hai?",
+  "opts": [
+   "10.0.1.4 par firewall traffic drop karta hai",
+   "Destination subnet (nsg-data) par NSG traffic block karta hai",
+   "Destination tak koi route nahi",
+   "Source VM stopped hai"
+  ],
+  "exp": "Connection troubleshoot har hop check karta hai. Firewall hop koi masla report nahi karta, lekin destination hop nsg-data mein NSG rule Deny-All-Inbound ko traffic block karte dikhata hai. Is liye hal destination subnet ke NSG par hai, firewall, routing ya source VM par nahi."
+ },
+ "D4-238": {
+  "q": "Is proseware.com zone ke bare mein kaun si baat sahi hai?",
+  "opts": [
+   "Mail Exchange Online ko deliver hoti hai, aur apex pip-web IP resource ke sath chalta hai",
+   "www alias record hai",
+   "Zone private hai",
+   "IP badalne par apex record haath se update karna hota hai"
+  ],
+  "exp": "MX record Exchange Online Protection ki taraf point karta hai, is liye mail Exchange Online ko deliver hoti hai. Apex pip-web public IP resource ko target karne wala alias record hai, is liye IP badalne par khud update hota hai. www CNAME hai, alias nahi, aur zone public hai."
+ },
+ "D4-239": {
+  "q": "Is subnet mein Azure Bastion (Standard SKU) deploy karna fail hota hai. Kyun?",
+  "opts": [
+   "Subnet ka naam ghalat hai",
+   "Subnet bohat chhota hai; AzureBastionSubnet /26 ya bara hona chahiye",
+   "Bastion ko /16 subnet chahiye",
+   "Bastion aise VNet mein deploy nahi ho sakta jis mein doosre subnets hon"
+  ],
+  "exp": "Subnet ka naam sahi hai (AzureBastionSubnet), lekin Bastion ko /26 ya bara chahiye aur yeh sirf /27 hai, is liye deployment fail hota hai. Bastion ko /16 nahi chahiye, aur yeh doosre subnets ke sath VNet share kar sakta hai."
+ },
+ "D4-240": {
+  "q": "vm1 outbound internet connections ke liye kaun sa public IP use karti hai?",
+  "opts": [
+   "20.60.2.2, VM ka apna public IP",
+   "20.50.1.1, NAT gateway ka public IP",
+   "Azure ka diya koi random IP",
+   "Is ka koi outbound access nahi"
+  ],
+  "exp": "NAT Gateway apne subnet ke outbound traffic ke liye tarjeeh leta hai, instance-level public IP par bhi. VM ka apna IP phir bhi inbound connections ke liye use hota hai."
+ },
+ "D4-051": {
+  "q": "VNet ko aam tor par kaun si address ranges use karni chahiye?",
+  "opts": [
+   "10.0.0.0/8, 172.16.0.0/12 ya 192.168.0.0/16 jaisi private RFC 1918 ranges",
+   "Koi bhi public range jo aap chahein",
+   "Sirf 169.254.0.0/16",
+   "224.0.0.0/4"
+  ],
+  "exp": "VNets aam tor par RFC 1918 ki private address ranges use karte hain — 10.0.0.0/8, 172.16.0.0/12 ya 192.168.0.0/16 — aur yeh un networks se overlap nahi honi chahiye jin se aap jorenge, jaise on-premises ya doosre VNets. Jo public ranges aap ki nahi woh routing ke masle paida karti hain, 169.254.0.0/16 link-local hai, aur 224.0.0.0/4 multicast hai."
+ },
+ "D4-052": {
+  "q": "Kaun si CLI command ek subnet ke sath VNet banati hai?",
+  "opts": [
+   "az network vnet create -g RG1 -n VNet1 --address-prefix 10.0.0.0/16 --subnet-name Web --subnet-prefix 10.0.1.0/24",
+   "az vnet new VNet1 10.0.0.0/16",
+   "az network create vnet VNet1",
+   "az group vnet create"
+  ],
+  "exp": "az network vnet create --address-prefix ke sath VNet banati hai, aur --subnet-name aur --subnet-prefix se usi waqt pehla subnet bhi bana sakti hai. Baqi commands mojood nahi."
+ },
+ "D4-053": {
+  "q": "Kaun si CLI command mojooda VNet mein subnet add karti hai?",
+  "opts": [
+   "az network vnet subnet create -g RG1 --vnet-name VNet1 -n App --address-prefixes 10.0.2.0/24",
+   "az network subnet add App",
+   "az vnet update --add-subnet App",
+   "az network vnet create --subnet App"
+  ],
+  "exp": "Subnets VNet ke child resources hain, is liye aap az network vnet subnet create se ek add karte hain, --vnet-name, subnet ka naam aur --address-prefixes de kar. az network vnet create naya VNet banati hai, aur baqi commands mojood nahi."
+ },
+ "D4-054": {
+  "q": "Azure IPv4 ke liye sab se chhota kaun sa subnet size allow karta hai?",
+  "opts": [
+   "/29",
+   "/30",
+   "/28",
+   "/24"
+  ],
+  "exp": "Azure ka sab se chhota allowed IPv4 subnet /29 hai, jis mein 8 addresses hote hain. Azure har subnet mein 5 reserve karta hai (network address, gateway ke liye .1, DNS ke liye .2 aur .3, aur broadcast address), is liye sirf 3 usable bachte hain. /30 aur chhote subnets allowed nahi."
+ },
+ "D4-055": {
+  "q": "Kya VMs deploy hone ke dauran subnet ki address range badal sakte hain?",
+  "opts": [
+   "Sirf agar nayi range mein abhi use hone wale tamam IP addresses shamil hon; warna pehle resources hatayen",
+   "Haan, hamesha",
+   "Kabhi nahi",
+   "Sirf /24 subnets ke liye"
+  ],
+  "exp": "Resources hone ke dauran subnet ki address range badal sakte hain, lekin sirf agar nayi range mein abhi use hone wala har IP address shamil ho. Warna pehle woh resources hatayen ya move karein. Yeh /24 subnets tak mehdood nahi."
+ },
+ "D4-056": {
+  "q": "GatewaySubnet ka kam se kam recommended size kya hai?",
+  "opts": [
+   "/27",
+   "/29",
+   "/30",
+   "/16"
+  ],
+  "exp": "GatewaySubnet technically /29 jitna chhota ho sakta hai, lekin Microsoft /27 ya bara recommend karta hai taa ke gateway instances, active-active configurations aur VPN aur ExpressRoute gateways ek sath chalane ki jagah ho."
+ },
+ "D4-057": {
+  "q": "Ek subnet Microsoft.Web/serverFarms ko delegated hai. Is ka kya matlab hai?",
+  "opts": [
+   "Subnet us service (yahan App Service VNet integration) ke liye makhsoos hai, jo us mein service-specific resources bana sakti hai",
+   "Koi bhi wahan VMs deploy kar sakta hai",
+   "Subnet delete ho jata hai",
+   "Subnet public ho jata hai"
+  ],
+  "exp": "Subnet ko Microsoft.Web/serverFarms (App Service VNet integration) jaisi service ko delegate karna usay us service ke liye makhsoos kar deta hai, jo phir subnet mein apne resources aur network policies bana sakti hai. Aap wahan VMs jaise ghair-mutaliq resources deploy nahi kar sakte. Subnet delete ya public nahi hota."
+ },
+ "D4-058": {
+  "q": "VNet1 ki VMs ko custom DNS server (10.0.0.10, ek domain controller) chahiye. Yeh kahan set karte hain?",
+  "opts": [
+   "VNet1 → DNS servers → Custom (10.0.0.10)",
+   "NSG rule",
+   "Route table",
+   "Sirf private DNS zone"
+  ],
+  "exp": "DNS servers VNet par set hote hain (DNS servers → Custom), aur us ki har VM restart ya lease renewal ke baad DHCP ke zariye unhein le leti hai. NIC VNet ki setting override kar sakta hai. NSGs aur route tables DNS set nahi karte, aur akela private DNS zone VMs ko domain controller ki taraf point nahi karega."
+ },
+ "D4-059": {
+  "q": "VMs VNet par naya configure kiya gaya custom DNS server nahi le rahin. Aap ko kya karna chahiye?",
+  "opts": [
+   "VMs restart karein (ya DHCP leases renew karein) taa ke naye DNS settings milein",
+   "VNet delete karein",
+   "NSG rule add karein",
+   "Subnet prefix badlein"
+  ],
+  "exp": "VMs apni DNS server settings start hone ya lease renew karne par DHCP se leti hain. VNet ke custom DNS servers badalne ke baad VMs restart karein (ya OS ke andar DHCP lease renew karein) taa ke naya server mile. VNet delete karna ya NSGs aur subnet prefixes badalna zaroori nahi."
+ },
+ "D4-060": {
+  "q": "Domain controller VM ko aisa private IP chahiye jo kabhi na badle. Kya configure karein?",
+  "opts": [
+   "NIC par static private IP allocation",
+   "Static public IP",
+   "Windows ke andar DHCP reservation",
+   "DNS A record"
+  ],
+  "exp": "Azure mein VM ke network interface ki IP configuration par private IP allocation Static set karein. Phir Azure hamesha woh address DHCP ke zariye VM ko deta hai, stop ya redeploy ke baad bhi. Public IP private address nahi, Windows ke andar DHCP reservation ka Azure mein koi asar nahi, aur DNS record IP fix nahi karta."
+ },
+ "D4-061": {
+  "q": "Windows VM ki network adapter settings ke andar manually static IP kyun configure nahi karna chahiye?",
+  "opts": [
+   "Agar woh Azure ke assignment se match na kare to connectivity toot sakti hai; is ke bajaye Azure NIC par IP configure karein",
+   "Is ki zyada cost hai",
+   "Yeh DNS disable karta hai",
+   "Yeh zaroori hai"
+  ],
+  "exp": "Azure VMs ko DHCP ke zariye IP addresses deta hai. Agar aap Windows ke andar aisa IP hard-code karein jo Azure ke NIC ko diye gaye se match na kare to VM ki network connectivity toot sakti hai. Static IPs Azure NIC par set karein aur guest OS ko DHCP par rehne dein."
+ },
+ "D4-062": {
+  "q": "Kaun si CLI command static Standard public IP banati hai?",
+  "opts": [
+   "az network public-ip create -g RG1 -n pip1 --sku Standard --allocation-method Static",
+   "az public-ip new pip1",
+   "az network ip create --static",
+   "az vm ip add"
+  ],
+  "exp": "--sku Standard aur --allocation-method Static ke sath az network public-ip create fixed address wala Standard public IP banati hai. Standard IPs hamesha static hote hain. Baqi commands mojood nahi."
+ },
+ "D4-063": {
+  "q": "Standard public IP ko poore zone ke fail hone se bachna chahiye. Kaun sa option?",
+  "opts": [
+   "Zone-redundant public IP (zones 1, 2, 3)",
+   "Zonal public IP (sirf zone 1)",
+   "Paired region mein bana public IP",
+   "Basic SKU public IP"
+  ],
+  "exp": "Zone-redundant public IP (zones 1, 2 aur 3) har zone se serve hota hai, is liye ek zone fail hone par bhi chalta rehta hai. Zonal IP (sirf zone 1) us zone ke sath band ho jata hai. Basic public IPs retire ho chuke aur kabhi zones support nahi karte the, aur IP hamesha ek region se bandha hota hai."
+ },
+ "D4-064": {
+  "q": "Partner ke sath allowlisting ke liye aap ko static public IPs ki musalsal range chahiye. Kaun sa resource?",
+  "opts": [
+   "Public IP prefix",
+   "Public IP address list",
+   "NAT rule",
+   "Load balancer frontend"
+  ],
+  "exp": "Public IP prefix static public IPs ka musalsal block reserve karta hai, maslan 16 addresses ka /28, jis se aap individual public IPs banate hain. Phir partners poori range ek rule mein allow kar sakte hain. Baqi options address ranges reserve nahi karte."
+ },
+ "D4-065": {
+  "q": "Public IPs ke baghair bohat si VMs ko kuch pehle se maloom public IPs se outbound internet access chahiye. Behtareen service?",
+  "opts": [
+   "Subnet se associated NAT Gateway",
+   "Har VM par public IPs",
+   "Service endpoint",
+   "Bastion"
+  ],
+  "exp": "Subnet se jura NAT Gateway us ki har VM ko ek ya kuch static public IPs (ya prefix) ke zariye outbound internet access deta hai, VMs ke public IPs ke baghair. Yeh scale karta hai aur SNAT port exhaustion se bachata hai. Har VM par public IPs unhein zahir kar dete hain, aur service endpoints aur Bastion internet access nahi dete."
+ },
+ "D4-066": {
+  "q": "Ek subnet mein NAT Gateway hai, aur us ki ek VM ka instance-level public IP bhi hai. VM ka outbound traffic kaun sa IP use karta hai?",
+  "opts": [
+   "VM ka apna public IP",
+   "NAT Gateway ka public IP (outbound ke liye NAT Gateway ko tarjeeh)",
+   "Dono baari baari",
+   "Koi nahi"
+  ],
+  "exp": "NAT Gateway doosre outbound tareeqon, instance-level public IPs aur load balancer outbound rules samet, par tarjeeh leta hai. VM ka public IP phir bhi inbound traffic ke liye use hota hai."
+ },
+ "D4-067": {
+  "q": "Microsoft VMs ka default outbound access retire kar raha hai. Recommended explicit outbound tareeqa kya hai?",
+  "opts": [
+   "NAT Gateway (ya load balancer outbound rule, ya instance public IP)",
+   "Implicit default outbound IPs par bharosa karein",
+   "Service endpoints",
+   "Private DNS"
+  ],
+  "exp": "Microsoft VMs ka default (implicit) outbound internet access retire kar raha hai, is liye naye deployments ko explicit tareeqa use karna chahiye: NAT Gateway (recommended), load balancer outbound rule, ya VM par public IP. Subnets private subnets ke taur par bhi ban sakte hain. Service endpoints aur private DNS internet access nahi dete."
+ },
+ "D4-068": {
+  "q": "Kaun si CLI command VNet1 se VNet2 tak peering ki ek taraf banati hai?",
+  "opts": [
+   "az network vnet peering create -g RG1 -n v1-to-v2 --vnet-name VNet1 --remote-vnet VNet2 --allow-vnet-access",
+   "az vnet peer VNet1 VNet2",
+   "az network peering add",
+   "az network vnet connect"
+  ],
+  "exp": "az network vnet peering create ek VNet (--vnet-name) se doosre (--remote-vnet) tak peering banati hai. Peering ki do tarafein hain, is liye VNet2 se VNet1 tak dobara chalayen (portal dono ek sath bana sakta hai). Baqi commands mojood nahi."
+ },
+ "D4-069": {
+  "q": "Peering VNet1 par 'Initiated' dikhati hai aur VNet2 par mojood nahi. Kya ghalat hai?",
+  "opts": [
+   "Peering abhi VNet2 par bani nahi; 'Connected' tak pohanchne ke liye dono tarafein configure honi chahiye",
+   "Address overlap",
+   "NSG isay block karta hai",
+   "Alag regions"
+  ],
+  "exp": "Peering ka har VNet par ek link hota hai. 'Initiated' ka matlab sirf VNet1 ki taraf mojood hai. VNet2 par bhi peering banayen, aur dono tarafein Connected ho jati hain. Address overlap banana hi rok deta, aur NSGs peering state par asar nahi dalte."
+ },
+ "D4-070": {
+  "q": "VNet1 mein naya address prefix add karne ke baad peered VNet2 nayi range tak nahi pohanch sakta. Aap ko kya karna chahiye?",
+  "opts": [
+   "Peering link par peering sync karein (remote address space resync)",
+   "VNet2 delete karein",
+   "NSG rule add karein",
+   "DNS badlein"
+  ],
+  "exp": "Jab aap peered VNet ki address space badalte hain to remote VNet naya prefix khud nahi seekhta. Peering link par 'Sync' chalayen (ya az network vnet peering sync) taa ke nayi range advertise ho. VNets delete karna ya NSGs aur DNS badlna hal nahi."
+ },
+ "D4-071": {
+  "q": "Hub ka NVA Spoke1 se Spoke2 tak traffic forward karta hai. Kaun si peering setting woh traffic allow karti hai jo peered VNet mein shuru nahi hua?",
+  "opts": [
+   "Allow forwarded traffic",
+   "Allow gateway transit",
+   "Use remote gateways",
+   "Sirf Allow virtual network access"
+  ],
+  "exp": "'Allow forwarded traffic' peering ko woh traffic qabool karne deta hai jo peered VNet mein shuru nahi hua — maslan Spoke1 ka traffic jo hub ka network virtual appliance Spoke2 ko aage bhejta hai. Gateway transit aur remote gateways VPN ya ExpressRoute gateway share karne ke liye hain."
+ },
+ "D4-072": {
+  "q": "VNet peering ka bill kaise banta hai?",
+  "opts": [
+   "Peering ke aar paar ingress aur egress traffic ke har GB par (global ke liye zyada)",
+   "Hamesha muft",
+   "Har peering ka per hour",
+   "Har VM par"
+  ],
+  "exp": "VNet peering ka charge data ke har GB par hota hai, peering ke aar paar inbound aur outbound dono traffic ke liye. Regions ke darmiyan global peering regional peering se mehngi hai. Har peering ka hourly charge ya har VM ka charge nahi."
+ },
+ "D4-073": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Alag Entra tenants ke VNets peer ho sakte hain",
+   "Alag regions ke VNets ke darmiyan peering supported hai",
+   "Peering ke liye VPN gateway chahiye",
+   "NAT use karne par overlapping address spaces peer ho sakti hain"
+  ],
+  "exp": "VNets Entra tenants ke aar paar (dono taraf permissions ke sath) aur regions ke aar paar (global peering) peer ho sakte hain. Peering ko VPN gateway nahi chahiye. Overlapping address spaces kabhi peer nahi ho saktin, NAT ke sath bhi nahi."
+ },
+ "D4-074": {
+  "q": "Kaun si service on-premises network ko internet par encrypted IPsec tunnel ke zariye Azure VNet se jorti hai?",
+  "opts": [
+   "VPN gateway ke zariye site-to-site VPN",
+   "ExpressRoute",
+   "VNet peering",
+   "Bastion"
+  ],
+  "exp": "Site-to-site VPN Azure mein VPN gateway use kar ke internet par aap ke on-premises VPN device tak encrypted IPsec/IKE tunnel banata hai. ExpressRoute private circuit hai jo internet par nahi jata, peering VNets jorti hai, aur Bastion VM access deta hai."
+ },
+ "D4-075": {
+  "q": "Kaun sa resource Azure mein aap ke on-premises VPN device aur address ranges ko represent karta hai?",
+  "opts": [
+   "Local network gateway",
+   "Virtual network gateway",
+   "Connection",
+   "NAT gateway"
+  ],
+  "exp": "Local network gateway Azure mein aap ki on-premises taraf ko represent karta hai: aap ke VPN device ka public IP aur us ke peeche ki address ranges. Virtual network gateway tunnel ka Azure wala sira hai, aur connection dono ko jorta hai."
+ },
+ "D4-076": {
+  "q": "Site-to-site VPN banane ke steps tarteeb mein lagayen:",
+  "items": [
+   "Shared key ke sath connection banayen",
+   "GatewaySubnet aur virtual network gateway banayen",
+   "Local network gateway banayen",
+   "On-premises VPN device configure karein"
+  ],
+  "exp": "Pehle GatewaySubnet aur virtual network gateway banayen (is mein 30–45 minute lag sakte hain). Aap ke on-premises device ko bayan karne wala local network gateway banayen. Un ke darmiyan shared key ke sath connection banayen. Aakhir mein on-premises VPN device ko usi key aur settings ke sath configure karein."
+ },
+ "D4-077": {
+  "q": "Remote users ke laptops ko Azure VNet tak VPN chahiye. Kaun sa option?",
+  "opts": [
+   "Point-to-site VPN",
+   "Site-to-site VPN",
+   "ExpressRoute",
+   "VNet peering"
+  ],
+  "exp": "Point-to-site VPN individual computers (maslan ghar se kaam karne walon ke laptops) ko VPN gateway ke zariye VNet se jorta hai, har device par VPN client ke sath. Site-to-site poore networks jorta hai, ExpressRoute private circuit hai, aur peering VNets jorti hai."
+ },
+ "D4-078": {
+  "q": "Kaun sa connectivity option Azure tak private, dedicated connection deta hai jo public internet par nahi jata?",
+  "opts": [
+   "ExpressRoute",
+   "Site-to-site VPN",
+   "Point-to-site VPN",
+   "Bastion"
+  ],
+  "exp": "ExpressRoute aap ke network ko connectivity provider ke private, dedicated circuit ke zariye Azure se jorta hai, is liye traffic kabhi public internet se nahi guzarta. Is se raftar aur latency pehle se maloom rehti hai. Site-to-site aur point-to-site VPNs internet par encrypted tunnels use karte hain, aur Bastion VM access ke liye hai."
+ },
+ "D4-079": {
+  "q": "Naya VPN gateway deploy karne mein lamba waqt lagta hai. Aam tor par kitna?",
+  "opts": [
+   "Taqreeban 45 minute ya zyada tak",
+   "Chand seconds",
+   "24 ghante",
+   "Hamesha 5 minute"
+  ],
+  "exp": "VPN gateway banane mein aam tor par taqreeban 30–45 minute, kabhi zyada, lagte hain, kyun ke Azure dedicated gateway instances deploy aur configure karta hai. Apne deployments mein is ka khayal rakhein."
+ },
+ "D4-080": {
+  "q": "Kisi UDR ke baghair Azure ek hi VNet ke subnets ke darmiyan traffic kaise route karta hai?",
+  "opts": [
+   "System routes se khud ba khud",
+   "Nahi karta — aap ko routes add karne hote hain",
+   "Internet ke zariye",
+   "VPN gateway ke zariye"
+  ],
+  "exp": "Azure system routes khud add karta hai, is liye VNet ka har subnet baghair configuration ke har doosre subnet tak pohanch sakta hai. Aap user-defined routes sirf yeh rawayya badalne ke liye add karte hain, maslan traffic firewall se guzarne ke liye."
+ },
+ "D4-081": {
+  "q": "Kaun si CLI commands route table aur NVA tak route banati hain?",
+  "opts": [
+   "az network route-table create ... phir az network route-table route create --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.100.4",
+   "az network route add --nva",
+   "az vnet route create",
+   "az network nva route"
+  ],
+  "exp": "az network route-table create se route table banayen, phir az network route-table route create se route add karein, --next-hop-type VirtualAppliance aur NVA par set --next-hop-ip-address ke sath. Aakhir mein route table ko subnet se associate karein. Baqi commands mojood nahi."
+ },
+ "D4-082": {
+  "q": "Aap ne UDR ke sath route table banai, lekin traffic us par nahi chalta. Aam tor par kya missing hota hai?",
+  "opts": [
+   "Route table ko subnet se associate karna",
+   "NSG",
+   "DNS",
+   "Public IP"
+  ],
+  "exp": "Route table tab tak kuch nahi karti jab tak ek ya zyada subnets se associate na ho. Agar traffic aap ke UDR ko nazarandaz kare to check karein ke table source subnet se attached hai. NSGs, DNS aur public IPs routes ko asar mein nahi late."
+ },
+ "D4-083": {
+  "q": "10.0.0.0/16 (→ VNet) aur 10.0.5.0/24 (→ NVA) dono routes mojood hain. 10.0.5.20 ka traffic kahan jata hai?",
+  "opts": [
+   "NVA ko — longest prefix match jeetta hai",
+   "VNet route ko",
+   "Drop hota hai",
+   "Dono mein load-balance hota hai"
+  ],
+  "exp": "Azure pehle sab se specific matching route (longest prefix match) chunta hai. 10.0.5.20 10.0.0.0/16 aur 10.0.5.0/24 dono se match karta hai, lekin /24 zyada specific hai, is liye traffic NVA ko jata hai. Sirf ek jaise prefixes par route ka source (user-defined, BGP, system) faisla karta hai."
+ },
+ "D4-084": {
+  "q": "Kaun si route table setting VPN gateway ke on-premises BGP routes ko subnet mein add hone se rokti hai?",
+  "opts": [
+   "Propagate gateway routes = No (BGP route propagation disable)",
+   "Next hop None",
+   "IP forwarding off",
+   "NSG hatayen"
+  ],
+  "exp": "Route table par 'Propagate gateway routes' ko No karne (BGP route propagation disable karne) se VPN ya ExpressRoute gateway ke seekhe routes us table wale subnets mein add nahi hote. None next hop, IP forwarding aur NSGs route propagation control nahi karte."
+ },
+ "D4-085": {
+  "q": "Traffic NVA VM tak pohanchta hai lekin aage forward nahi hota. Aam tor par kya missing hota hai?",
+  "opts": [
+   "Azure mein NVA ke NIC par IP forwarding, sath mein OS ke andar forwarding enabled",
+   "Public IP",
+   "Bari VM size",
+   "Accelerated networking"
+  ],
+  "exp": "VM ko apne liye na hone wala traffic forward karne ke liye Azure mein us ke network interface par IP forwarding enabled honi chahiye, aur operating system ke andar bhi forwarding on honi chahiye (maslan Windows par routing role ya Linux par net.ipv4.ip_forward). Public IP, bara size ya accelerated networking madad nahi karenge."
+ },
+ "D4-086": {
+  "q": "Kaun se DO valid UDR next-hop types hain?",
+  "opts": [
+   "Virtual appliance",
+   "Virtual network gateway",
+   "Storage account",
+   "Load balancer rule"
+  ],
+  "exp": "User-defined route ke valid next-hop types Virtual appliance, Virtual network gateway, Virtual network, Internet aur None hain. Storage account ya load balancer rule next hop nahi ban sakte."
+ },
+ "D4-087": {
+  "q": "Subnet par 0.0.0.0/0 → NVA hone ke bawajood VMs service endpoint ke zariye seedha Azure Storage tak pohanchti hain. Kyun?",
+  "opts": [
+   "Service endpoint routes zyada specific system routes hain jo service ke prefixes par apply hote hain",
+   "UDRs kabhi storage par apply nahi hote",
+   "NVA band hai",
+   "Storage private hai"
+  ],
+  "exp": "Service endpoint enable karne se us service ke public IP prefixes ke liye system routes add hote hain, next hop VirtualNetworkServiceEndpoint ke sath. Yeh 0.0.0.0/0 se zyada specific hain, is liye Azure Storage ka traffic NVA se guzarne ke bajaye service endpoint route leta hai. UDRs doosre traffic par phir bhi apply hote hain."
+ },
+ "D4-088": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Ek route table kai subnets se associate ho sakti hai",
+   "UDR VNet-local traffic ka system route override kar sakta hai",
+   "System routes delete ho sakte hain",
+   "Effective routes har NIC ke liye dekhe ja sakte hain"
+  ],
+  "exp": "Ek route table bohat se subnets se associate ho sakti hai. UDR system routes, VNet ke andar ke traffic wale samet, override kar sakta hai. System routes delete nahi ho sakte, sirf override. Aap har NIC ke effective routes dekh sakte hain."
+ },
+ "D4-089": {
+  "q": "Peered VNets ki do VMs IP se ping kar sakti hain lekin hostname se nahi. Wajah kya hai?",
+  "opts": [
+   "Azure-provided DNS VNets ke aar paar naam resolve nahi karta; dono VNets se linked private DNS zone ya custom DNS server use karein",
+   "NSG ICMP block karta hai",
+   "Route ka masla",
+   "Peering tooti hui hai"
+  ],
+  "exp": "IP se ping chalta hai, is liye routing aur NSGs theek hain. Lekin Azure-provided DNS sirf ek VNet ke andar naam resolve karta hai, is liye peered VNet ke naam resolve nahi hote. Dono VNets se linked private DNS zone (behtar hai auto-registration ke sath) ya apne DNS server se isay theek karein."
+ },
+ "D4-090": {
+  "q": "Kaun sa Network Watcher tool dikhata hai ke VM1 abhi port 443 par kisi FQDN tak pohanch sakti hai ya nahi, latency aur hops samet?",
+  "opts": [
+   "Connection troubleshoot",
+   "Topology",
+   "Flow logs",
+   "Effective routes"
+  ],
+  "exp": "Network Watcher connection troubleshoot VM se kisi destination (VM, FQDN ya IP) tak kisi port par abhi connection test karta hai. Yeh batata hai ke pohanch hai ya nahi, latency aur har hop, sath mein koi NSG ya routing masla. Topology diagram banata hai, flow logs pichla traffic record karte hain, aur effective routes sirf routes list karte hain."
+ },
+ "D4-091": {
+  "q": "Do Windows VMs ke darmiyan ping (ICMP) fail hota hai, lekin un ke darmiyan RDP chalta hai. Mumkin wajah kya hai?",
+  "opts": [
+   "Guest ke andar Windows Firewall default mein ICMP block karta hai",
+   "NSG tamam traffic block karta hai",
+   "Peering tooti hai",
+   "DNS"
+  ],
+  "exp": "RDP chalta hai, is liye network path aur NSGs VMs ke darmiyan traffic allow karte hain. Ping fail hota hai kyun ke guest ke andar Windows Firewall default mein inbound ICMP echo requests block karta hai. Ping chahiye to Windows Firewall mein ICMP allow karein. Peering aur DNS saaf chal rahe hain."
+ },
+ "D4-092": {
+  "q": "Aap VM mein RDP nahi kar pa rahe. Pehle kaun se checks sahi hain?",
+  "opts": [
+   "NSG rules (effective security rules), VM ki running state, public IP/Bastion path, aur guest firewall",
+   "VM delete karein",
+   "Storage tier badlein",
+   "Budget add karein"
+  ],
+  "exp": "Network path se shuru karein: effective security rules check karein ke koi NSG 3389 block to nahi kar raha, ke VM chal rahi hai, aap kaise pohanch rahe hain (public IP ya Bastion), aur VM ke andar Windows Firewall. VM delete karna, storage badalna ya budgets add karna kuch diagnose nahi karta."
+ },
+ "D4-093": {
+  "q": "Kaun sa feature naye deployments ke liye default mein poore subnet ko internet outbound access se alag karta hai?",
+  "opts": [
+   "Private subnet (defaultOutboundAccess = false)",
+   "Service endpoint",
+   "NIC par NSG",
+   "Bastion"
+  ],
+  "exp": "Private subnet (defaultOutboundAccess = false) us ki VMs ke liye Azure ka default outbound internet access band kar deta hai, is liye outbound access NAT Gateway jaise explicit tareeqe se aana chahiye. Service endpoints, individual NICs par NSGs aur Bastion poore subnet ka default outbound access nahi badalte."
+ },
+ "D4-094": {
+  "q": "Kaun si service bohat se VNets mein connectivity configurations (hub-spoke, mesh) aur security admin rules centrally manage karti hai?",
+  "opts": [
+   "Azure Virtual Network Manager",
+   "Network Watcher",
+   "Sirf Azure Firewall Manager",
+   "Traffic Manager"
+  ],
+  "exp": "Azure Virtual Network Manager bohat se VNets centrally manage karta hai: yeh hub-and-spoke ya mesh connectivity configurations bana sakta hai aur VNets aur subscriptions mein security admin rules laga sakta hai. Network Watcher networks diagnose karta hai, Firewall Manager firewall policies manage karta hai, aur Traffic Manager DNS load balancing karta hai."
+ },
+ "D4-095": {
+  "q": "Kya ek VNet kai subscriptions mein phail sakta hai?",
+  "opts": [
+   "Nahi — VNet ek subscription ka hota hai; subscriptions ke aar paar VNets jorne ke liye peering use karein",
+   "Haan",
+   "Sirf ek hi region mein",
+   "Sirf ExpressRoute ke sath"
+  ],
+  "exp": "VNet bilkul ek subscription aur ek region ka hota hai. Alag subscriptions (balke alag tenants) ke VNets jorne ke liye unhein peer karein. Region aur ExpressRoute is ko nahi badalte."
+ },
+ "D4-096": {
+  "q": "Kya VM ka NIC doosre VNet mein move ho sakta hai?",
+  "opts": [
+   "Nahi — NIC ka VNet nahi badal sakta; target VNet mein naya NIC banayen (ya VM dobara banayen)",
+   "Haan, NIC edit karein",
+   "Haan, peering ke sath",
+   "Sirf stopped VMs"
+  ],
+  "exp": "Network interface usi VNet se bandha hota hai jis mein bana aur doosre VNet mein move nahi ho sakta. Target VNet mein naya NIC bana kar attach karein (VM deallocated hone par), ya VM dobara banayen. Peering VNets jorti hai lekin NICs move nahi karti."
+ },
+ "D4-097": {
+  "q": "Kya VM ka NIC USI VNet ke doosre subnet mein move ho sakta hai?",
+  "opts": [
+   "Haan — NIC ki IP configuration mein subnet badlein (static IPs update karne honge)",
+   "Nahi",
+   "Sirf naye VNet ke sath",
+   "Sirf Linux ke liye"
+  ],
+  "exp": "Usi VNet ke andar aap NIC ki IP configuration edit kar ke us ka subnet badal sakte hain. Agar static private IP hai to naye subnet mein naya address chunein, kyun ke purana fit nahi hoga. Yeh Windows aur Linux VMs dono ke liye chalta hai."
+ },
+ "D4-098": {
+  "q": "West Europe ke VNet1 ko East US ke VNet2 se gateways ke zariye (peering nahi) encrypted tunnel se jorna hai. Kaun sa option?",
+  "opts": [
+   "VNet-to-VNet VPN connection",
+   "Global peering",
+   "ExpressRoute Direct",
+   "Service endpoint"
+  ],
+  "exp": "VNet-to-VNet connection do VPN gateways — har VNet mein ek — ko encrypted IPsec/IKE tunnel se jorta hai, jo regions ke aar paar chalta hai. Global peering bhi regions jorti hai lekin gateways ya IPsec use nahi karti. ExpressRoute Direct aap ki apni jagah se Microsoft ke network se jorta hai, aur service endpoints PaaS access ke liye hain."
+ },
+ "D4-099": {
+  "q": "Kya VM NIC ki kai IP configurations ho sakti hain?",
+  "opts": [
+   "Haan — NIC ke kai private IPs (aur associated public IPs) ho sakte hain",
+   "Nahi, sirf ek IP",
+   "Sirf Linux VMs",
+   "Sirf load balancers ke liye"
+  ],
+  "exp": "Network interface ki kai IP configurations ho sakti hain: ek primary aur extra secondary private IPs, har ek optionally apne public IP ke sath. Yeh ek VM par kai websites ya certificates host karne ke liye faidemand hai. Yeh Windows aur Linux par chalta hai (OS ko extra addresses use karne ke liye configure karna hota hai)."
+ },
+ "D4-100": {
+  "ctx": "VNet-Hub (10.0.0.0/16) mein GatewaySubnet aur VPN gateway hai. VNet-Spoke (10.1.0.0/16) 'Use remote gateways' ke sath peered hai. On-premises 192.168.0.0/16 hai.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "VNet-Spoke ki VMs hub gateway ke zariye on-premises tak pohanch sakti hain",
+   "VNet-Spoke remote gateways use karte hue apna VPN gateway bhi deploy kar sakta hai",
+   "Hub peering par 'Allow gateway transit' enabled hona chahiye",
+   "Spoke address space 192.168.0.0/16 se overlap nahi honi chahiye"
+  ],
+  "exp": "Hub ki taraf 'Allow gateway transit' aur spoke ki taraf 'Use remote gateways' ke sath spoke VMs hub ke gateway ke zariye on-premises tak pohanchti hain. Remote gateways use karne wala VNet apna gateway nahi rakh sakta. Aur spoke ki address space on-premises (192.168.0.0/16) se overlap nahi honi chahiye, warna routing kaam nahi kar sakti."
+ },
+ "D4-101": {
+  "q": "Custom NSG rules ki valid priority range kya hai?",
+  "opts": [
+   "100–4096",
+   "1–65535",
+   "0–100",
+   "1000–9999"
+  ],
+  "exp": "Custom NSG rules 100 se 4096 tak priorities use karte hain, jahan kam numbers pehle process hote hain. Built-in default rules 65000–65500 par hain, is liye custom rules hamesha un se pehle aate hain. Baqi ranges valid nahi."
+ },
+ "D4-102": {
+  "q": "Kaun sa default inbound rule har woh cheez block karta hai jo explicitly allowed na ho?",
+  "opts": [
+   "DenyAllInBound (65500)",
+   "DenyInternet",
+   "BlockAll (4096)",
+   "Koi default deny nahi"
+  ],
+  "exp": "Har NSG ke inbound rules DenyAllInBound (priority 65500) par khatam hote hain, jo pehle ke kisi rule se allowed na hone wali har cheez block karta hai. Us se pehle ke defaults VNet traffic (65000) aur Azure Load Balancer probes (65001) allow karte hain. DenyInternet aur BlockAll default rules nahi."
+ },
+ "D4-103": {
+  "q": "Kaun sa default rule Azure load balancer health probes ko VMs tak pohanchne deta hai?",
+  "opts": [
+   "AllowAzureLoadBalancerInBound (65001)",
+   "AllowVnetInBound",
+   "AllowInternetInBound",
+   "Koi rule nahi; probes NSGs ko bypass karte hain"
+  ],
+  "exp": "Default rule AllowAzureLoadBalancerInBound (priority 65001) AzureLoadBalancer service tag (168.63.129.16) se traffic allow karta hai, jahan se health probes aate hain. Is ke baghair har backend kharab dikhega. Probes NSGs ko bypass nahi karte, is liye yeh rule rakhein ya tag khud allow karein."
+ },
+ "D4-104": {
+  "q": "Default mein kya VMs NSG rules ke tehat outbound internet tak pohanch sakti hain?",
+  "opts": [
+   "Haan — default AllowInternetOutBound rule isay allow karta hai",
+   "Nahi",
+   "Sirf port 80 par",
+   "Sirf NAT gateway ke sath"
+  ],
+  "exp": "Default NSG rule AllowInternetOutBound internet ki taraf outbound traffic allow karta hai, is liye NSGs default mein isay block nahi karte. Lekin VM ko phir bhi outbound path chahiye, jaise NAT gateway, public IP ya load balancer outbound rule — khaas tor par naye VNets mein, jin ke subnets private hote hain aur default outbound access nahi hota."
+ },
+ "D4-105": {
+  "q": "Kaun si CLI command internet se HTTPS allow karne wala NSG rule banati hai?",
+  "opts": [
+   "az network nsg rule create -g RG1 --nsg-name nsg1 -n AllowHttps --priority 200 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 443 --source-address-prefixes Internet",
+   "az nsg allow 443",
+   "az network rule add https",
+   "az vm open-port --all"
+  ],
+  "exp": "az network nsg rule create ko NSG ka naam, rule ka naam, priority, direction, access type (Allow ya Deny), protocol, destination ports aur source chahiye. Yahan yeh Internet service tag se inbound TCP 443 allow karti hai. az vm open-port VM ke zariye ports kholti hai, aur baqi commands mojood nahi."
+ },
+ "D4-106": {
+  "q": "Kaun si CLI command NSG ko subnet se associate karti hai?",
+  "opts": [
+   "az network vnet subnet update -g RG1 --vnet-name VNet1 -n Web --network-security-group nsg1",
+   "az network nsg attach Web",
+   "az nsg link subnet",
+   "az network vnet update --nsg nsg1"
+  ],
+  "exp": "NSG khud subnet ke zariye us se associate hota hai: az network vnet subnet update --network-security-group nsg1. Is ke bajaye NIC se attach karne ke liye az network nic update use karein. Baqi commands mojood nahi."
+ },
+ "D4-107": {
+  "q": "Subnet NSG inbound 443 allow karta hai, lekin NIC NSG mein koi custom rule nahi. Kya internet clients 443 par VM tak pohanch sakte hain?",
+  "opts": [
+   "Nahi — NIC NSG ka default DenyAllInBound isay block karta hai; dono NSGs ko allow karna hoga",
+   "Haan — subnet NSG kaafi hai",
+   "Haan, sirf HTTPS ke liye",
+   "Sirf VNet se"
+  ],
+  "exp": "Jab VM ke subnet aur NIC dono par NSGs hon to inbound traffic dono se allowed hona chahiye. Subnet NSG 443 allow karta hai, lekin NIC NSG mein sirf default rules hain, aur DenyAllInBound internet ka traffic block karta hai. NIC NSG mein 443 ka allow rule add karein, ya NIC NSG hata dein."
+ },
+ "D4-108": {
+  "q": "Subnet NSG outbound port 25 deny karta hai. NIC NSG outbound 25 allow karta hai. Kya VM 25 par SMTP bhej sakti hai?",
+  "opts": [
+   "Nahi — outbound pehle NIC phir subnet par evaluate hota hai, aur subnet NSG isay deny karta hai",
+   "Haan, NIC jeetta hai",
+   "Haan, allow hamesha jeetta hai",
+   "NSGs ke aar paar priority numbers par depend karta hai"
+  ],
+  "exp": "Outbound traffic pehle NIC ke NSG aur phir subnet ke NSG se check hota hai, aur dono ko allow karna hota hai. NIC port 25 allow karta hai, lekin subnet usay deny karta hai, is liye traffic block hota hai. Priority numbers sirf ek NSG ke andar compare hote hain, kabhi do NSGs ke aar paar nahi."
+ },
+ "D4-109": {
+  "q": "Kya default NSG rules delete ho sakte hain?",
+  "opts": [
+   "Nahi — lekin aap unhein zyada priority (kam number) wale custom rules se override kar sakte hain",
+   "Haan",
+   "Sirf DenyAll",
+   "Sirf Owner ke sath"
+  ],
+  "exp": "Default rules (AllowVnetInBound, DenyAllInBound aur baqi) delete nahi ho sakte. Aap kam priority numbers wale custom rules add kar ke un ka asar badalte hain, jo pehle process hote hain. Yeh har kisi par apply hota hai, Owners samet."
+ },
+ "D4-110": {
+  "q": "Aap chahte hain ke ek NSG rule kai ports (80, 443, 8080) tak traffic allow kare. Kya yeh mumkin hai?",
+  "opts": [
+   "Haan — augmented security rules ek rule mein kai ports aur IP ranges allow karte hain",
+   "Nahi, har rule ka ek port",
+   "Sirf ASGs ke sath",
+   "Sirf outbound"
+  ],
+  "exp": "Augmented security rules ek NSG rule mein kai ports (maslan 80, 443 aur 8080), port ranges aur kai IP prefixes list karne dete hain, is liye kam rules chahiye. Yeh inbound aur outbound dono, ASGs ke sath ya baghair, chalte hain."
+ },
+ "D4-111": {
+  "q": "NSG rule ke source ke taur par kaun si DO cheezein use ho sakti hain?",
+  "opts": [
+   "Internet jaisa service tag",
+   "Application security group",
+   "Entra user group",
+   "Storage account ka naam"
+  ],
+  "exp": "NSG rule ka source IP address ya CIDR range, service tag (jaise Internet, VirtualNetwork ya AzureLoadBalancer), ya application security group ho sakta hai. Entra user groups aur storage account names use nahi ho sakte, kyun ke NSGs network traffic filter karte hain, identities nahi."
+ },
+ "D4-112": {
+  "q": "NSG rule VMs ko sirf West Europe ki Azure SQL tak pohanchne de. Kaun sa destination?",
+  "opts": [
+   "Service tag Sql.WestEurope",
+   "Internet",
+   "VirtualNetwork",
+   "0.0.0.0/0"
+  ],
+  "exp": "Sql.WestEurope jaise regional service tags mein sirf us region ki Azure SQL ki IP ranges hoti hain, is liye rule West Europe ki SQL allow karta hai aur kahin aur nahi. Internet aur 0.0.0.0/0 sab allow kar denge, aur VirtualNetwork sirf aap ke apne networks cover karta hai."
+ },
+ "D4-113": {
+  "q": "Connections active hone ke dauran ek rule Allow se Deny kiya jata hai. Mojooda flows ka kya hota hai?",
+  "opts": [
+   "Mojooda connections khatam hone tak chal sakte hain; naye connections block hote hain",
+   "Tamam flows foran drop hote hain",
+   "24 ghante tak kuch nahi badalta",
+   "VM restart hoti hai"
+  ],
+  "exp": "NSGs stateful hain. Jab aap rule badalte hain to pehle se allowed mojooda connections khatam hone tak chal sakte hain. Naye connections foran updated rule ke mutabiq chalte hain, is liye block hote hain. VMs restart nahi hoti, aur 24 ghante ki koi takheer nahi."
+ },
+ "D4-114": {
+  "q": "VM tak INBOUND traffic ki NSG processing tarteeb mein lagayen:",
+  "items": [
+   "NIC NSG rules priority se evaluate karein",
+   "Packet subnet tak pohanchta hai",
+   "Subnet NSG rules priority se evaluate karein",
+   "Dono allow karein to VM ko deliver karein"
+  ],
+  "exp": "Inbound traffic mein packet pehle subnet tak pohanchta hai, is liye pehle subnet NSG (priority ki tarteeb mein) check hota hai, phir NIC NSG. VM ko packet sirf tab milta hai jab dono allow karein. Outbound ulta hai: pehle NIC, phir subnet."
+ },
+ "D4-115": {
+  "q": "Web VMs ko internet se 443 lena hai, aur DB VMs ko sirf web VMs se 1433. Sab se saaf NSG design?",
+  "opts": [
+   "ASGs 'asg-web' aur 'asg-db'; rule 1: Internet → asg-web 443; rule 2: asg-web → asg-db 1433",
+   "Har VM IP ka ek rule",
+   "Har VM ke liye alag VNets",
+   "Service endpoints"
+  ],
+  "exp": "Web VMs ke NICs asg-web mein aur database VMs ke NICs asg-db mein rakhein. Phir do rules kaam kar dete hain: Internet → asg-web 443 par, aur asg-web → asg-db 1433 par. Nayi VMs sahi ASG join karte hi cover ho jati hain, koi IP address maintain nahi karna. Har IP ka rule kamzor hai, aur alag VNets ya service endpoints is ka hal nahi."
+ },
+ "D4-116": {
+  "q": "VM ko application security group mein kaise dalte hain?",
+  "opts": [
+   "VM ke NIC (IP configuration) ko ASG se associate karein",
+   "VM ko tag karein",
+   "VM ko resource group mein add karein",
+   "RBAC role assign karein"
+  ],
+  "exp": "ASG membership VM ke network interface — khaas tor par us ki IP configuration — par set hoti hai, usay application security group mein add kar ke. Resource tags, resource groups aur RBAC roles ASG membership par asar nahi dalte."
+ },
+ "D4-117": {
+  "q": "ASGs ke bare mein Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Ek NIC kai ASGs ka hissa ho sakta hai",
+   "Ek hi rule mein ASGs VNets ke aar paar use ho sakte hain",
+   "ASGs rules mein IP addresses manage karne ki zaroorat kam karte hain",
+   "ASGs har region ke liye bante hain"
+  ],
+  "exp": "Ek NIC kai application security groups ka hissa ho sakta hai. Ek rule ke tamam ASGs ek hi VNet mein hone chahiye. ASGs aap ko IP addresses ke bajaye application role se rules likhne dete hain. Yeh regional resources hain."
+ },
+ "D4-118": {
+  "q": "Kaun si managed service FQDN rules aur threat intelligence ke sath centralized, stateful Layer 3–7 filtering deti hai?",
+  "opts": [
+   "Azure Firewall",
+   "NSG",
+   "Application security group",
+   "Route table"
+  ],
+  "exp": "Azure Firewall managed, stateful firewall service hai jo Layer 3 se Layer 7 tak filter karti hai. Yeh FQDN-based application rules, network rules, DNAT aur threat-intelligence filtering support karti hai, aur centrally manage hoti hai. NSGs basic Layer 3/4 filters hain, ASGs NICs group karte hain, aur route tables traffic ka rukh badalti hain."
+ },
+ "D4-119": {
+  "q": "Azure Firewall ko kaun sa subnet naam chahiye?",
+  "opts": [
+   "AzureFirewallSubnet (/26 ya bara)",
+   "FirewallSubnet",
+   "GatewaySubnet",
+   "Koi bhi naam"
+  ],
+  "exp": "Azure Firewall ko bilkul AzureFirewallSubnet naam ke dedicated subnet mein deploy karna hota hai, kam az kam /26, taa ke woh scale ho sake. Doosre naam qabool nahi hote, aur GatewaySubnet VPN aur ExpressRoute gateways ke liye reserved hai."
+ },
+ "D4-120": {
+  "q": "Bastion ke zariye RDP ke liye target VMs ko AzureBastionSubnet se kaun sa port allow karna chahiye?",
+  "opts": [
+   "Bastion subnet se 3389 (RDP) / 22 (SSH)",
+   "Internet se 443",
+   "445",
+   "Koi nahi"
+  ],
+  "exp": "Bastion target VMs se AzureBastionSubnet se RDP (3389) ya SSH (22) par privately connect hota hai. Is liye VMs ke NSGs ko yeh ports Bastion subnet se allow karne chahiye — internet se nahi. Users khud Bastion tak 443 par pohanchte hain, lekin woh Bastion ki taraf hai, VMs ki nahi."
+ },
+ "D4-121": {
+  "q": "Kya ek Bastion host peered VNet ki VMs tak pohanch sakta hai?",
+  "opts": [
+   "Haan — Bastion peered VNets ki VMs se connect karna support karta hai",
+   "Nahi, sirf apne VNet",
+   "Sirf global peering disabled hone par",
+   "Sirf Premium SKU aur VPN ke sath"
+  ],
+  "exp": "Azure Bastion apne VNet se peered VNets ki VMs tak pohanch sakta hai, is liye hub mein ek Bastion tamam spokes ki VMs serve kar sakta hai. Yeh regional aur global peering aur Basic SKU ke sath chalta hai."
+ },
+ "D4-122": {
+  "q": "Kaun si Bastion SKU muft, shared hai, aur sirf dev/test ke liye ek waqt mein ek connection ke sath hai?",
+  "opts": [
+   "Developer",
+   "Basic",
+   "Standard",
+   "Premium"
+  ],
+  "exp": "Bastion ki Developer SKU muft hai aur shared infrastructure use karti hai, is liye AzureBastionSubnet ya public IP nahi chahiye. Yeh ek waqt mein ek connection deti hai aur sirf dev/test ke liye hai. Basic, Standard aur Premium dedicated, paid deployments hain."
+ },
+ "D4-123": {
+  "q": "Kaun si Bastion SKU session recording aur private-only deployment add karti hai?",
+  "opts": [
+   "Premium",
+   "Standard",
+   "Basic",
+   "Developer"
+  ],
+  "exp": "Bastion ki Premium SKU graphical session recording aur private-only deployment add karti hai, jis mein Bastion ka koi public IP nahi hota aur private connection se pohancha jata hai. Standard native client support aur shareable links add karti hai, Basic sirf browser hai, aur Developer muft shared option hai."
+ },
+ "D4-124": {
+  "q": "Kya Bastion Basic ko Standard mein upgrade kar sakte hain?",
+  "opts": [
+   "Haan, upgrade supported hai (downgrade nahi)",
+   "Nahi, redeploy karna hoga",
+   "Sirf support se",
+   "Sirf downgrade"
+  ],
+  "exp": "Aap Bastion host ko usi jagah Basic se Standard (ya Premium) mein upgrade kar sakte hain, redeploy kiye baghair. Downgrade nahi ho sakta; neeche ki SKU par wapas jane ke liye Bastion delete kar ke dobara deploy karein."
+ },
+ "D4-125": {
+  "q": "RDP sirf request par, 3 ghante ke liye, request karne wale ke IP se khulna chahiye. Kaun sa feature?",
+  "opts": [
+   "Just-in-time VM access (Microsoft Defender for Cloud)",
+   "Bastion Basic",
+   "Permanent NSG rule",
+   "Service endpoints"
+  ],
+  "exp": "Microsoft Defender for Cloud mein just-in-time (JIT) VM access RDP jaise management ports band rakhta hai. Jab koi access mange to yeh waqti taur par NSG rule add karta hai jo request karne wale ke IP se ek muddat (maslan 3 ghante) tak RDP allow kare, phir usay hata deta hai. Permanent NSG rule har waqt khula rehta hai."
+ },
+ "D4-126": {
+  "q": "Service endpoint kahan enable karte hain?",
+  "opts": [
+   "Subnet par (Microsoft.Storage ya Microsoft.Sql jaisi services chun kar)",
+   "VM par",
+   "Sirf storage account par",
+   "Entra ID mein"
+  ],
+  "exp": "Service endpoints subnet par enable hote hain: zaroorat ki services chunein, jaise Microsoft.Storage ya Microsoft.Sql. Phir PaaS resource ka firewall VNet rule se us subnet ko allow kar sakta hai. Yeh VMs par ya Entra ID mein set nahi hote."
+ },
+ "D4-127": {
+  "q": "VMs ko service endpoint ke zariye sirf EK makhsoos storage account tak pohanchna chahiye, tamam storage accounts tak nahi. Kaun sa feature?",
+  "opts": [
+   "Service endpoint policies",
+   "Storage tag wale NSG rules",
+   "Private DNS",
+   "Bastion"
+  ],
+  "exp": "Akela service endpoint subnet ko Azure ke har storage account tak pohanchne deta hai. Service endpoint policy endpoint traffic ko aap ke list kiye makhsoos storage accounts tak mehdood karti hai, jo data ko doosre accounts mein copy hone se rokne mein madad karti hai. Storage tag wale NSG rules accounts mein farq nahi kar sakte."
+ },
+ "D4-128": {
+  "q": "Jab VM storage service endpoint use karti hai to storage account kaun sa source IP dekhta hai?",
+  "opts": [
+   "Public IP ke bajaye VM ka private IP (subnet identity)",
+   "VM ka public IP",
+   "Gateway IP",
+   "168.63.129.16"
+  ],
+  "exp": "Service endpoint ke sath Azure Storage ka traffic public IP ke bajaye VM ka private IP aur subnet ki identity le kar jata hai. Isi wajah se storage firewall us subnet ke VNet rule se match kar pata hai."
+ },
+ "D4-129": {
+  "q": "Service endpoint enable karne ke baad VM ke public IP ko allow karne wala storage firewall IP rule match karna band kar deta hai. Kyun?",
+  "opts": [
+   "Traffic ab private source IP ke sath aata hai, is liye IP rule ke bajaye VNet rule chahiye",
+   "Firewall reset hota hai",
+   "IP rule expire hota hai",
+   "Service endpoints storage block karte hain"
+  ],
+  "exp": "Service endpoint on hone ke baad subnet ka traffic VM ke private IP aur subnet identity ke sath Storage tak pohanchta hai, public IP ke sath nahi. Is liye purana IP rule ab match nahi karta. Is ke bajaye subnet ka VNet rule add karein. Firewall rules reset ya expire nahi hote."
+ },
+ "D4-130": {
+  "q": "Private endpoints ke peeche kaun si Azure service hai?",
+  "opts": [
+   "Azure Private Link",
+   "Azure Front Door",
+   "Traffic Manager",
+   "Network Watcher"
+  ],
+  "exp": "Private endpoints Azure Private Link ka hissa hain: private endpoint aap ke VNet mein woh network interface hai jo PaaS service ya Private Link service se privately jurta hai. Front Door, Traffic Manager aur Network Watcher shamil nahi."
+ },
+ "D4-131": {
+  "q": "Aap apni app Standard load balancer ke peeche publish karte hain taa ke doosre tenants ke consumers usay privately pohanch sakein. Kaun sa feature?",
+  "opts": [
+   "Private Link service",
+   "Sirf private endpoint",
+   "Service endpoint",
+   "VNet peering"
+  ],
+  "exp": "Private Link service aap ki apni app (Standard load balancer ke peeche) ko Private Link par rakhti hai, is liye doosre VNets ya tenants ke customers us tak private endpoints bana kar privately pohanch sakte hain. Peering ki zaroorat nahi, aur service endpoints sirf Azure PaaS services ke sath chalte hain."
+ },
+ "D4-132": {
+  "q": "On-premises clients ko VPN ke zariye private endpoint ka FQDN resolve karna hai. Recommended design?",
+  "opts": [
+   "privatelink.* ke liye on-prem DNS zone ko private DNS zone se linked Azure DNS Private Resolver (inbound endpoint) par forward karein",
+   "Public DNS use karein",
+   "Sirf hosts files",
+   "Service endpoint"
+  ],
+  "exp": "On-premises DNS servers seedhe Azure private DNS zones query nahi kar sakte. Privatelink zone se linked VNet mein inbound endpoint ke sath Azure DNS Private Resolver deploy karein, phir apne on-premises DNS ko privatelink.* zones us endpoint ke IP par conditionally forward karne ke liye set karein. Public DNS public IP deta hai, aur hosts files scale nahi hoti."
+ },
+ "D4-133": {
+  "q": "Private endpoint connection 'Pending' dikhata hai. Kya chahiye?",
+  "opts": [
+   "Resource owner ko connection approve karna hoga",
+   "VNet dobara banayen",
+   "Service endpoint enable karein",
+   "DNS badlein"
+  ],
+  "exp": "Agar private endpoint banane wale ke paas target resource par permission na ho to connection Pending mein intezar karta hai jab tak resource ka owner usay approve na kare (resource ke Private endpoint connections ke neeche). VNet dobara banana, service endpoints add karna ya DNS badalna usay approve nahi karta."
+ },
+ "D4-134": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Private endpoint tak peered VNet se pohancha ja sakta hai",
+   "Private endpoint ke liye service ka public endpoint disable karna zaroori hai",
+   "Subnet par network policies enabled hon to private endpoints NSG aur UDR policies support karte hain",
+   "Har private endpoint ek makhsoos resource (aur sub-resource) se map hota hai"
+  ],
+  "exp": "Private endpoint tak peered VNets aur on-premises se pohancha ja sakta hai. Service ka public endpoint disable karna optional hai, halan ke recommended hai. Subnet par network policies enabled hon to NSGs aur UDRs private endpoint traffic par apply hote hain. Har private endpoint ek resource aur sub-resource (maslan blob) se map hota hai."
+ },
+ "D4-135": {
+  "q": "Requirement: on-premises servers ko public endpoints ke baghair ExpressRoute par Azure SQL Database tak privately pohanchna hai. Kya chunenge?",
+  "opts": [
+   "SQL server ka private endpoint",
+   "Subnet par service endpoint",
+   "Firewall rule wala public endpoint",
+   "VNet peering"
+  ],
+  "exp": "Sirf private endpoint Azure SQL Database ko aisa private IP deta hai jis tak on-premises servers ExpressRoute ya VPN par pohanch sakein, public network access disabled ke sath. Service endpoints sirf Azure subnets se kaam karte hain, public endpoint private nahi, aur peering PaaS services ke bajaye VNets jorti hai."
+ },
+ "D4-136": {
+  "q": "Requirement: VNet ki VMs ko sab se kam cost aur baghair DNS changes ke storage account tak pohanchna hai, aur account ka public endpoint reh sakta hai. Kya chunenge?",
+  "opts": [
+   "Service endpoint plus VNet firewall rule",
+   "Private endpoint",
+   "ExpressRoute",
+   "Bastion"
+  ],
+  "exp": "Service endpoint muft hai aur DNS changes nahi mangta: subnet par enable karein aur storage firewall mein VNet rule add karein, aur account ka public endpoint waisa hi rehta hai. Private endpoint ke paise lagte hain aur privatelink DNS chahiye. ExpressRoute aur Bastion apply nahi hote."
+ },
+ "D4-137": {
+  "q": "Private endpoint mojood hone ke bawajood VM mystorage.blob.core.windows.net ko public IP par resolve karti hai. Mumkin wajah kya hai?",
+  "opts": [
+   "privatelink.blob.core.windows.net private DNS zone VM ke VNet se linked nahi (ya VNet forwarding ke baghair custom DNS server use karta hai)",
+   "NSG DNS block karta hai",
+   "Storage firewall",
+   "Ghalat redundancy"
+  ],
+  "exp": "Private endpoint sirf un clients ke liye kaam karta hai jo naam ko private IP par resolve karein. Agar privatelink.blob.core.windows.net zone VM ke VNet se linked nahi — ya VNet aisa custom DNS server use karta hai jo Azure DNS ko forward nahi karta — to naam public IP par resolve hota hai. NSGs, firewall aur redundancy name resolution par asar nahi dalte."
+ },
+ "D4-138": {
+  "q": "Kaun sa Network Watcher feature diagnose karta hai ke NSGs source aur destination ke darmiyan traffic allow karte hain ya nahi, har evaluate hua rule dikhate hue?",
+  "opts": [
+   "NSG diagnostics",
+   "Topology",
+   "Packet capture",
+   "VPN troubleshoot"
+  ],
+  "exp": "Network Watcher NSG diagnostics check karta hai ke source se destination tak traffic allowed hoga ya nahi, aur raste mein evaluate hua har NSG aur rule aur aakhri faisla dikhata hai. Topology diagram banata hai, packet capture traffic record karta hai, aur VPN troubleshoot gateways check karta hai."
+ },
+ "D4-139": {
+  "q": "Ek VM ka 'Effective security rules' view khali ya unavailable hai. Aam wajah kya hai?",
+  "opts": [
+   "Effective rules dikhane ke liye VM chal rahi honi chahiye",
+   "Koi NSG nahi",
+   "VM Linux hai",
+   "Bastion enabled hai"
+  ],
+  "exp": "Effective security rules (aur effective routes) chalte network interface se parhe jate hain, is liye VM chal rahi honi chahiye. Agar stopped ya deallocated ho to view khali ya unavailable hota hai. Yeh Linux aur Windows dono ke liye chalta hai, Bastion use ho ya nahi."
+ },
+ "D4-140": {
+  "q": "Traffic Analytics ke sath analysis ke liye kaun sa NSG flow log destination use hota hai?",
+  "opts": [
+   "Storage account, jo Log Analytics workspace mein process hota hai",
+   "Sirf Event Hub",
+   "Khud NSG",
+   "Azure DNS"
+  ],
+  "exp": "Flow logs storage account mein likhe jate hain. Phir Traffic Analytics unhein Log Analytics workspace mein process karta hai, jo maps aur dashboards deta hai. Event Hub Traffic Analytics ka destination nahi, aur flow logs NSG ya DNS mein store nahi hote."
+ },
+ "D4-141": {
+  "q": "Microsoft NSG flow logs retire kar raha hai. Recommended replacement kya hai?",
+  "opts": [
+   "Virtual network flow logs",
+   "Packet capture",
+   "Activity log",
+   "Connection monitor"
+  ],
+  "exp": "Microsoft NSG flow logs ko virtual network flow logs ke haq mein retire kar raha hai, jo poore VNet (ya subnet ya NIC) par enable hote hain aur woh traffic bhi capture karte hain jo NSGs nahi dekhte. Packet capture, Activity log aur Connection Monitor alag kaam karte hain."
+ },
+ "D4-142": {
+  "ctx": "Subnet Web par nsg-web hai: priority 100 Internet se TCP 443 Allow; priority 200 203.0.113.0/24 se TCP 443 Deny. VM1 ke NIC par koi NSG nahi.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "203.0.113.5 wala client 443 par VM1 tak pohanch sakta hai",
+   "198.51.100.7 wala client 443 par VM1 tak pohanch sakta hai",
+   "Default rules ke tehat VM1 outbound internet tak pohanch sakti hai",
+   "Usi VNet ki doosri VM port 22 par VM1 tak pohanch sakti hai (NSG rules ke hisaab se)"
+  ],
+  "exp": "Rule 100 tamam internet clients ke liye pehle match karta hai, 203.0.113.5 samet, is liye 200 wala deny kabhi apply nahi hota; default outbound internet allow karta hai; AllowVnetInBound VNet ke andar port 22 allow karta hai."
+ },
+ "D4-143": {
+  "q": "Pichle scenario mein 443 par baqi sab ko allow karte hue 203.0.113.0/24 ko kaise block karein?",
+  "opts": [
+   "Deny rule ko allow se kam priority number dein (maslan deny 90 par)",
+   "Allow delete karein",
+   "Deny sirf NIC par add karein",
+   "Route use karein"
+  ],
+  "exp": "NSG rules sab se kam number se process hote hain. 443 par baqi sab ko allow karte hue 203.0.113.0/24 block karne ke liye us range ke deny ka number wide allow se kam hona chahiye — maslan deny 90 par aur allow 100 par. Allow delete karne se sab block ho jayenge, aur routes traffic filter nahi karte."
+ },
+ "D4-144": {
+  "q": "Kaun si service VNet ke public IPs ke liye DDoS ke khilaf adaptive tuning, attack telemetry aur cost protection add karti hai?",
+  "opts": [
+   "Azure DDoS Network Protection",
+   "Infrastructure protection (sirf default)",
+   "NSG",
+   "Bastion"
+  ],
+  "exp": "Har public IP ko muft basic DDoS infrastructure protection milti hai. Azure DDoS Network Protection (ya per-IP DDoS IP Protection) aap ke traffic ke liye adaptive tuning, attack telemetry aur alerts, aur attack ke dauran scale-out ke liye cost protection add karti hai. NSGs aur Bastion DDoS kam nahi karte."
+ },
+ "D4-145": {
+  "q": "Azure Firewall ko apne public IP par port 3389 ka inbound traffic VM ke private IP par translate karna hai. Kaun sa rule type?",
+  "opts": [
+   "DNAT rule",
+   "Network rule",
+   "Application rule",
+   "Threat intel rule"
+  ],
+  "exp": "Azure Firewall mein DNAT (destination network address translation) rule firewall ke public IP aur port par aane wale traffic ko VNet ke andar private IP aur port par translate karta hai, yahan 3389 par VM. Network rules IP aur port se allow ya deny karte hain, application rules FQDN se filter karte hain, aur threat intelligence maloom malicious IPs block karta hai."
+ },
+ "D4-146": {
+  "q": "Outbound web access sirf *.microsoft.com tak allowed hona chahiye. Kaun sa Azure Firewall rule type?",
+  "opts": [
+   "Application rule (FQDN)",
+   "Network rule (IP)",
+   "DNAT rule",
+   "NSG rule"
+  ],
+  "exp": "Azure Firewall application rules outbound HTTP aur HTTPS ko FQDN se filter karte hain, *.microsoft.com jaise wildcards samet. Network rules sirf IP addresses aur ports ke sath kaam karte hain, DNAT rules inbound translation ke liye hain, aur NSGs domain naam se filter nahi kar sakte."
+ },
+ "D4-147": {
+  "q": "Service endpoints ke bare mein kaun si DO baatein sahi hain?",
+  "opts": [
+   "Yeh har subnet aur har service ke liye configure hote hain",
+   "Yeh VNet identity ko service tak le jate hain",
+   "Yeh PaaS resource ko private IP dete hain",
+   "Yeh on-premises networks se kaam karte hain"
+  ],
+  "exp": "Service endpoints har subnet aur har service (maslan Microsoft.Storage) ke liye on hote hain, aur subnet ki identity service tak le jate hain taa ke us ka firewall us subnet ko allow kar sake. Service phir bhi apna public IP use karti hai — koi private IP nahi — aur yeh on-premises se kaam nahi karte. Un zarooraton ke liye private endpoints use karein."
+ },
+ "D4-148": {
+  "q": "Azure Bastion deploy karne ke steps tarteeb mein lagayen:",
+  "items": [
+   "Bastion resource banayen (SKU, public IP)",
+   "VNet mein AzureBastionSubnet (/26 ya bara) banayen",
+   "Portal se Bastion ke zariye VM se connect karein",
+   "Yaqeeni banayen ke VM NSGs Bastion subnet se RDP/SSH allow karte hain"
+  ],
+  "exp": "Pehle AzureBastionSubnet (/26 ya bara) banayen, kyun ke Bastion us mein deploy hota hai. Phir SKU aur public IP ke sath Bastion resource banayen. Yaqeeni banayen ke target VMs ke NSGs Bastion subnet se RDP ya SSH allow karte hain. Aakhir mein portal se connect karein."
+ },
+ "D4-149": {
+  "q": "Bastion hub mein deployed hai, aur VMs peered spoke mein hain. Kya spoke VMs ko public IPs chahiye?",
+  "opts": [
+   "Nahi",
+   "Haan",
+   "Sirf Windows VMs",
+   "Sirf Basic SKU ke sath"
+  ],
+  "exp": "Nahi. Bastion VMs se un ke private IPs par connect hota hai, aur yeh VNet peering ke aar paar chalta hai, is liye spoke VMs ko public IPs nahi chahiye. Yeh Bastion ka ek bara faida hai, OS ya SKU chahe kuch bhi ho."
+ },
+ "D4-150": {
+  "ctx": "VNet1/SubnetA par Microsoft.Storage service endpoint hai. Storage account st1 VNet rule ke zariye sirf SubnetA allow karta hai. SubnetB mein st1 (blob) ka private endpoint hai, DNS sahi configured hai.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "SubnetA ki VM st1 ke blobs access kar sakti hai",
+   "SubnetB ki VM private endpoint ke zariye st1 ke blobs access kar sakti hai",
+   "VPN par on-premises server private endpoint ke zariye st1 access kar sakta hai (DNS forwarding configured ke sath)",
+   "On-premises server SubnetA ke service endpoint ke zariye st1 access kar sakta hai"
+  ],
+  "exp": "VNet rule SubnetA ko allow karta hai; private endpoint traffic firewall se block nahi hota; on-premises private endpoint use kar sakta hai; service endpoints on-premises tak nahi jate."
+ },
+ "D4-151": {
+  "q": "Azure DNS kya hai?",
+  "opts": [
+   "DNS zones host karne wali service jo Microsoft ke global name servers se naam resolve karti hai",
+   "Domain registrar",
+   "Load balancer",
+   "VPN service"
+  ],
+  "exp": "Azure DNS DNS zones host karta hai — internet-facing domains ke liye public zones aur VNets ke liye private zones — Microsoft ke global name servers network par, is liye aap Azure tools se records manage karte hain. Yeh domain names nahi bechta, traffic load-balance nahi karta ya VPN connections nahi deta."
+ },
+ "D4-152": {
+  "q": "Kaun si CLI command contoso.com ke liye public DNS zone banati hai?",
+  "opts": [
+   "az network dns zone create -g RG1 -n contoso.com",
+   "az dns create contoso.com",
+   "az network zone add contoso.com",
+   "az domain create contoso.com"
+  ],
+  "exp": "az network dns zone create -n contoso.com Azure DNS mein public DNS zone banati hai, aur us ke output mein woh name servers hote hain jo aap registrar par set karte hain. Private zone ke liye az network private-dns zone create use karein. Baqi commands mojood nahi."
+ },
+ "D4-153": {
+  "q": "Kaun si CLI command zone contoso.com mein A record 'www' → 20.1.2.3 add karti hai?",
+  "opts": [
+   "az network dns record-set a add-record -g RG1 -z contoso.com -n www -a 20.1.2.3",
+   "az dns a create www",
+   "az network dns add www A",
+   "az record new www"
+  ],
+  "exp": "az network dns record-set a add-record zone mein A record add karti hai: -z zone hai, -n record ka naam (www) aur -a IPv4 address. Agar record set abhi mojood nahi to Azure usay bana deta hai. Har record type ki apni subcommand hai, jaise cname ya mx."
+ },
+ "D4-154": {
+  "q": "Kaun sa record type ek naam ko doosre naam (alias) se map karta hai, maslan www → contoso.azurewebsites.net?",
+  "opts": [
+   "CNAME",
+   "A",
+   "MX",
+   "PTR"
+  ],
+  "exp": "CNAME record ek naam ko doosre ka alias banata hai, maslan www.contoso.com → contoso.azurewebsites.net. A record naam ko IPv4 address se map karta hai, MX mail handle karta hai aur PTR reverse lookups karta hai."
+ },
+ "D4-155": {
+  "q": "Kaun sa record type domain ki email ko mail servers ki taraf bhejta hai?",
+  "opts": [
+   "MX",
+   "TXT",
+   "SRV",
+   "NS"
+  ],
+  "exp": "MX (mail exchange) records domain ki email lene wale mail servers ki list dete hain, har ek ki priority ke sath. TXT SPF aur verification values jaisa text rakhta hai, SRV doosri services dhoondta hai, aur NS zone delegate karta hai."
+ },
+ "D4-156": {
+  "q": "Kya CNAME record set mein ek se zyada record ho sakte hain?",
+  "opts": [
+   "Nahi — CNAME record sets mein sirf ek record ho sakta hai",
+   "Haan, 20 tak",
+   "Haan, unlimited",
+   "Sirf apex par"
+  ],
+  "exp": "CNAME record set mein sirf ek record ho sakta hai, kyun ke ek naam sirf ek doosre naam ka alias ho sakta hai. CNAMEs zone apex par bhi nahi ho sakte. A, AAAA aur TXT record sets mein bohat se records ho sakte hain."
+ },
+ "D4-157": {
+  "q": "Aap ko subdomain dev.contoso.com ko alag Azure DNS zone ko delegate karna hai. Parent zone contoso.com mein kya add karenge?",
+  "opts": [
+   "Child zone ke name servers ke sath NS record set 'dev'",
+   "CNAME 'dev'",
+   "A record 'dev'",
+   "TXT record"
+  ],
+  "exp": "dev.contoso.com ko us ke apne Azure DNS zone ko delegate karne ke liye child zone (dev.contoso.com) banayen aur parent zone mein dev naam ka NS record set add karein, child zone ke name servers ki list ke sath. CNAME, A aur TXT records delegate nahi karte."
+ },
+ "D4-158": {
+  "q": "DNS record par kam TTL ka kya asar hota hai?",
+  "opts": [
+   "Resolvers record ko kam waqt cache karte hain, is liye changes jaldi phailte hain lekin queries barh jati hain",
+   "Records private ho jate hain",
+   "Records jaldi delete hote hain",
+   "Kuch nahi"
+  ],
+  "exp": "TTL (time to live) yeh hai ke resolvers record ko kitni der cache kar sakte hain. Kam TTL ka matlab caches jaldi expire hote hain, is liye changes clients tak jaldi pohanchte hain, lekin resolvers aap ke name servers se zyada baar poochte hain. Yeh records ko private ya delete nahi karta."
+ },
+ "D4-159": {
+  "q": "Production DNS zone aur us ke records ko ghalti se delete hone se kaise bachayen?",
+  "opts": [
+   "Zone par CanNotDelete resource lock lagayen (record sets bhi mehfooz ho sakte hain)",
+   "Azure Policy Audit use karein",
+   "TTL kam karein",
+   "Private zone use karein"
+  ],
+  "exp": "DNS zone par CanNotDelete resource lock kisi ko bhi zone (aur us ke sath har record) ghalti se delete karne se rokta hai. Record sets ko alag alag bhi mehfooz kiya ja sakta hai. Azure Policy Audit sirf report karti hai, TTL caching ke bare mein hai, aur private zone public users ko serve nahi karega."
+ },
+ "D4-160": {
+  "q": "Kaun sa RBAC role user ko doosre resources badle baghair DNS zone mein records manage karne deta hai?",
+  "opts": [
+   "DNS Zone Contributor",
+   "Network Contributor",
+   "Contributor",
+   "Reader"
+  ],
+  "exp": "DNS Zone Contributor user ko DNS zones aur un ke record sets manage karne deta hai, lekin un tak kis ka access hai yeh nahi aur subscription mein kuch aur nahi. (Private zones ke liye is ka barabar Private DNS Zone Contributor hai.) Network Contributor tamam networking cover karta hai, Contributor sab kuch, aur Reader sirf dekhne ke liye hai."
+ },
+ "D4-161": {
+  "q": "Kaise check karein ke Azure DNS ko delegation kaam kar raha hai?",
+  "opts": [
+   "nslookup -type=SOA contoso.com chala kar confirm karein ke Azure name servers jawab dete hain",
+   "Zone ko ping karein",
+   "Azure Advisor check karein",
+   "IP flow verify use karein"
+  ],
+  "exp": "Bahar se domain query karein, maslan nslookup -type=SOA contoso.com ya nslookup -type=NS contoso.com. Agar Azure ke name servers (ns1-xx.azure-dns.com waghera) jawab dein to delegation kaam kar raha hai. Ping zones ke bajaye hosts test karta hai, aur Advisor aur IP flow verify DNS check nahi karte."
+ },
+ "D4-162": {
+  "q": "Azure DNS kaun se alias record target types support karta hai?",
+  "opts": [
+   "Public IP addresses, Traffic Manager profiles, Azure Front Door/CDN endpoints, aur usi zone ke doosre record sets",
+   "Koi bhi external IP",
+   "Seedha storage accounts",
+   "Load balancer backend pools"
+  ],
+  "exp": "Alias records Azure public IP address, Traffic Manager profile, Azure Front Door ya CDN endpoint, ya usi zone ke doosre record set ki taraf point kar sakte hain, aur target badalne par khud update hote hain. Yeh external IPs, storage accounts ya load balancer backend pools ki taraf point nahi kar sakte."
+ },
+ "D4-163": {
+  "q": "Kaun si CLI command private DNS zone ko auto-registration ke sath VNet1 se link karti hai?",
+  "opts": [
+   "az network private-dns link vnet create -g RG1 -z contoso.local -n link1 -v VNet1 -e true",
+   "az network dns link VNet1",
+   "az private-dns attach VNet1",
+   "az network vnet update --dns-zone"
+  ],
+  "exp": "az network private-dns link vnet create private DNS zone (-z) ko VNet (-v) se link karti hai, aur -e true (registration enabled) VM records ki auto-registration on karta hai. Baqi commands mojood nahi."
+ },
+ "D4-164": {
+  "q": "Ek VNet kitne private DNS zones se auto-registration enabled ke sath link ho sakta hai?",
+  "opts": [
+   "Ek",
+   "100 tak",
+   "1,000 tak",
+   "Unlimited"
+  ],
+  "exp": "VNet resolution ke liye bohat se private DNS zones se link ho sakta hai, lekin un mein se sirf ek link par auto-registration enabled ho sakti hai. Warna VMs kai zones mein register ho jatin."
+ },
+ "D4-165": {
+  "q": "VNet1 aur VNet2 (peered) ki VMs ko private zone corp.local ke zariye ek doosre ke naam resolve karne hain. Aap kya karenge?",
+  "opts": [
+   "corp.local ko dono VNets se link karein (chahein to har ek par registration enabled)",
+   "Sirf peering par bharosa karein",
+   "Sirf Azure-provided DNS use karein",
+   "Do public zones banayen"
+  ],
+  "exp": "Private DNS zone sirf us se linked VNets ki queries ka jawab deta hai, aur peering DNS share nahi karti. corp.local ko VNet1 aur VNet2 dono se link karein (auto-registration ke sath agar VM records khud banne chahiye), aur dono ki VMs ek doosre ko resolve kar sakti hain. Akela Azure-provided DNS sirf ek VNet ke andar kaam karta hai, aur public zones naam zahir kar denge."
+ },
+ "D4-166": {
+  "q": "On-premises servers ko DNS VMs deploy kiye baghair Azure private DNS zone ke naam resolve karne hain. Kaun si service?",
+  "opts": [
+   "Azure DNS Private Resolver (inbound endpoint)",
+   "Public DNS zone",
+   "Traffic Manager",
+   "Bastion"
+  ],
+  "exp": "Azure DNS Private Resolver managed service hai, is liye DNS VMs ki zaroorat nahi. Is ke inbound endpoint ko aap ke VNet mein IP milta hai jis par on-premises DNS servers forward karte hain, jo unhein Azure private DNS zones ke naam resolve karne deta hai. Public zones, Traffic Manager aur Bastion yeh nahi karte."
+ },
+ "D4-167": {
+  "q": "Azure VMs ko on-premises domain (corp.contoso.com) ke naam resolve karne hain. Private Resolver ke kaun se components?",
+  "opts": [
+   "Outbound endpoint plus VNet se linked DNS forwarding ruleset",
+   "Sirf inbound endpoint",
+   "Public zone",
+   "NSG"
+  ],
+  "exp": "Azure VMs ko on-premises domain resolve karwane ke liye Private Resolver outbound endpoint aur DNS forwarding ruleset (rule: corp.contoso.com → aap ke on-premises DNS IPs) deploy karein, VNet se linked. Inbound endpoints ulti direction handle karte hain, on-premises se Azure ki taraf."
+ },
+ "D4-168": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Private DNS zones internet se resolve ho sakte hain",
+   "Private DNS zone alag regions ke VNets se link ho sakta hai",
+   "Auto-registration VMs ke private IPs ke records banati hai",
+   "Private zone ka naam public domain naam jaisa ho sakta hai (split-horizon)"
+  ],
+  "exp": "Private DNS zones sirf un se linked VNets se resolve hote hain, internet se nahi. Zone kisi bhi region ke VNets se link ho sakta hai. Auto-registration VMs ke private IPs ke records banati hai. Private zone ka naam public domain jaisa ho sakta hai (split-horizon), jo andar aur bahar alag jawab deta hai."
+ },
+ "D4-169": {
+  "q": "Azure Load Balancer ke main components kya hain?",
+  "opts": [
+   "Frontend IP, backend pool, health probe, load-balancing rules",
+   "Listener, URL map, WAF",
+   "Profile, endpoints, routing method",
+   "Gateway, connection, local gateway"
+  ],
+  "exp": "Azure Load Balancer frontend IP configuration (jahan traffic aata hai), backend pool (jo VMs usay lete hain), health probes (jo backends check karte hain) aur load-balancing rules (jo kisi port ke liye frontend, backend aur probe ko jorte hain) se bana hai. Listeners aur URL maps Application Gateway ke hain, profiles aur endpoints Traffic Manager ke, aur gateways aur connections VPN ke."
+ },
+ "D4-170": {
+  "q": "Kaun si CLI command Standard public load balancer banati hai?",
+  "opts": [
+   "az network lb create -g RG1 -n lb1 --sku Standard --public-ip-address pip1 --frontend-ip-name fe1 --backend-pool-name be1",
+   "az lb new lb1",
+   "az network loadbalancer add",
+   "az vm lb create"
+  ],
+  "exp": "az network lb create load balancer banati hai. --sku Standard SKU set karta hai, --public-ip-address frontend ke taur par Standard public IP attach karta hai, aur aap frontend aur backend pool ka naam rakhte hain. Probes aur rules baad mein add karein. Baqi commands mojood nahi."
+ },
+ "D4-171": {
+  "q": "HTTP probe ke liye aam tor par kaun si default health probe settings use hoti hain?",
+  "opts": [
+   "5 second interval, port 80 par /health jaisa path",
+   "60 minute interval",
+   "Koi interval nahi",
+   "Sirf ICMP"
+  ],
+  "exp": "Health probes default mein har 5 second backends check karte hain. HTTP probe port 80 jaise port par /health jaisa path request karta hai aur 200 OK ki tawaqqo rakhta hai. Probes TCP, HTTP ya HTTPS ho sakte hain; ICMP supported nahi, aur 60 minute ka interval bohat slow hoga."
+ },
+ "D4-172": {
+  "q": "/health par HTTP health probe 302 (redirect) return karta hai. Probe ka nateeja kya hai?",
+  "opts": [
+   "Unhealthy — HTTP probes ko 200 status chahiye",
+   "Healthy",
+   "Nazarandaz",
+   "Hamesha retry"
+  ],
+  "exp": "HTTP ya HTTPS probe sirf 200 OK response ko healthy maanta hai. 302 redirect, 404 ya kuch aur failure ginta hai, is liye us instance ko naye connections milna band ho jate hain. Probe ko aise path ki taraf point karein jo redirect kiye baghair 200 de."
+ },
+ "D4-173": {
+  "q": "Azure Load Balancer load-balancing rules mein kaun se protocols support karta hai?",
+  "opts": [
+   "TCP aur UDP (ya HA ports ke sath All)",
+   "Sirf HTTP",
+   "Sirf HTTP/HTTPS",
+   "Sirf ICMP"
+  ],
+  "exp": "Azure Load Balancer Layer 4 load balancer hai, is liye is ke rules TCP ya UDP handle karte hain (ya internal load balancer par HA ports ke sath All). Yeh HTTP ya HTTPS nahi samajhta, aur ICMP load-balance nahi ho sakta."
+ },
+ "D4-174": {
+  "q": "Standard load balancer ke backend pool mein kaun se resources ho sakte hain?",
+  "opts": [
+   "Ek VNet mein VMs ya VMSS instances (NIC ya IP address se)",
+   "Duniya bhar ke kisi bhi VNet ki VMs",
+   "App Service apps",
+   "Storage accounts"
+  ],
+  "exp": "Standard load balancer ke backend pool mein VMs ya scale set instances (NIC se, ya IP address se add kiye gaye) ho sakte hain jo sab ek VNet mein hon. Yeh duniya bhar ke VNets mein nahi phail sakta, aur App Service apps aur storage accounts backends nahi ban sakte."
+ },
+ "D4-175": {
+  "q": "Standard internal load balancer ke peeche VMs ka koi outbound internet access nahi. Kyun?",
+  "opts": [
+   "Standard internal LBs outbound SNAT nahi dete; NAT Gateway ya koi aur explicit outbound tareeqa add karein",
+   "NSG default rules outbound deny karte hain",
+   "LB toota hua hai",
+   "DNS"
+  ],
+  "exp": "Internal Standard load balancer sirf network ke andar se inbound traffic handle karta hai. Yeh backend VMs ko outbound internet access nahi deta (koi SNAT nahi). NAT Gateway jaisa explicit outbound tareeqa add karein. NSGs default mein outbound internet allow karte hain, is liye woh wajah nahi."
+ },
+ "D4-176": {
+  "q": "Load-balancing rule par Floating IP (direct server return) option kya karta hai?",
+  "opts": [
+   "Backend ko deliver hone wale packets mein frontend IP ko destination rakhta hai, SQL Always On listeners jaise scenarios ke liye",
+   "IP ko dynamic banata hai",
+   "IP ko regions ke darmiyan move karta hai",
+   "WAF add karta hai"
+  ],
+  "exp": "Aam tor par load balancer packets backend ko us ke apne IP ko destination bana kar deliver karta hai. Floating IP (direct server return) is ke bajaye frontend IP ko destination rakhta hai, jo SQL Server Always On listeners jaise clusters ko chahiye. Yeh IPs dynamic nahi banata, regions ke darmiyan move nahi karta ya WAF add nahi karta."
+ },
+ "D4-177": {
+  "q": "Azure Load Balancer par TCP flows ka default idle timeout kya hai, aur kya yeh badal sakta hai?",
+  "opts": [
+   "4 minute, 100 minute tak configurable",
+   "30 second, fixed",
+   "1 ghanta, fixed",
+   "Koi timeout nahi"
+  ],
+  "exp": "Azure Load Balancer ka TCP idle timeout default mein 4 minute hai aur barhaya ja sakta hai (load-balancing rules par 100 minute tak). Itni der baghair traffic ke connection drop ho jata hai. Aap TCP reset bhi enable kar sakte hain taa ke idle connection band hone par clients ko bataya jaye."
+ },
+ "D4-178": {
+  "q": "Public Standard load balancer par outbound rule ka maqsad kya hai?",
+  "opts": [
+   "Backend VMs ke liye outbound SNAT explicitly configure karna (public IPs, allocated ports)",
+   "Inbound RDP allow karna",
+   "On-premises tak route karna",
+   "TLS terminate karna"
+  ],
+  "exp": "Public Standard load balancer par outbound rule outbound SNAT explicitly set karta hai: backend VMs outbound internet traffic ke liye kaun se public IPs use karein aur har VM ko kitne SNAT ports milein. Inbound RDP inbound NAT rules use karta hai, on-premises routing gateways use karti hai, aur TLS termination Layer 7 feature hai."
+ },
+ "D4-179": {
+  "q": "Kaun sa load balancer global frontend IP use kar ke regions ke darmiyan Layer 4 par traffic baantta hai?",
+  "opts": [
+   "Cross-region (global) load balancer",
+   "Internal load balancer",
+   "Application Gateway",
+   "NAT Gateway"
+  ],
+  "exp": "Cross-region (global) load balancer ka global anycast frontend IP hota hai aur yeh Layer 4 traffic ko regional Standard load balancers mein baantta hai, regions ke darmiyan failover karte hue. Internal load balancers ek region ke liye private hain, Application Gateway regional Layer 7 hai, aur NAT Gateway sirf outbound traffic handle karta hai."
+ },
+ "D4-180": {
+  "q": "Public Standard LB se do VMs par web traffic load-balance karne ke steps tarteeb mein lagayen:",
+  "items": [
+   "Load-balancing rule banayen (TCP 80, frontend → backend pool, probe)",
+   "Standard public IP frontend ke sath LB banayen",
+   "VMs ke NICs backend pool mein add karein aur health probe banayen",
+   "VMs ke NSGs mein port 80 allow karein"
+  ],
+  "exp": "Pehle Standard public IP frontend ke sath load balancer banayen. VMs ke NICs backend pool mein add karein aur health probe banayen. Phir TCP 80 ke liye frontend, pool aur probe ko jorne wala load-balancing rule banayen. Aakhir mein VMs ke NSGs mein port 80 allow karein, kyun ke Standard default mein band hota hai."
+ },
+ "D4-181": {
+  "q": "Kaun si DO shartein Standard LB ko backend VM par koi traffic na bhejne ki wajah banti hain?",
+  "opts": [
+   "Health probe fail hota hai",
+   "NSG traffic allow nahi karta",
+   "VM ki Premium SSD hai",
+   "VM availability zone mein hai"
+  ],
+  "exp": "Backend VM ko koi traffic nahi milta agar us ka health probe fail ho (load balancer usay rotation se nikal deta hai) ya NSG traffic allow na kare (Standard SKU default mein usay block karti hai). Disk type aur VM ka availability zone load balancing par asar nahi dalte."
+ },
+ "D4-182": {
+  "q": "Health probe tamam backends down dikhata hai, lekin VMs par app locally chalti hai. Aap ko kya check karna chahiye?",
+  "opts": [
+   "Ke app probe port/path par sun rahi hai aur guest firewall ya NSG AzureLoadBalancer source (168.63.129.16) ko block nahi kar raha",
+   "Storage tier",
+   "DNS TTL",
+   "Budget"
+  ],
+  "exp": "Health probes 168.63.129.16 (AzureLoadBalancer service tag) se aate hain. Check karein ke app asal mein probe ke port aur path par sun rahi hai, aur na guest firewall na NSG us source ko block kar raha hai. Storage tier, DNS TTL aur budgets probes par asar nahi dalte."
+ },
+ "D4-183": {
+  "q": "Backend VM load balancer ke apne frontend IP tak nahi pohanch sakti (hairpin), lekin bahar ke clients pohanch sakte hain. Kyun?",
+  "opts": [
+   "Backend instance ka apne LB frontend se connect karna, jab flow wapas usi par aaye, supported nahi (hairpinning)",
+   "NSG outbound traffic block karta hai",
+   "DNS ka masla",
+   "Ghalat SKU"
+  ],
+  "exp": "Azure Load Balancer hairpinning support nahi karta: jab backend VM apne load balancer ke frontend IP se connect kare aur flow wapas usi VM par bheja jaye to woh fail hota hai. Bahar ke clients par asar nahi. Service ko seedha call karein ya alag design use karein, jaise alag internal frontend."
+ },
+ "D4-184": {
+  "q": "Kaun sa Load Balancer metric dikhata hai ke backend instances health probes paas kar rahe hain ya nahi?",
+  "opts": [
+   "Health Probe Status (DipAvailability)",
+   "Sirf Data Path Availability",
+   "SNAT connection count",
+   "Byte count"
+  ],
+  "exp": "Health Probe Status metric (DipAvailability) dikhata hai ke har backend instance apna health probe paas kar raha hai ya nahi. Data Path Availability dikhata hai ke khud frontend pohanch mein hai ya nahi, SNAT count outbound connections ke bare mein hai, aur byte count throughput hai."
+ },
+ "D4-185": {
+  "q": "Bhaari load mein load balancer ke peeche VMs se kabhi kabhi outbound connection failures aate hain. Mumkin wajah aur hal?",
+  "opts": [
+   "SNAT port exhaustion; NAT Gateway use karein ya zyada outbound IPs/ports allocate karein",
+   "DNS TTL bohat kam",
+   "NSG priority",
+   "Disk throttling"
+  ],
+  "exp": "Har VM ko load balancer ke zariye outbound connections ke liye mehdood SNAT ports milte hain. Bhaari load mein yeh khatam ho jate hain, aur naye outbound connections kabhi kabhi fail hote hain. NAT Gateway (ya outbound rules mein zyada outbound IPs aur allocated ports) kahin zyada SNAT capacity deta hai. DNS TTL, NSG priority aur disks ka taluq nahi."
+ },
+ "D4-186": {
+  "q": "Kaun sa Azure Monitor experience load balancer ka topology aur metrics dashboard deta hai?",
+  "opts": [
+   "Load Balancer Insights",
+   "VM insights",
+   "Container insights",
+   "Advisor"
+  ],
+  "exp": "Azure Monitor mein Load Balancer Insights load balancer ke frontends, backends aur rules ka topology view deta hai, sath mein health aur data path availability ke ready-made metric dashboards. VM insights VMs ke liye hai, Container insights containers ke liye, aur Advisor recommendations deta hai."
+ },
+ "D4-187": {
+  "q": "Kaun sa Application Gateway feature api.contoso.com aur www.contoso.com ki requests ko alag backend pools par route karta hai?",
+  "opts": [
+   "Multi-site listeners (host-based routing)",
+   "Path-based routing",
+   "HA ports",
+   "Inbound NAT"
+  ],
+  "exp": "Application Gateway par multi-site listeners requests ko host name (Host header) se route karte hain, is liye api.contoso.com aur www.contoso.com usi gateway par alag backend pools par jate hain. Path-based routing is ke bajaye URL path se baantti hai. HA ports aur inbound NAT Azure Load Balancer ke hain."
+ },
+ "D4-188": {
+  "q": "Application Gateway ko kaun sa subnet setup chahiye?",
+  "opts": [
+   "Gateway ke liye dedicated subnet",
+   "GatewaySubnet",
+   "AzureBastionSubnet",
+   "Koi subnet nahi"
+  ],
+  "exp": "Application Gateway ko apne dedicated subnet mein deploy karna hota hai, jis mein doosre resources nahi ho sakte (naam aap ki marzi). GatewaySubnet VPN aur ExpressRoute gateways ke liye reserved hai, aur AzureBastionSubnet Bastion ke liye."
+ },
+ "D4-189": {
+  "q": "Kaun sa Application Gateway feature apps ko SQL injection aur cross-site scripting se bachata hai?",
+  "opts": [
+   "OWASP rule sets ke sath Web Application Firewall (WAF)",
+   "NSG",
+   "DDoS Basic",
+   "Health probes"
+  ],
+  "exp": "Application Gateway par Web Application Firewall HTTP requests ko managed OWASP Core Rule Set rules ke khilaf inspect karta hai aur SQL injection aur cross-site scripting jaise attacks block karta hai. NSGs Layer 4 par kaam karte hain, DDoS protection traffic ke sailab handle karti hai, aur health probes backends check karte hain."
+ },
+ "D4-190": {
+  "q": "Kaun si service DNS se globally load-balance karti hai (priority, weighted, performance, geographic routing)?",
+  "opts": [
+   "Azure Traffic Manager",
+   "Azure Load Balancer",
+   "Application Gateway",
+   "NAT Gateway"
+  ],
+  "exp": "Azure Traffic Manager DNS use kar ke globally traffic baantta hai: yeh routing method (priority, weighted, performance, geographic waghera) ke mutabiq behtareen endpoint ke sath DNS queries ka jawab deta hai. Azure Load Balancer aur Application Gateway regional hain, aur NAT Gateway outbound traffic ke liye hai."
+ },
+ "D4-191": {
+  "q": "Global web app ko edge TLS termination, caching, WAF aur Layer 7 par regions ke darmiyan tez failover chahiye. Kaun si service?",
+  "opts": [
+   "Azure Front Door",
+   "Traffic Manager",
+   "Internal load balancer",
+   "NAT Gateway"
+  ],
+  "exp": "Azure Front Door Microsoft ke edge par global Layer 7 entry point hai: yeh users ke qareeb TLS terminate karta hai, content cache karta hai, web application firewall rakhta hai aur regions ke darmiyan tez failover karta hai. Traffic Manager sirf DNS se kaam karta hai, aur internal load balancer aur NAT Gateway regional hain."
+ },
+ "D4-192": {
+  "q": "Andar ka non-HTTP traffic (TCP 1433) VNet ke andar SQL VMs mein baantna hai. Kya chunenge?",
+  "opts": [
+   "Internal Standard load balancer",
+   "Application Gateway",
+   "Front Door",
+   "Traffic Manager"
+  ],
+  "exp": "Internal Standard load balancer Layer 4 par kaam karta hai, is liye VNet ke andar private frontend IP par TCP 1433 ko SQL VMs mein baant sakta hai. Application Gateway aur Front Door HTTP(S) ke liye hain, aur Traffic Manager DNS-based aur public hai."
+ },
+ "D4-193": {
+  "q": "3 zones mein phaili VMs ke liye kaun sa combination zone-redundant Layer 4 load balancing deta hai?",
+  "opts": [
+   "Zone-redundant frontend aur zones 1, 2, 3 mein backend VMs wala Standard LB",
+   "Availability set ke sath Basic LB",
+   "Sirf Traffic Manager",
+   "Application Gateway v1"
+  ],
+  "exp": "Zone-redundant frontend wala Standard load balancer zone fail hone par serve karta rehta hai, aur zones 1, 2 aur 3 mein phaili backend VMs app available rakhti hain. Basic load balancer retire ho chuka aur kabhi zones support nahi karta tha, Traffic Manager region ke andar load-balance nahi karta, aur Application Gateway v1 Layer 7 hai aur zone support nahi."
+ },
+ "D4-194": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Standard LB ek backend pool mein do alag VNets ki VMs mila sakta hai",
+   "Inbound NAT rule frontend port range ko pool ki kai VMs se map kar sakta hai",
+   "Health probe HTTPS use kar sakta hai",
+   "Basic public IP Standard LB ke sath use ho sakta hai"
+  ],
+  "exp": "Standard load balancer ka backend pool ek VNet mein hona chahiye. Inbound NAT rules frontend port range ko pool ki kai VMs se map kar sakte hain. Health probes HTTP, HTTPS aur TCP support karte hain. Standard load balancer ko Standard public IPs chahiye — SKUs mix nahi ho sakti (aur Basic public IPs retire ho chuke)."
+ },
+ "D4-195": {
+  "q": "Kaun sa load balancer type Standard LB frontend se chained, traffic path mein third-party NVAs ko transparently dalta hai?",
+  "opts": [
+   "Gateway load balancer",
+   "Internal LB",
+   "Cross-region LB",
+   "NAT Gateway"
+  ],
+  "exp": "Gateway load balancer third-party network virtual appliances (jaise firewalls) ko Standard load balancer ke frontend ke traffic path mein transparently ('bump in the wire') chain karta hai, is liye aap routes badle baghair NVAs dal ya scale kar sakte hain. Baqi options appliances chain nahi karte."
+ },
+ "D4-196": {
+  "q": "App ko port 443 ka TCP traffic backend port 8443 par balance karna hai. Kya yeh mumkin hai?",
+  "opts": [
+   "Haan — load-balancing rules frontend port ko alag backend port se map karte hain",
+   "Nahi, ports match hone chahiye",
+   "Sirf Application Gateway ke sath",
+   "Sirf HA ports ke sath"
+  ],
+  "exp": "Har load-balancing rule ka apna frontend port aur backend port hota hai, is liye 443 par aane wala traffic VMs par 8443 ko bheja ja sakta hai. Is ke liye Application Gateway ya HA ports nahi chahiye."
+ },
+ "D4-197": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Azure DNS public zones ke liye DNSSEC signing support karta hai",
+   "Alias record apex ko Traffic Manager profile ki taraf point kar sakta hai",
+   "CLI se Azure DNS mein zone file import ho sakti hai",
+   "Azure DNS public zones ko VNet link chahiye"
+  ],
+  "exp": "Azure DNS public zones ke liye DNSSEC signing support karta hai. Alias record zone apex ko Traffic Manager profile ki taraf point kar sakta hai. CLI se zone file import ho sakti hai (az network dns zone import). Public zones internet par pohanch mein hote hain, is liye unhein VNet links nahi chahiye — sirf private zones ko."
+ },
+ "D4-198": {
+  "q": "Standard LB ke peeche VMSS ko har client ko 30 minute tak usi instance par bhejna hai. Aap kya use karenge?",
+  "opts": [
+   "Rule par session persistence (Client IP) plus munasib idle timeout",
+   "Floating IP",
+   "HA ports",
+   "Outbound rules"
+  ],
+  "exp": "Client IP par set session persistence ek client IP ka tamam traffic usi scale set instance par bhejti hai. Isay munasib idle timeout ke sath milayen taa ke session ke dauran connections drop na hon. Floating IP, HA ports aur outbound rules client ko ek instance par nahi rakhte."
+ },
+ "D4-199": {
+  "ctx": "Requirements: 2 regions mein public HTTPS web app, regions ke darmiyan failover, URL path routing (/api ko API servers par), WAF protection, aur API servers ki cache layer ke liye internal TCP service.",
+  "q": "Kaun sa design behtareen match karta hai?",
+  "opts": [
+   "Front Door (global L7, WAF) → regional Application Gateways (path routing) → cache layer ke liye internal Standard LB",
+   "Ek Basic LB",
+   "Sirf Traffic Manager",
+   "NAT Gateway plus NSGs"
+  ],
+  "exp": "Front Door web application firewall ke sath global Layer 7 entry point deta hai aur dono regions ke darmiyan failover karta hai. Har region mein Application Gateway URL path se /api ko API servers par route karta hai. Internal Standard load balancer TCP cache layer ko privately handle karta hai. Ek Basic load balancer, akela Traffic Manager ya NAT Gateway yeh sab poora nahi kar sakte."
+ },
+ "D4-200": {
+  "ctx": "contoso.com Azure DNS ko delegated hai. Apex par pip-lb (LB1 ka Standard public IP) ki taraf alias record hai. LB1 par TCP 80 rule aur /health par health probe hai. VMs par NSG Internet se port 80 allow karta hai.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Agar pip-lb ko naye IP resource se badla jaye to alias record khud update hota hai",
+   "Agar kam az kam ek backend probe healthy ho to clients http://contoso.com par app tak pohanch sakte hain",
+   "Apex par alias ke bajaye CNAME use ho sakta tha",
+   "Agar tamam VMs par /health 500 de to traffic phir bhi deliver hota hai"
+  ],
+  "exp": "Alias referenced resource ke IP changes track karta hai, lekin resource ko NAYE resource se badalne ka matlab alias target update karna hai; healthy backends traffic serve karte hain; CNAMEs apex par nahi ho sakte; tamam probes down hon to delivery nahi hoti."
+ }
+}

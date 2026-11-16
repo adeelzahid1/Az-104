@@ -42,5 +42,33 @@
    {"heading": "Overview", "body": "Tailspin Toys West Europe mein, jo availability zones support karta hai, resource group RG-Shop mein chaar web VMs aur do SQL Server VMs chalata hai. Development VMs RG-Dev mein chalti hain."},
    {"heading": "Requirements", "body": "1. Web tier ko 99.99% VM connectivity SLA milna chahiye.\n2. SQL VM disks guest OS ke andar BitLocker se encrypt hon, Tailspin ke key vault mein rakhi keys ke sath.\n3. Ek reporting VM North Europe mein move karni hai.\n4. Paise bachane ke liye development VMs har shaam khud band hon.\n5. Web tier CPU ki buniyad par khud scale ho.\n6. Ek VM ki OS disk 128 GB se 256 GB tak barhni chahiye."}
   ]
+ },
+ "C7": {
+  "title": "Woodgrove Bank",
+  "sections": [
+   {"heading": "Network", "body": "Woodgrove Bank West Europe mein hub-and-spoke network use karta hai. Hub VNet (10.0.0.0/16) mein on-premises network (192.168.0.0/16) se jura VPN gateway aur private IP 10.0.1.4 wala Azure Firewall hai. Do spoke VNets, VNet-App (10.1.0.0/16) aur VNet-Data (10.2.0.0/16), har ek sirf hub se peered hai."},
+   {"heading": "Requirements", "body": "1. Dono spokes hub VPN gateway ke zariye on-premises tak pohanchein.\n2. VNet-App se VNet-Data tak ka traffic firewall se inspect ho.\n3. Administrators browser se VMs mein RDP karein, aur kisi VM ka public IP address na ho.\n4. Azure SQL Database sirf private IP addresses par pohanch mein ho, on-premises samet.\n5. Standard public load balancer ke peeche web VMs internet se sirf HTTPS qabool karein.\n6. Management mehnat kam se kam ho."}
+  ]
+ },
+ "C8": {
+  "title": "Proseware",
+  "sections": [
+   {"heading": "Overview", "body": "Proseware domain proseware.com ka malik hai, jo ek bahar ke registrar ke paas registered hai. Is ki public web app West Europe ke availability zones 1, 2 aur 3 mein phaili teen VMs par chalti hai. Ek internal API do aur VMs par chalti hai."},
+   {"heading": "Requirements", "body": "1. proseware.com ka public DNS zone Azure mein host ho.\n2. Apex naam proseware.com load balancer ke public IP par resolve ho aur woh IP resource badalne par bhi kaam karta rahe.\n3. VMs internal zone corp.proseware.internal mein naam se resolve hon, records khud bante hon.\n4. Internal API TCP 8443 par load-balanced ho aur sirf network ke andar se pohanch mein ho.\n5. Administrators load balancer ke public IP ke zariye port 50001 par web VM 1 mein RDP karein.\n6. Public load balancer ek availability zone khone se bach jaye."}
+  ]
+ },
+ "C9": {
+  "title": "Margie's Travel",
+  "sections": [
+   {"heading": "Overview", "body": "Margie's Travel West Europe mein resource group RG-Prod mein 30 Windows aur Linux VMs, ek App Service app aur kai storage accounts chalata hai. Operations team Lahore se kaam karti hai."},
+   {"heading": "Requirements", "body": "1. Tamam VMs ke Windows event logs aur performance counters centrally collect hon.\n2. Jab RG-Prod ki kisi bhi VM ka, baad mein add hone wali VMs samet, average CPU 10 minute tak 85% se upar ho to operations team ko email aur SMS mile.\n3. Har Sunday 01:00 se 03:00 maintenance ke dauran notifications band hon, koi alert rule disable kiye baghair.\n4. Collect kiye logs 1 saal tak rakhe jayen.\n5. Kis ne Azure resources delete kiye, is ke records 2 saal tak rakhe jayen.\n6. Jab VMs payment API (api.payments.contoso.com:443) tak na pohanch sakein to team ko bataya jaye, musalsal monitoring ke sath."}
+  ]
+ },
+ "C10": {
+  "title": "Lucerne Publishing",
+  "sections": [
+   {"heading": "Overview", "body": "Lucerne Publishing North Europe mein 12 VMs chalata hai, jin mein ek SQL Server VM hai. Yeh \"contracts\" naam ka Azure file share aur ek on-premises Windows file server bhi use karta hai."},
+   {"heading": "Requirements", "body": "1. VMs ka rozana backup ho; rozana backups 30 din aur mahana backups 12 mahine rakhe jayen.\n2. SQL Server databases ko har 15 minute transaction log backups chahiye.\n3. contracts file share ka rozana backup ho.\n4. On-premises file server ke folders seedha Azure mein backup hon.\n5. Regional aafat ke baad VMs 1 ghante ke andar West Europe mein chalein.\n6. Disaster recovery drills har teen mahine, production par koi asar dale baghair, chalein.\n7. Backups failover ke baghair paired region mein bhi restore ho sakein."}
+  ]
  }
 }
