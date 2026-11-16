@@ -102,7 +102,8 @@ for (const id of caseIds) {
 const ROMAN = join(DATA, 'roman');
 const TEXT_FIELDS = ['ctx', 'q', 'exp', 'tpl'];
 const LIST_FIELDS = ['opts', 'stmts', 'items', 'targets', 'blanks'];
-const markersOf = (tpl) => [...(tpl ?? '').matchAll(/\[\[(\d+)\]\]/g)].map((m) => m[1]).join(',');
+// Word order differs between languages, so a translation may place the drop-downs in another order.
+const markersOf = (tpl) => [...(tpl ?? '').matchAll(/\[\[(\d+)\]\]/g)].map((m) => m[1]).sort().join(',');
 const romanDone = {};
 for (let d = 1; d <= 5; d++) {
   const file = `d${d}.json`;
@@ -131,7 +132,7 @@ for (let d = 1; d <= 5; d++) {
     ro.blanks?.forEach((choices, i) => {
       if (choices.length !== q.blanks?.[i]?.length) fail(`blanks[${i}] must have ${q.blanks?.[i]?.length} choices`);
     });
-    if (ro.tpl && markersOf(ro.tpl) !== markersOf(q.tpl)) fail('tpl must keep the same [[n]] markers in order');
+    if (ro.tpl && markersOf(ro.tpl) !== markersOf(q.tpl)) fail('tpl must keep the same [[n]] markers');
     const needed = ['q', 'exp', ...['ctx', 'tpl', 'opts', 'stmts', 'items', 'targets'].filter((k) => k in q)];
     if (needed.every((k) => k in ro)) complete++;
   }

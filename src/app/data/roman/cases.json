@@ -1,1 +1,18 @@
-{}
+{
+ "C1": {
+  "title": "Contoso Pharmaceuticals",
+  "sections": [
+   {"heading": "Overview", "body": "Contoso Pharmaceuticals ka head office Karachi mein aur ek branch Dubai mein hai. Tamam Azure resources ek Microsoft Entra tenant (contoso.onmicrosoft.com) mein hain. Custom domain contoso.com tenant mein verified hai."},
+   {"heading": "Mojooda environment", "body": "Do subscriptions, Sub-Prod aur Sub-Dev, management group MG-Contoso ke neeche hain. Users Microsoft Entra Connect ke zariye on-premises Active Directory se sync hote hain. Har user ke paas Microsoft Entra ID P1 licence hai. Mojooda security groups: IT-Admins aur Finance (dono assigned membership wale). Sub-Prod ka resource group RG-Core shared production services host karta hai."},
+   {"heading": "Requirements", "body": "1. Sales staff ko un ke department attribute ki buniyad par khud ba khud ek group mein add hona chahiye.\n2. Developers ko Sub-Dev ke tamam resources manage karne chahiye lekin woh kisi ko access na de sakein.\n3. Kisi bhi subscription mein, aage add hone wali subscriptions samet, West Europe ya UAE North ke bahar koi resource na bane.\n4. RG-Core ko ghalti se delete hone se bachaya jaye, jab ke configuration changes ki ijazat rahe.\n5. Users jo passwords cloud mein reset karein woh on-premises Active Directory mein wapas likhe jayen.\n6. Administrative mehnat kam se kam ho."}
+  ]
+ },
+ "C2": {
+  "title": "Fabrikam Retail",
+  "sections": [
+   {"heading": "Overview", "body": "Fabrikam Retail apni online shop ek Azure subscription, Sub1, mein chalata hai, jis mein teen resource groups hain: RG-Web (web VMs), RG-Data (databases) aur RG-Shared (networking)."},
+   {"heading": "Teams", "body": "WebOps web servers manage karti hai. DBA team databases manage karti hai aur junior DBAs ko onboard karti hai. Finance cloud ka kharcha track karta hai. Northwind Traders (northwind.com) ka ek bahar ka auditor har teen mahine environment review karta hai."},
+   {"heading": "Requirements", "body": "1. WebOps ko RG-Web mein VMs manage karni hain lekin virtual networks nahi badalne.\n2. DBA team ko RG-Data ka poora control chahiye, junior DBAs ko access dena samet.\n3. Finance ko costs dekhne aur budgets banane hain, lekin resources manage nahi karne.\n4. Auditor apne mojooda Northwind credentials se Sub1 mein sab kuch parh sake.\n5. Jab monthly kharcha 2,000 USD ke 80% tak pohanche to Finance ko email jaye.\n6. Har naye resource group par costcenter tag hona chahiye; is ke baghair banana fail ho.\n7. Least privilege ke usool par amal karein."}
+  ]
+ }
+}
