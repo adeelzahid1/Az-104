@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { RouterLink } from '@angular/router';
 import { DOMAINS } from '../../data/schema';
 import { Progress } from '../../core/progress';
+import { Language } from '../../i18n/language';
 
 const WEAK_THRESHOLD = 0.7;
 
@@ -15,6 +16,7 @@ const WEAK_THRESHOLD = 0.7;
 export class WeakAreas {
   private readonly progress = inject(Progress);
 
+  protected readonly t = inject(Language).t;
   protected readonly overall = this.progress.overall;
   protected readonly mistakeCount = computed(() => this.progress.mistakeIds().length);
   protected readonly confirmReset = signal(false);

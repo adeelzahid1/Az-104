@@ -98,3 +98,37 @@ nav a.active {
   padding: 16px;
   border-top: 1px solid var(--border);
 }
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.lang {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lang button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.lang button + button {
+  border-left: 1px solid var(--border);
+}
+
+.lang button.on {
+  background: var(--accent);
+  color: #fff;
+}

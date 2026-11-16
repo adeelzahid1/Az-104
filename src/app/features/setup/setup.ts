@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { DOMAINS, Difficulty } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuizService } from '../../core/quiz';
+import { Language } from '../../i18n/language';
 import { CASE_STUDY_MIN_EXAM_SIZE, TypeFilter, domainQuotas } from '../../core/quiz-logic';
 
 /** Every case study in the bank has this many questions (checked by the bank validation script). */
@@ -43,7 +44,8 @@ export class Setup implements OnInit {
   protected readonly domains = DOMAINS;
   protected readonly mistakeCount = computed(() => this.progress.mistakeIds().length);
   protected readonly busy = signal(false);
-  protected readonly error = signal('');
+  protected readonly t = inject(Language).t;
+  protected readonly error = signal<'' | 'noDomain' | 'noMistakes' | 'noMatch'>('');
 
   protected readonly form = this.fb.group({
     domains: this.fb.group({ '1': true, '2': true, '3': true, '4': true, '5': true }),
@@ -58,7 +60,8 @@ export class Setup implements OnInit {
     this.mode() === 'exam' ? [10, 20, 40, 50, 60] : [5, 10, 20, 30, 50],
   );
 
-  protected readonly distribution = signal<{ name: string; n: number }[]>([]);
+  /** Questions per domain id; id 0 is the case study section. */
+  protected readonly distribution = signal<{ id: number; n: number }[]>([]);
 
   ngOnInit(): void {
     if (this.mode() === 'exam') this.form.patchValue({ count: 50 });
@@ -87,18 +90,18 @@ export class Setup implements OnInit {
     const caseSize = count >= CASE_STUDY_MIN_EXAM_SIZE ? CASE_STUDY_PARTS : 0;
     const quotas = domainQuotas(this.selectedDomains(), count - caseSize);
     const rows = DOMAINS.filter((d) => quotas.has(d.id)).map((d) => ({
-      name: d.name,
+      id: d.id,
       n: quotas.get(d.id) ?? 0,
     }));
     this.distribution.set(
-      caseSize ? [...rows, { name: 'Case study section (at the end)', n: caseSize }] : rows,
+      caseSize ? [...rows, { id: 0, n: caseSize }] : rows,
     );
   }
 
   protected async start(): Promise<void> {
     const domains = this.selectedDomains();
     if (!domains.length) {
-      this.error.set('Pick at least one domain.');
+      this.error.set('noDomain');
       return;
     }
     const v = this.form.getRawValue();
@@ -116,9 +119,7 @@ export class Setup implements OnInit {
       });
       if (count === 0) {
         this.error.set(
-          v.mistakesOnly
-            ? 'No saved mistakes match these filters yet. Answer some questions first, or clear the filter.'
-            : 'No questions match these filters. Try widening them.',
+          v.mistakesOnly ? 'noMistakes' : 'noMatch',
         );
         return;
       }

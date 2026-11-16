@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { Router, RouterLink } from '@angular/router';
 import { DOMAINS } from '../../data/schema';
 import { PASS_MARK, QuizService } from '../../core/quiz';
+import { Language } from '../../i18n/language';
 import { CasePanel } from '../../shared/case-panel';
 import { QuestionView } from '../../shared/question-view';
 
@@ -15,6 +16,7 @@ import { QuestionView } from '../../shared/question-view';
 export class Results {
   private readonly quiz = inject(QuizService);
   private readonly router = inject(Router);
+  protected readonly t = inject(Language).t;
 
   protected readonly result = this.quiz.result;
   protected readonly passMark = PASS_MARK;
@@ -37,13 +39,13 @@ export class Results {
     const ms = this.result()?.durationMs ?? 0;
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes} min ${seconds} s`;
+    return this.t().results.duration(minutes, seconds);
   });
 
   protected readonly timePerQuestion = computed(() => {
     const r = this.result();
     if (!r || !r.total) return '';
-    return `${Math.round(r.durationMs / r.total / 1000)} s per question`;
+    return this.t().results.perQuestion(Math.round(r.durationMs / r.total / 1000));
   });
 
   protected pct(correct: number, total: number): number {

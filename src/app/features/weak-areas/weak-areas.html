@@ -1,57 +1,57 @@
-<h1>Weak areas</h1>
-<p class="muted lead">
-  Built from every answer you've given in this browser. A question stays in your mistakes until you
-  answer it correctly, so revisiting them is built-in spaced revision.
-</p>
+@let tx = t();
+@let tw = tx.weak;
+
+<h1>{{ tw.title }}</h1>
+<p class="muted lead">{{ tw.lead }}</p>
 
 @if (overall().unique === 0) {
   <section class="card empty">
-    <h2>No answers recorded yet</h2>
-    <p>Do a practice set or mock exam and your accuracy per domain and subtopic will appear here.</p>
-    <a class="btn primary" routerLink="/practice">Start practising</a>
+    <h2>{{ tw.noneTitle }}</h2>
+    <p>{{ tw.noneText }}</p>
+    <a class="btn primary" routerLink="/practice">{{ tw.startPractising }}</a>
   </section>
 } @else {
   <section class="summary">
     <div class="card stat">
-      <p class="muted">Questions answered</p>
+      <p class="muted">{{ tw.answered }}</p>
       <p class="big">{{ overall().unique }}</p>
     </div>
     <div class="card stat">
-      <p class="muted">Overall accuracy</p>
+      <p class="muted">{{ tw.overall }}</p>
       <p class="big">{{ pct(overall().correct / overall().attempts) }}</p>
     </div>
     <div class="card stat">
-      <p class="muted">Open mistakes</p>
+      <p class="muted">{{ tw.openMistakes }}</p>
       <p class="big">{{ mistakeCount() }}</p>
       @if (mistakeCount() > 0) {
         <a class="btn primary small" routerLink="/practice" [queryParams]="{ mistakes: 1 }">
-          Practice them
+          {{ tw.practiceThem }}
         </a>
       }
     </div>
   </section>
 
   <section class="card">
-    <h2>Accuracy by domain</h2>
+    <h2>{{ tw.byDomain }}</h2>
     <table>
       <thead>
         <tr>
-          <th scope="col">Domain</th>
-          <th scope="col" class="num">Answered</th>
-          <th scope="col" class="num">Accuracy</th>
-          <th scope="col" class="num">Mistakes</th>
-          <th scope="col"><span class="sr-only">Action</span></th>
+          <th scope="col">{{ tw.domain }}</th>
+          <th scope="col" class="num">{{ tw.answeredCol }}</th>
+          <th scope="col" class="num">{{ tw.accuracy }}</th>
+          <th scope="col" class="num">{{ tw.mistakes }}</th>
+          <th scope="col"><span class="sr-only">{{ tw.action }}</span></th>
         </tr>
       </thead>
       <tbody>
         @for (d of domainRows(); track d.id) {
           <tr>
-            <td>{{ d.id }}. {{ d.name }} <span class="muted">({{ d.weightLabel }})</span></td>
+            <td>{{ d.id }}. {{ tx.domains[d.id] }} <span class="muted">({{ d.weightLabel }})</span></td>
             <td class="num">{{ d.row?.unique ?? 0 }}</td>
             <td class="num" [class.weak]="d.weak">{{ pct(d.accuracy) }}</td>
             <td class="num">{{ d.row?.mistakes ?? 0 }}</td>
             <td class="num">
-              <a routerLink="/practice" [queryParams]="{ domain: d.id }">Practice</a>
+              <a routerLink="/practice" [queryParams]="{ domain: d.id }">{{ tw.practice }}</a>
             </td>
           </tr>
         }
@@ -60,28 +60,28 @@
   </section>
 
   <section class="card">
-    <h2>Subtopics below 70%</h2>
+    <h2>{{ tw.below }}</h2>
     @if (weakSubtopics().length) {
       <ul class="subs">
         @for (s of weakSubtopics(); track s.domain + s.sub) {
           <li>
-            <span><strong>{{ s.sub }}</strong> <span class="muted">· Domain {{ s.domain }}</span></span>
+            <span><strong>{{ s.sub }}</strong> <span class="muted">· {{ tx.domainN(s.domain) }}</span></span>
             <span class="weak">{{ pct(s.accuracy) }} <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span>
           </li>
         }
       </ul>
     } @else {
-      <p>None right now — nice work. Keep mixing in mock exams to stay sharp.</p>
+      <p>{{ tw.noneWeak }}</p>
     }
   </section>
 
   @if (strongSubtopics().length) {
     <details class="card">
-      <summary>Subtopics at 70% or better ({{ strongSubtopics().length }})</summary>
+      <summary>{{ tw.strong(strongSubtopics().length) }}</summary>
       <ul class="subs">
         @for (s of strongSubtopics(); track s.domain + s.sub) {
           <li>
-            <span>{{ s.sub }} <span class="muted">· Domain {{ s.domain }}</span></span>
+            <span>{{ s.sub }} <span class="muted">· {{ tx.domainN(s.domain) }}</span></span>
             <span>{{ pct(s.accuracy) }} <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span>
           </li>
         }
@@ -91,10 +91,10 @@
 
   <p class="reset">
     <button type="button" class="btn danger" (click)="reset()">
-      {{ confirmReset() ? 'Click again to erase all progress' : 'Reset progress' }}
+      {{ confirmReset() ? tw.confirmReset : tw.reset }}
     </button>
     @if (confirmReset()) {
-      <button type="button" class="link" (click)="confirmReset.set(false)">Cancel</button>
+      <button type="button" class="link" (click)="confirmReset.set(false)">{{ tw.cancel }}</button>
     }
   </p>
 }

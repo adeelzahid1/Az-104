@@ -1,4 +1,5 @@
-@let q = question();
+@let q = shown();
+@let tq = t().question;
 
 @if (q.ctx) {
   <p class="ctx">{{ q.ctx }}</p>
@@ -18,11 +19,11 @@
           <span class="blank" [class]="slotState(part.blank)">
             <select
               #pick
-              [attr.aria-label]="'Drop-down ' + (part.blank + 1)"
+              [attr.aria-label]="tq.dropDown(part.blank + 1)"
               [disabled]="reveal()"
               (change)="setSlot(part.blank, pick.value)"
             >
-              <option value="" disabled [selected]="slots()[part.blank] === null">Select…</option>
+              <option value="" disabled [selected]="slots()[part.blank] === null">{{ tq.select }}</option>
               @for (choice of q.blanks?.[part.blank] ?? []; track $index) {
                 <option [value]="$index" [selected]="slots()[part.blank] === $index">
                   {{ choice }}
@@ -35,18 +36,18 @@
     </div>
   }
   @case ('match') {
-    <p class="hint">Choose a match for each item. A choice may be used once, more than once, or not at all.</p>
+    <p class="hint">{{ tq.matchHint }}</p>
     <div class="match">
       @for (item of q.items ?? []; track $index; let i = $index) {
         <div class="match-row" [class]="slotState(i)">
           <span>{{ item }}</span>
           <select
             #pick
-            [attr.aria-label]="'Match for: ' + item"
+            [attr.aria-label]="tq.matchFor(item)"
             [disabled]="reveal()"
             (change)="setSlot(i, pick.value)"
           >
-            <option value="" disabled [selected]="slots()[i] === null">Select…</option>
+            <option value="" disabled [selected]="slots()[i] === null">{{ tq.select }}</option>
             @for (target of q.targets ?? []; track $index) {
               <option [value]="$index" [selected]="slots()[i] === $index">{{ target }}</option>
             }
@@ -73,7 +74,7 @@
     </div>
   }
   @case ('multi') {
-    <p class="hint">Choose {{ expectedIndices().length }}.</p>
+    <p class="hint">{{ tq.chooseN(expectedIndices().length) }}</p>
     <div class="options">
       @for (opt of q.opts ?? []; track $index) {
         <label class="opt" [class]="optionState($index)" [class.selected]="picks().includes($index)">
@@ -94,7 +95,7 @@
       @for (stmt of q.stmts ?? []; track $index) {
         <div class="yn-row" [class]="yesNoState($index)">
           <span class="yn-text">{{ $index + 1 }}. {{ stmt }}</span>
-          <span class="yn-choices" role="radiogroup" [attr.aria-label]="'Statement ' + ($index + 1)">
+          <span class="yn-choices" role="radiogroup" [attr.aria-label]="tq.statement($index + 1)">
             <label>
               <input
                 type="radio"
@@ -103,7 +104,7 @@
                 [disabled]="reveal()"
                 (change)="setYesNo($index, true)"
               />
-              Yes
+              {{ tq.yes }}
             </label>
             <label>
               <input
@@ -113,7 +114,7 @@
                 [disabled]="reveal()"
                 (change)="setYesNo($index, false)"
               />
-              No
+              {{ tq.no }}
             </label>
           </span>
         </div>
@@ -121,7 +122,7 @@
     </div>
   }
   @case ('order') {
-    <p class="hint">Use the arrows to put the steps in the correct order.</p>
+    <p class="hint">{{ tq.orderHint }}</p>
     <ol class="order">
       @for (itemIndex of order(); track itemIndex; let pos = $index, first = $first, last = $last) {
         <li>
@@ -132,7 +133,7 @@
                 type="button"
                 class="icon"
                 [disabled]="first || reveal()"
-                [attr.aria-label]="'Move step ' + (pos + 1) + ' up'"
+                [attr.aria-label]="tq.moveUp(pos + 1)"
                 (click)="move(pos, -1)"
               >
                 ↑
@@ -141,7 +142,7 @@
                 type="button"
                 class="icon"
                 [disabled]="last || reveal()"
-                [attr.aria-label]="'Move step ' + (pos + 1) + ' down'"
+                [attr.aria-label]="tq.moveDown(pos + 1)"
                 (click)="move(pos, 1)"
               >
                 ↓
@@ -157,10 +158,10 @@
 @if (reveal()) {
   <div class="verdict" [class.ok]="isRight()" [class.bad]="!isRight()" role="status">
     <p class="verdict-title">
-      <strong>{{ isRight() ? '✓ Correct' : '✗ Incorrect' }}</strong>
+      <strong>{{ isRight() ? tq.correct : tq.incorrect }}</strong>
     </p>
 
-    <p class="section-label">Correct answer</p>
+    <p class="section-label">{{ tq.correctAnswer }}</p>
     @switch (q.type) {
       @case ('dropdown') {
         <p class="filled" [class.mono]="q.mono">{{ filledTemplate() }}</p>
@@ -196,7 +197,7 @@
     }
 
     @if (!isRight() && (q.type === 'mcq' || q.type === 'multi') && yourOptions().length) {
-      <p class="section-label">Your answer</p>
+      <p class="section-label">{{ tq.yourAnswer }}</p>
       <ul class="answer-list">
         @for (opt of yourOptions(); track $index) {
           <li>{{ opt }}</li>
@@ -204,8 +205,8 @@
       </ul>
     }
 
-    <p class="section-label">Why this is the answer</p>
+    <p class="section-label">{{ tq.why }}</p>
     <p class="why">{{ q.exp }}</p>
-    <a [href]="q.link" target="_blank" rel="noopener">Read more on Microsoft Learn ↗</a>
+    <a [href]="q.link" target="_blank" rel="noopener">{{ tq.readMore }}</a>
   </div>
 }

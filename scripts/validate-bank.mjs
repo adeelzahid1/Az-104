@@ -10,6 +10,7 @@ const cases = JSON.parse(readFileSync(join(DATA, 'cases.json'), 'utf8'));
 const caseIds = new Set(cases.map((c) => c.id));
 const errors = [];
 const ids = new Set();
+const byId = new Map();
 const partsPerCase = new Map();
 const counts = { total: 0, byType: {}, byDomain: {} };
 
@@ -27,6 +28,7 @@ for (const file of readdirSync(DATA).filter((f) => /^d\d-.+\.json$/.test(f))) {
     if (q.id.charAt(1) !== domain) fail('id does not match file domain');
     if (ids.has(q.id)) fail('duplicate id');
     ids.add(q.id);
+    byId.set(q.id, q);
     if (!q.q || !q.exp || !q.sub) fail('missing question, explanation or subtopic');
     if (!/^https:\/\/(learn\.microsoft\.com|azure\.microsoft\.com|www\.microsoft\.com)\//.test(q.link ?? '')) {
       fail('link must point to Microsoft documentation');
@@ -96,7 +98,56 @@ for (const id of caseIds) {
   if (!partsPerCase.has(id)) errors.push(`case ${id}: no questions reference it`);
 }
 
+// Roman Urdu translations in src/app/data/roman must line up with the English questions.
+const ROMAN = join(DATA, 'roman');
+const TEXT_FIELDS = ['ctx', 'q', 'exp', 'tpl'];
+const LIST_FIELDS = ['opts', 'stmts', 'items', 'targets', 'blanks'];
+const markersOf = (tpl) => [...(tpl ?? '').matchAll(/\[\[(\d+)\]\]/g)].map((m) => m[1]).join(',');
+const romanDone = {};
+for (let d = 1; d <= 5; d++) {
+  const file = `d${d}.json`;
+  const set = JSON.parse(readFileSync(join(ROMAN, file), 'utf8'));
+  let complete = 0;
+  for (const [id, ro] of Object.entries(set)) {
+    const fail = (msg) => errors.push(`roman/${file} ${id}: ${msg}`);
+    const q = byId.get(id);
+    if (!q) {
+      fail('no English question with this id');
+      continue;
+    }
+    if (id.charAt(1) !== String(d)) fail('id is in the wrong domain file');
+    for (const key of Object.keys(ro)) {
+      if (![...TEXT_FIELDS, ...LIST_FIELDS].includes(key)) fail(`unexpected field ${key}`);
+      else if (!(key in q)) fail(`${key} has no English counterpart`);
+    }
+    for (const key of TEXT_FIELDS) {
+      if (key in ro && (typeof ro[key] !== 'string' || !ro[key].trim())) fail(`${key} must be non-empty text`);
+    }
+    for (const key of LIST_FIELDS) {
+      if (key in ro && (!Array.isArray(ro[key]) || ro[key].length !== q[key]?.length)) {
+        fail(`${key} must have ${q[key]?.length ?? 0} entries`);
+      }
+    }
+    ro.blanks?.forEach((choices, i) => {
+      if (choices.length !== q.blanks?.[i]?.length) fail(`blanks[${i}] must have ${q.blanks?.[i]?.length} choices`);
+    });
+    if (ro.tpl && markersOf(ro.tpl) !== markersOf(q.tpl)) fail('tpl must keep the same [[n]] markers in order');
+    const needed = ['q', 'exp', ...['ctx', 'tpl', 'opts', 'stmts', 'items', 'targets'].filter((k) => k in q)];
+    if (needed.every((k) => k in ro)) complete++;
+  }
+  romanDone[d] = `${complete}/${counts.byDomain[d] ?? 0}`;
+}
+const romanCases = JSON.parse(readFileSync(join(ROMAN, 'cases.json'), 'utf8'));
+for (const [id, ro] of Object.entries(romanCases)) {
+  const c = cases.find((x) => x.id === id);
+  if (!c) errors.push(`roman/cases.json ${id}: unknown case`);
+  else if (!ro.title || ro.sections?.length !== c.sections.length) {
+    errors.push(`roman/cases.json ${id}: needs a title and ${c.sections.length} sections`);
+  }
+}
+
 console.log(`Questions: ${counts.total}  Case studies: ${caseIds.size}`);
+console.log('Roman Urdu translated:', romanDone, `cases ${Object.keys(romanCases).length}/${caseIds.size}`);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);
 if (errors.length) {

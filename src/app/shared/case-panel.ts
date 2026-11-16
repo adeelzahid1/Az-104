@@ -1,19 +1,22 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { CaseStudy } from '../data/schema';
+import { Language } from '../i18n/language';
+import { RomanContent } from '../i18n/roman-content';
 
 @Component({
   selector: 'app-case-panel',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @let cs = shown();
     <details class="case" [open]="open()">
       <summary>
-        <span class="tag">Case study</span>
-        {{ caseStudy().title }}
+        <span class="tag">{{ t().question.caseStudy }}</span>
+        {{ cs.title }}
         @if (partLabel()) {
           <span class="part">· {{ partLabel() }}</span>
         }
       </summary>
-      @for (section of caseStudy().sections; track section.heading) {
+      @for (section of cs.sections; track $index) {
         <h3>{{ section.heading }}</h3>
         <p>{{ section.body }}</p>
       }
@@ -57,4 +60,8 @@ export class CasePanel {
   readonly caseStudy = input.required<CaseStudy>();
   readonly open = input(true);
   readonly partLabel = input('');
+
+  protected readonly t = inject(Language).t;
+  private readonly roman = inject(RomanContent);
+  protected readonly shown = computed(() => this.roman.caseStudy(this.caseStudy()));
 }

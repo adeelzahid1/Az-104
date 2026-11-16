@@ -1,31 +1,32 @@
 @let s = session();
+@let tq = t().quiz;
 
 @if (!s) {
   <section class="card empty">
-    <h1>No quiz in progress</h1>
-    <p>Start a practice set or a mock exam first.</p>
+    <h1>{{ tq.noneTitle }}</h1>
+    <p>{{ tq.noneText }}</p>
     <p class="row">
-      <a class="btn primary" routerLink="/practice">Practice</a>
-      <a class="btn" routerLink="/mock">Mock exam</a>
+      <a class="btn primary" routerLink="/practice">{{ tq.practice }}</a>
+      <a class="btn" routerLink="/mock">{{ tq.mock }}</a>
     </p>
   </section>
 } @else if (s.finishedAt !== null) {
   <section class="card empty">
-    <h1>This quiz is finished</h1>
+    <h1>{{ tq.finishedTitle }}</h1>
     <p class="row">
-      <a class="btn primary" routerLink="/results">View results</a>
-      <a class="btn" routerLink="/practice">Start another</a>
+      <a class="btn primary" routerLink="/results">{{ tq.viewResults }}</a>
+      <a class="btn" routerLink="/practice">{{ tq.startAnother }}</a>
     </p>
   </section>
 } @else {
   <div class="quiz-head">
     <div>
-      <p class="eyebrow">{{ isExam() ? 'Mock exam' : 'Practice' }}</p>
-      <h1>Question {{ index() + 1 }} <span class="muted">of {{ total() }}</span></h1>
+      <p class="eyebrow">{{ isExam() ? tq.mock : tq.practice }}</p>
+      <h1>{{ tq.questionN }} {{ index() + 1 }} <span class="muted">{{ tq.of(total()) }}</span></h1>
       <p class="muted meta">{{ meta() }}</p>
     </div>
     @if (remainingLabel()) {
-      <div class="timer" [class.low]="lowTime()" role="timer" aria-label="Time remaining">
+      <div class="timer" [class.low]="lowTime()" role="timer" [attr.aria-label]="tq.timeLeft">
         {{ remainingLabel() }}
       </div>
     }
@@ -52,12 +53,12 @@
 
   <div class="actions">
     <button type="button" class="btn" [disabled]="index() === 0" (click)="goTo(index() - 1)">
-      ← Previous
+      {{ tq.previous }}
     </button>
 
     @if (!isExam() && !checked()) {
       <button type="button" class="btn primary" [disabled]="!canCheck()" (click)="check()">
-        Check answer
+        {{ tq.check }}
       </button>
     }
 
@@ -68,11 +69,11 @@
         [class.primary]="isExam() || checked()"
         (click)="goTo(index() + 1)"
       >
-        Next →
+        {{ tq.next }}
       </button>
     } @else {
       <button type="button" class="btn primary" (click)="finish()">
-        {{ isExam() ? 'Submit exam' : 'Finish' }}
+        {{ isExam() ? tq.submitExam : tq.finish }}
       </button>
     }
   </div>
@@ -80,9 +81,9 @@
   @if (isExam()) {
     <section class="palette-wrap">
       <p class="muted">
-        {{ answeredCount() }} of {{ total() }} answered. Jump to any question:
+        {{ tq.answeredOf(answeredCount(), total()) }}
       </p>
-      <nav class="palette" aria-label="Question navigator">
+      <nav class="palette" [attr.aria-label]="tq.navigator">
         @for (done of answered(); track $index) {
           <button
             type="button"
@@ -95,11 +96,11 @@
           </button>
         }
       </nav>
-      <button type="button" class="btn finish-early" (click)="finish()">Submit exam now</button>
+      <button type="button" class="btn finish-early" (click)="finish()">{{ tq.submitNow }}</button>
     </section>
   } @else {
     <p class="muted end-link">
-      <button type="button" class="link" (click)="finish()">End practice and see results</button>
+      <button type="button" class="link" (click)="finish()">{{ tq.endPractice }}</button>
     </p>
   }
 }

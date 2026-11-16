@@ -2,12 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   linkedSignal,
   output,
 } from '@angular/core';
 import { Question } from '../data/schema';
 import { Answer, isCorrect } from '../core/quiz-logic';
+import { Language } from '../i18n/language';
+import { RomanContent } from '../i18n/roman-content';
 
 const LETTERS = 'ABCDEFGHIJ';
 
@@ -24,6 +27,11 @@ export class QuestionView {
   readonly answerChange = output<Answer>();
 
   protected readonly letters = LETTERS;
+  protected readonly t = inject(Language).t;
+  private readonly roman = inject(RomanContent);
+
+  /** The question in the chosen language. Answers and keys are the same in every language. */
+  protected readonly shown = computed(() => this.roman.question(this.question()));
 
   /**
    * Local copy of the answer, updated synchronously on every interaction. Reading the input
@@ -37,29 +45,29 @@ export class QuestionView {
 
   protected readonly picks = computed(() => (this.draft() as number[] | null) ?? []);
   protected readonly order = computed(
-    () => (this.draft() as number[] | null) ?? (this.question().items ?? []).map((_, i) => i),
+    () => (this.draft() as number[] | null) ?? (this.shown().items ?? []).map((_, i) => i),
   );
   protected readonly yesNo = computed(
     () =>
-      (this.draft() as (boolean | null)[] | null) ?? (this.question().stmts ?? []).map(() => null),
+      (this.draft() as (boolean | null)[] | null) ?? (this.shown().stmts ?? []).map(() => null),
   );
   /** dropdown/match: the chosen index (or null) for each blank or item. */
   protected readonly slots = computed(() => {
-    const q = this.question();
+    const q = this.shown();
     const size = (q.type === 'dropdown' ? q.blanks?.length : q.items?.length) ?? 0;
     return (this.draft() as (number | null)[] | null) ?? Array<number | null>(size).fill(null);
   });
 
   /** dropdown: the template split into text runs and drop-down positions. */
   protected readonly tplParts = computed(() =>
-    (this.question().tpl ?? '')
+    (this.shown().tpl ?? '')
       .split(/\[\[(\d+)\]\]/)
       .map((part, i) => (i % 2 === 0 ? { text: part, blank: null } : { text: '', blank: Number(part) })),
   );
 
   /** dropdown: the template with every drop-down replaced by its correct choice. */
   protected readonly filledTemplate = computed(() => {
-    const q = this.question();
+    const q = this.shown();
     const ans = q.ans as number[];
     return this.tplParts()
       .map((p) => (p.blank === null ? p.text : (q.blanks?.[p.blank]?.[ans[p.blank]] ?? '')))
@@ -68,35 +76,35 @@ export class QuestionView {
 
   /** match: each item with its correct target. */
   protected readonly correctMatches = computed(() => {
-    const q = this.question();
+    const q = this.shown();
     const ans = q.ans as number[];
     return (q.items ?? []).map((item, i) => ({ item, target: q.targets?.[ans[i]] ?? '' }));
   });
 
-  protected readonly expectedIndices = computed(() => this.question().ans as number[]);
-  protected readonly expectedYesNo = computed(() => this.question().ans as boolean[]);
+  protected readonly expectedIndices = computed(() => this.shown().ans as number[]);
+  protected readonly expectedYesNo = computed(() => this.shown().ans as boolean[]);
   protected readonly isRight = computed(() => isCorrect(this.question(), this.answer()));
 
   /** mcq/multi: the correct options as "B. option text". */
   protected readonly correctOptions = computed(() =>
-    this.expectedIndices().map((i) => `${LETTERS[i]}. ${this.question().opts?.[i] ?? ''}`),
+    this.expectedIndices().map((i) => `${LETTERS[i]}. ${this.shown().opts?.[i] ?? ''}`),
   );
 
   /** mcq/multi: what the user picked, shown when the answer was wrong. */
   protected readonly yourOptions = computed(() =>
-    this.picks().map((i) => `${LETTERS[i]}. ${this.question().opts?.[i] ?? ''}`),
+    this.picks().map((i) => `${LETTERS[i]}. ${this.shown().opts?.[i] ?? ''}`),
   );
 
   /** yesno: each statement with its correct Yes/No. */
   protected readonly yesNoKey = computed(() =>
-    (this.question().stmts ?? []).map((stmt, i) => ({
+    (this.shown().stmts ?? []).map((stmt, i) => ({
       stmt,
-      answer: this.expectedYesNo()[i] ? 'Yes' : 'No',
+      answer: this.expectedYesNo()[i] ? this.t().question.yes : this.t().question.no,
     })),
   );
 
   protected readonly correctOrder = computed(() =>
-    this.expectedIndices().map((i) => this.question().items?.[i] ?? ''),
+    this.expectedIndices().map((i) => this.shown().items?.[i] ?? ''),
   );
 
   protected optionState(i: number): 'correct' | 'wrong' | 'missed' | '' {
@@ -126,7 +134,7 @@ export class QuestionView {
 
   protected choose(i: number): void {
     if (this.reveal()) return;
-    if (this.question().type === 'mcq') {
+    if (this.shown().type === 'mcq') {
       this.commit([i]);
       return;
     }

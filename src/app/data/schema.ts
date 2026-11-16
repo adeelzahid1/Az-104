@@ -28,6 +28,8 @@ export interface Question {
   caseId?: string;
   /** mcq/multi options. */
   opts?: string[];
+  /** Runtime only: after shuffling, the original index of each option shown (see shuffleOptions). */
+  optOrder?: number[];
   /** yesno statements. */
   stmts?: string[];
   /** order: items in the scrambled order presented. match: the items to be matched. */

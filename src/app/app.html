@@ -1,22 +1,39 @@
-<a class="skip" href="#main">Skip to content</a>
+@let tx = t();
+<a class="skip" href="#main">{{ tx.skip }}</a>
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" routerLink="/">
       <span class="logo" aria-hidden="true">A</span>
       <span>AZ-104 Prep</span>
     </a>
-    <nav aria-label="Main">
-      @for (link of links; track link.path) {
-        <a
-          [routerLink]="link.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: link.exact }"
-          ariaCurrentWhenActive="page"
+    <div class="topbar-right">
+      <nav aria-label="Main">
+        @for (link of links; track link.path) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            ariaCurrentWhenActive="page"
+          >
+            {{ tx.nav[link.key] }}
+          </a>
+        }
+      </nav>
+      <div class="lang" role="group" [attr.aria-label]="tx.langSwitch">
+        <button type="button" [class.on]="lang() === 'en'" [attr.aria-pressed]="lang() === 'en'" (click)="setLang('en')">
+          EN
+        </button>
+        <button
+          type="button"
+          [class.on]="lang() === 'roman'"
+          [attr.aria-pressed]="lang() === 'roman'"
+          title="Roman Urdu"
+          (click)="setLang('roman')"
         >
-          {{ link.label }}
-        </a>
-      }
-    </nav>
+          Roman
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -24,7 +41,4 @@
   <router-outlet />
 </main>
 
-<footer class="footer">
-  Original practice questions written from Microsoft Learn documentation. Not affiliated with
-  Microsoft. Your progress is saved only in this browser.
-</footer>
+<footer class="footer">{{ tx.footer }}</footer>

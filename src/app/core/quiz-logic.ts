@@ -179,6 +179,7 @@ export function shuffleOptions(q: Question, rnd: () => number = Math.random): Qu
   return {
     ...q,
     opts: perm.map((i) => opts[i]),
+    optOrder: perm,
     ans: (q.ans as number[]).map((a) => perm.indexOf(a)).sort((x, y) => x - y),
   };
 }

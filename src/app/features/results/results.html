@@ -1,45 +1,43 @@
+@let tr = t().results;
 @if (result(); as r) {
-  <h1>{{ r.mode === 'exam' ? 'Mock exam results' : 'Practice results' }}</h1>
+  <h1>{{ r.mode === 'exam' ? tr.examTitle : tr.practiceTitle }}</h1>
 
   <section class="score-grid">
     <div class="card score" [class.pass]="r.passed" [class.fail]="!r.passed">
-      <p class="muted">Estimated score</p>
+      <p class="muted">{{ tr.score }}</p>
       <p class="big">{{ r.score }}<span>/1000</span></p>
       <p class="verdict">
-        {{ r.passed ? 'Likely pass' : 'Below the pass mark' }} (pass mark {{ passMark }})
+        {{ r.passed ? tr.likelyPass : tr.belowPass }} {{ tr.passMark(passMark) }}
       </p>
     </div>
     <div class="card stat">
-      <p class="muted">Correct</p>
+      <p class="muted">{{ tr.correct }}</p>
       <p class="big">{{ r.correct }}<span>/{{ r.total }}</span></p>
       <p class="muted">{{ pct(r.correct, r.total) }}%</p>
     </div>
     <div class="card stat">
-      <p class="muted">Time</p>
+      <p class="muted">{{ tr.time }}</p>
       <p class="big small">{{ duration() }}</p>
       <p class="muted">{{ timePerQuestion() }}</p>
     </div>
   </section>
 
-  <p class="muted note">
-    The real exam is scaled and weights questions differently, so treat this as a rough guide. Aim
-    for 80%+ in practice to give yourself a safety margin.
-  </p>
+  <p class="muted note">{{ tr.note }}</p>
 
   <section class="card">
-    <h2>By domain</h2>
+    <h2>{{ tr.byDomain }}</h2>
     <table>
       <thead>
         <tr>
-          <th scope="col">Domain</th>
-          <th scope="col" class="num">Correct</th>
-          <th scope="col" class="num">Accuracy</th>
+          <th scope="col">{{ tr.domain }}</th>
+          <th scope="col" class="num">{{ tr.correct }}</th>
+          <th scope="col" class="num">{{ tr.accuracy }}</th>
         </tr>
       </thead>
       <tbody>
         @for (d of r.byDomain; track d.id) {
           <tr>
-            <td>{{ d.id }}. {{ d.name }}</td>
+            <td>{{ d.id }}. {{ t().domains[d.id] }}</td>
             <td class="num">{{ d.correct }}/{{ d.total }}</td>
             <td class="num" [class.weak]="pct(d.correct, d.total) < 70">
               {{ pct(d.correct, d.total) }}%
@@ -52,40 +50,40 @@
 
   <div class="row">
     <button type="button" class="btn primary" [disabled]="busy()" (click)="practiceMistakes()">
-      Practice my mistakes
+      {{ tr.practiceMistakes }}
     </button>
-    <a class="btn" routerLink="/practice">New practice</a>
-    <a class="btn" routerLink="/mock">New mock exam</a>
+    <a class="btn" routerLink="/practice">{{ tr.newPractice }}</a>
+    <a class="btn" routerLink="/mock">{{ tr.newMock }}</a>
   </div>
 
   <section class="review">
     <div class="review-head">
-      <h2>Review</h2>
+      <h2>{{ tr.review }}</h2>
       <label class="toggle">
         <input type="checkbox" [checked]="onlyWrong()" (change)="onlyWrong.set(!onlyWrong())" />
-        Only show questions I got wrong
+        {{ tr.onlyWrong }}
       </label>
     </div>
 
     @for (item of reviewItems(); track item.q.id) {
       <article class="card review-item">
-        <p class="muted q-num">Question {{ item.n }} · {{ item.q.id }}</p>
+        <p class="muted q-num">{{ tr.questionLabel(item.n, item.q.id) }}</p>
         @if (item.caseStudy; as cs) {
           <app-case-panel [caseStudy]="cs" [open]="false" />
         }
         <app-question-view [question]="item.q" [answer]="item.answer" [reveal]="true" />
       </article>
     } @empty {
-      <p class="card">Nothing to review here — every question was answered correctly.</p>
+      <p class="card">{{ tr.allCorrect }}</p>
     }
   </section>
 } @else {
   <section class="card empty">
-    <h1>No results yet</h1>
-    <p>Finish a practice set or mock exam to see your results.</p>
+    <h1>{{ tr.noneTitle }}</h1>
+    <p>{{ tr.noneText }}</p>
     <p class="row center">
-      <a class="btn primary" routerLink="/practice">Practice</a>
-      <a class="btn" routerLink="/mock">Mock exam</a>
+      <a class="btn primary" routerLink="/practice">{{ t().nav.practice }}</a>
+      <a class="btn" routerLink="/mock">{{ t().nav.mock }}</a>
     </p>
   </section>
 }

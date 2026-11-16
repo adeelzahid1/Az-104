@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 import { DOMAINS } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuestionBank } from '../../core/question-bank';
+import { Language } from '../../i18n/language';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,6 +24,7 @@ export class Dashboard {
   private readonly bank = inject(QuestionBank);
   private readonly sizes = signal<Record<number, number>>({});
 
+  protected readonly t = inject(Language).t;
   protected readonly overall = this.progress.overall;
   protected readonly mistakeCount = computed(() => this.progress.mistakeIds().length);
   protected readonly totalQuestions = computed(() =>

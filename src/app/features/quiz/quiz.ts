@@ -9,13 +9,11 @@ import {
   signal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { DOMAINS } from '../../data/schema';
 import { QuizService } from '../../core/quiz';
 import { Answer, domainOf, isAnswered } from '../../core/quiz-logic';
 import { CasePanel } from '../../shared/case-panel';
 import { QuestionView } from '../../shared/question-view';
-
-const DIFFICULTY = ['', 'Easy', 'Medium', 'Hard'];
+import { Language } from '../../i18n/language';
 
 @Component({
   selector: 'app-quiz',
@@ -28,6 +26,7 @@ export class Quiz {
   private readonly quiz = inject(QuizService);
   private readonly router = inject(Router);
   private readonly now = signal(Date.now());
+  protected readonly t = inject(Language).t;
 
   protected readonly session = this.quiz.session;
   protected readonly isExam = computed(() => this.session()?.config.mode === 'exam');
@@ -65,13 +64,13 @@ export class Quiz {
     if (!s || !id) return '';
     const parts = s.questions.map((q, i) => ({ q, i })).filter((x) => x.q.caseId === id);
     const position = parts.findIndex((x) => x.i === s.current) + 1;
-    return `question ${position} of ${parts.length}`;
+    return this.t().quiz.casePart(position, parts.length);
   });
   protected readonly meta = computed(() => {
     const q = this.question();
     if (!q) return '';
-    const domain = DOMAINS.find((d) => d.id === domainOf(q));
-    return `Domain ${domain?.id} · ${q.sub} · ${DIFFICULTY[q.diff]}`;
+    const t = this.t();
+    return `${t.domainN(domainOf(q))} · ${q.sub} · ${t.diff[q.diff]}`;
   });
   protected readonly remainingMs = computed(() => {
     const deadline = this.session()?.deadline;

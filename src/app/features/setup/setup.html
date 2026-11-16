@@ -1,24 +1,18 @@
 @let exam = mode() === 'exam';
+@let tx = t();
+@let ts = tx.setup;
 
-<h1>{{ exam ? 'Mock exam' : 'Practice' }}</h1>
-<p class="muted lead">
-  @if (exam) {
-    Questions are drawn across domains in line with the official exam weights. Answers are revealed
-    only after you submit, like the real exam.
-  } @else {
-    Pick what you want to drill. Each answer is checked straight away, with an explanation and a
-    Microsoft Learn link.
-  }
-</p>
+<h1>{{ exam ? ts.examTitle : ts.practiceTitle }}</h1>
+<p class="muted lead">{{ exam ? ts.examLead : ts.practiceLead }}</p>
 
 <form class="card" [formGroup]="form" (ngSubmit)="start()">
   <fieldset formGroupName="domains">
-    <legend>Domains</legend>
+    <legend>{{ ts.domains }}</legend>
     @for (d of domains; track d.id) {
       <label class="check">
         <input type="checkbox" [formControlName]="'' + d.id" />
         <span>
-          <strong>{{ d.id }}. {{ d.name }}</strong>
+          <strong>{{ d.id }}. {{ tx.domains[d.id] }}</strong>
           <span class="muted"> · {{ d.weightLabel }}</span>
         </span>
       </label>
@@ -27,7 +21,7 @@
 
   <div class="grid">
     <label class="field">
-      <span>Number of questions</span>
+      <span>{{ ts.count }}</span>
       <select formControlName="count">
         @for (n of countOptions(); track n) {
           <option [ngValue]="n">{{ n }}</option>
@@ -36,27 +30,27 @@
     </label>
 
     <label class="field">
-      <span>Difficulty</span>
+      <span>{{ ts.difficulty }}</span>
       <select formControlName="diff">
-        <option [ngValue]="0">{{ exam ? 'Real-exam mix' : 'Any' }}</option>
-        <option [ngValue]="1">Easy</option>
-        <option [ngValue]="2">Medium</option>
-        <option [ngValue]="3">Hard</option>
+        <option [ngValue]="0">{{ exam ? ts.examMix : ts.any }}</option>
+        <option [ngValue]="1">{{ tx.diff[1] }}</option>
+        <option [ngValue]="2">{{ tx.diff[2] }}</option>
+        <option [ngValue]="3">{{ tx.diff[3] }}</option>
       </select>
     </label>
 
     @if (!exam) {
       <label class="field">
-        <span>Question type</span>
+        <span>{{ ts.type }}</span>
         <select formControlName="type">
-          <option value="all">All types</option>
-          <option value="mcq">Single answer</option>
-          <option value="multi">Choose 2 or 3</option>
-          <option value="yesno">Yes/No series</option>
-          <option value="order">Ordering</option>
-          <option value="dropdown">Drop-down (hot area)</option>
-          <option value="match">Matching (drag and drop)</option>
-          <option value="case">Case studies</option>
+          <option value="all">{{ ts.types.all }}</option>
+          <option value="mcq">{{ ts.types.mcq }}</option>
+          <option value="multi">{{ ts.types.multi }}</option>
+          <option value="yesno">{{ ts.types.yesno }}</option>
+          <option value="order">{{ ts.types.order }}</option>
+          <option value="dropdown">{{ ts.types.dropdown }}</option>
+          <option value="match">{{ ts.types.match }}</option>
+          <option value="case">{{ ts.types.case }}</option>
         </select>
       </label>
     }
@@ -65,15 +59,15 @@
   @if (exam) {
     <label class="check">
       <input type="checkbox" formControlName="timed" />
-      <span>Timed (2 minutes per question, like the real exam's ~100 minutes for ~50)</span>
+      <span>{{ ts.timed }}</span>
     </label>
 
     @if (distribution().length) {
       <div class="dist">
-        <p class="muted">Questions per domain:</p>
+        <p class="muted">{{ ts.perDomain }}</p>
         <ul>
-          @for (d of distribution(); track d.name) {
-            <li><span>{{ d.name }}</span><strong>{{ d.n }}</strong></li>
+          @for (d of distribution(); track d.id) {
+            <li><span>{{ d.id ? tx.domains[d.id] : ts.caseSection }}</span><strong>{{ d.n }}</strong></li>
           }
         </ul>
       </div>
@@ -81,17 +75,17 @@
   } @else {
     <label class="check">
       <input type="checkbox" formControlName="mistakesOnly" />
-      <span>Only questions I got wrong last time ({{ mistakeCount() }} saved)</span>
+      <span>{{ ts.mistakesOnly(mistakeCount()) }}</span>
     </label>
   }
 
   @if (error()) {
-    <p class="error" role="alert">{{ error() }}</p>
+    <p class="error" role="alert">{{ ts.errors[error()] }}</p>
   }
 
   <div class="row end">
     <button type="submit" class="btn primary" [disabled]="busy()">
-      {{ busy() ? 'Loading questions…' : exam ? 'Start mock exam' : 'Start practice' }}
+      {{ busy() ? ts.loading : exam ? ts.startExam : ts.startPractice }}
     </button>
   </div>
 </form>

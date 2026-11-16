@@ -1,65 +1,64 @@
+@let tx = t();
+@let td = tx.dashboard;
+
 <section class="hero">
   <div>
-    <h1>AZ-104 Microsoft Azure Administrator</h1>
-    <p class="muted">
-      Original practice questions built from the official skills outline (skills measured as of
-      October 26, 2023). Pass mark: 700/1000.
-    </p>
+    <h1>{{ td.title }}</h1>
+    <p class="muted">{{ td.lead }}</p>
   </div>
   <div class="hero-actions">
-    <a class="btn primary" routerLink="/mock">Take a mock exam</a>
-    <a class="btn" routerLink="/practice">Practice</a>
+    <a class="btn primary" routerLink="/mock">{{ td.takeMock }}</a>
+    <a class="btn" routerLink="/practice">{{ tx.nav.practice }}</a>
   </div>
 </section>
 
 <section class="summary">
   <div class="card stat">
-    <p class="muted">Question bank</p>
+    <p class="muted">{{ td.bank }}</p>
     <p class="big">{{ totalQuestions() || '…' }}</p>
   </div>
   <div class="card stat">
-    <p class="muted">You've answered</p>
+    <p class="muted">{{ td.answered }}</p>
     <p class="big">{{ overall().unique }}</p>
   </div>
   <div class="card stat">
-    <p class="muted">Accuracy</p>
+    <p class="muted">{{ td.accuracy }}</p>
     <p class="big">
       {{ overall().attempts ? ((overall().correct / overall().attempts) * 100).toFixed(0) + '%' : '—' }}
     </p>
   </div>
   <a class="card stat link-card" routerLink="/weak-areas">
-    <p class="muted">Open mistakes</p>
+    <p class="muted">{{ td.openMistakes }}</p>
     <p class="big">{{ mistakeCount() }}</p>
-    <p class="muted small">View weak areas →</p>
+    <p class="muted small">{{ td.viewWeak }}</p>
   </a>
 </section>
 
-<h2>Exam domains</h2>
+<h2>{{ td.domainsTitle }}</h2>
 <div class="domains">
   @for (d of cards(); track d.id) {
     <article class="card domain">
       <header>
-        <span class="badge" [class]="'p-' + d.priority.toLowerCase()">{{ d.priority }} priority</span>
+        <span class="badge" [class]="'p-' + d.priority.toLowerCase()">{{ td.priority[d.priority] }}</span>
         <span class="weight">{{ d.weightLabel }}</span>
       </header>
-      <h3>{{ d.id }}. {{ d.name }}</h3>
-      <div class="meter" role="img" [attr.aria-label]="d.coverage + '% of questions answered'">
+      <h3>{{ d.id }}. {{ tx.domains[d.id] }}</h3>
+      <div class="meter" role="img" [attr.aria-label]="td.coverage(d.coverage)">
         <span [style.width.%]="d.coverage"></span>
       </div>
       <p class="muted small">
-        {{ d.answered }} of {{ d.size || '…' }} answered ·
-        accuracy {{ d.accuracy === null ? '—' : d.accuracy + '%' }}
+        {{ td.progress(d.answered, d.size ? '' + d.size : '…', d.accuracy === null ? '—' : d.accuracy + '%') }}
       </p>
-      <a class="btn small" routerLink="/practice" [queryParams]="{ domain: d.id }">Practice domain {{ d.id }}</a>
+      <a class="btn small" routerLink="/practice" [queryParams]="{ domain: d.id }">{{ td.practiceDomain(d.id) }}</a>
     </article>
   }
 </div>
 
 <section class="card tips">
-  <h2>How to use this</h2>
+  <h2>{{ td.howTitle }}</h2>
   <ol>
-    <li>Practise one domain at a time with instant feedback and explanations.</li>
-    <li>Check <a routerLink="/weak-areas">Weak areas</a> and drill your mistakes until they clear.</li>
-    <li>Take timed mock exams weighted like the real exam, and aim for 80%+ before booking.</li>
+    <li>{{ td.how1 }}</li>
+    <li>{{ td.how2a }} <a routerLink="/weak-areas">{{ tx.nav.weak }}</a> {{ td.how2b }}</li>
+    <li>{{ td.how3 }}</li>
   </ol>
 </section>
