@@ -1,1 +1,2394 @@
-{}
+{
+ "D5-001": {
+  "q": "Azure Monitor platform metrics kaise hote hain?",
+  "opts": [
+   "Sirf agent install karne ke baad collect hote hain",
+   "Azure resources ke liye baghair extra setup ke khud collect hote hain, aur taqreeban 93 din rakhe jate hain",
+   "Hamesha ke liye store hote hain",
+   "Sirf P2 licenses ke sath available"
+  ],
+  "exp": "Platform metrics, jaise VM ka CPU percentage ya storage account ki transactions, Azure resources ke liye baghair extra cost aur baghair agent ke khud collect hote hain, aur taqreeban 93 din rakhe jate hain. Zyada arse ke liye unhein diagnostic setting se kahin aur bhejein. Koi licence nahi chahiye."
+ },
+ "D5-002": {
+  "q": "Trend analysis ke liye aap ko VM CPU metrics 2 saal tak rakhne hain. Aap kya karenge?",
+  "opts": [
+   "Kuch nahi; metrics hamesha rakhe jate hain",
+   "Diagnostic settings ke zariye metrics ko munasib retention wale Log Analytics workspace (ya storage) mein bhejein",
+   "Har mahine screenshots lein",
+   "Boot diagnostics enable karein"
+  ],
+  "exp": "Platform metrics sirf taqreeban 93 din rakhe jate hain. 2 saal ki history rakhne ke liye aisi diagnostic setting banayen jo metrics ko Log Analytics workspace (kaafi lambi retention ke sath) ya storage account mein bheje. Screenshots analyse hone wala data nahi, aur boot diagnostics console output capture karta hai, metrics nahi."
+ },
+ "D5-003": {
+  "q": "Log Analytics mein data kaun si query language analyse karti hai?",
+  "opts": [
+   "SQL",
+   "KQL (Kusto Query Language)",
+   "GraphQL",
+   "XPath"
+  ],
+  "exp": "Log Analytics queries KQL (Kusto Query Language) mein likhi jati hain, ek pipeline language jis mein aap table se shuru kar ke usay where, summarize aur render jaise operators se guzarte hain. SQL, GraphQL aur XPath Log Analytics query karne ke liye use nahi hote (XPath sirf Windows events ke data collection rules mein aata hai)."
+ },
+ "D5-004": {
+  "q": "Kaun si KQL query pichle ghante mein har computer ke heartbeat records ki tadaad deti hai?",
+  "opts": [
+   "Heartbeat | where TimeGenerated > ago(1h) | summarize count() by Computer",
+   "SELECT * FROM Heartbeat",
+   "Heartbeat | order by Computer",
+   "count Heartbeat GROUP Computer"
+  ],
+  "exp": "KQL table (Heartbeat) se shuru hoti hai, where TimeGenerated > ago(1h) se filter karti hai, phir summarize count() by Computer har computer ki rows ginta hai. SELECT SQL hai, aur order by ginne ke baghair sort karta hai."
+ },
+ "D5-005": {
+  "q": "Zyada tar Log Analytics tables ki default interactive retention kya hai, aur zyada se zyada kitni configure ho sakti hai?",
+  "opts": [
+   "7 din; 30 max",
+   "30 din; 730 din (2 saal) tak interactive",
+   "1 saal; 5 saal",
+   "Default mein unlimited"
+  ],
+  "exp": "Zyada tar Log Analytics tables default mein data 30 din rakhti hain (interactive retention, jise aap seedha query kar sakte hain). Aap isay 730 din (2 saal) tak barha sakte hain. Is se zyada ke liye long-term retention kam cost par 12 saal tak data rakhti hai, lekin query karne ke liye search job ya restore chahiye."
+ },
+ "D5-006": {
+  "q": "Resource ki diagnostic settings kahan bhej sakti hain?",
+  "opts": [
+   "Log Analytics workspace, storage account, event hub, partner solutions",
+   "Sirf Log Analytics",
+   "Email aur SMS",
+   "Doosri subscription ka activity log"
+  ],
+  "exp": "Diagnostic setting resource ke logs aur metrics chaar qisam ke destinations tak bhej sakti hai: Log Analytics workspace (query ke liye), storage account (sasta archive), Event Hub (doosre tools ko streaming) aur partner solutions. Email aur SMS alerts ki bheji notifications hain, diagnostic destinations nahi."
+ },
+ "D5-007": {
+  "q": "Activity log kis sawal ka jawab deta hai?",
+  "opts": [
+   "VM ka CPU usage",
+   "KIS ne KIS resource par KAUN SA management (control-plane) operation KAB kiya",
+   "Application exceptions",
+   "Network latency"
+  ],
+  "exp": "Activity log control-plane (management) operations record karta hai: kis ne kya kiya — create, update, delete, start, stop — kis resource par, kab, aur kya kamyab hua. Is mein CPU, application exceptions ya network latency jaisa performance data nahi hota."
+ },
+ "D5-008": {
+  "q": "Portal mein Activity log events kitne arse rakhe jate hain, aur unhein zyada arse kaise rakhein?",
+  "opts": [
+   "7 din; barhaya nahi ja sakta",
+   "90 din; diagnostic setting se Log Analytics workspace ya storage mein bhejein",
+   "Default mein 1 saal",
+   "30 din; subscription upgrade karein"
+  ],
+  "exp": "Activity log events 90 din rakhe jate hain. Unhein zyada arse rakhne ya KQL se query karne ke liye subscription par diagnostic setting banayen jo unhein Log Analytics workspace, storage account ya Event Hub mein bheje. Subscription upgrade karne se yeh nahi badalta."
+ },
+ "D5-009": {
+  "q": "Azure Monitor alert rule ke main components kya hain?",
+  "opts": [
+   "Scope (target resource), condition (signal logic), aur action group, plus alert details",
+   "User, password, email",
+   "Metric, log, trace",
+   "Budget, threshold, invoice"
+  ],
+  "exp": "Alert rule scope (kaun se resources dekhne hain), condition (signal, jaise metric, log query ya Activity log event, aur us ki logic), actions (notify ya automate karne wale action groups) aur severity aur naam jaisi details define karta hai. Users aur passwords, telemetry types aur budgets alert rule ka hissa nahi."
+ },
+ "D5-010": {
+  "q": "Action group kya kar sakta hai?",
+  "opts": [
+   "Email, SMS, push ya voice notifications bhejna, aur webhooks, Azure Functions, Logic Apps, runbooks ya ITSM jaise actions chalana",
+   "Sirf email bhejna",
+   "Sirf portal popup dikhana",
+   "Sirf Teams messages bhejna"
+  ],
+  "exp": "Action group notifications (email, SMS, Azure app par push, voice call) aur automated actions (webhook, Azure Function, Logic App, Automation runbook, ITSM, Event Hub) ki dobara use hone wali list hai jo alerts trigger karte hain. Yeh email ya Teams tak mehdood nahi."
+ },
+ "D5-011": {
+  "q": "Ek alert rule ko 30 VMs par 5 minute tak CPU > 90% hone par fire hona hai, aur subscription ki aane wali VMs bhi cover honi chahiye. Kya use karein?",
+  "opts": [
+   "30 alag rules",
+   "Subscription ya resource group tak scoped, kai resources target karne wala metric alert rule",
+   "Budget",
+   "Service Health alert"
+  ],
+  "exp": "Metric alert rule poori subscription ya resource group tak resource type (jaise virtual machines) ke sath scope ho sakta hai. Phir yeh har VM ko alag monitor karta hai aur baad mein add hone wali VMs khud shamil karta hai. Tees alag rules maintain karna mushkil hoga, budgets kharcha track karte hain, aur Service Health Azure incidents cover karta hai."
+ },
+ "D5-012": {
+  "q": "Planned maintenance window ke dauran darjanon rules edit ya disable kiye baghair alert NOTIFICATIONS rukni chahiye. Kya use karein?",
+  "opts": [
+   "Action groups delete karein",
+   "Alert processing rule jo us scope aur time window ke liye notifications suppress kare",
+   "Azure Monitor band karein",
+   "Role assignments hatayen"
+  ],
+  "exp": "Alert processing rule kisi scope (subscription, resource group ya makhsoos resources) ke liye time window ya recurring schedule ke dauran action group notifications suppress kar sakta hai. Alerts phir bhi fire aur record hote hain, lekin kisi ko page nahi kiya jata. Action groups delete karna ya Azure Monitor band karna alerting hi khatam kar dega."
+ },
+ "D5-013": {
+  "q": "Metric alerts mein dynamic thresholds kya karte hain?",
+  "opts": [
+   "Har hafte manually set hote hain",
+   "Metric ki history par machine learning se aam patterns seekhte hain aur un se hatne par alert karte hain",
+   "Sirf CPU ke liye kaam karte hain",
+   "Free-text rules hain"
+  ],
+  "exp": "Dynamic thresholds metric ki history par machine learning use kar ke us ka aam pattern seekhte hain, rozana aur haftawar cycles samet, aur jab value tawaqqo ki range se bahar jaye to alert karte hain. Aap ko fixed number ka andaza nahi lagana parta. Yeh zyada tar metrics ke liye kaam karte hain, sirf CPU nahi."
+ },
+ "D5-014": {
+  "q": "Fire hue alert ki user-response state ki tarteeb kya hai?",
+  "opts": [
+   "New → Acknowledged → Closed",
+   "Open → Done",
+   "Red → Green",
+   "Fired → Deleted"
+  ],
+  "exp": "Har fire hue alert ki user response state hoti hai jo aap usay handle karte waqt set karte hain: New (abhi fire hua), Acknowledged (koi us par kaam kar raha hai) aur Closed (handle ho gaya). Yeh monitor condition (Fired ya Resolved) se alag hai. Baqi tarteebein mojood nahi."
+ },
+ "D5-015": {
+  "q": "VMs se guest OS logs aur performance data Azure Monitor mein collect karne ka mojooda tareeqa kaun sa agent hai, aur yeh kis ke sath jurta hai?",
+  "opts": [
+   "Akela Log Analytics (MMA) agent",
+   "Data Collection Rules (DCRs) ke sath Azure Monitor Agent (AMA)",
+   "Sirf Telegraf",
+   "Guest data ke liye agent nahi chahiye"
+  ],
+  "exp": "Azure Monitor Agent (AMA) Windows events, Syslog aur performance counters jaisa guest OS data collect karne ka mojooda agent hai. Yeh kya collect kare aur kahan bheje, yeh data collection rules (DCRs) define karte hain. Purana Log Analytics (MMA) agent August 2024 mein retire ho gaya. Guest OS data ke liye hamesha agent chahiye."
+ },
+ "D5-016": {
+  "q": "VM insights kya deta hai?",
+  "opts": [
+   "Billing data",
+   "Monitored VMs ke performance charts aur processes aur connections ka dependency map",
+   "RBAC reports",
+   "Patching"
+  ],
+  "exp": "VM insights aap ki VMs ke ready-made performance charts (CPU, memory, disk, network) aur Map deta hai jo har VM ke processes aur doosri machines se us ke network connections dikhata hai. Yeh billing, RBAC reports ya patching handle nahi karta."
+ },
+ "D5-017": {
+  "q": "Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1h) mein bin() kya karta hai?",
+  "opts": [
+   "Purani rows delete karta hai",
+   "Aggregation ke liye records ko fixed 1-ghanta time buckets mein group karta hai",
+   "CPU values round karta hai",
+   "Output ko ek ghante tak mehdood karta hai"
+  ],
+  "exp": "bin(TimeGenerated, 1h) har record ka timestamp neeche ghante tak round karta hai, is liye summarize har computer ka har ghante ka average CPU nikal sakta hai. Nateeja ek time series hai jis ka chart ban sakta hai. Yeh rows delete nahi karta, values round nahi karta ya query ko ek ghante tak mehdood nahi karta."
+ },
+ "D5-018": {
+  "q": "Storage account ki latency, availability aur capacity ke ready-made views baghair extra setup ke kahan milte hain?",
+  "opts": [
+   "Storage insights (Azure Monitor Insights)",
+   "Network Watcher",
+   "Service Health",
+   "Sirf Azure Advisor"
+  ],
+  "exp": "Azure Monitor mein Storage insights aap ke storage accounts ke ready-made workbooks deta hai — availability, latency, transactions aur capacity — subscriptions ke aar paar, baghair setup ke kyun ke yeh platform metrics use karta hai. Network Watcher networking ke liye hai, Service Health Azure incidents dikhata hai, aur Advisor recommendations deta hai."
+ },
+ "D5-019": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Ek alert rule kai action groups trigger kar sakta hai",
+   "Log search alerts schedule par KQL query chalate hain",
+   "Near-real-time alerting ke liye metrics logs se behtar hain",
+   "VM delete karne se Log Analytics workspace mein us ka pichla data bhi delete ho jata hai"
+  ],
+  "exp": "Ek alert rule kai action groups trigger kar sakta hai. Log search alerts schedule par KQL query chalate hain. Near-real-time alerts ke liye metrics behtar hain kyun ke woh logs se jaldi pohanchte hain. VM delete karne se workspace mein pehle se mojood us ka data delete nahi hota — woh retention period khatam hone tak rehta hai."
+ },
+ "D5-020": {
+  "q": "Log Analytics workspace ki cost ki sab se bari wajah aam tor par kya hoti hai?",
+  "opts": [
+   "Users ki tadaad",
+   "Data ingestion volume (GB per day)",
+   "Dashboards ki tadaad",
+   "Alert rules ki tadaad"
+  ],
+  "exp": "Log Analytics zyada tar ingest kiye gaye data ke volume (GB per day) ka charge karta hai, aur phir shamil period se zyada retention ka. Users, dashboards aur alert rules asal cost nahi. Data collection rules mein filter kar ke ingestion kam karein, aur mustaqil volumes ke liye commitment tier use karein."
+ },
+ "D5-021": {
+  "q": "Network Watcher kaise enable hota hai?",
+  "opts": [
+   "Har VM par",
+   "Har region par (zyada tar cases mein VNet banane par khud)",
+   "Sirf ek click se har subscription mein globally",
+   "Har NSG par"
+  ],
+  "exp": "Network Watcher regional service hai: har subscription mein har region ka ek instance hota hai, aur Azure aam tor par usay khud bana deta hai (NetworkWatcherRG mein) jab aap us region mein VNet banate ya update karte hain. Yeh har VM ya har NSG par enable nahi hota."
+ },
+ "D5-022": {
+  "q": "Kaun sa tool jawab deta hai: 'Kya NSGs 10.0.0.4:5000 se 8.8.8.8:443 tak traffic allow karte hain?'",
+  "opts": [
+   "Next hop",
+   "IP flow verify",
+   "Topology",
+   "VPN troubleshoot"
+  ],
+  "exp": "IP flow verify VM ke NIC ke liye ek makhsoos 5-tuple — source IP aur port, destination IP aur port, aur protocol — leta hai aur batata hai ke NSG rules usay allow karte hain ya deny, aur kis rule ne faisla kiya. Next hop routing dikhata hai, topology diagram banata hai, aur VPN troubleshoot gateways check karta hai."
+ },
+ "D5-023": {
+  "q": "Kaun sa tool jawab deta hai: 'VM1 se 10.2.0.10 tak traffic kaun sa route leta hai — gateway, NVA, ya internet?'",
+  "opts": [
+   "Next hop",
+   "Connection troubleshoot",
+   "NSG diagnostics",
+   "Packet capture"
+  ],
+  "exp": "Next hop dikhata hai ke Azure VM se destination address tak traffic kahan bhejega: next hop type (jaise Internet, VirtualAppliance ya VirtualNetworkGateway), us ka IP aur zimmedar route table. Connection troubleshoot pohanch test karta hai, NSG diagnostics rules check karta hai, aur packet capture traffic record karta hai."
+ },
+ "D5-024": {
+  "q": "Wireshark mein gehre analysis ke liye aap ko VM tak aur us se packets capture karne hain. Kya use karein?",
+  "opts": [
+   "Activity log",
+   "Network Watcher packet capture (.cap file storage ya locally save karta hai)",
+   "IP flow verify",
+   "Effective routes"
+  ],
+  "exp": "Network Watcher packet capture VM tak aur us se packets record karta hai (Network Watcher VM extension use karta hai) aur .cap file storage account ya VM ki disk mein save karta hai, jise aap Wireshark mein khol sakte hain. Activity log, IP flow verify aur effective routes packets ka content capture nahi karte."
+ },
+ "D5-025": {
+  "q": "Connection Monitor kis liye use hota hai?",
+  "opts": [
+   "Billing connections monitor karna",
+   "Sources (VMs, on-prem agents) se destinations (VMs, FQDNs, IPs) tak waqt ke sath musalsal connectivity aur latency test karna",
+   "NSGs ki jagah lena",
+   "Packets capture karna"
+  ],
+  "exp": "Connection Monitor sources (Azure VMs ya agent wali on-premises machines) se destinations (VMs, FQDNs, URLs ya IPs) tak musalsal connectivity test karta hai, waqt ke sath latency aur failures track karta hai, aur alerts trigger kar sakta hai. Yeh NSGs ki jagah nahi leta, packets capture nahi karta ya billing monitor nahi karta."
+ },
+ "D5-026": {
+  "q": "Flow logs kahan store hote hain, aur unhein kya visualize karta hai?",
+  "opts": [
+   "Log Analytics; Azure Advisor",
+   "Storage account; Traffic Analytics (jise Log Analytics workspace chahiye)",
+   "Event Hub; sirf Power BI",
+   "Khud NSG; portal charts"
+  ],
+  "exp": "NSG aur VNet flow logs storage account mein JSON files ki surat mein likhe jate hain. Traffic Analytics unhein Log Analytics workspace mein process karta hai aur maps, top talkers aur mashkook traffic dikhata hai. Advisor aur Power BI built-in tools nahi, aur logs khud NSG mein store nahi hote."
+ },
+ "D5-027": {
+  "q": "Site-to-site VPN tunnel band hai. Kaun si Network Watcher salahiyat gateway aur connection diagnose karti hai?",
+  "opts": [
+   "VPN troubleshoot",
+   "IP flow verify",
+   "Topology",
+   "Security group view"
+  ],
+  "exp": "VPN troubleshoot virtual network gateway ya connection check karta hai aur diagnostic report banata hai — maslan IKE negotiation errors ya mismatched shared key — jo storage account mein save hoti hai. IP flow verify aur security group view NSGs ke bare mein hain, aur topology diagram banata hai."
+ },
+ "D5-028": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Connection troubleshoot kisi waqt VM se kisi bhi FQDN tak test kar sakta hai",
+   "Topology resources aur un ke network rishte dikhata hai",
+   "Packet capture ko Network Watcher VM extension chahiye",
+   "Next hop dikhata hai ke kis NSG rule ne traffic block kiya"
+  ],
+  "exp": "Connection troubleshoot us waqt VM se kisi bhi FQDN, URI ya IP tak test kar sakta hai. Topology network resources aur un ka aapas mein judna dikhata hai. Packet capture ko Network Watcher agent VM extension chahiye. Lekin next hop sirf routing (next hop type aur route table) dikhata hai, NSG rules nahi — un ke liye IP flow verify use karein."
+ },
+ "D5-029": {
+  "q": "RECOVERY SERVICES vault kaun se workloads protect karta hai?",
+  "opts": [
+   "Azure VMs, VMs mein SQL/SAP HANA, Azure Files, aur MARS/MABS ke zariye on-premises",
+   "Azure Blobs, Azure Disks, Azure Database for PostgreSQL",
+   "Sirf VMs",
+   "Sirf on-premises servers"
+  ],
+  "exp": "Recovery Services vaults Azure VMs, Azure VMs mein chalne wale SQL Server aur SAP HANA, Azure file shares, aur MARS agent ya MABS/DPM ke zariye on-premises machines protect karte hain. Azure Blobs, managed disks aur Azure Database for PostgreSQL is ke bajaye Backup vaults use karte hain."
+ },
+ "D5-030": {
+  "q": "Azure Blobs, Azure Disks aur Azure Database for PostgreSQL ke backups kahan jate hain?",
+  "opts": [
+   "Recovery Services vault",
+   "Backup vault",
+   "Storage account",
+   "Key Vault"
+  ],
+  "exp": "Backup vaults nayi qisam ke vaults hain, jo Azure Blobs, Azure managed disks aur Azure Database for PostgreSQL (aur doosron) ke liye use hote hain. Recovery Services vaults VMs, VMs ke workloads aur file shares handle karte hain. Storage accounts aur Key Vault backup vaults nahi."
+ },
+ "D5-031": {
+  "q": "West Europe ki VMs protect karne wala Recovery Services vault kahan hona chahiye?",
+  "opts": [
+   "Kisi bhi region mein",
+   "VMs wale HI region mein",
+   "Paired region mein",
+   "Global"
+  ],
+  "exp": "Recovery Services vault sirf apne region ki VMs protect kar sakta hai, is liye West Europe ki VMs ko West Europe mein vault chahiye. Regional outage se bachne ke liye cross-region restore ke sath GRS, ya Site Recovery use karein — doosre region ka vault nahi."
+ },
+ "D5-032": {
+  "q": "Backups ke liye vault ki storage redundancy (LRS/ZRS/GRS) kab badal sakte hain?",
+  "opts": [
+   "Kisi bhi waqt",
+   "Sirf pehla item protect hone se PEHLE",
+   "Saal mein ek baar",
+   "Kabhi nahi; hamesha GRS hoti hai"
+  ],
+  "exp": "Vault ki backup storage redundancy (LRS, ZRS ya GRS) sirf pehla item protect karne se pehle badli ja sakti hai. Kuch bhi protect hote hi yeh lock ho jati hai. Baad mein badalne ke liye protection band karein, backup data delete karein, aur dobara configure karein (ya naya vault banayen)."
+ },
+ "D5-033": {
+  "q": "Standard Azure VM backup policy kitni baar backup le sakti hai?",
+  "opts": [
+   "Har 5 minute",
+   "Din mein ek baar (Enhanced policy din mein kai backups deti hai)",
+   "Har ghante",
+   "Kam az kam haftawar"
+  ],
+  "exp": "Standard VM backup policy din mein ek backup leti hai. Enhanced policy din mein kai backups (har 4 ghante tak) support karti hai aur kuch VM types, jaise Trusted launch, ke liye zaroori hai. Har 5 minute VM backup ke liye bohat zyada hai."
+ },
+ "D5-034": {
+  "q": "Azure VM backup (Standard policy) mein instant restore snapshots locally kitne arse rakhe jate hain?",
+  "opts": [
+   "1–5 din (default 2), vault se transfer kiye baghair tez restores ke liye",
+   "30 din",
+   "1 saal",
+   "12 ghante"
+  ],
+  "exp": "Instant restore backup snapshots ko VM ki disks ke pas locally Standard policy mein 1 se 5 din (default 2; Enhanced policy zyada deti hai) rakhta hai. In snapshots se restore vault se restore ke muqable kahin tez hota hai."
+ },
+ "D5-035": {
+  "q": "Azure Backup ke soft delete ke sath delete hua backup data kitna arse rakha jata hai?",
+  "opts": [
+   "Baghair cost ke mazeed 14 din, taa ke wapas mil sake",
+   "90 din, charges ke sath",
+   "24 ghante",
+   "Yeh khud VM delete hone se rokta hai"
+  ],
+  "exp": "Azure Backup ka soft delete kisi ke delete karne ke baad backup data ko mazeed 14 din, baghair extra cost ke, rakhta hai, taa ke aap usay undelete kar sakein — maslan ghalti ya attack ke baad. Yeh kisi ko khud VM delete karne se nahi rokta."
+ },
+ "D5-036": {
+  "q": "Ek user ne backup hui Azure VM ke andar ek file delete kar di. Sab se tez recovery?",
+  "opts": [
+   "Poori VM restore karein",
+   "File-level recovery: diye gaye script se recovery point ko local drive ke taur par mount kar ke file copy karein",
+   "Template se VM dobara banayen",
+   "Site Recovery failover"
+  ],
+  "exp": "File-level recovery Azure ke banaye script se recovery point ko machine par drive ke taur par mount karti hai, is liye aap sirf delete hui file wapas copy kar sakte hain. Poori VM restore karne mein kahin zyada waqt lagta hai aur woh usay overwrite ya duplicate karta hai. Templates aur Site Recovery files recover nahi karte."
+ },
+ "D5-037": {
+  "q": "Azure VM backup ke kaun se restore options hain?",
+  "opts": [
+   "Nayi VM banana, sirf disks restore karna, mojooda disks replace karna, cross-region restore (agar enabled ho)",
+   "Sirf in-place overwrite",
+   "Sirf file recovery",
+   "Sirf on-premises export"
+  ],
+  "exp": "Azure VM backup restore karte waqt aap nayi VM bana sakte hain, sirf disks restore kar sakte hain (aur khud unhein attach ya customise kar sakte hain, maslan template se), mojooda VM ki disks replace kar sakte hain, ya — agar cross-region restore on ho — paired region mein restore kar sakte hain. File-level recovery bhi hai. Yeh ek tareeqe tak mehdood nahi."
+ },
+ "D5-038": {
+  "q": "MARS (Microsoft Azure Recovery Services) agent kya karta hai?",
+  "opts": [
+   "Poore Hyper-V hosts ka backup leta hai",
+   "On-premises Windows machines se files, folders aur system state seedha Azure mein, din mein 3 baar tak, backup karta hai",
+   "Linux par chalta hai",
+   "Azure SQL databases ka backup leta hai"
+  ],
+  "exp": "MARS agent Windows machines (on-premises ya Azure mein) par chalta hai aur files, folders aur system state seedha Recovery Services vault mein, din mein teen baar tak, backup karta hai. Yeh poore Hyper-V hosts ya Azure SQL Database ka backup nahi le sakta, aur Linux par nahi chalta."
+ },
+ "D5-039": {
+  "q": "Kai vaults aur subscriptions ke backups ek jagah se manage aur monitor karne ke liye kya use karein?",
+  "opts": [
+   "Har vault alag",
+   "Backup center (Business Continuity Center)",
+   "Azure Advisor",
+   "Cost Management"
+  ],
+  "exp": "Backup center — ab Azure Business Continuity Center ka hissa — kai vaults, subscriptions aur regions ke backups monitor, manage aur report karne ki ek jagah deta hai. Har vault alag kholna scale nahi hota, aur Advisor aur Cost Management backups manage nahi karte."
+ },
+ "D5-040": {
+  "q": "Recovery Services vault delete karna fail hota hai. Aap ko kya karna hoga?",
+  "opts": [
+   "Support ticket kholein",
+   "Tamam protected items ka backup band karein (aur un ka data delete karein, soft-deleted items samet), servers aur infrastructure unregister karein, phir delete karein",
+   "30 din intezar karein",
+   "Checks bypass karne ke liye is ke bajaye resource group delete karein"
+  ],
+  "exp": "Azure aisa Recovery Services vault delete nahi karta jis mein ab bhi protected items ya registered servers hon. Har item ka backup band karein aur us ka data delete karein (soft-deleted items samet), servers aur storage accounts unregister karein, aur phir vault delete karein. Resource group delete karna bhi isi wajah se fail hota hai."
+ },
+ "D5-041": {
+  "q": "Azure Site Recovery ka maqsad Azure Backup se kaise mukhtalif hai?",
+  "opts": [
+   "Dono ek hi product hain",
+   "ASR disaster recovery hai (poore workloads replicate aur kam RTO ke sath fail over); Backup point-in-time data restore karta hai",
+   "ASR sirf files backup karta hai",
+   "Backup regions ke liye; ASR files ke liye"
+  ],
+  "exp": "Azure Site Recovery disaster recovery hai: yeh poori VMs ko musalsal doosre region mein replicate karta hai taa ke aap minton mein fail over kar sakein (kam RTO). Azure Backup data restore karne ke liye point-in-time copies rakhta hai, maslan deletion, corruption ya ransomware ke baad. Zyada tar organizations dono use karti hain."
+ },
+ "D5-042": {
+  "q": "ASR ke sath Azure-to-Azure VM replication VMs ko kaise replicate karta hai?",
+  "opts": [
+   "Sirf ek region ke andar",
+   "Musalsal doosre target region mein (aam tor par cross-region DR ke liye)",
+   "Haftawar",
+   "Sirf on-premises"
+  ],
+  "exp": "Azure-to-Azure disaster recovery mein Site Recovery VM disk changes ko musalsal target region mein replicate karta hai, har chand minute recovery points banata hai, taa ke source region band hone par aap fail over kar sakein. Yeh ek region tak mehdood nahi, haftawar nahi, aur on-premises ke bajaye Azure mein replicate karta hai."
+ },
+ "D5-043": {
+  "q": "ASR mein TEST failover kya karta hai?",
+  "opts": [
+   "Production downtime karta hai",
+   "Replica VMs ko isolated network mein start karta hai, production ya jari replication par koi asar nahi",
+   "Replication delete karta hai",
+   "Supported nahi"
+  ],
+  "exp": "Test failover recovery point se aap ke chune isolated network mein replica VMs banata hai, jab ke production chalta rehta hai aur replication jari rehti hai. Isi tarah aap baghair outage sabit karte hain ke disaster recovery kaam karti hai. Baad mein isay saaf karein."
+ },
+ "D5-044": {
+  "q": "Multi-tier app ko tarteeb se fail over hona hai (database, phir app, phir web). Kya use karein?",
+  "opts": [
+   "Manual notes",
+   "Tarteeb-war groups wala recovery plan (aur optional scripts ya runbooks)",
+   "Alphabetical failover",
+   "Har tier ke liye alag vaults"
+  ],
+  "exp": "Site Recovery recovery plan VMs ko tarteeb-war groups mein rakhta hai (maslan databases, phir app servers, phir web servers) jo baari baari fail over hote hain. Yeh groups ke darmiyan scripts, runbooks ya manual steps bhi chala sakta hai. Notes aur alphabetical order automated nahi, aur alag vaults tarteeb control nahi karte."
+ },
+ "D5-045": {
+  "q": "RPO aur RTO ka kya matlab hai?",
+  "opts": [
+   "RPO = zyada se zyada qabil-e-qabool data loss (recovery points ke darmiyan waqt); RTO = dobara chalne se pehle zyada se zyada qabil-e-qabool downtime",
+   "Is ka ulat",
+   "Dono ka matlab backup frequency",
+   "Yeh marketing terms hain"
+  ],
+  "exp": "RPO (recovery point objective) yeh hai ke aap kitna data khona bardasht kar sakte hain, waqt mein napa jata hai — maslan 15 minute — jo tay karta hai ke recovery points kitni baar chahiye. RTO (recovery time objective) yeh hai ke service dobara chalne se pehle kitni der band reh sakti hai. Yeh alag paimane hain."
+ },
+ "D5-046": {
+  "q": "Azure Backup Azure file shares (standard snapshot tier) ko kaise protect karta hai?",
+  "opts": [
+   "Sirf vault mein full-copy backups",
+   "Backup policy se managed share snapshots, storage account mein stored aur vault se orchestrated",
+   "VM par MARS agent",
+   "AzCopy scripts"
+  ],
+  "exp": "Azure file shares ka Azure Backup (snapshot tier) backup policy ke schedule par share snapshots le kar aur vault se un ki retention manage kar ke kaam karta hai. Snapshots storage account mein rehte hain, is liye backups tez hote hain. Vault-standard tier data vault mein bhi copy karta hai. MARS aur AzCopy use nahi hote."
+ },
+ "D5-047": {
+  "q": "VM backups ke liye cross-region restore (CRR) aap ko kya karne deta hai?",
+  "opts": [
+   "Sirf Microsoft ke disaster declare karne ke baad restore",
+   "Secondary (paired) region mein kisi bhi waqt khud VMs restore karna — vault ko CRR enabled ke sath GRS chahiye",
+   "Duniya ke kisi bhi region mein restore",
+   "LRS vaults se restore"
+  ],
+  "exp": "Cross-region restore (CRR) aap ko jab chahein paired secondary region mein VM backups restore karne deta hai, Microsoft ke disaster declare karne ka intezar kiye baghair. Vault ko CRR enabled ke sath GRS use karna hota hai. Yeh sirf paired region ko target karta hai aur LRS vaults ke sath kaam nahi karta."
+ },
+ "D5-048": {
+  "q": "VM backup policy kya define karti hai?",
+  "opts": [
+   "Schedule (frequency aur waqt) aur retention (daily, weekly, monthly, yearly points)",
+   "VM size",
+   "NSG rules",
+   "Sirf encryption keys"
+  ],
+  "exp": "VM backup policy schedule (backups kitni baar aur kab chalein) aur retention (daily, weekly, monthly aur yearly recovery points kitne arse rahein) set karti hai, sath mein instant-restore snapshot retention. Yeh VM size, network rules ya encryption keys control nahi karti."
+ },
+ "D5-049": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Region A ki VM ka seedha region B ke vault mein backup ho sakta hai",
+   "'Retain backup data' ke sath backup band karne se mojooda recovery points use ke qabil rehte hain",
+   "ASR DR dene ke sath VMs ko regions ke darmiyan migrate bhi kar sakta hai",
+   "Ek VM ek hi waqt mein Azure Backup se protected aur ASR se replicated ho sakti hai"
+  ],
+  "exp": "VM backups VM wale region ke vault mein jane chahiye, is liye region A se region B kaam nahi karta. 'Retain backup data' ke sath backup band karne se mojooda recovery points restore ke liye available rehte hain. ASR disaster recovery aur regions ke darmiyan VMs migrate karne dono ke liye use ho sakta hai. VM ka backup aur ASR replication ek sath ho sakte hain."
+ },
+ "D5-050": {
+  "ctx": "Contoso North Europe mein 20 production VMs chalata hai. Requirements: rozana backups 30 din aur mahana backups 12 mahine rakhe jayen; production par zero asar ke sath har teen mahine DR drill; regional aafat ke 1 ghante ke andar West Europe mein workloads chalein; ek admin ne ghalti se backup data delete kar diya aur woh 2 hafte tak wapas milna chahiye.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Recovery Services vault backup policy daily aur monthly retention poori kar sakti hai",
+   "ASR test failover DR drill ki requirement poori karta hai",
+   "1-ghante ke regional failover ke liye akela Azure Backup (ASR ke baghair) behtareen hai",
+   "Backup soft delete delete hue backup data ko 14 din ke andar wapas lana cover karta hai"
+  ],
+  "exp": "Recovery Services vault backup policy daily points 30 din aur monthly points 12 mahine rakh sakti hai. ASR test failover production ko chhue baghair isolated network mein DR drill chalata hai. 1 ghante ke andar doosre region mein workloads chalane ke liye ASR chahiye, akela Backup nahi. Backup soft delete delete hua backup data 14 din rakhta hai, jo 2 hafte ki requirement cover karta hai."
+ },
+ "D5-201": {
+  "q": "Requirement 1 kya poori karta hai?",
+  "opts": [
+   "Har VM par boot diagnostics enable karein",
+   "Azure Monitor Agent install karein aur aisi data collection rule banayen jo events aur counters Log Analytics workspace mein bheje",
+   "Har VM par storage account mein bhejne wali diagnostic settings banayen",
+   "Activity log use karein"
+  ],
+  "exp": "Guest OS logs aur performance counters Azure Monitor Agent collect karta hai, jise data collection rules configure karti hain. Activity log sirf control-plane operations record karta hai."
+ },
+ "D5-202": {
+  "q": "Requirement 2 ke liye plan mukammal karein.",
+  "tpl": "Tamam VMs ke liye RG-Prod tak scoped ek [[0]] banayen, aur email aur SMS bhejne wala [[1]] attach karein.",
+  "exp": "Resource group tak scoped (VM resource type ke sath) metric alert rule us ki har VM monitor karta hai, baad mein add hone wali VMs samet. Action group alert fire hone par email ya SMS jaisi notifications deliver karta hai."
+ },
+ "D5-203": {
+  "q": "Requirement 3 kya poori karta hai?",
+  "opts": [
+   "Har Sunday runbook se alert rules disable karein",
+   "Haftawar schedule par notifications suppress karne wala alert processing rule",
+   "Sunday ko action group se SMS receivers hatayen",
+   "Alert severity 4 set karein"
+  ],
+  "exp": "Alert processing rule recurring schedule, jaise har Sunday, par action group notifications suppress kar sakta hai. Alerts phir bhi fire aur record hote hain, lekin kisi ko page nahi kiya jata. Runbook se rules disable karna ya har hafte receivers edit karna kamzor hai, aur severity notifications nahi rokti."
+ },
+ "D5-204": {
+  "q": "Requirements 4 aur 5 ke liye Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Workspace ki interactive retention 1 saal set ho sakti hai",
+   "Activity log default mein portal mein 2 saal ke events rakhta hai",
+   "Diagnostic setting se Activity log ko Log Analytics workspace (ya storage) mein bhejna 2 saal ki requirement support karta hai",
+   "VM delete karne se workspace se us ke logs bhi delete ho jate hain"
+  ],
+  "exp": "Interactive retention 730 din tak ho sakti hai. Activity log 90 din rakhta hai jab tak aap usay export na karein. VM delete hone ke baad logs apni retention period tak workspace mein rehte hain."
+ },
+ "D5-205": {
+  "q": "Requirement 6 kya poori karta hai?",
+  "opts": [
+   "IP flow verify",
+   "Connection Monitor, VMs se api.payments.contoso.com par port 443 test karta hua",
+   "Har VM par packet capture",
+   "Activity log alert"
+  ],
+  "exp": "Connection Monitor VMs se api.payments.contoso.com tak port 443 par musalsal connectivity test karta hai, latency aur failures track karta hai, aur alerts utha sakta hai. IP flow verify sirf ek lamhe ke ek flow ke NSG rules check karta hai, packet capture gehre analysis ke liye hai, aur Activity log management operations record karta hai."
+ },
+ "D5-206": {
+  "q": "North Europe ki VMs ka backup lene wala vault kahan hona chahiye?",
+  "opts": [
+   "North Europe mein Recovery Services vault",
+   "West Europe mein Recovery Services vault",
+   "Kisi bhi region mein Backup vault",
+   "North Europe mein storage account"
+  ],
+  "exp": "Azure VM backups VMs wale region ke Recovery Services vault mein jane chahiye, is liye North Europe ki VMs ko North Europe mein vault chahiye. Backup vault Azure VMs protect nahi karta, aur storage account backup vault nahi."
+ },
+ "D5-207": {
+  "q": "Requirements 2 aur 4 ke liye plan mukammal karein.",
+  "tpl": "SQL Server ko [[0]] se protect karein, aur on-premises folders ko [[1]] se.",
+  "exp": "Azure VMs mein SQL Server ka Azure Backup aksar log backups (har 15 minute tak) aur point-in-time restore support karta hai. MARS agent Windows files aur folders ko backup server ke baghair seedha Recovery Services vault mein backup karta hai."
+ },
+ "D5-208": {
+  "q": "Requirement 5 kya poori karta hai?",
+  "opts": [
+   "Cross-region restore ke sath Azure Backup",
+   "VMs ko West Europe mein replicate karne wala Azure Site Recovery, West Europe mein vault aur recovery plan ke sath",
+   "VM disks ke liye geo-redundant storage",
+   "Rozana VM snapshots West Europe mein copy karna"
+  ],
+  "exp": "Azure Site Recovery VMs ko musalsal West Europe mein replicate karta hai aur minton mein fail over kar sakta hai. Azure-to-Azure DR ke liye vault target region (West Europe) mein hona chahiye, aur recovery plan failover ki tarteeb control karta hai. Cross-region restore wala Backup, GRS disks ya snapshots VMs ko chalane mein kahin zyada waqt lenge."
+ },
+ "D5-209": {
+  "q": "Requirement 6 kya poori karta hai?",
+  "opts": [
+   "Har teen mahine planned failover",
+   "Isolated virtual network mein test failover",
+   "Backup ko nayi VM mein restore karna",
+   "Drill ke dauran replication band karna"
+  ],
+  "exp": "Test failover replica VMs ko isolated virtual network mein start karta hai, is liye aap production par asar dale ya replication roke baghair DR plan check kar sakte hain. Planned failover asal mein production move kar dega, backup restore karna DR ke bajaye backup test karta hai, aur replication band karna protection hata deta hai."
+ },
+ "D5-210": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Cross-region restore ko cross-region restore enabled wala GRS vault chahiye",
+   "contracts file share ka backup Recovery Services vault se hota hai",
+   "In VMs ke VM backup aur Site Recovery dono ke liye wahi North Europe vault use hona chahiye",
+   "Items protect hone ke baad vault ki storage redundancy badli ja sakti hai"
+  ],
+  "exp": "CRR ko GRS plus CRR setting chahiye. Azure Files backup Recovery Services vault use karta hai. Site Recovery vault backup vault ke bar-aks target region (West Europe) mein hota hai. Items protect hone ke baad redundancy lock ho jati hai."
+ },
+ "D5-211": {
+  "q": "Pichle ghante mein har computer ka average CPU dikhane wali query mukammal karein.",
+  "tpl": "Perf\n| where TimeGenerated > [[0]](1h)\n| where CounterName == \"% Processor Time\"\n| [[1]] avg(CounterValue) by Computer",
+  "exp": "ago(1h) abhi se ek ghanta pehle ka waqt deta hai, is liye where clause pichle ghante ka data rakhta hai. Phir summarize avg(CounterValue) by Computer har computer ka average CPU nikalta hai. project sirf columns chunta hai, aur extend unhein add karta hai."
+ },
+ "D5-212": {
+  "q": "15-minute buckets mein events ka chart banane wali query mukammal karein.",
+  "tpl": "Event\n| summarize count() by bin(TimeGenerated, [[0]])\n| [[1]] timechart",
+  "exp": "KQL time spans 15m (minute), 1h ya 1d ki tarah likhe jate hain, is liye bin(TimeGenerated, 15m) events ko 15-minute buckets mein group karta hai. Phir render timechart nateeje ko time chart ki surat mein banata hai. plot, chart aur draw KQL operators nahi."
+ },
+ "D5-213": {
+  "q": "Alerts ke bare mein statement mukammal karein.",
+  "tpl": "Severity [[0]] sab se critical hai. Fire hua alert New se [[1]] se Closed tak jata hai.",
+  "exp": "Alert severity Sev 0 (Critical, sab se sakht) se Sev 4 (Verbose) tak hai. Har fire hue alert ki user response state bhi hoti hai — New, Acknowledged ya Closed — jo aap usay handle karte waqt set karte hain."
+ },
+ "D5-214": {
+  "q": "Default retention ke bare mein statement mukammal karein.",
+  "tpl": "Platform metrics taqreeban [[0]] din, aur Activity log [[1]] din rakhe jate hain.",
+  "exp": "Platform metrics 93 din aur Activity log events 90 din rakhe jate hain. Kisi ko bhi zyada arse rakhne, ya KQL se query karne, ke liye unhein diagnostic setting se Log Analytics workspace ya storage account mein bhejein."
+ },
+ "D5-215": {
+  "q": "Azure VM backup ke bare mein statement mukammal karein.",
+  "tpl": "Backup soft delete delete hua backup data [[0]] din rakhta hai. Instant restore snapshots default mein [[1]] din rakhe jate hain.",
+  "exp": "Soft delete default mein delete hua backup data 14 din rakhta hai, is liye ghalti ya attack ke baad woh wapas mil sakta hai. Instant restore snapshots default mein 2 din rakhe jate hain (Standard policy ke sath 1–5 din), jo haal ke restores ko kahin tez banata hai."
+ },
+ "D5-216": {
+  "q": "Har sawal ke liye tool chunein.",
+  "tpl": "Yeh flow kyun deny hai? [[0]]\nYeh traffic aage kahan jata hai? [[1]]",
+  "exp": "IP flow verify ek makhsoos flow check karta hai aur us NSG rule ka naam batata hai jo usay allow ya deny karta hai. Next hop dikhata hai ke Azure address tak traffic kahan route karta hai aur kaun si route table zimmedar hai."
+ },
+ "D5-217": {
+  "q": "Azure-to-Azure disaster recovery ke bare mein statement mukammal karein.",
+  "tpl": "Recovery Services vault [[0]] region mein banayen. Crash-consistent recovery points har [[1]] bante hain.",
+  "exp": "Azure-to-Azure disaster recovery ke liye vault target region mein jata hai, taa ke source region fail hone par bhi available rahe. Site Recovery har 5 minute crash-consistent recovery points banata hai, aur app-consistent points aap ke chune waqfe par."
+ },
+ "D5-218": {
+  "q": "Key vault ke audit logs Log Analytics workspace mein bhejne wali command mukammal karein.",
+  "tpl": "az monitor diagnostic-settings create --resource $kvId -n kvdiag \\\n  --[[0]] $lawId \\\n  --logs '[{\"category\":\"AuditEvent\",\"enabled\":true}]'",
+  "exp": "--workspace ke sath az monitor diagnostic-settings create key vault ke logs (jaise AuditEvent) Log Analytics workspace mein bhejti hai, jahan aap unhein query kar sakte hain. --storage-account (archive) aur --event-hub (streaming) doosre destinations hain."
+ },
+ "D5-219": {
+  "q": "Log Analytics retention ke bare mein statement mukammal karein.",
+  "tpl": "Default interactive retention [[0]] din hai, aur zyada se zyada interactive retention [[1]] din hai.",
+  "exp": "Zyada tar Log Analytics tables default mein 30 din ki interactive retention rakhti hain, aur aap 730 din tak set kar sakte hain. Long-term retention data ko kam qeemat par kahin zyada arse (12 saal tak) rakh sakti hai."
+ },
+ "D5-220": {
+  "q": "MARS agent ke bare mein statement mukammal karein.",
+  "tpl": "MARS agent din mein [[1]] baar tak [[0]] ka backup leta hai.",
+  "exp": "MARS agent Windows files, folders aur system state ko seedha Recovery Services vault mein, din mein teen baar tak, backup karta hai. Yeh poore Hyper-V hosts (yeh MABS ya DPM karta hai), Linux file systems ya Azure SQL databases ka backup nahi leta."
+ },
+ "D5-221": {
+  "q": "Har sawal ko us data source se match karein jo jawab deta hai.",
+  "items": [
+   "Storage account mein blobs kis ne parhe ya likhe?",
+   "Resource kis ne delete kiya?",
+   "VMs ke Windows event logs kya dikhate hain?",
+   "24 ghante mein VM ka CPU trend kya tha?"
+  ],
+  "targets": [
+   "Activity log",
+   "Platform metrics",
+   "Azure Monitor Agent + DCR se Log Analytics",
+   "Diagnostic settings ke zariye storage resource logs"
+  ],
+  "exp": "Diagnostic setting se bheje gaye storage resource logs data-plane operations record karte hain, jaise blobs kis ne parhe ya likhe. Activity log resource delete karne jaise control-plane operations record karta hai. Windows event logs ke liye Log Analytics mein bhejne wale DCR ke sath Azure Monitor Agent chahiye. CPU trends platform metrics se aate hain, jo khud collect hote hain."
+ },
+ "D5-222": {
+  "q": "Har condition ko alert type se match karein.",
+  "items": [
+   "KQL query nateeje deti hai",
+   "Aap ke region mein Azure outage",
+   "CPU 90% se upar",
+   "Resource delete hota hai"
+  ],
+  "targets": [
+   "Metric alert",
+   "Activity log alert",
+   "Log search alert",
+   "Service Health alert"
+  ],
+  "exp": "Log search alerts KQL chalate hain; Service Health alerts Azure incidents cover karte hain; metric alerts CPU jaise numbers dekhte hain; Activity log alerts deletions jaise operations dekhte hain."
+ },
+ "D5-223": {
+  "q": "Har workload ko us vault type se match karein jo usay protect karta hai.",
+  "items": [
+   "Azure VM",
+   "Azure Blob storage",
+   "Azure managed disk",
+   "Azure file share",
+   "Azure VM mein SQL Server"
+  ],
+  "targets": [
+   "Recovery Services vault",
+   "Backup vault"
+  ],
+  "exp": "Recovery Services vaults Azure VMs, Azure file shares aur Azure VMs mein SQL Server protect karte hain. Backup vaults Azure Blobs, managed disks aur Azure Database for PostgreSQL jaise naye workloads protect karte hain."
+ },
+ "D5-224": {
+  "q": "Har scenario ko restore option se match karein.",
+  "items": [
+   "Paired region mein VM restore karna",
+   "Ek delete hui file wapas lana",
+   "Usi VM ki disks wapas pehli halat mein lana",
+   "Alag size ke sath VM dobara banana"
+  ],
+  "targets": [
+   "File-level recovery",
+   "Restore disks plus template",
+   "Replace existing",
+   "Cross-region restore",
+   "Test failover"
+  ],
+  "exp": "Cross-region restore secondary region use karta hai; file recovery recovery point mount karti hai; Replace existing disks badalta hai; template ke sath disks restore karna changes karne deta hai."
+ },
+ "D5-225": {
+  "q": "Har maqsad ko failover recovery point option se match karein.",
+  "items": [
+   "Application-consistent data",
+   "Sab se kam data loss (RPO)",
+   "Sab se tez failover (RTO)"
+  ],
+  "targets": [
+   "Latest",
+   "Latest processed",
+   "Latest app-consistent",
+   "Custom"
+  ],
+  "exp": "Latest pehle tamam pending data process karta hai, sab se kam data loss (RPO) deta hai lekin failover slow hota hai. Latest processed pehle se process hua sab se naya point use karta hai, sab se tez failover (RTO) deta hai. Latest app-consistent aakhri application-consistent point use karta hai, is liye apps consistent halat mein shuru hoti hain."
+ },
+ "D5-226": {
+  "q": "Har zaroorat ko Azure Monitor feature se match karein.",
+  "items": [
+   "Azure Monitor Agent kya collect kare, define karna",
+   "Queries aur charts ke sath interactive report banana",
+   "Maintenance ke dauran notifications band karna",
+   "Email aur SMS bhejna aur runbook chalana"
+  ],
+  "targets": [
+   "Alert processing rule",
+   "Action group",
+   "Workbook",
+   "Data collection rule"
+  ],
+  "exp": "Data collection rule define karti hai ke Azure Monitor Agent kya collect kare aur kahan bheje. Workbook queries aur charts wali interactive report hai. Alert processing rule maintenance ke dauran notifications band kar sakta hai. Action group email aur SMS bhejta hai aur runbook chala sakta hai."
+ },
+ "D5-227": {
+  "q": "Har kaam ko KQL operator se match karein.",
+  "items": [
+   "Calculated column add karna",
+   "Rows filter karna",
+   "Dikhane ke liye columns chunna",
+   "Rows aggregate karna"
+  ],
+  "targets": [
+   "where",
+   "summarize",
+   "project",
+   "extend",
+   "render"
+  ],
+  "exp": "extend calculated column add karta hai, where rows filter karta hai, project chunta hai ke kaun se columns dikhane hain, aur summarize rows aggregate karta hai (counts, averages waghera, chahein to group ke hisaab se). render charts banata hai."
+ },
+ "D5-228": {
+  "q": "Har description ko backup component se match karein.",
+  "items": [
+   "Azure VM backup ke liye snapshots coordinate karta hai",
+   "On-premises Windows files seedha Azure mein backup karta hai",
+   "On-premises SQL Server aur Hyper-V ka app-aware backup"
+  ],
+  "targets": [
+   "MARS agent",
+   "MABS / DPM",
+   "VM backup extension",
+   "Azure Monitor Agent"
+  ],
+  "exp": "VM backup extension Azure VM backup ke snapshots coordinate karta hai. MARS agent on-premises Windows files aur folders seedha Azure mein backup karta hai. MABS aur DPM SQL Server aur Hyper-V jaise on-premises workloads ka app-aware backup dete hain."
+ },
+ "D5-229": {
+  "q": "Yeh query kya return karti hai?",
+  "opts": [
+   "Sab se zyada error events wale paanch computers",
+   "Pehle paanch error events",
+   "Bilkul paanch errors wale computers",
+   "Har computer ke error counts, A–Z sorted"
+  ],
+  "exp": "Query sirf error events rakhti hai, har computer ke liye unhein ginti hai (summarize count() by Computer), phir sab se zyada counts wale paanch computers rakhti hai (top 5 by Errors desc). Yeh pehle paanch events nahi deti, bilkul paanch ke liye filter nahi karti, ya alphabetically sort nahi karti."
+ },
+ "D5-230": {
+  "q": "Metric alert rule dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Yeh RG-Prod mein baad mein banne wali VMs cover karta hai",
+   "Yeh har minute 10-minute window par evaluate hota hai",
+   "CPU kam hone par yeh khud resolve hota hai",
+   "Yeh tab fire hota hai jab ek sample 85% se upar ho, chahe 10-minute average kam ho"
+  ],
+  "exp": "Target resource type ke sath resource group tak scope karna nayi VMs cover karta hai. windowSize aur evaluationFrequency window aur frequency set karte hain. autoMitigate alert resolve karta hai. Condition average use karti hai, individual samples nahi."
+ },
+ "D5-231": {
+  "q": "Yeh query kya return karti hai, aur pehle kya set up karna zaroori hai?",
+  "opts": [
+   "Pichle 7 din mein delete hue resources aur kis ne delete kiye; Activity log workspace mein bhejna zaroori hai",
+   "Failed deployments; kuch set up nahi karna",
+   "Delete hue blobs; storage account ko diagnostic settings chahiye",
+   "Delete hue users; Entra ID P2 chahiye"
+  ],
+  "exp": "AzureActivity mein control-plane operations hote hain jab diagnostic setting Activity log ko workspace mein bheje. Query pichle 7 din ke delete operations filter karti hai."
+ },
+ "D5-232": {
+  "q": "Backup jobs dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "vm-sql1 ka pichli raat ka naya recovery point hai",
+   "Abhi restore chal raha hai",
+   "vm-web1 ke backup mein taqreeban 13 minute lage",
+   "Failed backup jobs built-in Azure Monitor alerts utha sakte hain"
+  ],
+  "exp": "vm-sql1 ka backup fail hua, is liye us ka koi naya recovery point nahi. Restore job jari hai. 0:12:44 taqreeban 13 minute hai. Azure Backup mein job failures ke liye built-in Azure Monitor alerts hain."
+ },
+ "D5-233": {
+  "q": "Kaun si baat is backup policy ko bayan karti hai?",
+  "opts": [
+   "Backups rozana 23:00 UTC par chalte hain; daily points 30 din aur monthly points 12 mahine rakhe jate hain; snapshots 2 din locally rehte hain",
+   "Backups har 2 din chalte hain aur 30 din rakhe jate hain",
+   "Backups har ghante chalte hain aur 12 mahine rakhe jate hain",
+   "Sirf monthly backups rakhe jate hain"
+  ],
+  "exp": "Schedule rozana 23:00 UTC par chalta hai. Retention policy 30 daily aur 12 monthly points rakhti hai, aur instantRpRetentionRangeInDays snapshots ko 2 din locally rakhta hai."
+ },
+ "D5-234": {
+  "q": "Is replication status ka vm-sql1 ke liye kya matlab hai?",
+  "opts": [
+   "Yeh poori tarah protected hai aur koi data khatre mein nahi",
+   "Abhi failover se taqreeban 3 ghante ka data kho sakta hai, is liye replication ki tafteesh chahiye",
+   "Yeh pehle hi fail over ho chuki hai",
+   "Is ke backups fail hue hain"
+  ],
+  "exp": "RPO dikhata hai ke replica kitna peeche hai. Critical health ke sath taqreeban 3 ghante ka RPO ka matlab haal ke changes target region tak nahi pohanche, is liye abhi failover se taqreeban 3 ghante ka data kho sakta hai. Replication ki tafteesh karein — maslan network ya disk churn ke masle. Yeh fail over nahi hui, aur is ka backups se taluq nahi."
+ },
+ "D5-235": {
+  "q": "Connection Monitor ke nateeje dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Payment API tak connectivity abhi healthy hai",
+   "Round-trip time threshold se guzarne par alert fire ho sakta hai",
+   "Nateeje Log Analytics mein store hote hain",
+   "Connection Monitor packets ka poora content capture karta hai"
+  ],
+  "exp": "0% failed checks ka matlab connectivity healthy hai. Connection Monitor alerting ke liye metrics deta hai aur data Log Analytics mein store karta hai. Yeh packets capture nahi karta; packet capture karta hai."
+ },
+ "D5-236": {
+  "q": "Yeh data collection rule kya collect karti hai?",
+  "opts": [
+   "Tamam Windows events aur tamam performance counters",
+   "Sirf kamyab aur nakam logon security events, sath mein har 60 second CPU aur available memory, law-prod ko bheje gaye",
+   "Sirf Linux syslog",
+   "Activity log events"
+  ],
+  "exp": "XPath query sirf Security event IDs 4624 (kamyab logon) aur 4625 (nakam logon) rakhti hai. Do performance counters, CPU aur available memory, har 60 second sample hote hain, aur sab law-prod workspace mein jata hai. Yeh tamam events, Linux syslog ya Activity log events collect nahi karti."
+ },
+ "D5-237": {
+  "q": "Yeh Activity log event kya dikhata hai?",
+  "opts": [
+   "ali@contoso.com ne VM vm-old kamyabi se delete ki",
+   "vm-old crash hui",
+   "ali@contoso.com ne vm-old delete karne ki koshish ki, lekin lock ne rok diya",
+   "vm-old doosre resource group mein move hui"
+  ],
+  "exp": "Operation Microsoft.Compute/virtualMachines/delete hai, caller ali@contoso.com hai aur status Succeeded hai, is liye Ali ne vm-old kamyabi se delete ki. Lock hota to status Failed hota, aur move ya crash alag operations dikhate."
+ },
+ "D5-238": {
+  "q": "Alert processing rule dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Window ke dauran alerts phir bhi fire hote hain aur Azure Monitor mein dikhte hain",
+   "Window ke dauran action groups email nahi bhejte",
+   "Rule doosre resource groups ke resources ke alerts par asar dalta hai",
+   "Window ke dauran alert rules disabled hote hain"
+  ],
+  "exp": "Suppression wala alert processing rule sirf action groups rokta hai, is liye alerts phir bhi fire hote hain aur Azure Monitor mein dikhte hain lekin window ke dauran koi email nahi jati. Is ka scope RG-Prod hai, is liye doosre resource groups par asar nahi. Khud alert rules enabled rehte hain."
+ },
+ "D5-239": {
+  "q": "Yeh next hop nateeja aap ko kya batata hai?",
+  "opts": [
+   "Traffic seedha internet jata hai",
+   "rt-spoke-app mein user-defined route traffic ko 10.0.1.4 par network virtual appliance ko bhejta hai",
+   "NSG traffic block karta hai",
+   "Traffic sirf VNet peering use karta hai"
+  ],
+  "exp": "Next hop type IP 10.0.1.4 ke sath VirtualAppliance hai, aur nateeja route table rt-spoke-app ka naam leta hai. Is liye us table ka user-defined route traffic ko network virtual appliance ko bhejta hai. Yeh seedha internet nahi ja raha ya sirf peering use nahi kar raha, aur next hop NSGs evaluate nahi karta."
+ },
+ "D5-240": {
+  "q": "Backups fail hone ke bawajood yeh query koi row nahi deti. Sab se mumkin wajah kya hai?",
+  "opts": [
+   "Backup jobs kabhi log nahi hote",
+   "Vault ki koi diagnostic setting nahi jo Azure Backup data (resource-specific tables) is workspace mein bheje",
+   "Query ko Entra ID P2 chahiye",
+   "Failed jobs 1 ghante baad delete ho jate hain"
+  ],
+  "exp": "AddonAzureBackup* tables sirf tab bharti hain jab vault ki diagnostic setting Azure Backup data resource-specific mode mein us workspace ko bheje. Is ke baghair jobs fail hone par bhi query kuch nahi dhoondti. Backup jobs log hote hain, koi Entra licence nahi chahiye, aur failed jobs ek ghante baad delete nahi hote."
+ },
+ "D5-051": {
+  "q": "Azure Monitor ke do buniyadi data types kaun se hain?",
+  "opts": [
+   "Metrics aur logs",
+   "Alerts aur dashboards",
+   "Events aur tickets",
+   "Tags aur locks"
+  ],
+  "exp": "Azure Monitor do buniyadi qisam ka data store karta hai: metrics (waqt ke sath liye gaye numeric values, charts aur tez alerts ke liye achhe) aur logs (bohat se fields wale records, Log Analytics mein stored aur KQL se query hone wale). Alerts, dashboards, tags aur locks in ke upar bane features hain, data types nahi."
+ },
+ "D5-052": {
+  "q": "Portal mein VM ka pichle 24 ghante ka Percentage CPU chart kahan banate hain?",
+  "opts": [
+   "Azure Monitor → Metrics (ya VM ka Metrics blade)",
+   "Activity log",
+   "Advisor",
+   "Cost analysis"
+  ],
+  "exp": "Azure Monitor → Metrics (Metrics explorer), ya khud VM par Metrics blade, aap ko kisi bhi time range, pichle 24 ghante samet, ke liye Percentage CPU jaise platform metrics ka chart banane deta hai. Activity log operations dikhata hai, Advisor recommendations deta hai aur Cost analysis kharcha dikhata hai."
+ },
+ "D5-053": {
+  "q": "Metrics explorer mein storage transactions ko API name ke hisaab se kaise dekhein?",
+  "opts": [
+   "ApiName dimension par splitting apply karein",
+   "Time range badlein",
+   "Dashboard par pin karein",
+   "Activity log use karein"
+  ],
+  "exp": "Bohat se metrics ke dimensions hote hain. Transactions metric ke ApiName dimension par splitting apply karne se har API (GetBlob, PutBlob waghera) ki alag line banti hai. Time range badalna ya chart pin karna usay nahi baantta, aur Activity log mein metrics nahi hote."
+ },
+ "D5-054": {
+  "q": "Kaun si aggregation har time grain mein sab se ooncha CPU value dikhati hai?",
+  "opts": [
+   "Max",
+   "Avg",
+   "Sum",
+   "Count"
+  ],
+  "exp": "Max aggregation har time interval mein record hui sab se oonchi value dikhati hai, is liye chhote CPU spikes nazar aate rehte hain. Avg unhein hamwar kar deta hai, Sum values jorta hai aur Count samples ginta hai, is liye koi bhi peak nahi."
+ },
+ "D5-055": {
+  "q": "Zyada tar platform metrics kitni baar collect hote hain?",
+  "opts": [
+   "Har 1 minute",
+   "Har 1 ghanta",
+   "Rozana",
+   "Hamesha har 10 second"
+  ],
+  "exp": "Zyada tar Azure platform metrics har minute collect hote hain (1-minute granularity), jo unhein taqreeban real-time banata hai. Kuch metrics kam baar collect hote hain, lekin aam waqfa 1 minute hai. Yeh hourly ya daily nahi, aur 10-second collection standard nahi."
+ },
+ "D5-056": {
+  "q": "Kaun sa feature portal mein team ke sath charts ka set share karta hai?",
+  "opts": [
+   "Charts ko Azure dashboard par pin kar ke (ya Workbooks use kar ke) share karein",
+   "Activity log export",
+   "Budgets",
+   "Locks"
+  ],
+  "exp": "Charts ko Azure dashboard par pin kar ke share karein — dashboards Azure resources hain, is liye access RBAC se control hota hai — ya Workbook banayen. Activity log export, budgets aur locks charts share nahi karte."
+ },
+ "D5-057": {
+  "q": "Kaun sa Azure Monitor feature text, KQL queries, metrics aur parameters ko interactive reports mein milata hai?",
+  "opts": [
+   "Workbooks",
+   "Action groups",
+   "Alert processing rules",
+   "DCRs"
+  ],
+  "exp": "Azure Monitor Workbooks text, KQL queries, metrics aur parameters ko interactive reports mein milate hain jinhein log filter aur drill down kar sakte hain. Action groups notifications bhejte hain, alert processing rules alert actions badalte hain, aur DCRs data collection define karte hain."
+ },
+ "D5-058": {
+  "q": "Kya agent ke baghair guest OS performance counters (jaise available memory) metrics ke taur par collect ho sakte hain?",
+  "opts": [
+   "Nahi — guest OS data ko Azure Monitor Agent chahiye; platform metrics sirf host-level data cover karte hain",
+   "Haan, hamesha",
+   "Sirf Linux ke liye",
+   "Sirf Premium SSD ke sath"
+  ],
+  "exp": "Platform metrics sirf woh cover karte hain jo host VM ke bahar se dekh sakta hai, jaise CPU, disk aur network. Available memory jaise guest OS counters ko data collection rule ke sath Azure Monitor Agent chahiye. Windows aur Linux dono ke liye yahi hai, disk type chahe kuch bhi ho."
+ },
+ "D5-059": {
+  "q": "Log Analytics workspace kya hai?",
+  "opts": [
+   "Azure Monitor mein log data ka ek alag environment, apne data, retention aur access configuration ke sath",
+   "Ek VM",
+   "Storage container",
+   "Dashboard"
+  ],
+  "exp": "Log Analytics workspace woh jagah hai jahan Azure Monitor log data store karta hai. Har workspace ka apna data, retention settings, pricing tier aur access control hota hai, aur aap usay KQL se query karte hain. Yeh VM, storage container ya dashboard nahi."
+ },
+ "D5-060": {
+  "q": "Kaun si CLI command Log Analytics workspace banati hai?",
+  "opts": [
+   "az monitor log-analytics workspace create -g RG1 -n law1",
+   "az loganalytics new law1",
+   "az monitor workspace add",
+   "az logs create"
+  ],
+  "exp": "az monitor log-analytics workspace create Log Analytics workspace banati hai (-g aur -n ke sath, sath mein optional location, SKU aur retention). Baqi commands mojood nahi."
+ },
+ "D5-061": {
+  "q": "Users ko workspace-wide permissions ke baghair sirf un resources ka log data dikhna chahiye jin tak un ka access hai. Kaun sa access mode?",
+  "opts": [
+   "Resource-context access (workspace access control = use resource or workspace permissions)",
+   "Sirf workspace-context",
+   "Public workspace",
+   "Shared key"
+  ],
+  "exp": "Workspace access control mode 'Use resource or workspace permissions' par set hone se users resource context mein logs query kar sakte hain: woh sirf un resources ka data dekhte hain jin tak un ka Azure RBAC access hai, poore workspace par permissions ke baghair. Workspaces kabhi public nahi hote, aur shared keys agents ke liye hain, users ke liye nahi."
+ },
+ "D5-062": {
+  "q": "Kaun sa role user ko workspace ka tamam data parhne aur queries chalane deta hai lekin settings badalne nahi deta?",
+  "opts": [
+   "Log Analytics Reader",
+   "Log Analytics Contributor",
+   "Monitoring Contributor",
+   "Owner"
+  ],
+  "exp": "Log Analytics Reader workspace ka tamam data dekh aur query kar sakta hai aur us ki settings dekh sakta hai, lekin kuch badal nahi sakta. Log Analytics Contributor aur Monitoring Contributor settings badal sakte hain, aur Owner sab kuch kar sakta hai."
+ },
+ "D5-063": {
+  "q": "Compliance ke liye data 7 saal rakhna hai lekin kam hi query hota hai. Log Analytics mein sab se sasta tareeqa?",
+  "opts": [
+   "Purane data ke liye long-term retention (archive), zaroorat par restore ya search jobs ke sath",
+   "7 saal ki interactive retention",
+   "Email par export",
+   "30 din baad delete"
+  ],
+  "exp": "Log Analytics long-term retention ke sath data 12 saal tak rakh sakta hai, interactive retention se kahin saste mein. Aap isay seedha query nahi kar sakte, lekin zaroorat par search job ya restore se wapas la sakte hain. 7 saal interactive rakhna kahin mehnga hai, aur 30 din baad delete karna compliance tor deta hai."
+ },
+ "D5-064": {
+  "q": "Ingestion taqreeban 300 GB/day aur mustaqil hai. Per GB cost kaise kam karein?",
+  "opts": [
+   "Commitment tier pricing level use karein",
+   "Sirf Pay-as-you-go use karein",
+   "Zyada workspaces banayen",
+   "Retention barhayen"
+  ],
+  "exp": "Commitment tiers rozana ingestion volume (maslan 300 GB/day) ka commitment karne par per GB kam qeemat dete hain, jo pehle se maloom workloads ke liye munasib hai. Is volume par Pay-as-you-go zyada mehnga hai. Zyada workspaces banana ya retention barhana per GB cost kam nahi karta."
+ },
+ "D5-065": {
+  "q": "Aap ghair-mutawaqqa bills se bachne ke liye ingestion par had lagana chahte hain. Kaun si workspace setting?",
+  "opts": [
+   "Daily cap",
+   "Retention",
+   "Access mode",
+   "Data export"
+  ],
+  "exp": "Daily cap had pohanchte hi din ke baqi hisse ke liye workspace mein data collection rok deta hai, jo ghair-mutawaqqa bills se bachata hai. Badle mein cap ke baad ka data kho jata hai. Retention, access mode aur data export ingestion mehdood nahi karte."
+ },
+ "D5-066": {
+  "q": "Kaun si CLI command Key Vault ke AuditEvent logs workspace mein bhejne wali diagnostic setting banati hai?",
+  "opts": [
+   "az monitor diagnostic-settings create --resource <kvId> -n kvdiag --workspace <lawId> --logs '[{\"category\":\"AuditEvent\",\"enabled\":true}]'",
+   "az keyvault logs enable",
+   "az monitor log enable kv",
+   "az diag create kv"
+  ],
+  "exp": "az monitor diagnostic-settings create resource ke logs destination tak bhejti hai: --resource key vault ki ID hai, --workspace Log Analytics workspace, aur --logs categories list karta hai, yahan AuditEvent. Key vaults ki apni koi logging command nahi, aur baqi commands mojood nahi."
+ },
+ "D5-067": {
+  "q": "Subscription ke har naye Key Vault par diagnostic settings khud apply honi chahiye. Behtareen tareeqa?",
+  "opts": [
+   "DeployIfNotExists diagnostic settings definition wali Azure Policy",
+   "Har vault par manual configuration",
+   "Resource lock",
+   "Alert rule"
+  ],
+  "exp": "DeployIfNotExists effect wali built-in Azure Policy definition har key vault par, naye samet, diagnostic setting khud bana sakti hai, aur remediation task mojooda vaults theek karta hai. Har vault haath se configure karna scale nahi hota, aur locks aur alerts settings nahi banate."
+ },
+ "D5-068": {
+  "q": "Logs taqreeban real time mein third-party SIEM tak stream hone chahiye. Kaun sa destination?",
+  "opts": [
+   "Event Hub",
+   "Storage account",
+   "Email",
+   "Dashboard"
+  ],
+  "exp": "Event Hub destination logs ko third-party SIEM jaise bahar ke systems tak taqreeban real time mein stream karta hai. Storage account saste long-term archive ke liye hai, aur email aur dashboards diagnostic setting destinations nahi."
+ },
+ "D5-069": {
+  "q": "Ek resource ki kitni diagnostic settings ho sakti hain?",
+  "opts": [
+   "5 tak",
+   "1",
+   "Unlimited",
+   "10"
+  ],
+  "exp": "Har resource ki 5 tak diagnostic settings ho sakti hain — maslan ek Log Analytics ko, ek storage ko aur ek Event Hub ko, har ek alag categories ke sath. Yeh 1 tak mehdood nahi, aur unlimited bhi nahi."
+ },
+ "D5-070": {
+  "q": "Kal VM1 kis ne delete ki? Pehle kahan dekhenge?",
+  "opts": [
+   "Delete operation par filter kiya Activity log",
+   "VM insights",
+   "Metrics",
+   "Boot diagnostics"
+  ],
+  "exp": "VM delete karna control-plane operation hai, is liye Activity log usay caller ki identity, waqt aur status ke sath record karta hai. Isay delete operation par filter karein. VM insights, metrics aur boot diagnostics performance aur console output dikhate hain, yeh nahi ke kis ne kya kiya."
+ },
+ "D5-071": {
+  "q": "Activity log ki kaun si event categories hain?",
+  "opts": [
+   "Administrative, Service Health, Resource Health, Alert, Autoscale, Recommendation, Security, Policy",
+   "Sirf Administrative",
+   "Sirf Errors aur Warnings",
+   "Metrics aur Logs"
+  ],
+  "exp": "Activity log ki kai categories hain: Administrative (create, update, delete), Service Health, Resource Health, Alert, Autoscale, Recommendation (Advisor se), Security (Defender for Cloud se) aur Policy. Yeh administrative operations se zyada cover karta hai, aur is mein metrics nahi hote."
+ },
+ "D5-072": {
+  "q": "Kya blob uploads (data-plane operations) Activity log mein aate hain?",
+  "opts": [
+   "Nahi — sirf control-plane operations; data-plane operations ko resource logs chahiye",
+   "Haan, tamam operations",
+   "Sirf deletes",
+   "Sirf GRS ke sath"
+  ],
+  "exp": "Activity log sirf control-plane operations record karta hai, jaise storage account banana ya us ki settings badalna. Blobs upload, parhne ya delete karne jaise data-plane operations ko diagnostic setting ke zariye bheje gaye storage resource logs (StorageRead, StorageWrite, StorageDelete) chahiye."
+ },
+ "D5-073": {
+  "q": "Kaun sa KQL operator output ke columns chunta hai?",
+  "opts": [
+   "project",
+   "where",
+   "summarize",
+   "extend"
+  ],
+  "exp": "project chunta hai ke output mein kaun se columns aayen, aur unhein rename kar sakta hai (project Name = Computer). where rows filter karta hai, summarize unhein aggregate karta hai (count, avg waghera), aur extend mojooda columns rakhte hue calculated columns add karta hai."
+ },
+ "D5-074": {
+  "q": "Kaun si KQL query sab se zyada average CPU wale 10 computers return karti hai?",
+  "opts": [
+   "Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by Computer | top 10 by avg_CounterValue desc",
+   "Perf | take 10",
+   "Perf | limit CPU 10",
+   "SELECT TOP 10 FROM Perf"
+  ],
+  "exp": "Pehle Perf ko CPU counter tak filter karein, phir har computer ka average nikalne ke liye summarize avg(CounterValue) by Computer, phir sab se oonche das rakhne ke liye top 10 by avg_CounterValue desc. take 10 koi bhi das rows deta hai, aur SELECT TOP SQL hai."
+ },
+ "D5-075": {
+  "q": "Kaun sa KQL operator naya calculated column add karta hai?",
+  "opts": [
+   "extend",
+   "project-away",
+   "join",
+   "render"
+  ],
+  "exp": "extend expression se calculate hua naya column add karta hai, maslan extend CpuPercent = CounterValue / 100. project-away columns hatata hai, join tables jorta hai aur render charts banata hai."
+ },
+ "D5-076": {
+  "q": "Kaun si query pichle 24 ghante ke Windows error events dikhati hai?",
+  "opts": [
+   "Event | where TimeGenerated > ago(24h) and EventLevelName == \"Error\"",
+   "Event | errors 24h",
+   "Syslog | where Level == Error",
+   "AzureActivity | where Level == Error"
+  ],
+  "exp": "Agent ke collect kiye Windows event logs Event table mein jate hain, is liye usay where TimeGenerated > ago(24h) aur EventLevelName == \"Error\" se filter karein. Syslog Linux ka barabar hai, aur AzureActivity Azure control-plane operations rakhta hai."
+ },
+ "D5-077": {
+  "q": "Kaun sa KQL operator query nateejon se timechart banata hai?",
+  "opts": [
+   "render timechart",
+   "plot",
+   "chart()",
+   "graph"
+  ],
+  "exp": "render timechart query ke nateeje ko waqt ke sath line chart ki surat mein banata hai, aam tor par summarize ... by bin(TimeGenerated, ...) ke baad. render barchart, piechart, columnchart waghera bhi support karta hai. plot, chart() aur graph KQL operators nahi."
+ },
+ "D5-078": {
+  "q": "Activity log se workspace mein bheje gaye Azure control-plane operations kaun si table mein hote hain?",
+  "opts": [
+   "AzureActivity",
+   "Sirf AzureDiagnostics",
+   "Heartbeat",
+   "Perf"
+  ],
+  "exp": "Jab Activity log Log Analytics workspace mein bheja jaye to us ke records AzureActivity table mein jate hain, jis mein caller, operation aur status hota hai. AzureDiagnostics resource logs rakhti hai, Heartbeat agent heartbeats aur Perf performance counters."
+ },
+ "D5-079": {
+  "q": "Kaun si query un VMs ko dhoondti hai jinhon ne pichle 15 minute mein heartbeat nahi bheja?",
+  "opts": [
+   "Heartbeat | summarize LastSeen = max(TimeGenerated) by Computer | where LastSeen < ago(15m)",
+   "Heartbeat | where TimeGenerated < ago(15m)",
+   "Heartbeat | take 15",
+   "Perf | where Heartbeat == 0"
+  ],
+  "exp": "summarize LastSeen = max(TimeGenerated) by Computer har computer ka sab se haal ka heartbeat dhoondta hai, aur where LastSeen < ago(15m) sirf un computers ko rakhta hai jin ka aakhri heartbeat 15 minute se purana hai, yani jinhon ne report karna band kar diya. Baqi queries khamosh machines ke bajaye purani ya koi bhi rows deti hain."
+ },
+ "D5-080": {
+  "q": "Ek computer ka har ghante ka average CPU chart karne ke KQL pipeline steps tarteeb mein lagayen:",
+  "items": [
+   "render timechart",
+   "Perf",
+   "summarize avg(CounterValue) by bin(TimeGenerated, 1h)",
+   "where Computer == \"VM1\" and CounterName == \"% Processor Time\""
+  ],
+  "exp": "Har KQL query table (Perf) se shuru hoti hai, phir where se filter karti hai (computer aur counter), phir hourly averages ke liye summarize ... by bin(TimeGenerated, 1h) se aggregate karti hai, aur aakhir mein render timechart chart banata hai. Har step pichle step ke output par kaam karta hai."
+ },
+ "D5-081": {
+  "q": "Data Collection Rule (DCR) kya define karti hai?",
+  "opts": [
+   "Kya data collect karna hai (events, counters, logs), kin machines se, aur kahan bhejna hai",
+   "Alert thresholds",
+   "RBAC roles",
+   "Backup schedules"
+  ],
+  "exp": "Data collection rule (DCR) Azure Monitor Agent ko batati hai ke kya collect kare (Windows events, performance counters, Syslog, text logs), yeh kin machines par apply ho (DCR associations ke zariye), koi transformations, aur data kahan bheje (maslan Log Analytics workspace). Yeh alerts, roles ya backups define nahi karti."
+ },
+ "D5-082": {
+  "q": "AMA se sirf IDs 4624 aur 4625 wale Windows Security events (cost kam karne ke liye) kaise collect karein?",
+  "opts": [
+   "DCR ke Windows event log data source mein XPath query filter use karein",
+   "Tamam events collect kar ke baad mein delete karein",
+   "MMA agent use karein",
+   "Daily cap set karein"
+  ],
+  "exp": "DCR ka Windows event log data source XPath queries leta hai, jaise Security!*[System[(EventID=4624 or EventID=4625)]], is liye agent sirf woh events collect karta hai aur aap kam data ke paise dete hain. Sab collect kar ke baad delete karne mein phir bhi ingestion ki cost lagti hai, MMA retire ho chuka, aur daily cap filter karne ke bajaye data gira deta hai."
+ },
+ "D5-083": {
+  "q": "Kya ek DCR kai VMs se associate ho sakti hai, aur kya ek VM ki kai DCRs ho sakti hain?",
+  "opts": [
+   "Dono ka jawab haan",
+   "Dono ka jawab nahi",
+   "Har VM ki sirf ek DCR",
+   "Har DCR ki sirf ek VM"
+  ],
+  "exp": "DCR associations many-to-many hain: ek DCR kai machines se associate ho sakti hai, aur ek machine ki kai DCRs ho sakti hain (maslan ek standard security DCR plus ek app-specific)."
+ },
+ "D5-084": {
+  "q": "On-premises servers ko AMA se Azure Monitor mein logs bhejne hain. Pehle kya zaroori hai?",
+  "opts": [
+   "Unhein Azure Arc par onboard karein, phir AMA ko extension ke taur par install karein",
+   "MMA install karein",
+   "Network Watcher use karein",
+   "Kuch nahi"
+  ],
+  "exp": "Azure Monitor Agent ghair-Azure machines par sirf tab chalta hai jab woh Azure Arc par onboard hon, jo unhein Azure identity deta hai aur AMA ko extension ke taur par install karne deta hai. Purana MMA agent retire ho chuka, aur Network Watcher logs collect nahi karta."
+ },
+ "D5-085": {
+  "q": "Azure Monitor Agent data bhejte waqt authenticate karne ke liye kaun si identity use karta hai?",
+  "opts": [
+   "Managed identity (system- ya user-assigned)",
+   "Config files mein workspace key",
+   "User password",
+   "SAS token"
+  ],
+  "exp": "Azure Monitor Agent Azure Monitor se managed identity ke zariye authenticate karta hai — system-assigned ya user-assigned, ya Arc machines ke liye un ki Arc identity — is liye koi workspace keys ya secrets store nahi hote. Purana agent workspace ID aur key use karta tha."
+ },
+ "D5-086": {
+  "q": "VM insights enable karne se kya hota hai?",
+  "opts": [
+   "AMA install hota hai (aur Map ke liye optionally dependency agent) aur workspace ko performance data bhejne wali DCR banti hai",
+   "Backup enable hota hai",
+   "Encryption enable hoti hai",
+   "Public IP add hota hai"
+  ],
+  "exp": "VM insights enable karne se Azure Monitor Agent (aur Map feature ke liye optionally Dependency agent) install hota hai aur aisi data collection rule banti hai jo performance data Log Analytics workspace mein bheje. Yeh backup ya encryption on nahi karta ya public IP add nahi karta."
+ },
+ "D5-087": {
+  "q": "Kaun sa VM insights feature dikhata hai ke VM kin servers se connect hoti hai aur kaun se processes kin ports par sunte hain?",
+  "opts": [
+   "Map (dependency agent)",
+   "Performance",
+   "Health",
+   "Sirf Workbooks"
+  ],
+  "exp": "VM insights ka Map feature, jo Dependency agent use karta hai, har VM par chalne wale processes, un ke sune jane wale ports, aur doosri machines se inbound aur outbound connections dikhata hai. Performance sirf charts dikhata hai, aur workbooks reports hain."
+ },
+ "D5-088": {
+  "q": "Kaun sa experience subscriptions ke aar paar network health, connectivity, traffic aur topology ek jagah dikhata hai?",
+  "opts": [
+   "Network insights",
+   "VM insights",
+   "Storage insights",
+   "Cost analysis"
+  ],
+  "exp": "Azure Monitor mein Network insights subscriptions ke aar paar networking resources ki network health, connectivity, traffic aur topology ka ek view deta hai, baghair setup ke. VM insights VMs ke liye hai, Storage insights storage ke liye, aur Cost analysis kharche ke liye."
+ },
+ "D5-089": {
+  "q": "Kaun si service SDK ya auto-instrumentation ke zariye live web application ki performance, failures aur dependencies monitor karti hai?",
+  "opts": [
+   "Application Insights",
+   "VM insights",
+   "Network Watcher",
+   "Advisor"
+  ],
+  "exp": "Application Insights Azure Monitor ka application performance monitoring (APM) feature hai. SDK ya auto-instrumentation ke zariye yeh live web apps se requests, response times, failures, exceptions aur dependencies ki calls collect karta hai. VM insights VMs monitor karta hai, Network Watcher networks diagnose karta hai, aur Advisor recommendations deta hai."
+ },
+ "D5-090": {
+  "q": "Jab Azure mein aap ke regions aur services ko mutasir karne wala outage ya planned maintenance ho to aap ko email chahiye. Kya configure karein?",
+  "opts": [
+   "Service Health alert",
+   "Metric alert",
+   "Budget",
+   "Sirf Resource Health"
+  ],
+  "exp": "Service Health alert action group ke zariye aap ko un Azure service issues, planned maintenance aur health advisories ke bare mein batata hai jo aap ki subscriptions, regions aur services ko mutasir karein. Metric alerts aap ke apne resources dekhte hain, budgets kharcha dekhte hain, aur Resource Health individual resources cover karta hai."
+ },
+ "D5-091": {
+  "q": "Service Health aur Resource Health mein kya farq hai?",
+  "opts": [
+   "Service Health regions mein Azure service issues cover karta hai; Resource Health aap ke individual resources ki sehat dikhata hai (maslan kya VM1 available hai?)",
+   "Dono ek jaise hain",
+   "Resource Health billing ke bare mein hai",
+   "Service Health sirf VMs ke liye hai"
+  ],
+  "exp": "Service Health aap ko un regions mein Azure services ke maslon ke bare mein batata hai jo aap use karte hain, jaise outages aur planned maintenance. Resource Health batata hai ke aap ka makhsoos resource — maslan VM1 — abhi available hai ya nahi, aur nahi to kyun. Yeh alag views hain, aur koi bhi billing ke bare mein nahi."
+ },
+ "D5-092": {
+  "q": "Kaun sa alert signal kisi makhsoos resource ke delete hone par fire hota hai?",
+  "opts": [
+   "Delete operation par Activity log alert",
+   "Metric alert",
+   "Perf par log alert",
+   "Smart detection"
+  ],
+  "exp": "Activity log alert tab fire hota hai jab koi makhsoos control-plane event ho, jaise kisi resource ya resource group par delete operation. Metric alerts numeric values dekhte hain, Perf par log alerts performance data dekhte hain, aur smart detection Application Insights ka feature hai."
+ },
+ "D5-093": {
+  "q": "Log search alert har 5 minute 5-minute windows par chalta hai lekin kabhi kabhi events miss kar deta hai. Kyun?",
+  "opts": [
+   "Log ingestion latency — data window evaluate hone ke baad pohanch sakta hai; window wide karein ya latency ka khayal rakhein",
+   "Rule toota hua hai",
+   "KQL waqt support nahi karti",
+   "Action group bhar gaya hai"
+  ],
+  "exp": "Log data ko workspace tak pohanchne mein waqt lagta hai (ingestion latency, aksar chand minute). Agar rule har 5 minute pichle 5 minute check kare to der se aane wale records har evaluate hone wali window se bahar reh kar miss ho sakte hain. Frequency se lambi window use karein, ya takheer ki gunjaish rakhein."
+ },
+ "D5-094": {
+  "q": "Kaun si alert severity sab se critical hai?",
+  "opts": [
+   "Sev 0",
+   "Sev 4",
+   "Sev 2",
+   "Sev 1"
+  ],
+  "exp": "Alert severities Sev 0 (Critical) se Sev 1 (Error), Sev 2 (Warning) aur Sev 3 (Informational) se hote hue Sev 4 (Verbose) tak hain. Sev 0 sab se critical hai — kam number ka matlab zyada sangeen alert."
+ },
+ "D5-095": {
+  "q": "CPU threshold se neeche wapas aane par alerts khud resolve hone chahiye. Kaun sa option?",
+  "opts": [
+   "Automatically resolve alerts (stateful alerts)",
+   "Mute actions",
+   "Alert processing rule",
+   "Dynamic thresholds"
+  ],
+  "exp": "'Automatically resolve alerts' (stateful alerts) enabled hone par metric threshold se neeche aate hi alert ki monitor condition Resolved ho jati hai, aur resolution notifications bheji ja sakti hain. Mute actions sirf notifications band karta hai, processing rules actions badalte hain, aur dynamic thresholds threshold calculate karne ka tareeqa badalte hain."
+ },
+ "D5-096": {
+  "q": "Alert ko VM khud restart karni hai. Kaun sa action group action munasib hai?",
+  "opts": [
+   "VM restart karne wala Automation runbook (ya Logic App/Function)",
+   "Sirf email",
+   "Voice call",
+   "Budget"
+  ],
+  "exp": "Action group Azure Automation runbook (ya Logic App ya Azure Function) chala sakta hai jo VM restart kare, is liye alert khud masla theek kar deta hai. Email aur voice calls sirf logon ko batate hain, aur budgets cost track karte hain."
+ },
+ "D5-097": {
+  "q": "Kaun sa action group notification option users ko RBAC role ke hisaab se email karta hai (maslan subscription ke tamam Owners)?",
+  "opts": [
+   "Email Azure Resource Manager role",
+   "Sirf Email/SMS/Push/Voice",
+   "Webhook",
+   "ITSM"
+  ],
+  "exp": "'Email Azure Resource Manager role' notification subscription par chune hue role, jaise Owner ya Contributor, wale har shakhs ko email bhejti hai. Aap ko addresses ki list maintain nahi karni, kyun ke recipients role assignments ke sath chalte hain. Saada email/SMS/push/voice fixed addresses mangta hai, aur webhooks aur ITSM logon ke bajaye systems call karte hain."
+ },
+ "D5-098": {
+  "q": "Ops team ko email karne wala CPU alert banane ke steps tarteeb mein lagayen:",
+  "items": [
+   "Alert rule banayen: scope VM1, condition 5 min tak Percentage CPU > 85%",
+   "Ops team ki email ke sath action group banayen",
+   "Action group ko alert rule se attach karein aur severity set karein",
+   "CPU spike ya Test action group feature se test karein"
+  ],
+  "exp": "Pehle ops team ki email ke sath action group banayen, kyun ke alert rule sirf pehle se mojood action group attach kar sakta hai. Phir scope (VM1) aur condition (5 minute tak CPU 85% se upar) ke sath alert rule banayen, action group attach karein aur severity set karein, aur aakhir mein test karein — maslan 'Test action group' feature se."
+ },
+ "D5-099": {
+  "q": "Alert processing rule kaun se DO kaam kar sakta hai?",
+  "opts": [
+   "Maintenance window ke dauran action group notifications suppress karna",
+   "Subscription mein fire hone wale tamam alerts mein action group add karna",
+   "Alert ki condition threshold badalna",
+   "Fire hue alerts delete karna"
+  ],
+  "exp": "Alert processing rules alerts fire hone ke baad un par kaam karte hain: yeh action group notifications suppress kar sakte hain (maslan maintenance window ke dauran) ya kisi scope ke har alert mein action groups add kar sakte hain. Yeh alert rule ki condition ya threshold nahi badal sakte, aur fire hue alerts delete nahi karte."
+ },
+ "D5-100": {
+  "ctx": "VM1 par AMA hai aur ek DCR perf counters LAW1 ko bhejti hai. Metric alert (CPU > 90%) aur log search alert (Perf se free memory < 500 MB) dono action group AG-Ops use karte hain.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "CPU alert condition ke taqreeban ek minute ke andar fire ho sakta hai",
+   "Memory alert AMA ke collect kiye data par depend karta hai",
+   "DCR hatane se memory alert ko naya data milna band ho jata hai",
+   "AG-Ops dono alert rules mein share ho sakta hai"
+  ],
+  "exp": "CPU jaise platform metrics taqreeban real-time hain, is liye metric alert taqreeban ek minute mein fire ho sakta hai. Free memory in-guest counter hai jo AMA DCR ke zariye collect karta hai, is liye log alert us par depend karta hai — DCR hatayen to naya data nahi aata. Ek action group bohat se alert rules mein share ho sakta hai."
+ },
+ "D5-101": {
+  "q": "Network Watcher kya hai?",
+  "opts": [
+   "Azure IaaS mein network halat monitor aur diagnose karne ki regional service",
+   "Global DNS service",
+   "Firewall",
+   "Load balancer"
+  ],
+  "exp": "Network Watcher Azure IaaS mein network masle monitor aur diagnose karne ke regional tools ka set hai — IP flow verify, next hop, connection troubleshoot, packet capture, flow logs aur mazeed. Yeh DNS service, firewall ya load balancer nahi; yeh sirf dekhta aur test karta hai."
+ },
+ "D5-102": {
+  "q": "Default mein Network Watcher instances kaun se resource group mein bante hain?",
+  "opts": [
+   "NetworkWatcherRG",
+   "VNet ka resource group",
+   "DefaultResourceGroup",
+   "Koi nahi"
+  ],
+  "exp": "Jab kisi region ke liye Network Watcher khud enable hota hai to Azure us ka instance NetworkWatcherRG naam ke resource group mein banata hai. Yeh VNet ke resource group ya 'DefaultResourceGroup' mein nahi jata. Manually enable karne par aap isay kahin aur bana sakte hain."
+ },
+ "D5-103": {
+  "q": "IP flow verify rule name 'DenyAllInBound' ke sath 'Access denied' report karta hai. Is ka kya matlab hai?",
+  "opts": [
+   "Koi custom NSG rule flow allow nahi karta, is liye default deny match hua",
+   "Custom deny rule match hua",
+   "Routing fail hui",
+   "DNS fail hua"
+  ],
+  "exp": "DenyAllInBound default NSG rules mein se ek hai, sab se kam priority (65500) ke sath. Agar yahi match hua to kisi zyada priority wale rule — aap ke banaye kisi custom rule samet — ne traffic allow nahi kiya. Hal kam priority number wala allow rule hai. Custom deny rule apna naam dikhata."
+ },
+ "D5-104": {
+  "q": "Next hop VM1 se 10.5.0.4 tak traffic ke liye 'None' return karta hai. Is ka kya matlab hai?",
+  "opts": [
+   "Next hop None wala route (ya koi matching route nahi) traffic drop karta hai",
+   "Traffic internet jata hai",
+   "NVA usay handle karta hai",
+   "Peering use hoti hai"
+  ],
+  "exp": "None next hop ka matlab Azure traffic drop karta hai: ya to next hop type None wala route destination se match karta hai, ya koi route match hi nahi karta. Traffic internet, NVA ya peering par nahi jata — woh Internet, VirtualAppliance ya VNetPeering dikhate."
+ },
+ "D5-105": {
+  "q": "Next hop internet ki taraf traffic ke liye 'VirtualAppliance 10.0.1.4' report karta hai. Yeh aap ko kya batata hai?",
+  "opts": [
+   "UDR traffic ko 10.0.1.4 par NVA se guzarne par majboor karta hai",
+   "NSG usay block karta hai",
+   "Traffic local hai",
+   "DNS ghalat configured hai"
+  ],
+  "exp": "IP 10.0.1.4 ke sath VirtualAppliance next hop type ka matlab user-defined route yeh traffic us address par network virtual appliance ko bhejta hai, aur next hop yeh bhi batata hai ke route kis route table mein hai. Next hop sirf routing ke bare mein hai, is liye NSGs ya DNS ke bare mein kuch nahi batata."
+ },
+ "D5-106": {
+  "q": "Packet capture 10 minute ya 1 GB ke baad khud ruk jana chahiye. Kya yeh configurable hai?",
+  "opts": [
+   "Haan — capture time limit, bytes per packet aur total size filters ke sath configurable hain",
+   "Nahi, captures hamesha chalte hain",
+   "Sirf waqt",
+   "Sirf size"
+  ],
+  "exp": "Packet capture shuru karte waqt aap time limit, zyada se zyada total size, har packet ke capture hone wale bytes, aur filters (protocol, IPs aur ports) set kar sakte hain. In mein se kisi bhi had par pohanchne par capture ruk jata hai, is liye 10 minute ya 1 GB configure karna aasan hai."
+ },
+ "D5-107": {
+  "q": "VM ka network metric threshold se guzarne par packet capture khud shuru hona chahiye. Kaise?",
+  "opts": [
+   "Alert Azure Function ya Automation runbook trigger karta hai jo Network Watcher packet capture shuru kare",
+   "Default mein automatic hai",
+   "NSG flow logs use karein",
+   "Advisor use karein"
+  ],
+  "exp": "Packet capture khud shuru nahi hota. Isay khud trigger karne ke liye metric par aisa alert banayen jis ka action group Azure Function ya Automation runbook chalaye jo Network Watcher ko capture shuru karne ke liye call kare. Flow logs sirf flow summaries record karte hain, aur Advisor recommendations deta hai."
+ },
+ "D5-108": {
+  "q": "Connection troubleshoot 'Unreachable' report karta hai aur ek hop 'NSG rule blocked' dikhata hai. Aage kya?",
+  "opts": [
+   "Effective security rules review karein aur dikhaya gaya NSG rule badlein",
+   "VM restart karein",
+   "Disk type badlein",
+   "VNet delete karein"
+  ],
+  "exp": "Connection troubleshoot ne dhoond liya hai ke NSG rule raasta block kar raha hai aur dikhata hai kaun sa rule. Aage us NIC ya subnet ke effective security rules review karein aur traffic allow karne ke liye rule badlein ya add karein. VM restart, disks badalna ya VNet delete karna NSG rules par asar nahi dalta."
+ },
+ "D5-109": {
+  "q": "Connection Monitor analysis aur alerting ke liye apne nateeje kahan store karta hai?",
+  "opts": [
+   "Log Analytics workspace",
+   "Sirf storage account",
+   "Activity log",
+   "Key Vault"
+  ],
+  "exp": "Connection Monitor apne test nateeje Log Analytics workspace mein store karta hai, jahan aap unhein KQL se query kar sakte hain. Yeh metrics bhi publish karta hai (jaise round-trip time aur checks failed %) jo aap alerts mein use kar sakte hain. Yeh nateejon ke liye Activity log ya Key Vault use nahi karta."
+ },
+ "D5-110": {
+  "q": "Connection Monitor ko on-premises server se Azure VM tak test karna hai. On-premises server par kya chahiye?",
+  "opts": [
+   "Azure Monitor Agent (ya supported monitoring agent) wala Azure Arc-enabled server",
+   "Kuch nahi",
+   "Sirf Network Watcher VM extension",
+   "Public IP"
+  ],
+  "exp": "Connection Monitor ko ghair-Azure sources par agent chahiye. On-premises server ke liye usay Azure Arc par onboard karein aur Azure Monitor Agent install karein taa ke woh tests chala sake. Network Watcher VM extension sirf Azure VMs ke liye hai, aur akela public IP tests nahi chalata."
+ },
+ "D5-111": {
+  "q": "Connection Monitor mein test group kya hai?",
+  "opts": [
+   "Sources, destinations aur test configurations (protocol, port, frequency) ka set jo ek sath evaluate hota hai",
+   "Resource group",
+   "Action group",
+   "NSG"
+  ],
+  "exp": "Connection Monitor mein test group sources, destinations aur test configurations (protocol, port, test frequency aur thresholds) ko milata hai, aur us ke tamam tests ek sath evaluate hote hain. Yeh resource group, action group ya NSG nahi."
+ },
+ "D5-112": {
+  "q": "Waqt ke sath do VMs ke darmiyan latency 50 ms se zyada hone par aap ko alert chahiye. Kaun sa tool?",
+  "opts": [
+   "Round-trip time par metric alert ke sath Connection Monitor",
+   "IP flow verify",
+   "Next hop",
+   "Topology"
+  ],
+  "exp": "Connection Monitor endpoints ke darmiyan round-trip time aur checks failed musalsal napta hai, aur aap round-trip time 50 ms se upar jane par metric alert bana sakte hain. IP flow verify, next hop aur topology ek baar ke checks hain jo waqt ke sath latency nahi napte."
+ },
+ "D5-113": {
+  "q": "Flow log record mein kya maloomat hoti hai?",
+  "opts": [
+   "Source/destination IP aur port, protocol, allowed ya denied, aur bytes/packets",
+   "Poore packet payloads",
+   "Sirf DNS queries",
+   "CPU usage"
+  ],
+  "exp": "Flow logs har flow ka metadata record karte hain: source aur destination IP aur port, protocol, direction, traffic allowed tha ya denied, aur (version 2 mein) bytes aur packets. In mein kabhi packets ka content nahi hota — us ke liye packet capture use karein. Yeh DNS queries ya CPU usage record nahi karte."
+ },
+ "D5-114": {
+  "q": "Kaun sa feature flow logs se top talkers, malicious IPs aur traffic hotspots pehchanta hai?",
+  "opts": [
+   "Traffic Analytics",
+   "Packet capture",
+   "IP flow verify",
+   "VM insights"
+  ],
+  "exp": "Traffic Analytics flow logs ko Log Analytics workspace mein process karta hai aur geography aur threat intelligence add karta hai, is liye top talkers, traffic hotspots, malicious IPs aur khule ports dikha sakta hai. Packet capture raw packets record karta hai, IP flow verify ek flow test karta hai, aur VM insights VMs monitor karta hai."
+ },
+ "D5-115": {
+  "q": "Traffic Analytics kaun se processing interval options deta hai?",
+  "opts": [
+   "Har 10 minute ya har 60 minute",
+   "Har second",
+   "Sirf rozana",
+   "Haftawar"
+  ],
+  "exp": "Traffic Analytics default mein har 60 minute flow log data process karta hai, ya tez insights ke liye har 10 minute (zyada cost par). Yeh har second, rozana ya haftawar process nahi karta."
+ },
+ "D5-116": {
+  "q": "Kaun se DO Network Watcher tools NSG maslon mein madad karte hain?",
+  "opts": [
+   "IP flow verify",
+   "Effective security rules",
+   "VPN troubleshoot",
+   "Sirf Packet capture"
+  ],
+  "exp": "IP flow verify batata hai ke makhsoos flow allowed hai ya denied aur kis NSG rule ne faisla kiya. Effective security rules NIC par lagne wale har NSG (subnet NSG plus NIC NSG) ke mile hue rules dikhate hain. VPN troubleshoot gateways check karta hai, aur packet capture rules samjhaye baghair traffic record karta hai."
+ },
+ "D5-117": {
+  "q": "Ek VM web server tak nahi pohanch sakti. Network Watcher se samajhdar diagnosis ki tarteeb lagayen:",
+  "items": [
+   "Routing path ke liye Next hop check karein",
+   "Destination tak Connection troubleshoot chalayen",
+   "NSG rules check karne ke liye IP flow verify chalayen",
+   "Agar masla ab bhi wazeh na ho to packet capture chalayen"
+  ],
+  "exp": "Masla confirm karne aur dekhne ke liye ke raasta kahan fail hota hai, Connection troubleshoot se shuru karein. Phir NSG rules check karne ke liye IP flow verify, aur routing check karne ke liye next hop use karein. Sirf agar phir bhi wazeh na ho to asal traffic dekhne ke liye packet capture chalayen, jise analyse karne mein sab se zyada mehnat lagti hai."
+ },
+ "D5-118": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "VPN troubleshoot virtual network gateway aur us ke connections diagnose kar sakta hai",
+   "IP flow verify do PaaS services ke darmiyan traffic ke liye kaam karta hai",
+   "Topology ko chalti VM chahiye",
+   "Network Watcher un resources ke region mein mojood hona chahiye jinhein aap diagnose karte hain"
+  ],
+  "exp": "VPN troubleshoot virtual network gateway aur us ke connections diagnose karta hai. IP flow verify VM NICs par kaam karta hai, do PaaS services ke darmiyan traffic par nahi. Topology network resources dikhata hai aur chalti VM nahi chahiye. Network Watcher un resources ke region mein enabled hona chahiye jinhein aap diagnose karte hain."
+ },
+ "D5-119": {
+  "q": "Kaun si CLI command Recovery Services vault banati hai?",
+  "opts": [
+   "az backup vault create -g RG1 -n rsv1 -l westeurope",
+   "az recovery vault new",
+   "az backup create rsv1",
+   "az vault create --backup"
+  ],
+  "exp": "az backup vault create -g, -n aur -l (location) ke sath Recovery Services vault banati hai. Baqi commands mojood nahi. Yaad rakhein ke VM backups ke liye vault VMs wale region mein hona chahiye."
+ },
+ "D5-120": {
+  "q": "Kaun si CLI command DefaultPolicy ke sath VM1 ka backup enable karti hai?",
+  "opts": [
+   "az backup protection enable-for-vm -g RG1 -v rsv1 --vm VM1 --policy-name DefaultPolicy",
+   "az vm backup VM1",
+   "az backup vm add VM1",
+   "az backup policy apply VM1"
+  ],
+  "exp": "az backup protection enable-for-vm VM ko vault ki backup policy se associate karti hai: -v vault hai, --vm VM aur --policy-name policy (yahan DefaultPolicy). Phir pehla backup policy ke schedule par chalta hai. Baqi commands mojood nahi."
+ },
+ "D5-121": {
+  "q": "Kaun si CLI command on-demand backup trigger karti hai?",
+  "opts": [
+   "az backup protection backup-now ... --retain-until 30-12-2026",
+   "az backup start now",
+   "az vm backup-now",
+   "az backup job start"
+  ],
+  "exp": "az backup protection backup-now protected item ka schedule se bahar on-demand backup leti hai, aur --retain-until set karta hai ke woh recovery point kitne arse rakha jaye. Baqi commands mojood nahi."
+ },
+ "D5-122": {
+  "q": "Kaun sa vault security feature soft delete disable karne jaise critical operations se pehle doosre user ki approval (Resource Guard ke zariye) mangta hai?",
+  "opts": [
+   "Multi-user authorization (MUA)",
+   "Soft delete",
+   "Immutable vault",
+   "Private endpoints"
+  ],
+  "exp": "Multi-user authorization (MUA) Resource Guard use karta hai, jo aam tor par alag team ya tenant ki milkiyat hota hai, is liye critical vault operations — jaise soft delete disable karna ya retention kam karna — ko us doosre shakhs ki approval chahiye. Soft delete delete hua data 14 din rakhta hai, immutability waqt se pehle deletion rokti hai, aur private endpoints network access mehfooz karte hain."
+ },
+ "D5-123": {
+  "q": "Kaun si vault setting kisi ko bhi, admins samet, recovery points expire hone se pehle delete karne se rokti hai (ransomware ke khilaf)?",
+  "opts": [
+   "Immutable vault (locked)",
+   "Sirf soft delete",
+   "CRR",
+   "Redundancy = GRS"
+  ],
+  "exp": "Immutable vault woh operations block karta hai jin se backup data kho sakta hai, jaise expire hone se pehle recovery points delete karna ya retention kam karna. Lock hone ke baad immutability band nahi ho sakti, admins bhi nahi kar sakte, jo ransomware se bachata hai. Soft delete undo ho sakta hai, aur CRR aur GRS redundancy ke bare mein hain."
+ },
+ "D5-124": {
+  "q": "Kaun se roles user ko backups manage karne dete hain lekin vault delete karne ya access dene NAHI dete?",
+  "opts": [
+   "Backup Contributor",
+   "Owner",
+   "User Access Administrator",
+   "Reader"
+  ],
+  "exp": "Backup Contributor backups aur restores bana aur manage kar sakta hai, lekin vault delete nahi kar sakta ya doosre users ko access nahi de sakta. Owner sab kuch kar sakta hai, access dena samet, User Access Administrator access manage karta hai, aur Reader sirf dekh sakta hai."
+ },
+ "D5-125": {
+  "q": "Kya Recovery Services vault ko doosri subscription mein move kar sakte hain?",
+  "opts": [
+   "Haan, resource groups aur subscriptions ke aar paar vault moves supported hain (documented pabandiyon ke sath)",
+   "Nahi, kabhi nahi",
+   "Sirf agar khali ho",
+   "Sirf regions ke aar paar"
+  ],
+  "exp": "Aap Recovery Services vault ko doosre resource group ya subscription mein move kar sakte hain, lekin kuch pabandiyan lagti hain — maslan aap usay doosre region mein move nahi kar sakte, aur kuch workloads ki shartein hain. Is liye yeh 'kabhi nahi' nahi, aur vault ka khali hona zaroori nahi."
+ },
+ "D5-126": {
+  "q": "Backup data vault mein aap ki apni key se encrypt hona chahiye. Aap kya configure karenge?",
+  "opts": [
+   "Recovery Services vault ke liye customer-managed keys (Key Vault + managed identity)",
+   "Storage par infrastructure encryption",
+   "ADE",
+   "Sirf SSE"
+  ],
+  "exp": "Recovery Services vault backup data ko Key Vault mein rakhi customer-managed key se encrypt kar sakta hai, jise vault apni managed identity ke zariye parhta hai. Vault mein items protect karne se pehle yeh set up karein. Storage encryption settings aur Azure Disk Encryption yeh nahi badalte ke vault apna data kaise encrypt karta hai."
+ },
+ "D5-127": {
+  "q": "Azure Backup VM par kaun sa extension install karta hai?",
+  "opts": [
+   "VMSnapshot (Windows) / VMSnapshotLinux extension",
+   "MARS agent",
+   "Dependency agent",
+   "ADE extension"
+  ],
+  "exp": "Azure VM backup snapshots lene ke liye VM agent ke zariye VMSnapshot extension (Linux par VMSnapshotLinux) install karta hai. MARS agent poori Azure VM backups ke liye use nahi hota — yeh files aur folders ke liye hai. Dependency agent VM insights ke liye hai, aur ADE extension disk encryption handle karta hai."
+ },
+ "D5-128": {
+  "q": "VSS-aware apps chalane wali Windows VMs ke sath Azure Backup kis consistency ka maqsad rakhta hai?",
+  "opts": [
+   "Application-consistent snapshots (VSS use kar ke)",
+   "Sirf crash-consistent",
+   "Sirf file-consistent",
+   "Koi nahi"
+  ],
+  "exp": "Windows par Azure Backup Volume Shadow Copy Service (VSS) use kar ke application-consistent snapshots leta hai, is liye SQL Server jaisi apps consistent halat mein hoti hain. Linux par isi asar ke liye aap pre- aur post-scripts add karte hain. Crash-consistent fallback hai, maqsad nahi."
+ },
+ "D5-129": {
+  "q": "Azure VM ka backup application-consistent ke bajaye crash-consistent hai. Mumkin wajah?",
+  "opts": [
+   "Backup ke dauran VM band thi, ya VSS fail hua",
+   "GRS vault",
+   "Premium SSD",
+   "Bohat zyada tags"
+  ],
+  "exp": "Agar backup ke dauran VM band thi, ya VSS fail hua (maslan VSS writer error ki wajah se), to Azure Backup sirf crash-consistent snapshot le sakta hai. Vault redundancy, disk type aur tags consistency par asar nahi dalte."
+ },
+ "D5-130": {
+  "q": "Kya VM ka pehla backup full hota hai ya incremental?",
+  "opts": [
+   "Full, phir us ke baad incremental",
+   "Hamesha full",
+   "Hamesha incremental",
+   "Differential"
+  ],
+  "exp": "VM ka pehla backup tamam data copy karta hai (full). Us ke baad har backup incremental hota hai: sirf pichle backup ke baad badle blocks transfer aur store hote hain, jo waqt aur storage bachata hai. Yeh hamesha full, shuru se hamesha incremental, ya differential nahi."
+ },
+ "D5-131": {
+  "q": "Trusted Launch VMs ke liye kaun sa policy type zaroori hai aur hourly backups support karta hai?",
+  "opts": [
+   "Enhanced policy",
+   "Standard policy",
+   "MARS policy",
+   "Archive policy"
+  ],
+  "exp": "Enhanced VM backup policy Trusted Launch VMs aur doosre naye features ke liye zaroori hai. Yeh din mein kai backups (har 4, 6, 8 ya 12 ghante), lambi instant-restore retention aur zone-resilient snapshots support karti hai. Standard policy din mein sirf ek backup leti hai. Is ke liye MARS aur archive policies mojood nahi."
+ },
+ "D5-132": {
+  "q": "Ek VM ki 4 data disks hain, lekin sirf OS disk aur disk 1 ko protection chahiye. Kya yeh mumkin hai?",
+  "opts": [
+   "Haan — selective disk backup disks exclude karne deta hai",
+   "Nahi, tamam disks ka hamesha backup hota hai",
+   "Sirf Linux ke liye",
+   "Sirf MARS ke sath"
+  ],
+  "exp": "Selective disk backup aap ko chunne deta hai ke kaun si data disks shamil hon (OS disk hamesha shamil hoti hai), is liye aap sirf OS disk aur disk 1 protect kar ke kam paise de sakte hain. Yeh Windows aur Linux ke liye chalta hai aur MARS nahi chahiye."
+ },
+ "D5-133": {
+  "q": "Lambe arse ke monthly aur yearly VM recovery points khud saste tier mein jane chahiye. Kaun sa feature?",
+  "opts": [
+   "Azure Backup ka archive tier (recommended ya policy-based move)",
+   "Blob lifecycle rules",
+   "Soft delete",
+   "Immutability"
+  ],
+  "exp": "Azure Backup ka apna archive tier hai: eligible long-term recovery points (monthly aur yearly) backup policy ke zariye, ya Azure ke recommend karne par, khud wahan ja sakte hain aur kahin saste hote hain. Blob lifecycle rules aap ke apne blobs par kaam karti hain, backup data par nahi, aur soft delete aur immutability tiers nahi badalte."
+ },
+ "D5-134": {
+  "q": "VM ka backup kahan se enable kar sakte hain?",
+  "opts": [
+   "VM ke Backup blade se ya vault se (Backup → Azure VM)",
+   "Sirf vault se",
+   "Sirf Advisor se",
+   "Sirf CLI se"
+  ],
+  "exp": "Aap khud VM (us ka Backup blade) se ya vault (Backup → Azure virtual machine) se backup enable kar sakte hain. Dono ka nateeja ek hai, aur aap CLI, PowerShell ya Azure Policy bhi use kar sakte hain. Yeh ek entry point tak mehdood nahi."
+ },
+ "D5-135": {
+  "q": "Aap 'Create new VM' option se VM restore karte hain. Kya zaroori hai?",
+  "opts": [
+   "Target resource group, VNet/subnet, aur kuch restores ke liye staging location (storage account)",
+   "Kuch nahi",
+   "Naya vault",
+   "Alag region"
+  ],
+  "exp": "'Create new VM' ko jaanna hota hai ke restore hui VM kahan rakhni hai — target resource group, VNet aur subnet — aur kuch restores ke liye usi region mein staging storage account. Naya vault nahi chahiye, aur VM usi region mein restore hoti hai jab tak cross-region restore use na karein."
+ },
+ "D5-136": {
+  "q": "Kaun sa restore option mojooda VM ki configuration (NICs, IP) rakhta hai aur sirf disks ko recovery point se badalta hai?",
+  "opts": [
+   "Replace existing (replace disks)",
+   "Create new VM",
+   "Restore disks",
+   "Cross-region restore"
+  ],
+  "exp": "'Replace existing' VM ko us ke NICs, IP aur configuration ke sath rakhta hai, aur us ki disks ko recovery point wali disks se badal deta hai. Azure pehle mojooda disks ka snapshot leta hai, taa ke aap wapas ja sakein. 'Create new VM' doosri VM banata hai, aur 'Restore disks' sirf disks banata hai."
+ },
+ "D5-137": {
+  "q": "Aap ko template use kar ke custom settings (alag size, extra NIC) ke sath VM restore karni hai. Kaun sa option?",
+  "opts": [
+   "Restore disks, phir bane hue template ko customize kar ke deploy karein",
+   "Sirf Create new VM",
+   "Replace existing",
+   "File recovery"
+  ],
+  "exp": "'Restore disks' disks plus VM ka template banata hai. Aap template edit kar sakte hain — maslan alag size ya extra NIC — aur deploy kar sakte hain. 'Create new VM' aur 'Replace existing' fixed settings use karte hain, aur file recovery sirf files restore karti hai."
+ },
+ "D5-138": {
+  "q": "File recovery script chalane ke baad default mein recovery point kitni der mounted rehta hai?",
+  "opts": [
+   "12 ghante (phir khud unmount hota hai)",
+   "1 ghanta",
+   "7 din",
+   "Reboot tak"
+  ],
+  "exp": "File recovery script chalane ke baad recovery point 12 ghante tak drives ke taur par mounted rehta hai, phir khud unmount ho jata hai. Files copy karne ke baad aap portal se pehle bhi unmount kar sakte hain."
+ },
+ "D5-139": {
+  "q": "Azure VM mein SQL Server ko point-in-time restore ke sath har 15 minute log backups chahiye. Kaun sa hal?",
+  "opts": [
+   "Azure VMs mein SQL Server ka Azure Backup (Recovery Services vault mein workload backup)",
+   "Sirf VM backup",
+   "MARS",
+   "Blob lifecycle"
+  ],
+  "exp": "Azure VMs mein SQL Server ka Azure Backup Recovery Services vault mein workload-aware backup hai. Yeh full aur differential backups plus har 15 minute tak log backups support karta hai, is liye aap makhsoos point-in-time par restore kar sakte hain. VM-level backup database ko point-in-time par restore nahi kar sakta, aur MARS files ka backup leta hai."
+ },
+ "D5-140": {
+  "q": "On-premises server ke MARS agent ko vault mein register karne ke liye kya chahiye?",
+  "opts": [
+   "Vault se download ki gayi vault credentials file",
+   "SSH key",
+   "SAS token",
+   "Entra P2 license"
+  ],
+  "exp": "Vault se vault credentials file download karein (yeh mehdood waqt, aam tor par 10 din, ke liye valid hoti hai) aur MARS setup ke dauran server ko us vault mein register karne ke liye use karein. Aap encryption passphrase bhi set karte hain. SSH keys, SAS tokens aur Entra licences use nahi hote."
+ },
+ "D5-141": {
+  "q": "MARS setup ke dauran aap encryption passphrase set karte hain. Agar woh kho jaye to kya hota hai?",
+  "opts": [
+   "Microsoft usay wapas nahi la sakta, is liye aap data restore nahi kar sakte",
+   "Microsoft usay reset karta hai",
+   "Aap us ke baghair restore karte hain",
+   "Vault usay dobara banata hai"
+  ],
+  "exp": "MARS passphrase aap ke backups ko server se nikalne se pehle encrypt karta hai, aur Microsoft usay kabhi nahi dekhta. Agar yeh kho jaye to koi backups decrypt nahi kar sakta, is liye aap restore nahi kar sakte. Isay mehfooz jagah rakhein, maslan Azure Key Vault mein."
+ },
+ "D5-142": {
+  "q": "On-premises Hyper-V VMs aur SQL Server ko Azure mein app-aware backups chahiye. Kaun sa hal?",
+  "opts": [
+   "Microsoft Azure Backup Server (MABS) ya System Center DPM, vault ko offsite storage ke taur par",
+   "Sirf MARS",
+   "Sirf ASR",
+   "AzCopy"
+  ],
+  "exp": "Microsoft Azure Backup Server (MABS) ya System Center DPM on-premises apps jaise Hyper-V VMs aur SQL Server ka application-aware tareeqe se pehle local disk par backup lete hain, phir offsite storage ke liye copies Recovery Services vault ko bhejte hain. MARS sirf files ka backup leta hai, ASR disaster recovery hai, aur AzCopy sirf data copy karta hai."
+ },
+ "D5-143": {
+  "q": "Managed disks ko VM backup extension ke baghair, snapshot-based restore ke sath, din mein kai baar backups chahiye. Kaun sa hal?",
+  "opts": [
+   "Backup vault mein Azure Disk Backup",
+   "Recovery Services vault VM backup",
+   "MARS",
+   "Blob versioning"
+  ],
+  "exp": "Backup vault mein configure kiya Azure Disk Backup baghair agent ya extension ke managed disks ke incremental snapshots leta hai, zaroorat ho to din mein kai baar, aur unhi snapshots se restore karta hai. Recovery Services VM backup VM extension use karta hai, MARS files ke liye hai, aur blob versioning blobs ke liye."
+ },
+ "D5-144": {
+  "q": "Kaun sa Azure Backup option blobs ko storage account mein locally (vault copy ke baghair) musalsal point-in-time recovery ke sath protect karta hai?",
+  "opts": [
+   "Azure Blobs ke liye operational backup",
+   "Vaulted backup",
+   "MARS",
+   "VM backup"
+  ],
+  "exp": "Azure Blobs ka operational backup data ko khud storage account mein rakhta hai, point-in-time restore, versioning aur soft delete jaise features use karte hue, is liye aap kisi bhi point par musalsal restore kar sakte hain. Vaulted backup blobs ko Backup vault mein copy karta hai. MARS aur VM backup blobs protect nahi karte."
+ },
+ "D5-145": {
+  "q": "Backup reports (vaults ke aar paar usage, jobs, policies) ko kya chahiye?",
+  "opts": [
+   "Vaults par Log Analytics workspace ko data bhejne wali diagnostic settings",
+   "Kuch nahi",
+   "Sirf storage account",
+   "Advisor"
+  ],
+  "exp": "Backup reports Log Analytics ke data par bani hain, is liye har vault ko aisi diagnostic setting chahiye jo us ka backup data workspace mein bheje. Phir reports vaults ke aar paar jobs, usage aur policies dikhati hain. Is ke baghair reports ke paas dikhane ko kuch nahi."
+ },
+ "D5-146": {
+  "q": "Aap recommended Azure Monitor tareeqe se backup jobs fail hone par email notifications chahte hain. Kya use karein?",
+  "opts": [
+   "Backup ke Azure Monitor-based built-in alerts, alert processing rules aur action groups se route kiye gaye",
+   "Sirf classic vault email",
+   "Advisor",
+   "Budget"
+  ],
+  "exp": "Azure Backup ab Azure Monitor mein built-in alerts uthata hai (maslan failed backup jobs ke liye). Aap unhein alert processing rule plus action group ke zariye logon tak pohanchate hain. Classic vault email alerts retire ho rahe hain, aur Advisor aur budgets job failures report nahi karte."
+ },
+ "D5-147": {
+  "q": "Vault ke backup jobs ka status (completed, failed, in progress) kahan dekh sakte hain?",
+  "opts": [
+   "Vault → Backup jobs (ya Backup center → Jobs)",
+   "Sirf Activity log",
+   "Metrics explorer",
+   "VM insights"
+  ],
+  "exp": "Har vault ka Backup jobs page completed, failed aur chalte jobs dikhata hai, aur Backup center (Business Continuity Center) tamam vaults ke jobs dikhata hai. Activity log Azure operations dikhata hai, job details nahi, aur metrics aur VM insights backup jobs track nahi karte."
+ },
+ "D5-148": {
+  "q": "VM backup policy kaun si DO cheezein define kar sakti hai?",
+  "opts": [
+   "Rozana backup ka waqt aur frequency",
+   "Weekly/monthly/yearly retention points",
+   "Restore ke baad VM size",
+   "NSG rules"
+  ],
+  "exp": "VM backup policy schedule — backups kab aur kitni baar chalein — aur retention define karti hai: daily, weekly, monthly aur yearly recovery points kitne arse rahein. Yeh restore ke baad VM ka size ya koi NSG rules define nahi karti."
+ },
+ "D5-149": {
+  "q": "Aap backup policy ki daily retention 30 se 10 din karte hain. Mojooda recovery points ka kya hota hai?",
+  "opts": [
+   "Mojooda points nayi retention ke mutabiq chalte hain, is liye 10 din se purane points saaf ho jate hain",
+   "Woh purane 30 din rakhte hain",
+   "Sab foran delete ho jate hain",
+   "Kuch nahi; sirf nayi VMs par asar hota hai"
+  ],
+  "exp": "Backup policy mein retention badalna mojooda recovery points par bhi apply hota hai. Jab daily retention 30 se 10 din hoti hai to 10 din se purane points saaf ho jate hain (jab tak woh weekly, monthly ya yearly points ke taur par bhi na rakhe gaye hon). Is liye retention kam karne se pehle asar check karein."
+ },
+ "D5-150": {
+  "ctx": "Vault RSV1 (West Europe, GRS, CRR enabled, soft delete on) VM1 (West Europe) ko Standard daily policy se protect karta hai: 30 daily, 12 monthly.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "VM1 kisi bhi waqt North Europe (paired region) mein restore ho sakti hai",
+   "RSV1 East US mein mojood VM2 ko bhi protect kar sakta hai",
+   "Agar koi protection band kar ke data delete kare to woh 14 din ke andar wapas mil sakta hai",
+   "Aap RSV1 ko ab bhi LRS kar sakte hain kyun ke VM1 pehle se protected hai"
+  ],
+  "exp": "GRS aur cross-region restore ke sath VM1 kisi bhi waqt paired region (North Europe) mein restore ho sakti hai. Vault sirf apne region ki VMs protect kar sakta hai, is liye East US ki VM2 nahi. Soft delete delete hua backup data 14 din rakhta hai. Pehla item protect hote hi redundancy lock ho jati hai, is liye RSV1 ab LRS nahi ho sakta."
+ },
+ "D5-151": {
+  "q": "Azure Site Recovery kaun sa vault type use karta hai?",
+  "opts": [
+   "Recovery Services vault",
+   "Backup vault",
+   "Key Vault",
+   "Storage account"
+  ],
+  "exp": "Azure Site Recovery Recovery Services vault mein configure hota hai, wahi vault type jo VM backup ke liye use hota hai. Backup vaults disks aur blobs jaise naye workloads ke liye hain, aur Key Vault aur storage accounts ASR ke vaults nahi."
+ },
+ "D5-152": {
+  "q": "Azure-to-Azure disaster recovery ke liye Recovery Services vault kahan hona chahiye?",
+  "opts": [
+   "TARGET (recovery) region mein, source region mein nahi",
+   "Source region mein",
+   "Kisi bhi region mein",
+   "On-premises"
+  ],
+  "exp": "Azure-to-Azure disaster recovery ke liye Recovery Services vault target (recovery) region mein rakhein. Agar source region fail ho to vault aur us ki settings failover chalane ke liye available rehti hain. Source region ka vault us ke sath band ho sakta hai."
+ },
+ "D5-153": {
+  "q": "Vault region ke rules ka muqabla karein: Azure Backup bamuqabla ASR (Azure-to-Azure).",
+  "opts": [
+   "Backup: VM wale HI region mein vault; ASR: TARGET region mein vault",
+   "Dono ek hi region mein",
+   "Dono target region mein",
+   "Koi rules nahi"
+  ],
+  "exp": "Yeh exam ka aam trap hai. Azure Backup ko Recovery Services vault un VMs wale region mein chahiye jinhein woh protect karta hai. Azure Site Recovery (Azure to Azure) ko vault target region mein chahiye, taa ke source region ke outage se bach jaye."
+ },
+ "D5-154": {
+  "q": "Replication enable karne par ASR target region mein kya banata hai?",
+  "opts": [
+   "Target resource group, VNet (ya mapping), source region mein cache storage, aur replica managed disks",
+   "Sirf backup",
+   "Naya tenant",
+   "Failover tak kuch nahi"
+  ],
+  "exp": "Replication enable karne par ASR target region mein target resource group, target VNet (ya aap ke chune VNet se mapping) aur replica managed disks set up karta hai, sath mein source region mein cache storage account. Replication foran shuru hoti hai; failover ka intezar nahi karti."
+ },
+ "D5-155": {
+  "q": "ASR source VMs ke changes ko target region bhejne se pehle waqti tor par kahan store karta hai?",
+  "opts": [
+   "SOURCE region ke cache storage account mein",
+   "Seedha target vault mein",
+   "Key Vault",
+   "Log Analytics"
+  ],
+  "exp": "ASR pehle VM disk changes ko source region ke cache storage account mein likhta hai, phir unhein target region ki replica disks ko bhejta hai. Changes seedha vault mein nahi jate, aur Key Vault aur Log Analytics shamil nahi."
+ },
+ "D5-156": {
+  "q": "ASR mein recovery point kya hai?",
+  "opts": [
+   "Replicated VM ki point-in-time halat jis par aap fail over kar sakte hain (crash-consistent ya app-consistent)",
+   "Backup policy",
+   "Region pair",
+   "DNS record"
+  ],
+  "exp": "Recovery point replicated VM ki kisi waqt ki halat ki copy hai jis par aap fail over kar sakte hain. Yeh crash-consistent (har 5 minute liya jata hai) ya app-consistent (aap ke set kiye waqfe par) ho sakta hai. Replication policy control karti hai ke yeh kitne arse rakhe jayen."
+ },
+ "D5-157": {
+  "q": "ASR Azure VMs ke crash-consistent recovery points kitni baar banata hai?",
+  "opts": [
+   "Har 5 minute",
+   "Har ghante",
+   "Rozana",
+   "Haftawar"
+  ],
+  "exp": "Azure VMs ke liye ASR har 5 minute crash-consistent recovery point banata hai. App-consistent points kam baar bante hain, aap ke ghanton mein configure kiye waqfe par. Yeh hourly, daily ya weekly nahi."
+ },
+ "D5-158": {
+  "q": "Jab primary region asal mein band ho to kaun sa failover type use karte hain?",
+  "opts": [
+   "Failover (unplanned)",
+   "Test failover",
+   "Sirf Planned failover",
+   "Cleanup test failover"
+  ],
+  "exp": "Jab primary region sach mein band ho to recovery point se target region mein VMs chalane ke liye unplanned failover chalayen. Test failover sirf drills ke liye hai, cleanup test VMs hatata hai, aur planned failover tab tarteeb se move ke liye hai jab source ab bhi theek ho aur data loss na ho."
+ },
+ "D5-159": {
+  "q": "Mukammal ASR DR cycle ke steps tarteeb mein lagayen:",
+  "items": [
+   "Secondary region mein fail over karein",
+   "Target region mein replication enable karein",
+   "Original region ki taraf re-protect karein (replication ulti)",
+   "Primary region mein fail back karein"
+  ],
+  "exp": "Pehle target region mein replication enable karein. Aafat mein secondary region mein fail over karein. Phir re-protect karein, jo replication ulti karta hai taa ke secondary wapas original region mein replicate kare. Aakhir mein primary region theek hone par wahan fail back karein (aur dobara re-protect karein)."
+ },
+ "D5-160": {
+  "q": "Test failover validate hone ke baad aap kya karte hain?",
+  "opts": [
+   "Test VMs delete karne ke liye 'Cleanup test failover' chalayen",
+   "Failover commit karein",
+   "Replication disable karein",
+   "Vault delete karein"
+  ],
+  "exp": "Test VMs check karne ke baad test VMs aur jure resources delete karne ke liye 'Cleanup test failover' chalayen. Commit asli failovers par apply hota hai, replication disable karna protection rokta hai, aur vault delete karna sab kuch hata deta hai."
+ },
+ "D5-161": {
+  "q": "Asli failover ke baad 'Commit' kya karta hai?",
+  "opts": [
+   "Failover ko pakka karta hai; aap ab doosre recovery point par nahi ja sakte",
+   "Replication shuru karta hai",
+   "Source VMs delete karta hai",
+   "Failover cancel karta hai"
+  ],
+  "exp": "Asli failover ke baad Commit usay pakka karta hai: aap ab doosre recovery point par nahi ja sakte. Yeh replication shuru nahi karta (woh re-protect hai), source VMs delete nahi karta, ya failover cancel nahi karta."
+ },
+ "D5-162": {
+  "q": "DR drill ke liye test-failover VMs ko kaun se network se jurna chahiye?",
+  "opts": [
+   "Target region mein isolated VNet, production se jura hua nahi",
+   "Production VNet",
+   "Koi network nahi",
+   "Source VNet"
+  ],
+  "exp": "Test-failover VMs ko target region ke aise isolated VNet se jurna chahiye jo production se jura na ho. Warna ek jaise naam aur IPs wali duplicate VMs production se takra sakti hain. VMs ko phir bhi network chahiye, aur source VNet doosre region mein hai."
+ },
+ "D5-163": {
+  "q": "Failover options kaun sa recovery point chunne dete hain?",
+  "opts": [
+   "Latest (sab se kam RPO), Latest processed (sab se kam RTO), Latest app-consistent, ya custom point",
+   "Sirf latest",
+   "Sirf app-consistent",
+   "Random"
+  ],
+  "exp": "Failover aap ko recovery point chunne deta hai: Latest (sab se kam data loss ke liye tamam pending data process karta hai), Latest processed (sab se tez), Latest app-consistent (apps consistent hoti hain), ya custom point. Yeh RPO aur RTO ke darmiyan sauda hai, ek fixed option nahi."
+ },
+ "D5-164": {
+  "q": "Kaun sa option sab se tez failover (sab se kam RTO) deta hai?",
+  "opts": [
+   "Latest processed",
+   "Latest",
+   "Latest app-consistent",
+   "Custom"
+  ],
+  "exp": "Latest processed us sab se naye recovery point par fail over karta hai jo ASR pehle hi process kar chuka, is liye pending data process hone ka intezar nahi karta. Is se sab se tez failover (sab se kam RTO) milta hai. Latest mein data loss kam hai lekin waqt zyada lagta hai, aur app-consistent points purane hote hain."
+ },
+ "D5-165": {
+  "q": "Machine groups ke ilawa recovery plan mein kya shamil ho sakta hai?",
+  "opts": [
+   "Pre/post scripts, Azure Automation runbooks, aur manual actions",
+   "Budgets",
+   "Policies",
+   "Locks"
+  ],
+  "exp": "Machines ke tarteeb-war groups ke ilawa recovery plan pre- aur post-scripts, Azure Automation runbooks (maslan DNS ya load balancer update karne ke liye), aur manual actions chala sakta hai jo kisi ke confirm karne tak rukte hain. Budgets, policies aur locks recovery plan ka hissa nahi."
+ },
+ "D5-166": {
+  "q": "Kai VMs ko ek shared, consistent recovery point par fail over hona hai (maslan multi-VM apps). Kaun si setting?",
+  "opts": [
+   "Multi-VM consistency (replication group)",
+   "Alag vaults",
+   "Sirf recovery plan",
+   "Backup policy"
+  ],
+  "exp": "Multi-VM consistency VMs ko replication group mein dalti hai, is liye woh crash-consistent aur app-consistent recovery points share karti hain aur ek hi lamhe par fail over hoti hain — multi-tier apps ke liye ahem. Recovery plans tarteeb control karte hain, consistency nahi, aur backup policies backup ke liye hain."
+ },
+ "D5-167": {
+  "q": "Kya ASR on-premises VMware VMs aur physical servers ko Azure mein replicate kar sakta hai?",
+  "opts": [
+   "Haan — ASR VMware, Hyper-V aur physical servers ko Azure tak support karta hai",
+   "Nahi, sirf Azure VMs",
+   "Sirf Hyper-V",
+   "Sirf Linux"
+  ],
+  "exp": "ASR on-premises VMware VMs, Hyper-V VMs aur physical Windows ya Linux servers ko Azure mein replicate kar sakta hai, aur Azure VMs ko regions ke darmiyan bhi. Yeh Azure VMs, Hyper-V ya Linux tak mehdood nahi."
+ },
+ "D5-168": {
+  "q": "Replicated VMs ko target region ke makhsoos availability zone mein chalna chahiye. Kya yeh configurable hai?",
+  "opts": [
+   "Haan — replication settings mein target availability zones ya sets chun sakte hain",
+   "Nahi",
+   "Sirf Windows ke liye",
+   "Sirf failover ke baad"
+  ],
+  "exp": "Replication enable karte waqt aap target settings chun sakte hain jaise availability zone ya availability set jo replicated VM target region mein use kare. Is liye failover ke baad VM aap ke chahe zone mein chalti hai. Yeh Windows aur Linux ke liye chalta hai aur failover se pehle set hota hai."
+ },
+ "D5-169": {
+  "q": "Kya ASR VMs ko USI region ke availability zones ke darmiyan replicate kar sakta hai?",
+  "opts": [
+   "Haan — bohat se regions mein zone-to-zone disaster recovery supported hai",
+   "Nahi, sirf cross-region",
+   "Sirf Backup ke sath",
+   "Sirf VMSS ke liye"
+  ],
+  "exp": "Haan. ASR zone-to-zone disaster recovery support karta hai, VMs ko usi region ke ek availability zone se doosre mein replicate karta hai, bohat se regions mein. Is ke liye Azure Backup nahi chahiye, aur yeh sirf VM scale sets ke liye nahi."
+ },
+ "D5-170": {
+  "q": "DNS ke sath failover ke baad web apps ka RTO kam rakhne mein ASR kaise madad karta hai?",
+  "opts": [
+   "Recovery plan scripts ya Traffic Manager se users ko failed-over endpoints par redirect karein",
+   "Kuch nahi chahiye",
+   "Sirf NSGs badlein",
+   "Advisor use karein"
+  ],
+  "exp": "ASR VMs ko target region mein chala deta hai, lekin users ko bhi un tak pohanchna hota hai. DNS update karne ke liye recovery plan scripts ya runbooks use karein, ya users ko khud failed-over endpoints par bhejne ke liye Traffic Manager priority routing. Kuch na karne se users fail hue region ki taraf hi rehte hain, aur NSGs aur Advisor traffic redirect nahi karte."
+ },
+ "D5-171": {
+  "q": "Kaun sa ASR metric dikhata hai ke replicated data kitna taaza hai?",
+  "opts": [
+   "RPO (har VM ki replication health aur RPO values)",
+   "CPU",
+   "Sirf Disk IOPS",
+   "Cost"
+  ],
+  "exp": "Har replicated item apni replication health aur mojooda RPO dikhata hai — replica source se kitna peeche hai — is liye aap dekh sakte hain ke data kitna taaza hai. CPU aur IOPS performance metrics hain, aur cost replication ka paimana nahi."
+ },
+ "D5-172": {
+  "q": "Azure-to-Azure replication ki kaun si DO prerequisites hain?",
+  "opts": [
+   "Source VMs se zaroori Azure service endpoints/URLs (ya service tags) tak outbound connectivity",
+   "Sab se naya Mobility service, jo extension ke taur par khud install hota hai",
+   "MARS agent",
+   "ExpressRoute circuit"
+  ],
+  "exp": "Source VMs ko Azure Site Recovery service URLs ya service tags tak outbound connectivity chahiye (maslan NSG ya proxy ke zariye). Mobility service replication enable karne par VM extension ke taur par khud install hoti hai aur updated rakhi jati hai. MARS aur ExpressRoute ki zaroorat nahi."
+ },
+ "D5-173": {
+  "q": "ASR ke bare mein Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Test failover jari replication par asar dalta hai",
+   "Re-protect failover ke baad replication ki direction ulti karta hai",
+   "ASR VMs ko regions ke darmiyan migrate karne ke liye use ho sakta hai",
+   "ASR replication ka charge har protected instance par hota hai"
+  ],
+  "exp": "Test failover isolated network mein chalta hai aur jari replication nahi rokta. Re-protect failover ke baad replication ki direction ulti karta hai. ASR VMs ko regions ke darmiyan migrate bhi kar sakta hai. Is ka bill har protected instance par, sath mein target region mein use hone wali storage par, hota hai."
+ },
+ "D5-174": {
+  "q": "Ransomware ne 3 din pehle VM ki files encrypt kin aur woh replicate ho gayin. Kaun si service saaf data wapas lati hai?",
+  "opts": [
+   "Azure Backup (infection se pehle ka recovery point restore karein)",
+   "ASR ka latest recovery point",
+   "VNet peering",
+   "Advisor"
+  ],
+  "exp": "ASR changes minton mein replicate karta hai, is liye encrypted files pehle hi us ke haal ke recovery points mein hain (aur yeh points zyada arse nahi rakhta). Azure Backup purane recovery points rakhta hai, is liye aap attack se pehle wala restore kar sakte hain. Isi liye backups ransomware se aap ki hifazat hain."
+ },
+ "D5-175": {
+  "q": "Ek app ko regional outage ke minton ke andar, kam se kam data loss ke sath, doosre region mein chalna hai. Kaun si service?",
+  "opts": [
+   "Azure Site Recovery",
+   "Sirf Azure Backup",
+   "Blob versioning",
+   "Export template"
+  ],
+  "exp": "Azure Site Recovery doosre region mein up-to-date replica rakhta hai, is liye app minton mein (kam RTO) sirf chand minute ke data loss (kam RPO) ke sath fail over ho sakti hai. Azure Backup se restore kahin slow hai. Blob versioning aur templates chalti VMs replicate nahi karte."
+ },
+ "D5-176": {
+  "q": "ASR ke bajaye Azure Backup ke kaun se DO aam istemal hain?",
+  "opts": [
+   "Compliance ke liye long-term retention (maslan 10 saal ke yearly points)",
+   "Ghalti se delete hui files wapas lana",
+   "Recovery plans ke sath orchestrated regional failover",
+   "5-minute RPO ke sath musalsal replication"
+  ],
+  "exp": "Azure Backup long-term retention (maslan 10 saal rakhe jane wale yearly points) aur ek delete hui file ya folder restore karne ka tool hai. Recovery plans ke sath orchestrated regional failover, aur 5-minute RPO ke sath musalsal replication, ASR ke features hain."
+ },
+ "D5-177": {
+  "q": "Kaun sa vault type Azure file shares protect karta hai?",
+  "opts": [
+   "Recovery Services vault",
+   "Backup vault",
+   "Key Vault",
+   "Koi nahi"
+  ],
+  "exp": "Azure file share backup Recovery Services vault mein configure hota hai. Backup vaults disks, blobs aur PostgreSQL handle karte hain, Key Vault secrets rakhta hai, aur file shares protect ho sakte hain, is liye 'Koi nahi' ghalat hai."
+ },
+ "D5-178": {
+  "q": "Kya Azure file share backup se individual files restore kar sakte hain?",
+  "opts": [
+   "Haan — poora share ya item-level (file/folder) restore, asal ya doosri location par",
+   "Nahi, sirf poora share",
+   "Sirf MARS ke zariye",
+   "Sirf on-premises par"
+  ],
+  "exp": "Azure file share backup se aap poora share ya sirf makhsoos files aur folders restore kar sakte hain, asal location par ya kisi aur par. MARS shamil nahi, aur restores Azure file shares par jate hain, on-premises par nahi."
+ },
+ "D5-179": {
+  "q": "Jab Azure Backup file share protect karta hai to storage account mein kaun si hifazat add karta hai?",
+  "opts": [
+   "Account ko ghalti se delete hone se rokne wala resource lock",
+   "Immutable storage",
+   "Private endpoint",
+   "GRS"
+  ],
+  "exp": "File share protect karne par Azure Backup storage account par delete lock add karta hai taa ke koi usay ghalti se delete na kare — jis se backups bhi delete ho jate, kyun ke snapshots account mein rehte hain. Yeh immutable storage, private endpoints ya GRS enable nahi karta."
+ },
+ "D5-180": {
+  "q": "Ops team ek dashboard chahti hai jo VM CPU, failed backups aur storage availability dikhaye. Behtareen tool?",
+  "opts": [
+   "Metrics aur log queries milane wale Azure Monitor Workbooks (ya shared dashboard)",
+   "Advisor",
+   "Activity log",
+   "Cost analysis"
+  ],
+  "exp": "Azure Monitor Workbooks (ya shared dashboard) VM CPU aur storage availability jaise metrics ko failed backup jobs jaisi log queries ke sath team ke liye ek view mein mila sakte hain. Advisor recommendations deta hai, Activity log operations dikhata hai, aur Cost analysis kharcha dikhata hai."
+ },
+ "D5-181": {
+  "q": "Jab bhi koi subscription scope par role assignment banaye to admin ko alert milna chahiye. Kaise?",
+  "opts": [
+   "Microsoft.Authorization/roleAssignments/write operation par activity log alert",
+   "Metric alert",
+   "Advisor",
+   "Budget"
+  ],
+  "exp": "Role assignment banana control-plane operation (Microsoft.Authorization/roleAssignments/write) hai jo Activity log mein record hota hai. Subscription scope par us operation ka Activity log alert har baar fire hota hai. Metric alerts numbers dekhte hain, aur Advisor aur budgets role changes track nahi karte."
+ },
+ "D5-182": {
+  "q": "Kaun si Azure Advisor category backup ke baghair VMs ko flag karti hai?",
+  "opts": [
+   "Reliability",
+   "Cost",
+   "Performance",
+   "Security"
+  ],
+  "exp": "Azure Advisor ki Reliability category (pehle 'High availability') mein VMs par backup enable karne jaisi recommendations shamil hain. Cost, Performance aur Security doosre shobe cover karti hain."
+ },
+ "D5-183": {
+  "q": "Aap ko check karna hai ke subscription ki har VM ka backup enabled hai, aur khud enable karna hai. Behtareen tareeqa?",
+  "opts": [
+   "Azure Policy: DeployIfNotExists aur remediation ke sath 'Configure backup on VMs...'",
+   "Mahana manual check",
+   "Alert rule",
+   "Resource locks"
+  ],
+  "exp": "Built-in Azure Policy definition ('Configure backup on virtual machines…') DeployIfNotExists use kar ke VMs par backup khud enable karti hai, aur remediation task mojooda VMs theek karta hai. Manual checks scale nahi hote, alerts sirf batate hain, aur locks sirf deletion rokte hain."
+ },
+ "D5-184": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Alerts Recovery Services vault ke backup failures monitor kar sakte hain",
+   "Service Health alerts muft hain",
+   "Metric alert rules har monitor hone wali time series par bill hote hain",
+   "Log Analytics data ek query mein kai workspaces ke aar paar query ho sakta hai"
+  ],
+  "exp": "Charon sahi hain. Backup failures Azure Monitor alerts uthate hain. Service Health alerts Activity log alerts hain aur muft hain. Metric alert rules har monitor hone wali time series par bill hote hain. Aur KQL workspace() function se ek sath kai workspaces query kar sakti hai."
+ },
+ "D5-185": {
+  "q": "Kaun si KQL query pichle din ke failed Azure Backup jobs list karti hai (resource-specific tables)?",
+  "opts": [
+   "AddonAzureBackupJobs | where TimeGenerated > ago(1d) and JobStatus == \"Failed\"",
+   "Heartbeat | where Backup == \"Failed\"",
+   "Perf | where Job == Failed",
+   "AzureActivity | where Backup"
+  ],
+  "exp": "Resource-specific diagnostic tables ke sath backup job data AddonAzureBackupJobs mein jata hai, is liye usay pichle din aur JobStatus == \"Failed\" par filter karein. Heartbeat agent heartbeats rakhta hai, Perf performance counters, aur AzureActivity control-plane operations, backup job ke nateeje nahi."
+ },
+ "D5-186": {
+  "q": "Disk ki khali jagah 10% se kam hone par alert trigger hona chahiye. Kaun sa signal source?",
+  "opts": [
+   "Guest perf data (AMA ka collect kiya) par log search alert ya VM insights metric",
+   "Sirf platform metric",
+   "Activity log",
+   "Service Health"
+  ],
+  "exp": "Khali disk space guest OS ke andar napi jati hai, is liye platform metrics mein shamil nahi. Isay Azure Monitor Agent se collect karein (maslan VM insights ke zariye) aur us performance data par log search alert lagayen. Activity log aur Service Health mein disk space data nahi hota."
+ },
+ "D5-187": {
+  "q": "Kaun sa built-in feature ek click mein VM ke recommended alert rules deta hai?",
+  "opts": [
+   "Recommended alert rules (VM 'Alerts' → Enable recommended alert rules)",
+   "Advisor",
+   "Policy",
+   "Workbooks"
+  ],
+  "exp": "VM ke Alerts page par aap ek step mein recommended alert rules enable kar sakte hain — CPU, available memory aur network jaise aam metric alerts — apne thresholds aur action group ke sath. Advisor recommendations deta hai, Policy rules enforce karti hai, aur Workbooks reports hain."
+ },
+ "D5-188": {
+  "q": "Kaun si CLI command VM CPU > 80% ke liye metric alert banati hai?",
+  "opts": [
+   "az monitor metrics alert create -g RG1 -n cpu80 --scopes <vmId> --condition \"avg Percentage CPU > 80\" --action ag1",
+   "az alert create cpu80",
+   "az vm alert add 80",
+   "az monitor log alert"
+  ],
+  "exp": "az monitor metrics alert create scope (--scopes VM ki ID ke sath), condition (\"avg Percentage CPU > 80\") aur action group (--action) set karti hai. Baqi commands mojood nahi, aur az monitor log alerts log search queries ke liye hain."
+ },
+ "D5-189": {
+  "q": "Kaun si CLI command email receiver wala action group banati hai?",
+  "opts": [
+   "az monitor action-group create -g RG1 -n ag1 --action email ops ops@contoso.com",
+   "az alert group new",
+   "az monitor email create",
+   "az actiongroup add"
+  ],
+  "exp": "az monitor action-group create action group banati hai, aur har --action ek receiver add karta hai: yahan type email, naam ops, address ops@contoso.com. Baqi commands mojood nahi."
+ },
+ "D5-190": {
+  "q": "SMS jaisi action group notifications par kaun si rate limits lagti hain?",
+  "opts": [
+   "SMS aur voice rate-limited hain (maslan har number par taqreeban har 5 minute mein 1 SMS se zyada nahi); email ki limits zyada hain",
+   "Koi limits nahi",
+   "Sirf email limited hai",
+   "Webhooks din mein 1 tak limited hain"
+  ],
+  "exp": "Action groups ki har destination par rate limits hain: har phone number par har 5 minute mein 1 SMS aur 1 voice call se zyada nahi, aur har address par ghante mein 100 emails tak. Is liye alerts ke sailab mein notifications gir sakti hain. Webhooks din mein ek tak mehdood nahi."
+ },
+ "D5-191": {
+  "q": "Autoscale settings, jo Azure Monitor ka feature hain, kin resources par apply hoti hain?",
+  "opts": [
+   "VM scale sets, App Service plans, Cloud Services, aur kuch aur",
+   "Storage accounts",
+   "VNets",
+   "Key Vault"
+  ],
+  "exp": "Azure Monitor mein autoscale un resources par kaam karta hai jo instances add ya remove kar sakte hain, jaise VM scale sets, App Service plans aur Cloud Services (aur kuch aur, jaise API Management). Storage accounts, VNets aur Key Vault ke scale karne wale instances nahi."
+ },
+ "D5-192": {
+  "q": "Jab bhi autoscale instances add ya remove kare to aap ko kaise bataya ja sakta hai?",
+  "opts": [
+   "Autoscale setting mein autoscale notifications (email/webhook) configure karein, ya Autoscale activity log category par alert lagayen",
+   "Advisor use karein",
+   "Mumkin nahi",
+   "Sirf Service Health ke zariye"
+  ],
+  "exp": "Autoscale setting mein aap har baar scale in ya out hone par email bhej ya webhook call kar sakte hain. Scale actions Activity log mein Autoscale category ke neeche bhi record hote hain, is liye aap un par alert laga sakte hain. Advisor aur Service Health scale actions report nahi karte."
+ },
+ "D5-193": {
+  "q": "Kaun sa feature public website ki availability kai global locations se check karta hai?",
+  "opts": [
+   "Application Insights availability tests (standard tests)",
+   "IP flow verify",
+   "Connection troubleshoot",
+   "Activity log"
+  ],
+  "exp": "Application Insights availability tests (standard tests) schedule par duniya bhar ki kai Azure locations se URL par requests bhejte hain aur fail ya slow hone par alert karte hain. IP flow verify aur connection troubleshoot aap ke network ke andar se test karte hain, aur Activity log operations record karta hai."
+ },
+ "D5-194": {
+  "q": "Kaun sa insights experience Azure Kubernetes Service aur container workloads monitor karta hai?",
+  "opts": [
+   "Container insights",
+   "VM insights",
+   "Network insights",
+   "Storage insights"
+  ],
+  "exp": "Container insights AKS clusters (aur Arc-enabled Kubernetes) monitor karta hai: node aur pod performance, container logs aur cluster health. VM insights VMs monitor karta hai, Network insights networking cover karta hai, aur Storage insights storage accounts."
+ },
+ "D5-195": {
+  "q": "50 VMs se Windows event logs collect karne aur critical events par alert karne ke steps tarteeb mein lagayen:",
+  "items": [
+   "Action group ke sath Event table par log search alert banayen",
+   "Log Analytics workspace banayen",
+   "Windows event logs ke liye DCR bana kar VMs se associate karein (AMA installed)",
+   "KQL query se data validate karein"
+  ],
+  "exp": "Pehle workspace chahiye, kyun ke data collection rule data usi ko bhejti hai. Phir Windows event logs ki DCR bana kar 50 VMs se associate karein (jis se AMA install hota hai). Phir KQL query chala kar confirm karein ke events aa rahe hain, aur aakhir mein action group ke sath Event table par log search alert banayen."
+ },
+ "D5-196": {
+  "q": "Kya Azure Disk Encryption se encrypted VM ka backup le sakte hain?",
+  "opts": [
+   "Haan — Azure Backup ADE VMs support karta hai (Backup service ke liye Key Vault permissions ke sath)",
+   "Nahi",
+   "Sirf Linux",
+   "Sirf MARS ke sath"
+  ],
+  "exp": "Azure Backup Windows aur Linux dono par Azure Disk Encryption se encrypted VMs support karta hai. Backup service ko Key Vault par permissions chahiye taa ke woh encrypted disks ke sath keys aur secrets ka bhi backup le sake. MARS ki zaroorat nahi."
+ },
+ "D5-197": {
+  "q": "VM ka backup 'UserErrorGuestAgentStatusUnavailable' ke sath fail hota hai. Pehle kya check karenge?",
+  "opts": [
+   "Ke VM agent installed, chal raha aur up to date hai, aur VM Azure endpoints tak pohanch sakti hai",
+   "Storage tier",
+   "NSG port 445",
+   "DNS zone"
+  ],
+  "exp": "Azure VM backup VM agent ke zariye kaam karta hai, jo backup extension chalata hai. 'GuestAgentStatusUnavailable' ka matlab agent jawab nahi de raha, is liye check karein ke woh installed, chal raha aur up to date hai, aur VM Azure endpoints tak pohanch sakti hai. Storage tier, port 445 aur DNS zones wajah nahi."
+ },
+ "D5-198": {
+  "q": "Asal ko chhue baghair pichle hafte ki VM ki test copy banane ke liye kaun sa restore type use karna chahiye?",
+  "opts": [
+   "Create new VM (alternate location)",
+   "Replace existing",
+   "Delete aur restore",
+   "Test failover"
+  ],
+  "exp": "'Create new VM' recovery point ko alag VM ke taur par restore karta hai, is liye asal baghair badle chalti rehti hai. 'Replace existing' asal ki disks overwrite kar dega, aur test failover Site Recovery ka feature hai, backup restore nahi."
+ },
+ "D5-199": {
+  "ctx": "North Europe mein critical app VM ki requirements: (1) rozana backups 7 saal rakhe jayen; (2) regional outage ke 30 minute ke andar West Europe mein failover; (3) baghair asar ke har teen mahine DR drills; (4) ek delete hue folder ka restore.",
+  "q": "Kaun sa combination TAMAM requirements poori karta hai?",
+  "opts": [
+   "Azure Backup (daily policy plus yearly retention, file recovery) aur West Europe tak ASR (test failovers ke sath)",
+   "Sirf CRR ke sath Azure Backup",
+   "Sirf ASR",
+   "Blob versioning aur snapshots"
+  ],
+  "exp": "Azure Backup 7 saal rakhe jane wale rozana backups (yearly retention) aur ek folder restore (file-level recovery) cover karta hai. West Europe tak Azure Site Recovery 30 minute ke andar failover aur baghair asar ke quarterly drills (test failover) cover karta hai. Akela Backup bohat slow fail over karta hai, akela ASR 7 saal nahi rakh sakta ya files restore nahi kar sakta, aur blob features VMs protect nahi karte."
+ },
+ "D5-200": {
+  "ctx": "Ops setup: LAW1 VM perf data (AMA/DCR) aur vault diagnostics leta hai. Alert rules: metric CPU > 90% (AG-Ops), AddonAzureBackupJobs failures par log alert (AG-Backup). Ek alert processing rule Saturday 00:00–04:00 notifications suppress karta hai.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Saturday 02:00 ka CPU spike phir bhi Azure Monitor mein fired alert banata hai",
+   "AG-Ops Saturday 02:00 ke us spike ke liye email bhejta hai",
+   "Backup job failures par Log Analytics ke zariye alert lagaya ja sakta hai",
+   "Vault diagnostic settings hatane se backup log alert toot jayega"
+  ],
+  "exp": "Alert processing rule sirf actions suppress karta hai, is liye 02:00 ka CPU spike phir bhi fired alert banata hai, lekin window ke dauran AG-Ops email nahi bhejta. Backup job failures par Log Analytics mein log alert lagaya ja sakta hai, jo vault ki diagnostic settings par depend karta hai — unhein hatayen to backup alert ko data nahi milta."
+ }
+}
