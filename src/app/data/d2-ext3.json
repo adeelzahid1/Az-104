@@ -213,7 +213,7 @@
   "ans": [
    0
   ],
-  "exp": "The archive tier is only supported for accounts using LRS, GRS or RA-GRS. Accounts using ZRS, GZRS or RA-GZRS can't move blobs to archive.",
+  "exp": "The archive tier is only supported for accounts using LRS, GRS or RA-GRS. Accounts using ZRS, GZRS or RA-GZRS can't move blobs to archive, so if you need archive, choose one of the supported redundancy options.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -285,7 +285,7 @@
   "ans": [
    0
   ],
-  "exp": "Lifecycle management can move block blobs between tiers. Append blobs support only delete actions, and page blobs aren't supported at all.",
+  "exp": "Lifecycle management can move block blobs between hot, cool, cold and archive, and delete them. Append blobs only support the delete action, and page blobs aren't supported at all. So tiering works on block blobs only.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
  },
  {
@@ -396,7 +396,7 @@
   "ans": [
    0
   ],
-  "exp": "Blob and container soft delete retention can be set anywhere from 1 to 365 days. The other ranges are wrong.",
+  "exp": "Blob soft delete (and container soft delete) retention can be set anywhere from 1 to 365 days. During that time a deleted blob can be undeleted; after it, the data is permanently removed. The other ranges are wrong.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview"
  },
  {
@@ -414,7 +414,7 @@
   "ans": [
    0
   ],
-  "exp": "Point-in-time restore returns block blobs to an earlier state; it requires versioning, change feed, and soft delete.",
+  "exp": "Point-in-time restore returns block blobs in a container (or the account) to their state at an earlier time, which is ideal after a bad batch job. It needs versioning, change feed and blob soft delete enabled. Share snapshots are for Azure Files, object replication copies data, and rehydration is for archive.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/point-in-time-restore-overview"
  },
  {
@@ -543,7 +543,7 @@
   "ans": [
    0
   ],
-  "exp": "Standard file shares can be transaction optimized, hot, or cool. Premium shares are on FileStorage accounts.",
+  "exp": "Standard (HDD) file shares can be transaction optimized, hot or cool, chosen to match how often files are accessed. Premium (SSD) shares live in FileStorage accounts. Archive isn't available for file shares.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"
  },
  {
@@ -780,7 +780,7 @@
   "ans": [
    0
   ],
-  "exp": "The volume free space policy tiers files to keep the chosen percentage free. A date policy tiers files not accessed in N days.",
+  "exp": "The volume free space policy tiers files to Azure so that at least the chosen percentage (here 20%) of the local volume stays free. A date policy tiers files that haven't been accessed in a set number of days. Retention and lifecycle policies aren't File Sync settings.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-policy"
  },
  {
@@ -819,7 +819,7 @@
    true,
    true
   ],
-  "exp": "A share uses one protocol; shares can be mounted in Azure and on-premises; snapshots are read-only; premium shares use SSD.",
+  "exp": "A file share uses one protocol — NFS or SMB — so an NFS share can't be accessed over SMB. Shares can be mounted by Azure VMs and on-premises machines. Share snapshots are read-only. Premium file shares use SSDs.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"
  },
  {
@@ -895,7 +895,7 @@
    false,
    true
   ],
-  "exp": "Blob soft delete covers 14 days; container retention is 7 days; at 120 days the blob is archived (offline); versioning keeps previous content.",
+  "exp": "Blob soft delete keeps deleted blobs for 14 days, so a blob deleted 10 days ago can be restored. Container soft delete is only 7 days, so a container deleted 9 days ago can't. After 90 days without changes the blob is in archive and offline. Versioning keeps the previous content when a blob is overwritten.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/data-protection-overview"
  },
  {
@@ -914,7 +914,7 @@
   "ans": [
    0
   ],
-  "exp": "File Sync gives multi-site sync to one share, local caching, and tiering for small disks, while NTFS ACLs (AD) are preserved.",
+  "exp": "Azure File Sync keeps one central Azure file share in sync with servers at each branch. Cloud tiering keeps frequently used files on small local disks and tiers the rest to Azure, so local reads stay fast. NTFS ACLs, and so on-premises AD permissions, are kept. Blob replication, separate GRS accounts and DFS-R alone can't do all of this.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-introduction"
  }
 ]

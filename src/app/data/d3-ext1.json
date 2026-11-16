@@ -341,7 +341,7 @@
    false,
    true
   ],
-  "exp": "Defaults and parameter references are fine; outputting secrets is discouraged; $schema sets the template version.",
+  "exp": "Parameters can have default values, and variables can reference parameters. Don't output secrets, because outputs are stored in deployment history in plain text. The $schema property tells Azure which version of the template language the file uses.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/syntax"
  },
  {
@@ -581,7 +581,7 @@
    true,
    true
   ],
-  "exp": "Bicep is stateless, since Azure is the state; it has full resource parity; what-if and deployment history work the same.",
+  "exp": "Bicep doesn't need a state file like Terraform — Azure itself holds the current state. It supports every resource type and API version that ARM does, from day one. What-if works with Bicep, and its outputs appear in deployment history just like ARM.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview"
  },
  {
@@ -671,7 +671,7 @@
   "ans": [
    0
   ],
-  "exp": "Use the Custom Script Extension (Windows/Linux) or cloud-init/custom data (Linux) for post-deploy configuration.",
+  "exp": "The Custom Script Extension runs a script after the VM is deployed, on Windows or Linux — for example to install IIS. On Linux, cloud-init via custom data can configure the VM at first boot. Boot diagnostics, Advisor and the serial console don't automate setup.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows"
  },
  {
@@ -725,7 +725,7 @@
   "ans": [
    0
   ],
-  "exp": "Sysprep removes machine-specific information for a generalized image. Linux uses waagent -deprovision.",
+  "exp": "Before capturing a generalized Windows image, run Sysprep with the generalize option to remove machine-specific details such as the computer SID. Then each VM created from the image gets its own identity. On Linux, use waagent -deprovision. chkdsk, ipconfig and gpupdate don't prepare images.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/generalize"
  },
  {
@@ -887,7 +887,7 @@
   "ans": [
    0
   ],
-  "exp": "Ephemeral OS disks are local, free, and fast, but data is lost on reimage or deallocation; stop/deallocate isn't supported.",
+  "exp": "Ephemeral OS disks are stored on the host's local cache or temp disk, so they're free and very fast, and reimaging is quick. The trade-off is that data is lost on reimage, and the VM can't be stopped and deallocated. Ultra disks and shared disks are remote managed disks, and snapshots are backups.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/ephemeral-os-disks"
  },
  {
@@ -908,7 +908,7 @@
    false,
    true
   ],
-  "exp": "SSE is always on; type changes are supported but generally require the VM to be deallocated; snapshots can create disks.",
+  "exp": "Managed disks are always encrypted at rest with server-side encryption. You can change a disk from Standard SSD to Premium SSD, but in most cases the VM must be deallocated first. A snapshot can be used to create a new managed disk.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-convert-types"
  }
 ]

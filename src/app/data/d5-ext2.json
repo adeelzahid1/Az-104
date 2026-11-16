@@ -327,7 +327,7 @@
    false,
    true
   ],
-  "exp": "VPN troubleshoot covers gateways; IP flow verify is for VM NICs; topology doesn't need a running VM; Network Watcher is regional.",
+  "exp": "VPN troubleshoot diagnoses a virtual network gateway and its connections. IP flow verify works on VM NICs, not traffic between two PaaS services. Topology shows network resources and doesn't need a running VM. Network Watcher must be enabled in the region of the resources you diagnose.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"
  },
  {
@@ -908,7 +908,7 @@
    true,
    false
   ],
-  "exp": "CRR enables paired-region restores; the vault must match the VM's region; soft delete keeps 14 days; redundancy locks after the first protected item.",
+  "exp": "With GRS and cross-region restore, VM1 can be restored in the paired region (North Europe) at any time. The vault can only protect VMs in its own region, so not VM2 in East US. Soft delete keeps deleted backup data for 14 days. Redundancy is locked once the first item is protected, so RSV1 can't be changed to LRS now.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-create-recovery-services-vault"
  }
 ]

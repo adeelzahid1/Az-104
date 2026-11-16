@@ -44,7 +44,7 @@
    1,
    0
   ],
-  "exp": "A metric alert scoped to a resource group can monitor every VM in it, including future ones. Action groups deliver notifications.",
+  "exp": "A metric alert rule scoped to the resource group (with the VM resource type) monitors every VM in it, including VMs added later. An action group delivers the notifications, such as email or SMS, when the alert fires.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-multiple-time-series-single-rule"
  },
  {
@@ -63,7 +63,7 @@
   "ans": [
    1
   ],
-  "exp": "Alert processing rules can suppress action groups during scheduled windows while the alerts themselves still fire.",
+  "exp": "An alert processing rule can suppress action group notifications on a recurring schedule, such as every Sunday. Alerts still fire and are recorded, but nobody is paged. Disabling rules with a runbook or editing receivers each week is fragile, and severity doesn't stop notifications.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    1
   ],
-  "exp": "Connection Monitor tests connectivity and latency continuously and can alert. IP flow verify only checks NSG rules at a single point in time.",
+  "exp": "Connection Monitor tests connectivity from the VMs to api.payments.contoso.com on port 443 continuously, tracking latency and failures, and can raise alerts. IP flow verify only checks NSG rules for one flow at one moment, packet capture is for deep analysis, and the Activity log records management operations.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/connection-monitor-overview"
  },
  {
@@ -152,7 +152,7 @@
    2,
    0
   ],
-  "exp": "SQL Server workload backup supports frequent log backups and point-in-time restore. The MARS agent backs up Windows files and folders directly to Azure.",
+  "exp": "Azure Backup for SQL Server in Azure VMs supports frequent log backups (as often as every 15 minutes) and point-in-time restore. The MARS agent backs up Windows files and folders directly to a Recovery Services vault, without a backup server.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-sql-database"
  },
  {
@@ -171,7 +171,7 @@
   "ans": [
    1
   ],
-  "exp": "Site Recovery replicates continuously and fails over within minutes. For Azure-to-Azure disaster recovery the vault belongs in the target region.",
+  "exp": "Azure Site Recovery continuously replicates the VMs to West Europe and can fail them over within minutes. For Azure-to-Azure DR the vault must be in the target region (West Europe), and a recovery plan controls the failover order. Backup with cross-region restore, GRS disks or snapshots would take far longer to bring the VMs up.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-enable-replication"
  },
  {
@@ -190,7 +190,7 @@
   "ans": [
    1
   ],
-  "exp": "A test failover starts replica VMs in an isolated network without affecting production or ongoing replication.",
+  "exp": "A test failover starts replica VMs in an isolated virtual network, so you can check the DR plan without affecting production or interrupting replication. A planned failover would actually move production, restoring a backup tests backup rather than DR, and stopping replication removes protection.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"
  },
  {
@@ -298,7 +298,7 @@
    1,
    0
   ],
-  "exp": "Severity runs from 0 (critical) to 4 (verbose). The user response states are New, Acknowledged and Closed.",
+  "exp": "Alert severity runs from Sev 0 (Critical, the most severe) to Sev 4 (Verbose). Each fired alert also has a user response state — New, Acknowledged or Closed — that you set while handling it.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
  },
  {
@@ -326,7 +326,7 @@
    1,
    1
   ],
-  "exp": "Platform metrics are kept for 93 days and Activity log events for 90 days. Use diagnostic settings to keep them longer.",
+  "exp": "Platform metrics are kept for 93 days and Activity log events for 90 days. To keep either for longer, or to query them with KQL, send them to a Log Analytics workspace or storage account with a diagnostic setting.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-platform-metrics"
  },
  {
@@ -354,7 +354,7 @@
    1,
    1
   ],
-  "exp": "Soft delete keeps deleted backup data for 14 days by default. Instant restore snapshots default to 2 days (1–5 with the Standard policy).",
+  "exp": "Soft delete keeps deleted backup data for 14 days by default, so it can be recovered after an accident or attack. Instant restore snapshots are kept for 2 days by default (1–5 days with the Standard policy), which makes recent restores much faster.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-instant-restore-capability"
  },
  {
@@ -382,7 +382,7 @@
    0,
    1
   ],
-  "exp": "IP flow verify names the NSG rule that allows or denies a flow. Next hop shows the routing decision.",
+  "exp": "IP flow verify checks a specific flow and names the NSG rule that allows or denies it. Next hop shows where Azure routes traffic to an address and which route table is responsible.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"
  },
  {
@@ -409,7 +409,7 @@
    1,
    0
   ],
-  "exp": "The vault must survive a source-region outage, so it goes in the target region. Crash-consistent points are created every 5 minutes.",
+  "exp": "For Azure-to-Azure disaster recovery the vault goes in the target region, so it's still available if the source region fails. Site Recovery creates crash-consistent recovery points every 5 minutes, with app-consistent points at an interval you choose.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"
  },
  {
@@ -431,7 +431,7 @@
   "ans": [
    1
   ],
-  "exp": "--workspace sends logs to Log Analytics. --storage-account and --event-hub are the other destinations.",
+  "exp": "az monitor diagnostic-settings create with --workspace sends the key vault's logs (such as AuditEvent) to a Log Analytics workspace, where you can query them. --storage-account (archive) and --event-hub (streaming) are the other destinations.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/monitor/diagnostic-settings"
  },
  {
@@ -459,7 +459,7 @@
    1,
    1
   ],
-  "exp": "Most tables keep data interactively for 30 days by default, configurable up to 730 days. Long-term retention can extend further.",
+  "exp": "Most Log Analytics tables keep data for 30 days of interactive retention by default, and you can set up to 730 days. Long-term retention can keep data for much longer (up to 12 years) at a lower price.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"
  },
  {
@@ -514,7 +514,7 @@
    2,
    1
   ],
-  "exp": "Storage resource logs record data-plane operations; the Activity log records control-plane changes; guest logs need the agent; platform metrics show CPU.",
+  "exp": "Storage resource logs, sent with a diagnostic setting, record data-plane operations such as who read or wrote blobs. The Activity log records control-plane operations such as deleting a resource. Windows event logs need the Azure Monitor Agent with a DCR sending to Log Analytics. CPU trends come from platform metrics, which are collected automatically.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/data-sources"
  },
  {
@@ -568,7 +568,7 @@
    0,
    0
   ],
-  "exp": "Recovery Services vaults protect VMs, file shares and SQL in VMs. Backup vaults protect blobs, managed disks and Azure Database for PostgreSQL.",
+  "exp": "Recovery Services vaults protect Azure VMs, Azure file shares and SQL Server in Azure VMs. Backup vaults protect newer workloads such as Azure Blobs, managed disks and Azure Database for PostgreSQL.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-vault-overview"
  },
  {
@@ -621,7 +621,7 @@
    0,
    1
   ],
-  "exp": "Latest processes all pending data for the lowest RPO; Latest processed skips that for the lowest RTO; Latest app-consistent uses the last app-consistent point.",
+  "exp": "Latest processes all pending data first, giving the lowest data loss (RPO) but a slower failover. Latest processed uses the newest point that's already processed, giving the fastest failover (RTO). Latest app-consistent uses the last application-consistent point, so apps start in a consistent state.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-failover"
  },
  {
@@ -648,7 +648,7 @@
    0,
    1
   ],
-  "exp": "Data collection rules drive the agent; workbooks are reports; alert processing rules suppress actions; action groups notify and automate.",
+  "exp": "A data collection rule defines what the Azure Monitor Agent collects and where it sends it. A workbook is an interactive report with queries and charts. An alert processing rule can silence notifications during maintenance. An action group sends email and SMS and can run a runbook.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/overview"
  },
  {
@@ -701,7 +701,7 @@
    0,
    1
   ],
-  "exp": "The VM backup extension handles Azure VM snapshots; MARS backs up Windows files; MABS and DPM provide app-aware on-premises backup.",
+  "exp": "The VM backup extension coordinates snapshots for Azure VM backup. The MARS agent backs up on-premises Windows files and folders directly to Azure. MABS and DPM provide app-aware backup of on-premises workloads such as SQL Server and Hyper-V.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-architecture"
  },
  {
@@ -821,7 +821,7 @@
   "ans": [
    1
   ],
-  "exp": "RPO shows how far behind replication is. A 3-hour RPO with Critical health means recent changes have not reached the target region.",
+  "exp": "RPO shows how far behind the replica is. An RPO of about 3 hours with Critical health means recent changes haven't reached the target region, so a failover now could lose about 3 hours of data. Investigate replication — for example network or disk churn issues. It hasn't failed over, and this has nothing to do with backups.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-monitor-and-troubleshoot"
  },
  {
@@ -862,7 +862,7 @@
   "ans": [
    1
   ],
-  "exp": "The XPath query keeps only event IDs 4624 (successful logon) and 4625 (failed logon). Two counters are sampled every 60 seconds and sent to the workspace.",
+  "exp": "The XPath query keeps only Security event IDs 4624 (successful logon) and 4625 (failed logon). Two performance counters, CPU and available memory, are sampled every 60 seconds, and everything goes to the law-prod workspace. It doesn't collect all events, Linux syslog or Activity log events.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-windows-events"
  },
  {
@@ -903,7 +903,7 @@
    false,
    false
   ],
-  "exp": "Suppression stops action groups only; alerts still fire. The scope limits the rule to RG-Prod, and the alert rules stay enabled.",
+  "exp": "An alert processing rule with suppression only stops action groups, so alerts still fire and appear in Azure Monitor but no email is sent during the window. Its scope is RG-Prod, so it doesn't affect other resource groups. The alert rules themselves stay enabled.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
  },
  {
@@ -941,7 +941,7 @@
   "ans": [
    1
   ],
-  "exp": "The AddonAzureBackup* tables are filled only when the vault's diagnostic settings send backup report data to the workspace in resource-specific mode.",
+  "exp": "The AddonAzureBackup* tables are only filled when the vault has a diagnostic setting sending Azure Backup data, in resource-specific mode, to that workspace. Without it, the query finds nothing even though jobs failed. Backup jobs are logged, no Entra licence is needed, and failed jobs aren't deleted after an hour.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-diagnostic-events"
  }
 ]

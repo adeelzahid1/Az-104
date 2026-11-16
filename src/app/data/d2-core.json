@@ -14,7 +14,7 @@
   "ans": [
    1
   ],
-  "exp": "VNet firewall rules require the Microsoft.Storage service endpoint on the subnet. A private endpoint is a different mechanism.",
+  "exp": "A storage firewall rule for a VNet subnet only works if that subnet has the Microsoft.Storage service endpoint, so traffic arrives with the subnet's identity. Without it, the VMs' traffic comes from a public IP and is blocked. A private endpoint is a different approach, port 445 is only for SMB, and public IPs aren't needed.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    1
   ],
-  "exp": "Policy-based SAS inherit the policy's constraints; change or delete the policy to adjust or revoke them all.",
+  "exp": "A SAS linked to a stored access policy takes its start time, expiry and permissions from the policy. Change the policy, or delete it, and every SAS that uses it is updated or revoked at once, without rotating account keys. Policy-based SAS still expire, still need a signature, and still obey the firewall.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"
  },
  {
@@ -194,7 +194,7 @@
   "ans": [
    1
   ],
-  "exp": "Key Vault stores and rotates secrets; storage accounts support a key expiration policy that reminds you to rotate.",
+  "exp": "Azure Key Vault stores secrets such as storage account keys securely and can manage their rotation. On the storage account, a key expiration policy reminds you when keys are due for rotation. Advisor, Monitor and Network Watcher don't store secrets.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"
  },
  {
@@ -308,7 +308,7 @@
    true,
    true
   ],
-  "exp": "A key rotation kills its SAS tokens; SAS can only narrow a policy; the firewall applies broadly; Blob and Queue support Entra auth.",
+  "exp": "Regenerating an account key invalidates every SAS signed with that key. A SAS can't grant more than the stored access policy it references. Unless you add exceptions, the storage firewall blocks all networks, Azure services included. And Entra ID authentication works for Blob and Queue data operations.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
  },
  {
@@ -416,7 +416,7 @@
   "ans": [
    1
   ],
-  "exp": "Customer-managed failover is available; afterwards the account is LRS until you re-enable geo-redundancy.",
+  "exp": "With customer-managed failover, you can start the failover yourself without waiting for Microsoft. After an unplanned failover, the old secondary becomes the primary and the account is LRS there. You then reconfigure geo-redundancy to protect it again.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"
  },
  {
@@ -617,7 +617,7 @@
    true,
    false
   ],
-  "exp": "Naming rules, in-place redundancy changes, and RG moves are supported; blob access tiers don't apply to file shares.",
+  "exp": "Storage account names must be globally unique, 3–24 characters, lowercase letters and numbers only. You can change a standard GPv2 account from LRS to GRS in place, and you can move the account to another resource group. The default access tier applies to blobs only, not to Azure file shares, which have their own tiers.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -689,7 +689,7 @@
   "ans": [
    0
   ],
-  "exp": "Each sync group has exactly one cloud endpoint (an Azure file share) and one or more server endpoints.",
+  "exp": "Azure File Sync is built as a Storage Sync Service containing sync groups. Each sync group has exactly one cloud endpoint (an Azure file share) and one or more server endpoints (folders on registered Windows Servers). A Recovery Services vault isn't part of it.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"
  },
  {
@@ -707,7 +707,7 @@
   "ans": [
    1
   ],
-  "exp": "Cloud tiering caches hot files locally and replaces cold files with stubs that are recalled on access.",
+  "exp": "Cloud tiering keeps frequently used files on the local server and replaces rarely used files with small pointers (reparse points), while the full copies stay in the Azure file share. When someone opens a tiered file, it's downloaded on demand. It doesn't compress files, change blob tiers or sync servers directly with each other.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-overview"
  },
  {
@@ -761,7 +761,7 @@
   "ans": [
    2
   ],
-  "exp": "Standard priority takes up to 15 hours; High priority can finish in under an hour for blobs under 10 GB.",
+  "exp": "Archived blobs are offline and must be rehydrated before you can read them. With Standard priority this can take up to 15 hours. High priority is faster — often under an hour for blobs smaller than 10 GB — but costs more.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"
  },
  {
@@ -797,7 +797,7 @@
   "ans": [
    1
   ],
-  "exp": "The default account access tier can be hot, cool or cold (hot is the default for new GPv2 accounts). Archive is set per blob and can never be the default.",
+  "exp": "A storage account's default access tier can be hot, cool or cold; new GPv2 accounts use hot unless you choose otherwise. Archive can only be set on individual blobs, never as the account default, because archived data is offline.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -906,7 +906,7 @@
   "ans": [
    2
   ],
-  "exp": "Archive is the cheapest storage tier for long retention when instant access isn't required. Lifecycle rules automate the move.",
+  "exp": "Archive is the cheapest tier for data you must keep but rarely or never read, and instant access isn't needed after month 6. A lifecycle rule can move the invoices automatically after 6 months (archive has a 180-day minimum, which fits easily). Hot and cool cost much more per GB, and deleting would break the 7-year requirement.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  }
 ]

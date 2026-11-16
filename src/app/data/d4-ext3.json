@@ -323,7 +323,7 @@
    true,
    true
   ],
-  "exp": "Private zones are internal; links work across regions; auto-registration records private IPs; split-horizon is supported.",
+  "exp": "Private DNS zones are only resolvable from VNets linked to them, not from the internet. A zone can be linked to VNets in any region. Auto-registration creates records for VMs' private IPs. A private zone can have the same name as a public domain (split-horizon), giving internal and external answers.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/private-dns-overview"
  },
  {
@@ -798,7 +798,7 @@
    true,
    false
   ],
-  "exp": "A backend pool is limited to one VNet; inbound NAT rules can target pools with port ranges; HTTPS probes are supported; SKUs must match.",
+  "exp": "A Standard load balancer's backend pool must be in one VNet. Inbound NAT rules can map a frontend port range to multiple VMs in a pool. Health probes support HTTP, HTTPS and TCP. A Standard load balancer needs Standard public IPs — SKUs can't be mixed (and Basic public IPs are retired).",
   "link": "https://learn.microsoft.com/en-us/azure/load-balancer/skus"
  },
  {
@@ -855,7 +855,7 @@
    true,
    false
   ],
-  "exp": "DNSSEC is supported; apex aliases to Traffic Manager work; zone import is available; public zones aren't linked to VNets.",
+  "exp": "Azure DNS supports DNSSEC signing for public zones. An alias record can point the zone apex at a Traffic Manager profile. You can import a zone file with the CLI (az network dns zone import). Public zones are reached over the internet, so they don't need VNet links — only private zones do.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-overview"
  },
  {

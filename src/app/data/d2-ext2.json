@@ -104,7 +104,7 @@
   "ans": [
    0
   ],
-  "exp": "The default limit is 250 storage accounts per region per subscription (an increase can be requested).",
+  "exp": "By default you can create 250 storage accounts per region per subscription, and you can ask support to raise it (up to 500). If you need many more, spread accounts across regions or subscriptions. It isn't 50 or unlimited.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/scalability-targets-standard-account"
  },
  {
@@ -266,7 +266,7 @@
   "ans": [
    0
   ],
-  "exp": "Changing to or from zone redundancy needs a conversion; adding geo-redundancy is a direct setting change.",
+  "exp": "Changing to or from zone redundancy (LRS ↔ ZRS) needs a conversion, which you start in the portal (or a manual migration), and it takes time because data is redistributed across zones. Adding geo-redundancy (LRS → GRS) is a simple setting change.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/redundancy-migration"
  },
  {
@@ -306,7 +306,7 @@
    false,
    true
   ],
-  "exp": "GRS = 3 + 3 copies; ZRS stays within one region; the secondary is the paired region; RA-GRS allows reads from the secondary.",
+  "exp": "GRS keeps 6 copies: 3 in the primary region and 3 in the secondary. ZRS stays within one region, so it doesn't protect against a region outage. You can't choose the secondary region — it's the paired region. RA-GRS lets you read the secondary at any time without a failover.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -342,7 +342,7 @@
   "ans": [
    0
   ],
-  "exp": "Object replication only supports block blobs. Page blobs (used for disks) and append blobs (used for logs) aren't replicated, so 'all blob types' is wrong.",
+  "exp": "Object replication copies block blobs asynchronously from a source account to a destination account. It only supports block blobs: page blobs (used for VM disks) and append blobs (used for logs) can't be replicated, so 'all blob types' is wrong.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -525,7 +525,7 @@
   "ans": [
    0
   ],
-  "exp": "--recursive tells AzCopy to include every file in the folder and its subfolders. Without it, AzCopy copies only the top level. The other flags don't exist.",
+  "exp": "--recursive tells AzCopy to include every file in the folder and all its subfolders. Without it, AzCopy only copies the files at the top level of the folder. --all, --deep and --include-subdirs aren't AzCopy options.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-copy"
  },
  {
@@ -633,7 +633,7 @@
   "ans": [
    0
   ],
-  "exp": "Storage Explorer uses AzCopy behind the scenes for uploads, downloads and copies, which gives it fast, parallel transfers. Robocopy, FTP and rsync aren't used.",
+  "exp": "Storage Explorer uses AzCopy behind the scenes for uploads, downloads and copies between accounts, which gives it fast, parallel transfers. Robocopy, FTP and rsync aren't used, and you can also run AzCopy yourself for scripted transfers.",
   "link": "https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"
  },
  {
@@ -723,7 +723,7 @@
   "ans": [
    0
   ],
-  "exp": "Infrastructure encryption is creation-time only. Access tier, firewall rules, and TLS version can change anytime.",
+  "exp": "Infrastructure encryption — a second layer of encryption below the service level — can only be turned on when the storage account is created. The default access tier, firewall rules and minimum TLS version can all be changed later.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"
  },
  {
@@ -741,7 +741,7 @@
   "ans": [
    2
   ],
-  "exp": "The default access tier can be changed; performance tier, kind changes between premium types, and name are fixed.",
+  "exp": "You can switch the default access tier between hot, cool and cold at any time. The performance tier (Standard or Premium), the premium account kind and the account name are fixed once the account is created — you'd need a new account and to copy the data.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -831,7 +831,7 @@
   "ans": [
    0
   ],
-  "exp": "Hot suits frequent access; cool/cold are online and cheaper for rarely accessed data. Archive is offline, so it fails the instant-access requirement.",
+  "exp": "Hot is cheapest to access, which suits the first 2 weeks. After that, cool or cold is cheaper to store and still online, so data is instantly available. A lifecycle rule moves it automatically. Archive would make the data offline, and premium or hot for a year costs more.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -908,7 +908,7 @@
    true,
    false
   ],
-  "exp": "Versioning + change feed meet the source requirements; zone redundancy is synchronous; CMK revocation blocks access; performance tier can't change in place.",
+  "exp": "Versioning (with change feed) meets the object replication source requirements. RA-GZRS writes synchronously across zones, so a zone outage loses no data. With customer-managed keys, disabling the key blocks access to the data. Standard to Premium can't be changed in place.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  }
 ]

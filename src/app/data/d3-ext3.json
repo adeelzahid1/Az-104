@@ -392,7 +392,7 @@
   "ans": [
    0
   ],
-  "exp": "HTTP rules scale on concurrent requests; KEDA scalers handle events; CPU and memory rules are also available.",
+  "exp": "An HTTP scale rule adds or removes Container Apps replicas based on the number of concurrent HTTP requests. Other rule types use KEDA scalers for events (such as queues), or CPU and memory. Schedule and manual settings don't respond to request load.",
   "link": "https://learn.microsoft.com/en-us/azure/container-apps/scale-app"
  },
  {
@@ -468,7 +468,7 @@
    false,
    true
   ],
-  "exp": "Container Apps scales to zero and supports Dapr; ACI runs Windows containers; geo-replication is Premium only.",
+  "exp": "Container Apps can scale down to zero replicas and supports Dapr for microservices. ACI can run Windows containers. Geo-replication in Azure Container Registry is only available in the Premium tier, not Basic.",
   "link": "https://learn.microsoft.com/en-us/azure/container-apps/overview"
  },
  {
@@ -576,7 +576,7 @@
   "ans": [
    0
   ],
-  "exp": "A Standard App Service plan can scale out to at most 10 instances. Basic allows up to 3, Premium v3 up to 30, and Isolated up to 100.",
+  "exp": "A Standard App Service plan can scale out to at most 10 instances. Basic allows up to 3, Premium v3 up to 30, and Isolated up to 100 — so if you need more than 10, move to a higher tier.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"
  },
  {
@@ -630,7 +630,7 @@
   "ans": [
    0
   ],
-  "exp": "az appservice plan create creates an App Service plan. --sku S1 sets the Standard tier and --is-linux makes it a Linux plan. The other commands don't exist.",
+  "exp": "az appservice plan create creates an App Service plan. --sku S1 sets the Standard tier and --is-linux makes it a Linux plan, which Linux web apps need. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/appservice/plan"
  },
  {
@@ -738,7 +738,7 @@
   "ans": [
    0
   ],
-  "exp": "The Standard tier allows 5 deployment slots, counting production; Premium allows 20. Free, Shared and Basic don't support slots.",
+  "exp": "The Standard tier allows 5 deployment slots, counting production, and Premium allows 20. Free, Shared and Basic don't support slots, so if you need a staging slot, you need at least Standard.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"
  },
  {
@@ -904,7 +904,7 @@
    true,
    true
   ],
-  "exp": "Slots and autoscale need Standard or above; managed certificates work on Basic and above; VNet integration is supported on Basic and above.",
+  "exp": "Basic B1 doesn't support deployment slots or rule-based autoscale — both need Standard or higher. A free managed certificate does work for www.contoso.com on B1, and regional VNet integration is available on Basic. So B1 meets the TLS and network requirements, but not staging or autoscale.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
  }
 ]

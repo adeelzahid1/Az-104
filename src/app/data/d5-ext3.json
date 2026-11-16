@@ -359,7 +359,7 @@
   "ans": [
    0
   ],
-  "exp": "Plan for DNS and traffic redirection, for example with a recovery plan script or Traffic Manager priority routing.",
+  "exp": "ASR brings the VMs up in the target region, but users also need to reach them. Use recovery plan scripts or runbooks to update DNS, or Traffic Manager priority routing to send users to the failed-over endpoints automatically. Doing nothing leaves users pointed at the failed region, and NSGs and Advisor don't redirect traffic.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"
  },
  {
@@ -417,7 +417,7 @@
    true,
    true
   ],
-  "exp": "Test failover doesn't interrupt replication; re-protect reverses it; migration is supported; ASR is billed per instance plus storage.",
+  "exp": "Test failover runs in an isolated network and doesn't interrupt ongoing replication. Re-protect reverses the replication direction after a failover. ASR can also migrate VMs between regions. It's billed per protected instance, plus the storage used in the target region.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
  },
  {
@@ -915,7 +915,7 @@
    true,
    true
   ],
-  "exp": "Processing rules suppress actions, not the alert itself; the backup alert relies on diagnostics data in LAW1.",
+  "exp": "An alert processing rule only suppresses actions, so the 02:00 CPU spike still creates a fired alert, but AG-Ops doesn't send email during the window. Backup job failures can be alerted on with a log alert in Log Analytics, which depends on the vault's diagnostic settings — remove them and the backup alert gets no data.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
  }
 ]

@@ -179,7 +179,7 @@
    1,
    1
   ],
-  "exp": "Versioning keeps the previous content whenever a blob is overwritten. Container soft delete lets a deleted container be restored within its retention period.",
+  "exp": "Blob versioning keeps the previous content every time a blob is overwritten, so you can recover earlier versions. Container soft delete keeps a deleted container for its retention period so it can be restored. Blob soft delete alone wouldn't bring back a whole deleted container.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/data-protection-overview"
  },
  {
@@ -239,7 +239,7 @@
   "ans": [
    1
   ],
-  "exp": "azcopy sync compares source and destination and transfers only what changed. azcopy copy copies everything (unless you add overwrite options).",
+  "exp": "azcopy sync compares the source and destination and transfers only new or changed files, which suits a repeating job. azcopy copy transfers everything each time unless you add overwrite options.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"
  },
  {
@@ -317,7 +317,7 @@
    1,
    1
   ],
-  "exp": "Standard-priority rehydration can take up to 15 hours. Cool has a 30-day minimum, cold 90 days and archive 180 days.",
+  "exp": "Standard-priority rehydration from archive can take up to 15 hours. Each tier has a minimum storage period: cool 30 days, cold 90 days, archive 180 days. Moving or deleting blobs earlier incurs an early deletion charge.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -346,7 +346,7 @@
    1,
    2
   ],
-  "exp": "prefixMatch starts with the container name, such as \"logs/\". The delete action removes blobs after the given number of days.",
+  "exp": "In a lifecycle rule, prefixMatch starts with the container name, so \"logs/\" targets blobs in the logs container. The tierToCool action moves blobs after 30 days, and the delete action removes them after 365 days.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
  },
  {
@@ -373,7 +373,7 @@
    1,
    1
   ],
-  "exp": "Setting the default action to Deny turns on the firewall; then you allow the office's public IP. Private addresses such as 10.0.0.4 cannot be used in IP rules.",
+  "exp": "Setting the network default action to Deny turns on the firewall, so only allowed sources can connect. Then add an IP rule for the office's public IP, 203.0.113.10. Private addresses such as 10.0.0.4 can't be used in IP rules — use VNet rules or private endpoints for those.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
  },
  {
@@ -401,7 +401,7 @@
    0,
    1
   ],
-  "exp": "Share-level permissions use roles such as Storage File Data SMB Share Contributor. File and directory permissions use Windows ACLs. Users need both.",
+  "exp": "Identity-based access to Azure Files has two layers. Share-level permissions use Azure RBAC roles such as Storage File Data SMB Share Contributor. File and folder permissions use Windows NTFS ACLs. Users need both to get access.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"
  },
  {
@@ -430,7 +430,7 @@
    1,
    1
   ],
-  "exp": "Premium file shares need a FileStorage account with a premium SKU. Premium accounts do not offer GRS.",
+  "exp": "Premium (SSD) file shares need a FileStorage account with a premium SKU such as Premium_LRS (or Premium_ZRS). StorageV2 accounts only offer standard file shares, and premium accounts don't support GRS.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -458,7 +458,7 @@
    1,
    1
   ],
-  "exp": "Infrastructure encryption is a create-time setting. Customer-managed keys can be added to new or existing accounts.",
+  "exp": "Infrastructure encryption adds a second layer of encryption and can only be turned on when the account is created. Customer-managed keys can be configured on new or existing accounts, and you can switch back to Microsoft-managed keys.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"
  },
  {
@@ -486,7 +486,7 @@
    0,
    1
   ],
-  "exp": "A sync group syncs one Azure file share (the cloud endpoint) with one or more server paths (server endpoints).",
+  "exp": "A sync group links exactly one cloud endpoint (an Azure file share) with one or more server endpoints (paths on registered servers). All endpoints in the group stay in sync with each other through the cloud share.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"
  },
  {
@@ -514,7 +514,7 @@
    0,
    3
   ],
-  "exp": "ZRS covers zones; GZRS covers zones and regions; LRS is cheapest; RA-GRS adds read access to the secondary.",
+  "exp": "ZRS keeps copies in three zones, so it survives a zone failure. GZRS adds a copy in a secondary region, so it survives both zone and region failures. LRS keeps three copies in one datacenter and is the cheapest. RA-GRS lets you read the secondary region at any time.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -569,7 +569,7 @@
    0,
    1
   ],
-  "exp": "Storage Explorer is the GUI; File Sync caches shares on Windows Server; Data Box ships data physically; AzCopy scripts transfers.",
+  "exp": "Storage Explorer is a desktop app for browsing and managing storage. Azure File Sync keeps on-premises Windows file servers cached with Azure Files. Data Box ships large amounts of data on a physical device when bandwidth is limited. AzCopy is the command-line tool for scripted, incremental uploads.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-choose-data-transfer-solution"
  },
  {
@@ -593,7 +593,7 @@
    1,
    0
   ],
-  "exp": "Page blobs suit random read and write (disks), append blobs suit logs, and block blobs suit general objects.",
+  "exp": "Page blobs are designed for random reads and writes in 512-byte pages, which is why VM disks (VHDs) use them. Append blobs only allow adding to the end, ideal for logs. Block blobs are for general files such as images and documents.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"
  },
  {
@@ -621,7 +621,7 @@
    3,
    0
   ],
-  "exp": "Time-based retention enforces WORM; versioning keeps earlier content; legal holds have no end date; container soft delete restores deleted containers.",
+  "exp": "A time-based retention policy makes data WORM (write once, read many) for a set period, for compliance. Blob versioning recovers earlier content after an overwrite. A legal hold keeps data indefinitely until the hold is removed. Container soft delete recovers a deleted container.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/data-protection-overview"
  },
  {
@@ -648,7 +648,7 @@
    0,
    1
   ],
-  "exp": "Cold is the cheapest online tier (90 days); archive is offline (180 days); hot is for frequent access; cool has a 30-day minimum.",
+  "exp": "Cold is the cheapest online tier, for data kept at least 90 days. Archive is offline and must be rehydrated before reading (180-day minimum). Hot is for frequently accessed data. Cool is online with a 30-day minimum.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -673,7 +673,7 @@
    0,
    1
   ],
-  "exp": "IP rules allow public ranges; private endpoints provide a private IP; service endpoints identify the subnet to the public endpoint.",
+  "exp": "A firewall IP rule allows a public IP range to reach the account. A private endpoint gives the account a private IP inside your VNet. A service endpoint is free and sends the subnet's identity to the account's public endpoint, so VNet rules can allow it.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
  },
  {
@@ -698,7 +698,7 @@
    0,
    1
   ],
-  "exp": "Elevated Contributor can also change ACLs; Reader is read-only; Contributor reads, writes and deletes.",
+  "exp": "Storage File Data SMB Share Elevated Contributor can read, write and delete files and also change NTFS permissions. Storage File Data SMB Share Reader is read-only. Storage File Data SMB Share Contributor can read, write and delete, but can't change permissions.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-assign-share-level-permissions"
  },
  {
@@ -720,7 +720,7 @@
    false,
    true
   ],
-  "exp": "sp=r is read only; spr=https requires HTTPS; sip limits callers to 203.0.113.0–203.0.113.255; the validity window (st to se) includes 5 November.",
+  "exp": "sp=r means read-only, so the token can't write. spr=https means HTTPS only, so plain HTTP fails. sip limits callers to 203.0.113.0–203.0.113.255, so 198.51.100.4 is rejected. The validity window from st to se includes 5 November, so it's valid then.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/create-service-sas"
  },
  {
@@ -739,7 +739,7 @@
   "ans": [
    2
   ],
-  "exp": "After 30 days it moves to cool and after 90 days to archive. Deletion happens only after 2,555 days (about 7 years).",
+  "exp": "The policy moves block blobs to cool 30 days after last modification and to archive after 90 days. A blob last modified 120 days ago is therefore in archive. It's only deleted after 2,555 days (about 7 years).",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
  },
  {
@@ -780,7 +780,7 @@
   "ans": [
    0
   ],
-  "exp": "Copying between two storage URLs uses server-to-server copy APIs. The source is not deleted, and the command runs once.",
+  "exp": "When both the source and destination are storage URLs, AzCopy uses server-to-server copy, so data doesn't pass through your computer. The command copies the blobs once; it doesn't delete them from the source or keep a sync running in the background.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-blobs-copy"
  },
  {
@@ -799,7 +799,7 @@
   "ans": [
    1
   ],
-  "exp": "-UseConnectedAccount uses Entra authorisation, which needs a data-plane role such as Storage Blob Data Reader. Reader is a control-plane role.",
+  "exp": "-UseConnectedAccount uses the user's Entra ID identity for data access, which needs a data-plane role such as Storage Blob Data Reader. Reader is a control-plane role, so listing blobs fails with an authorisation error. PowerShell doesn't silently fall back to the account key.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/authorize-data-operations-powershell"
  },
  {
@@ -821,7 +821,7 @@
    false,
    false
   ],
-  "exp": "The prefix filter limits replication to blobs starting with 2026/. Destination containers are read-only while the policy exists. Replication is asynchronous.",
+  "exp": "The policy's prefix filter only replicates blobs whose names start with 2026/, so jan.pdf in invoices/2026 is replicated but dec.pdf in 2025 isn't. Destination containers are read-only while the policy exists, and object replication is asynchronous.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -840,7 +840,7 @@
   "ans": [
    1
   ],
-  "exp": "SMB uses TCP 445, which many ISPs block. The same key works from Azure, so the credentials are fine. Use a VPN or ExpressRoute, or Azure File Sync.",
+  "exp": "SMB uses TCP port 445, which many internet providers and home routers block. The same mount works from an Azure VM, so the key, share and quota are fine. Use a VPN, ExpressRoute or Azure File Sync, or ask the provider to unblock the port.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshoot-windows-file-connection-problems"
  },
  {
@@ -897,7 +897,7 @@
   "ans": [
    1
   ],
-  "exp": "SAS tokens linked to a stored access policy take their constraints from the policy, so changing the policy changes every linked token.",
+  "exp": "SAS tokens linked to a stored access policy take their expiry from the policy. Changing the policy's expiry updates every token that references it, usually within about 30 seconds. They aren't revoked and don't need to be regenerated.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"
  },
  {
@@ -919,7 +919,7 @@
    true,
    false
   ],
-  "exp": "NFS shares exist only on premium FileStorage accounts. \"docs\" is an SMB share. Standard shares are limited to 5 TiB unless large file shares are enabled.",
+  "exp": "NFS shares only exist on premium FileStorage accounts, so the \"linux\" share is premium. \"docs\" is an SMB share, so Windows clients can mount it but Linux clients can't mount it over NFS. Standard shares are limited to 5 TiB unless large file shares are enabled.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"
  },
  {
@@ -938,7 +938,7 @@
   "ans": [
    2
   ],
-  "exp": "--auth-mode login with --as-user creates a user delegation SAS. Its user delegation key is valid for up to 7 days.",
+  "exp": "--auth-mode login with --as-user creates a user delegation SAS, signed with a key obtained using your Microsoft Entra credentials instead of the account key. The user delegation key — and so the SAS — is valid for at most 7 days. It isn't an account SAS, a service SAS or a stored access policy.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-user-delegation-sas-create-cli"
  }
 ]

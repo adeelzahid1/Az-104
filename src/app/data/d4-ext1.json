@@ -68,7 +68,7 @@
   "ans": [
    0
   ],
-  "exp": "The smallest IPv4 subnet in Azure is /29: 8 addresses, of which Azure reserves 5, leaving 3 usable. Azure doesn't allow /30 or smaller subnets.",
+  "exp": "The smallest IPv4 subnet Azure allows is /29, which has 8 addresses. Azure reserves 5 in every subnet (the network address, .1 for the gateway, .2 and .3 for DNS, and the broadcast address), leaving only 3 usable. /30 and smaller subnets aren't allowed.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    0
   ],
-  "exp": "DNS servers are set at the VNet level (a NIC can override); VMs pick them up via DHCP after a restart or lease renewal.",
+  "exp": "DNS servers are set on the VNet (DNS servers → Custom), and every VM in it picks them up through DHCP after a restart or lease renewal. A NIC can override the VNet setting. NSGs and route tables don't set DNS, and a private DNS zone alone wouldn't point VMs at the domain controller.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/manage-virtual-network"
  },
  {
@@ -690,7 +690,7 @@
    false,
    true
   ],
-  "exp": "Route tables can be shared; UDRs can override VNet routes; system routes can't be deleted, only overridden; effective routes are per NIC.",
+  "exp": "One route table can be associated with many subnets. A UDR can override system routes, including the one for traffic inside the VNet. System routes can't be deleted, only overridden. You can view effective routes for each NIC.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
  },
  {
@@ -910,7 +910,7 @@
    true,
    true
   ],
-  "exp": "Gateway transit works when the hub allows it; a spoke using remote gateways can't have its own gateway; address spaces must not overlap.",
+  "exp": "With 'Allow gateway transit' on the hub side and 'Use remote gateways' on the spoke side, spoke VMs reach on-premises through the hub's gateway. A VNet using remote gateways can't have its own gateway. And the spoke's address space mustn't overlap on-premises (192.168.0.0/16), or routing can't work.",
   "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"
  }
 ]

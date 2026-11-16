@@ -86,7 +86,7 @@
   "ans": [
    0
   ],
-  "exp": "New-AzAvailabilitySet with -PlatformFaultDomainCount and -PlatformUpdateDomainCount (and -Sku Aligned for managed disks).",
+  "exp": "New-AzAvailabilitySet creates an availability set. Set -PlatformFaultDomainCount and -PlatformUpdateDomainCount, and use -Sku Aligned for VMs with managed disks. The other cmdlets don't exist.",
   "link": "https://learn.microsoft.com/en-us/powershell/module/az.compute/new-azavailabilityset"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    0
   ],
-  "exp": "Each tier gets its own availability set or zone spread, and traffic is distributed by a load balancer.",
+  "exp": "Each tier should be highly available on its own: spread the web VMs across availability zones (or put them in their own availability set) behind a load balancer. One availability set for all tiers, a single large VM or a single zone each leaves a single point of failure.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
  },
  {
@@ -161,7 +161,7 @@
    true,
    true
   ],
-  "exp": "99.95% for availability sets; not all regions have zones; zones are separate datacenters; sizes can differ within hardware cluster limits.",
+  "exp": "Two or more VMs in an availability set get a 99.95% SLA. Not every region has availability zones. Zones are separate datacenters, so VMs in zone 1 and zone 2 are physically apart. An availability set can hold VMs of different sizes, as long as the hardware cluster supports them.",
   "link": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview"
  },
  {
@@ -179,7 +179,7 @@
   "ans": [
    0
   ],
-  "exp": "list-vm-resize-options shows sizes available on the current cluster; list-sizes shows all region sizes.",
+  "exp": "az vm list-vm-resize-options lists only the sizes available on the hardware cluster the VM is running on, so you can resize without deallocating. az vm list-sizes lists every size in the region. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/vm"
  },
  {
@@ -576,7 +576,7 @@
    0,
    1
   ],
-  "exp": "Encryption at host and ADE can cover temp disks; SSE alone encrypts managed disks in storage, not the host temp disk.",
+  "exp": "Encryption at host encrypts the temp disk and caches on the VM's host. Azure Disk Encryption with the volume type set to All encrypts the temp disk inside the guest OS. Server-side encryption only covers disks stored in Azure storage, and encryption scopes are for blobs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {
@@ -666,7 +666,7 @@
   "ans": [
    0
   ],
-  "exp": "Rolling updates batches; Automatic updates everything immediately; Manual requires you to trigger it.",
+  "exp": "A Rolling upgrade policy updates scale set instances in batches, with optional pauses and health checks, so the app stays available. Automatic updates all instances at once, and Manual waits for you to update each instance. The scale set isn't deleted.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-upgrade-policy"
  },
  {
@@ -684,7 +684,7 @@
   "ans": [
    0
   ],
-  "exp": "Scale sets support up to 1,000 VMs with platform images (600 with custom images in some configurations).",
+  "exp": "A Uniform scale set using platform images can have up to 1,000 VM instances (custom images can be more limited in some configurations). It isn't 10, 100 or unlimited.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-placement-groups"
  },
  {
@@ -762,7 +762,7 @@
    false,
    true
   ],
-  "exp": "LB integration and custom metrics are supported; scale-out wins when any scale-out rule fires; queue-based rules are supported.",
+  "exp": "Scale sets can sit behind an Azure Load Balancer. Autoscale can use custom metrics, such as those from Application Insights, and storage queue length. When a scale-out rule and a scale-in rule both trigger, scale-out wins, to protect performance.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
  },
  {
@@ -798,7 +798,7 @@
   "ans": [
    0
   ],
-  "exp": "Dependent resources such as disks and NICs must move with the VM, and the destination subscription must be in the same tenant.",
+  "exp": "A VM must be moved together with its dependent resources: its managed disks and network interface, and the virtual network if the NIC depends on it. The destination subscription must be in the same tenant. Dependencies aren't recreated automatically.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-limitations/virtual-machines-move-limitations"
  },
  {

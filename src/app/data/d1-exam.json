@@ -82,7 +82,7 @@
   "ans": [
    2
   ],
-  "exp": "CanNotDelete blocks deletion of the resource group and everything in it while still allowing changes. ReadOnly would also block configuration changes.",
+  "exp": "A CanNotDelete lock on RG-Core stops anyone deleting the resource group or anything in it, while still allowing changes. A ReadOnly lock would also block configuration changes. A Deny policy doesn't control deletes, and removing every Owner role would stop admins doing their jobs.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -123,7 +123,7 @@
   "ans": [
    1
   ],
-  "exp": "A B2B guest signs in with their own Northwind credentials. Reader at the subscription scope lets them view everything in Sub1 without changing it.",
+  "exp": "Invite the auditor as a B2B guest, so they sign in with their own organisation's account and you don't manage a password. Assign Reader on Sub1 so they can view but not change. A member account would mean managing their credentials, Contributor gives too much access, and sharing credentials is never acceptable.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-external-users"
  },
  {
@@ -152,7 +152,7 @@
    2,
    1
   ],
-  "exp": "Virtual Machine Contributor manages VMs but not the virtual networks they connect to. Scoping it to RG-Web keeps WebOps away from the other resource groups.",
+  "exp": "Virtual Machine Contributor lets WebOps manage VMs (create, start, stop, resize) but not the virtual networks or storage accounts they connect to, and it can't assign roles. Assigning it at RG-Web scope keeps WebOps out of the other resource groups.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
  },
  {
@@ -263,7 +263,7 @@
   "ans": [
    1
   ],
-  "exp": "In PowerShell and the API the delete lock level is CanNotDelete (shown as \"Delete\" in the portal). ReadOnly would also block changes.",
+  "exp": "In PowerShell, CLI and the API, the lock that blocks deletes is called CanNotDelete (the portal shows it as 'Delete'). It still allows changes to the resource group. ReadOnly would block changes too.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -385,7 +385,7 @@
    0,
    2
   ],
-  "exp": "Turning on required registration prompts users at sign-in. The default reconfirmation period is 180 days.",
+  "exp": "Setting 'Require users to register when signing in' to Yes prompts users to register their SSPR methods at sign-in. 'Number of days before users are asked to re-confirm their authentication information' defaults to 180 days, so users check their details are still correct twice a year.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
  },
  {
@@ -443,7 +443,7 @@
    1,
    2
   ],
-  "exp": "az account management-group create creates the group, and az account management-group subscription add places a subscription under it.",
+  "exp": "az account management-group create creates a new management group. az account management-group subscription add then moves a subscription under it. The subscription inherits the group's RBAC assignments and policies.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/account/management-group"
  },
  {
@@ -465,7 +465,7 @@
   "ans": [
    1
   ],
-  "exp": "Merge adds or updates the given tags and keeps the others. Replace would remove every tag not in the list.",
+  "exp": "az tag update --operation Merge adds or updates the tags you specify and keeps every other tag. Replace would remove any tag not in the list, and Delete removes the specified tags.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources-cli"
  },
  {
@@ -493,7 +493,7 @@
    1,
    0
   ],
-  "exp": "Guest invite settings in Microsoft Entra External collaboration settings control who can invite guests.",
+  "exp": "Who can invite guests is set in Microsoft Entra ID → External Identities → External collaboration settings, under Guest invite settings. You can allow anyone, members only, only admins and the Guest Inviter role, or nobody.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/external-collaboration-settings-configure"
  },
  {
@@ -548,7 +548,7 @@
    2,
    0
   ],
-  "exp": "Contributor manages resources; User Access Administrator manages access; Reader views; Owner does both.",
+  "exp": "Contributor manages all resources but can't grant access. User Access Administrator manages access but not resources. Reader can only view. Owner can do both — manage resources and grant access.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -576,7 +576,7 @@
    0,
    2
   ],
-  "exp": "Conditional Access and group-based licensing need P1. PIM and Identity Protection need P2. Basic user and group management is included in Free.",
+  "exp": "Conditional Access and group-based licensing need Microsoft Entra ID P1. Privileged Identity Management and Identity Protection's risk-based policies need P2. Basic user and group management is included in the Free tier.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
  },
  {
@@ -600,7 +600,7 @@
    0,
    1
   ],
-  "exp": "Hybrid join is for devices joined to on-premises AD. Registered is for personal (BYOD) devices. Entra join is for organisation-owned cloud devices.",
+  "exp": "A corporate PC already joined to on-premises AD becomes Microsoft Entra hybrid joined, so it's known to both. An employee's personal phone is Microsoft Entra registered (BYOD). A new cloud-only corporate laptop is Microsoft Entra joined.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/devices/overview"
  },
  {
@@ -628,7 +628,7 @@
    2,
    3
   ],
-  "exp": "Deny blocks, Audit reports, Modify changes properties, and DeployIfNotExists deploys missing related resources.",
+  "exp": "Deny blocks a non-compliant create or update request. Audit allows it but reports it as non-compliant. Modify adds or changes properties (such as tags) during deployment. DeployIfNotExists deploys a missing related resource after the main resource is created.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
  },
  {
@@ -726,7 +726,7 @@
   "ans": [
    1
   ],
-  "exp": "In RG2 only the subscription-scope Reader assignment applies, so user1 can view but not change. The Contributor assignment applies only to RG1.",
+  "exp": "In RG2 the only assignment that applies is Reader at the subscription scope, which is inherited by every resource group, so user1 can view but not change anything. The Contributor assignment applies only to RG1. Neither role lets user1 assign roles.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-cli"
  },
  {
@@ -767,7 +767,7 @@
   "ans": [
    2
   ],
-  "exp": "The rule matches any location not in the allowed list and applies the deny effect, so the request is rejected.",
+  "exp": "The policy rule matches any resource whose location isn't in the allowed list and applies the Deny effect. East US isn't in [westeurope, northeurope], so the deployment request is rejected before anything is created. Policy never moves or tags resources in this case.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure-policy-rule"
  },
  {
@@ -786,7 +786,7 @@
   "ans": [
    1
   ],
-  "exp": "Deny only blocks new create and update requests. Existing resources are evaluated and shown as non-compliant, but they are not changed.",
+  "exp": "Deny only blocks new create and update requests. Existing resources are still evaluated and appear as non-compliant in the compliance report, but Azure Policy doesn't delete, stop or move them. You'd have to fix them yourself (Deny has no remediation).",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deny"
  },
  {
@@ -824,7 +824,7 @@
   "ans": [
    2
   ],
-  "exp": "-contains matches \"Engineer\" inside \"Senior Engineer\", and the rule uses -or. -eq needs an exact match, so \"IT Operations\" does not equal \"IT\".",
+  "exp": "The rule uses -or, so a user matching either condition joins. -contains is a substring match, so jobTitle \"Senior Engineer\" contains \"Engineer\" and matches. The department condition uses -eq, which needs an exact match, so \"IT Operations\" doesn't equal \"IT\".",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
  },
  {
@@ -843,7 +843,7 @@
   "ans": [
    1
   ],
-  "exp": "roleAssignments/write is the operation for creating role assignments. The query keeps successful ones and shows the time, the caller and the resource group.",
+  "exp": "Microsoft.Authorization/roleAssignments/write is the operation recorded when someone creates a role assignment. The query keeps only successful ones and shows the time, the caller (who did it) and the resource group. It doesn't cover sign-ins, existing role holders or lock removals.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/azureactivity"
  },
  {
@@ -884,7 +884,7 @@
   "ans": [
    1
   ],
-  "exp": "Forecasted notifications fire when the forecast exceeds the threshold, even if actual spend is lower. Budgets never stop resources.",
+  "exp": "A forecasted notification fires as soon as Azure predicts spend will reach its threshold by the end of the period, even though actual spend is lower. The forecast of 1,150 USD is over 100% of the 1,000 USD budget, so the email goes out now. Budgets never stop resources.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
  },
  {
@@ -903,7 +903,7 @@
   "ans": [
    0
   ],
-  "exp": "Virtual Machine Contributor manages VMs but not their VNets or storage accounts, and cannot assign roles. The scope is the resource group RG-App.",
+  "exp": "Virtual Machine Contributor lets the group manage VMs — create, start, stop, resize and delete — but not the virtual networks or storage accounts the VMs use, and it can't assign roles. The command's scope is RG-App, so it doesn't apply to other resource groups.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
  },
  {

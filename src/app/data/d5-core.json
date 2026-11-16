@@ -86,7 +86,7 @@
   "ans": [
    1
   ],
-  "exp": "The default is 30 days; interactive retention goes up to 730 days, with longer long-term retention available.",
+  "exp": "Most Log Analytics tables keep data for 30 days by default (interactive retention, which you can query directly). You can raise that to as much as 730 days (2 years). For longer, long-term retention keeps data up to 12 years at a lower cost, but you need a search job or restore to query it.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"
  },
  {
@@ -341,7 +341,7 @@
    true,
    false
   ],
-  "exp": "Multiple action groups per rule are allowed; log alerts are scheduled; metrics are faster; workspace data stays for its retention period.",
+  "exp": "One alert rule can trigger several action groups. Log search alerts run a KQL query on a schedule. Metrics are better for near-real-time alerts because they arrive faster than logs. Deleting a VM doesn't delete its data already in the workspace — it stays until its retention period ends.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
  },
  {
@@ -887,7 +887,7 @@
    true,
    true
   ],
-  "exp": "The vault must be in the VM's region; retained data stays usable; ASR supports migration; Backup and ASR can be combined.",
+  "exp": "VM backups must go to a vault in the same region as the VM, so region A to region B doesn't work. Stopping backup with 'retain backup data' keeps existing recovery points available for restore. ASR can be used both for disaster recovery and to migrate VMs between regions. A VM can be backed up and replicated by ASR at the same time.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-backup-faq"
  },
  {
@@ -909,7 +909,7 @@
    false,
    true
   ],
-  "exp": "Policies support daily and monthly retention; test failovers are isolated; low-RTO regional DR is ASR's job; soft delete keeps data 14 days.",
+  "exp": "A Recovery Services vault backup policy can keep daily points for 30 days and monthly points for 12 months. An ASR test failover runs the DR drill in an isolated network without touching production. Getting workloads running in another region within 1 hour needs ASR, not Backup alone. Backup soft delete keeps deleted backup data for 14 days, which covers the 2-week requirement.",
   "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
  }
 ]

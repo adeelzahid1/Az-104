@@ -140,7 +140,7 @@
   "ans": [
    2
   ],
-  "exp": "For the same prefix: UDR > BGP > system. Across different prefixes, longest prefix match wins first.",
+  "exp": "Azure first picks the route with the longest (most specific) prefix. When several routes have the same prefix, a user-defined route wins over a BGP route, and BGP wins over a system route. That's how a UDR can force traffic through a firewall even when a gateway advertises the same range. Route age doesn't matter.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
  },
  {
@@ -306,7 +306,7 @@
    true,
    false
   ],
-  "exp": "Address space can grow; one route table per subnet; cross-subscription peering is supported; .1 is reserved, so the first usable address is .4.",
+  "exp": "You can add address space to a VNet after it's created. A subnet can only be associated with one route table at a time. VNets in different subscriptions (even different tenants) can be peered. Azure reserves .0 to .3 in every subnet, so the first VM gets .4, not .1.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
  },
  {
@@ -507,7 +507,7 @@
   "ans": [
    0
   ],
-  "exp": "Bastion needs AzureBastionSubnet (/26 or larger) and a Standard public IP. The Developer SKU differs.",
+  "exp": "Azure Bastion needs a dedicated subnet named exactly AzureBastionSubnet, at least /26, and a Standard SKU public IP for the Bastion host. Target VMs don't need public IPs, and ExpressRoute isn't required. The Developer SKU is the exception: it's shared and doesn't need its own subnet.",
   "link": "https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"
  },
  {

@@ -104,7 +104,7 @@
   "ans": [
    0
   ],
-  "exp": "DINE and Modify remediations run as the assignment's managed identity, which needs the roles listed in the policy definition's roleDefinitionIds.",
+  "exp": "DeployIfNotExists and Modify remediations run as the policy assignment's managed identity. If that identity doesn't have the needed role (for example Contributor) at the target scope, the remediation fails with an authorization error. Audit mode, locks and budgets aren't involved.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    0
   ],
-  "exp": "Policy evaluates on resource changes, on new assignments, and in a 24-hour standard compliance cycle. You can trigger an on-demand scan.",
+  "exp": "Azure Policy evaluates resources when they're created or updated, when an assignment is created or changed, and in a standard compliance scan every 24 hours. You can also start an on-demand scan, for example with az policy state trigger-scan.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data"
  },
  {
@@ -176,7 +176,7 @@
   "ans": [
    1
   ],
-  "exp": "Exemptions (Waiver or Mitigated, with optional expiration) show up in compliance as Exempt, while exclusions just carve scopes out of the assignment.",
+  "exp": "An exclusion removes a scope from the assignment completely, so it isn't evaluated at all. An exemption keeps the scope evaluated but marks it as Exempt, with a category (Waiver or Mitigated) and an optional expiry date, so it stays visible in compliance reports.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure"
  },
  {
@@ -267,7 +267,7 @@
   "ans": [
    1
   ],
-  "exp": "Policies are cumulative and there's no override: East US fails Policy A, and every other region fails Policy B.",
+  "exp": "Policies are cumulative — a lower-scope policy can't override a higher one. In RG1, East US is denied by Policy A, and every other region is denied by Policy B. So nothing can be created in RG1, whatever the user's role.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
  },
  {
@@ -285,7 +285,7 @@
   "ans": [
    0
   ],
-  "exp": "Parameters let assignments pass different values (e.g., listOfAllowedLocations) into one definition.",
+  "exp": "Policy parameters let one definition take different values for each assignment — for example a list of allowed locations that's different for each subscription. Aliases map to resource properties, and tags and locks aren't policy features.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/definition-structure-parameters"
  },
  {
@@ -306,7 +306,7 @@
    true,
    false
   ],
-  "exp": "Policy governs resource properties for everyone, inherits down the hierarchy, and has nothing to do with authentication.",
+  "exp": "A Deny policy applies to everyone, including Owners, because Policy checks the request, not the user. It can evaluate properties such as SKU or location, and assignments at a management group are inherited by its subscriptions. Policy doesn't control who can sign in — that's Conditional Access.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
  },
  {
@@ -438,7 +438,7 @@
    true,
    false
   ],
-  "exp": "Locks apply to control-plane operations only (blob writes still work); locks inherit; CanNotDelete allows changes; Contributor lacks lock permissions.",
+  "exp": "Locks apply only to control-plane operations, so data operations such as writing blobs still work. A lock on a subscription is inherited by every resource group. CanNotDelete still allows configuration changes. Contributor can't remove locks, because it doesn't have Microsoft.Authorization/locks permissions.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -510,7 +510,7 @@
   "ans": [
    0
   ],
-  "exp": "az tag update with --operation Merge adds tags while keeping existing ones. Replace would overwrite all tags.",
+  "exp": "az tag update with --operation Merge adds env=prod and keeps any existing tags. --operation Replace would remove every tag not listed. az group update --tags sets the whole tag list, so it can remove tags rather than merge them. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources-cli"
  },
  {
@@ -528,7 +528,7 @@
   "ans": [
    0
   ],
-  "exp": "Cost Management tag inheritance applies parent tags to usage records without changing the resources.",
+  "exp": "Cost Management's tag inheritance setting applies subscription and resource group tags to the usage records of child resources, so cost reports can group by them. It doesn't change the resources. Policy Deny blocks deployments, and locks and budgets don't handle tags.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/enable-tag-inheritance"
  },
  {
@@ -618,7 +618,7 @@
   "ans": [
    0
   ],
-  "exp": "Both subscriptions must share a tenant, and the destination needs the resource providers registered.",
+  "exp": "To move resources to another subscription, both subscriptions must be in the same Microsoft Entra tenant, and the destination must have the resource provider registered (for example Microsoft.Compute). The destination doesn't need to be empty, and no Entra licence is needed.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"
  },
  {
@@ -744,7 +744,7 @@
   "ans": [
    0
   ],
-  "exp": "New subscriptions go under the root management group by default; hierarchy settings can set a different default.",
+  "exp": "New subscriptions go under the tenant root group by default. In the hierarchy settings you can choose a different default management group, so new subscriptions land somewhere with the right policies. There's no group automatically called 'Default'.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/how-to/protect-resource-hierarchy"
  },
  {
@@ -762,7 +762,7 @@
   "ans": [
    0
   ],
-  "exp": "One Microsoft Entra directory can hold up to 10,000 management groups, within a hierarchy up to six levels deep. That's far more than most organisations need.",
+  "exp": "One Microsoft Entra directory can hold up to 10,000 management groups, in a hierarchy up to six levels deep (not counting the root and subscriptions). That's far more than most organisations need.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -819,7 +819,7 @@
   "ans": [
    0
   ],
-  "exp": "Advisor's Cost recommendations identify idle or underutilized resources and reservation opportunities.",
+  "exp": "Azure Advisor's Cost recommendations find idle or underused resources, suggest resizing or shutting down VMs, and recommend reservations. Policy enforces rules, Network Watcher diagnoses networking, and Service Health reports Azure incidents.",
   "link": "https://learn.microsoft.com/en-us/azure/advisor/advisor-cost-recommendations"
  },
  {
@@ -855,7 +855,7 @@
   "ans": [
    0
   ],
-  "exp": "Reservations give large discounts for 1- or 3-year commitments. Spot VMs can be evicted, which is unsuitable for 24/7 production.",
+  "exp": "A 3-year reserved instance gives the biggest discount for a VM that runs all the time at a stable size. Pay-as-you-go is the most expensive, Spot VMs can be evicted at any time (unsuitable for 24/7 work), and a bigger VM costs more.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/reservations/save-compute-costs-reservations"
  },
  {
@@ -891,7 +891,7 @@
   "ans": [
    0
   ],
-  "exp": "The pricing calculator estimates costs of planned services. The TCO calculator compares on-premises costs with Azure; Cost analysis shows actual spend.",
+  "exp": "The Azure pricing calculator estimates the cost of services you plan to deploy, such as 3 VMs and a storage account. The TCO calculator compares on-premises costs with Azure, and Cost analysis and Advisor work on resources that already exist.",
   "link": "https://azure.microsoft.com/pricing/calculator/"
  },
  {

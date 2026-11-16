@@ -32,7 +32,7 @@
   "ans": [
    1
   ],
-  "exp": "Role assignments target users, groups, service principals, or managed identities. Devices cannot be assigned roles.",
+  "exp": "An Azure role can be assigned to four types of security principal: users, groups, service principals (apps) and managed identities. Devices can't receive roles, and subscriptions are scopes, not principals.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    3
   ],
-  "exp": "Roles can be assigned at management group, subscription, resource group, or individual resource scope.",
+  "exp": "Azure roles can be assigned at four levels: management group, subscription, resource group, or a single resource. The smallest is an individual resource, such as one storage account or VM.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    2
   ],
-  "exp": "Blob data access needs a data-plane role such as Storage Blob Data Reader. Reader and Storage Account Contributor are control-plane roles.",
+  "exp": "Reading blob contents with Entra authentication needs a data-plane role such as Storage Blob Data Reader, assigned on the container (least privilege) or the account. Reader and Storage Account Contributor are control-plane roles, so they don't grant data access through Entra ID. Owner gives far too much.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    0
   ],
-  "exp": "Cost Management Contributor can view costs and manage cost configuration such as budgets and exports.",
+  "exp": "Cost Management Contributor can view costs and manage cost settings such as budgets and exports, without changing resources. Contributor can change resources, Reader and Billing Reader can only view, and Billing Reader is for billing data rather than budgets.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-work-scopes"
  },
  {
@@ -194,7 +194,7 @@
   "ans": [
    0
   ],
-  "exp": "az role assignment list with --assignee, --all and --include-inherited returns assignments across scopes including inherited ones.",
+  "exp": "az role assignment list --assignee lists a principal's role assignments. --all includes every scope in the subscription (not just the subscription itself), and --include-inherited adds assignments inherited from higher scopes such as management groups. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-list-cli"
  },
  {
@@ -230,7 +230,7 @@
   "ans": [
    0
   ],
-  "exp": "Each subscription has a role assignment limit (4,000). Assigning roles to groups uses fewer assignments.",
+  "exp": "A subscription has a limit on role assignments (4,000). Assigning roles to groups means one assignment covers every member, so you use far fewer. Extra subscriptions, deny assignments and Azure Policy don't reduce the number of assignments.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/troubleshoot-limits"
  },
  {
@@ -306,7 +306,7 @@
    true,
    false
   ],
-  "exp": "Managed identities and groups can hold roles; Reader inherits down; deleting a user leaves orphaned 'Identity not found' assignments that should be cleaned up.",
+  "exp": "Managed identities can receive roles, and a role assigned to a group applies to all its members. Reader at the subscription scope is inherited by every resource group and resource. But deleting a user in Entra ID doesn't remove their role assignments — they stay as 'Identity not found' until you clean them up.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-remove"
  },
  {
@@ -324,7 +324,7 @@
   "ans": [
    1
   ],
-  "exp": "Changing the directory removes all Azure RBAC role assignments; you must recreate them in the new tenant.",
+  "exp": "Moving a subscription to a different Microsoft Entra tenant permanently deletes all its Azure RBAC role assignments, because the old tenant's users and groups don't exist in the new one. Resources keep running, but you must recreate the role assignments in the new tenant.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/transfer-subscription"
  },
  {
@@ -360,7 +360,7 @@
   "ans": [
    0
   ],
-  "exp": "PIM provides eligible, time-bound, approval-based role activation. It requires P2/Governance licensing.",
+  "exp": "Privileged Identity Management makes users eligible for a role instead of permanently assigned. They activate it only when needed, for a limited time, optionally with approval, MFA and a justification. It needs Entra ID P2 or ID Governance. Locks, policies and access reviews don't provide just-in-time access.",
   "link": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"
  },
  {
@@ -396,7 +396,7 @@
   "ans": [
    1
   ],
-  "exp": "The tenant root group is the top of the hierarchy, so assignments there inherit to everything below.",
+  "exp": "The tenant root group is the top of the management group hierarchy. A role assigned there is inherited by every management group, subscription, resource group and resource in the tenant. It doesn't cover Entra ID objects, because those use separate Entra roles.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -522,7 +522,7 @@
   "ans": [
    1
   ],
-  "exp": "Custom roles can list management groups, subscriptions, and resource groups, but not the root scope \"/\".",
+  "exp": "A custom role's AssignableScopes can list management groups, subscriptions or resource groups, but not the root scope \"/\". Only built-in roles can be assigned at root. Licences and data actions don't change this.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
  },
  {
@@ -576,7 +576,7 @@
   "ans": [
    1
   ],
-  "exp": "The wildcard grants every control-plane operation under that resource type path. Data access requires DataActions.",
+  "exp": "The * wildcard grants every control-plane operation under Microsoft.Storage/storageAccounts — create, read, update, delete, list keys and child resources. It doesn't grant data access to blobs; that needs DataActions. It covers only storage accounts, not every resource provider.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
  },
  {
@@ -654,7 +654,7 @@
   "ans": [
    0
   ],
-  "exp": "Monitoring Contributor can read monitoring data and edit monitoring settings, such as alerts and diagnostic settings.",
+  "exp": "Monitoring Contributor can read all monitoring data and change monitoring settings such as alert rules and diagnostic settings, without changing the resources themselves. Contributor and Owner give far more access, and Log Analytics Reader can only read data.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/roles-permissions-security"
  },
  {
@@ -745,7 +745,7 @@
   "ans": [
    1
   ],
-  "exp": "Owner and User Access Administrator can write role assignments; UAA at Sub1 inherits to RG-A. Contributor cannot.",
+  "exp": "User1 is Owner on RG-A, which includes granting access. User2 is User Access Administrator on Sub1, and that role is inherited by RG-A. User3 is Contributor, which can't create role assignments. So User1 and User2 can grant Reader.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -767,7 +767,7 @@
    true,
    false
   ],
-  "exp": "VM Contributor covers VM restart but not creating VNets; Reader inherited from MG1 covers all of Sub1; neither role writes role assignments.",
+  "exp": "Virtual Machine Contributor covers VM actions such as restart, but not creating virtual networks. Reader on MG1 is inherited by Sub1, so User1 can view storage accounts in every resource group. Neither role includes roleAssignments/write, so User1 can't assign roles.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
  },
  {
@@ -803,7 +803,7 @@
   "ans": [
    0
   ],
-  "exp": "Global Administrator has full access to all directory features. Microsoft recommends fewer than five.",
+  "exp": "Global Administrator has full access to every part of Microsoft Entra ID and the services that use it. Microsoft recommends fewer than five Global Administrators and using less-privileged roles, such as User Administrator, for day-to-day work.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices"
  },
  {
@@ -821,7 +821,7 @@
   "ans": [
    1
   ],
-  "exp": "Only role-assignable groups (a flag set at creation, which can't be dynamic) can receive Entra roles.",
+  "exp": "Groups can receive Entra directory roles only if they're created as role-assignable (isAssignableToRole = true). That setting is chosen at creation and can't be changed later, and role-assignable groups can't use dynamic membership. Ordinary groups can't be given Entra roles.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-concept"
  },
  {
@@ -857,7 +857,7 @@
   "ans": [
    0
   ],
-  "exp": "Managed identities provide Azure-managed credentials for Entra authentication; you grant the identity RBAC roles on the target.",
+  "exp": "A managed identity gives the VM an identity in Entra ID that Azure manages, with no secrets in code. Grant that identity access to Key Vault (an RBAC role or access policy), and the app gets tokens from the VM's local endpoint. Keys, passwords and SAS tokens would all have to be stored somewhere.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
  },
  {
@@ -914,7 +914,7 @@
    0,
    2
   ],
-  "exp": "Enable the identity → confirm the vault uses RBAC → assign the data role → the app reads secrets with its identity.",
+  "exp": "First enable the web app's managed identity, so there's an identity to grant access to. Confirm the vault uses the Azure RBAC permission model, then assign Key Vault Secrets User to the identity. Finally reference the secret from the app, which reads it using the identity — no credentials needed.",
   "link": "https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide"
  }
 ]

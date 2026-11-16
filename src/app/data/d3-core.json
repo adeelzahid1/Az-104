@@ -14,7 +14,7 @@
   "ans": [
    0
   ],
-  "exp": "Templates use parameters, variables, resources, and outputs, plus $schema, contentVersion, and functions.",
+  "exp": "An ARM template's main sections are parameters (values you pass in), variables (values worked out inside the template), resources (what to deploy) and outputs (values returned afterwards). There are also $schema, contentVersion and optional functions. The other sets of names aren't template sections.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/syntax"
  },
  {
@@ -215,7 +215,7 @@
    false,
    true
   ],
-  "exp": "Complete mode is RG-only; nested deployments can target other RGs; secureString values aren't logged; Bicep has modules.",
+  "exp": "Complete mode only works for resource group deployments. A template can deploy to other resource groups through nested or linked deployments. Values of secureString parameters are never logged in deployment history. Bicep supports modules for reusing code.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes"
  },
  {
@@ -872,7 +872,7 @@
   "ans": [
    1
   ],
-  "exp": "Managed certificates auto-renew, have no wildcard support, aren't exportable, and need Basic or higher.",
+  "exp": "Free App Service managed certificates secure custom domains such as www.contoso.com and renew automatically. They don't support wildcard domains (*.contoso.com), can't be exported, and need the Basic tier or higher — not Free. You don't buy them from a certificate authority.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate"
  },
  {

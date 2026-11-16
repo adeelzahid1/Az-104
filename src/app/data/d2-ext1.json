@@ -159,7 +159,7 @@
    0,
    1
   ],
-  "exp": "Private endpoints get a VNet IP and are reachable from connected networks. They don't require a service endpoint.",
+  "exp": "A private endpoint is a NIC with a private IP from your subnet, connected to the storage account. It's reachable from peered VNets and from on-premises over VPN or ExpressRoute. It doesn't need a service endpoint, and it makes access more private, not public.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"
  },
  {
@@ -267,7 +267,7 @@
   "ans": [
    0
   ],
-  "exp": "Disabling shared key authorization blocks account keys, account SAS, and service SAS. User delegation SAS (Entra) still works.",
+  "exp": "Turning off 'Allow storage account key access' (shared key authorization) blocks requests signed with account keys, including account SAS and service SAS. Entra ID access and user delegation SAS still work, because they don't use the keys. Rotating keys, firewalls and deleting policies don't block key-based access.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/shared-key-authorization-prevent"
  },
  {
@@ -357,7 +357,7 @@
   "ans": [
    1
   ],
-  "exp": "SAS tokens reference the policy by name. Recreating the same name re-associates them, so use new names when revoking.",
+  "exp": "SAS tokens point to a stored access policy by its name. If you delete p1 and create a new policy with the same name, old tokens become valid again under the new policy's settings. To revoke tokens for good, use a different name for the new policy.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"
  },
  {
@@ -432,7 +432,7 @@
   "ans": [
    1
   ],
-  "exp": "Listing keys requires Microsoft.Storage/storageAccounts/listkeys/action, which roles like Storage Account Key Operator Service Role and Contributor include.",
+  "exp": "Listing keys needs Microsoft.Storage/storageAccounts/listkeys/action. Storage Account Key Operator Service Role, Contributor and Owner include it. Reader, Storage Blob Data Reader and Monitoring Reader don't.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"
  },
  {
@@ -522,7 +522,7 @@
   "ans": [
    0
   ],
-  "exp": "Blob data roles can be assigned down to the container scope (not individual blobs). Use ABAC conditions for finer control.",
+  "exp": "Blob data roles such as Storage Blob Data Reader can be assigned as narrowly as a single container (or as widely as the account, resource group or subscription). They can't be assigned to individual blobs. For finer control, add ABAC role assignment conditions.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
  },
  {
@@ -558,7 +558,7 @@
   "ans": [
    0
   ],
-  "exp": "Contributor = read/write/delete; Elevated Contributor can also modify NTFS ACLs; Reader = read only.",
+  "exp": "Storage File Data SMB Share Contributor allows reading, writing and deleting files over SMB, but not changing NTFS permissions. Elevated Contributor can also change permissions, and Reader is read-only. Storage Account Contributor is a control-plane role and doesn't give file access.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-assign-share-level-permissions"
  },
  {
@@ -594,7 +594,7 @@
   "ans": [
    0
   ],
-  "exp": "A default share-level permission applies to all authenticated users when no specific role is assigned.",
+  "exp": "A default share-level permission applies to every authenticated identity that doesn't have a specific role, so you don't need an assignment for each user or group. NTFS ACLs then control file and folder access. Anonymous access, SAS and lifecycle rules don't work for SMB identity access.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-assign-share-level-permissions"
  },
  {
@@ -612,7 +612,7 @@
   "ans": [
    0
   ],
-  "exp": "The storage account is represented in AD DS as an identity, usually set up with AzFilesHybrid's Join-AzStorageAccount.",
+  "exp": "For AD DS authentication, the storage account must be represented in on-premises AD DS as a computer account or service logon account. The AzFilesHybrid PowerShell module usually sets this up. Premium tier, another tenant and RA-GRS aren't required.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-ad-ds-enable"
  },
  {
@@ -651,7 +651,7 @@
    true,
    false
   ],
-  "exp": "The key works like a superuser; share-level permission is needed; SMB identity auth is supported; SAS works for REST access, not SMB mounts.",
+  "exp": "The storage account key still mounts the share with full (superuser) access even when identity-based auth is on, so protect it. Users need a share-level permission as well as NTFS permissions. Azure Files supports identity-based auth over SMB. SAS tokens can't be used to mount SMB shares.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"
  },
  {
@@ -743,7 +743,7 @@
    0,
    1
   ],
-  "exp": "Revoke policy-based SAS through the policy; ad-hoc SAS through key rotation. (User delegation SAS can also be revoked by revoking the delegation keys.)",
+  "exp": "For a SAS linked to a stored access policy, delete or change the policy. For an ad-hoc SAS, regenerate the account key that signed it, which invalidates every SAS signed with that key. Changing tiers or turning on versioning doesn't affect SAS.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
  },
  {
@@ -761,7 +761,7 @@
   "ans": [
    0
   ],
-  "exp": "Revoking user delegation keys (az storage account revoke-delegation-keys) invalidates all user delegation SAS.",
+  "exp": "Revoking the account's user delegation keys (for example az storage account revoke-delegation-keys) invalidates every user delegation SAS at once. Rotating account keys doesn't affect them, because they're signed with Entra credentials. Deleting containers or changing soft delete doesn't revoke them.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"
  },
  {
@@ -818,7 +818,7 @@
   "ans": [
    0
   ],
-  "exp": "Resource instance rules grant access to specific resource instances based on their managed identity.",
+  "exp": "Resource instance rules let specific Azure resource instances, such as one Synapse workspace, through the storage firewall based on their managed identity. 'Trusted services' allows whole services, IP rules need fixed public IPs, and private DNS doesn't affect the firewall.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
  },
  {
@@ -854,7 +854,7 @@
   "ans": [
    0
   ],
-  "exp": "The storage account authenticates to Key Vault with a managed identity that has the needed key permissions.",
+  "exp": "The storage account authenticates to Key Vault with a managed identity (system-assigned or user-assigned) that has get, wrap and unwrap permissions on the key. It doesn't use its own account key or a person's identity.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-configure-existing-account"
  },
  {

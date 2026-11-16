@@ -25,7 +25,7 @@
    1,
    1
   ],
-  "exp": "The hub shares its gateway with Allow gateway transit, and each spoke uses it with Use remote gateways.",
+  "exp": "The hub owns the VPN gateway and shares it by enabling 'Allow gateway transit' on its peering. Each spoke enables 'Use remote gateways' on its peering so its traffic to on-premises uses the hub's gateway. Spokes then don't need gateways of their own.",
   "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"
  },
  {
@@ -44,7 +44,7 @@
   "ans": [
    1
   ],
-  "exp": "Peering is not transitive, and a direct peering would bypass the firewall. User-defined routes force spoke-to-spoke traffic through the firewall in the hub.",
+  "exp": "Peering isn't transitive, so spokes can't reach each other through the hub on their own. A route table on each spoke subnet sends the other spoke's prefix to the firewall (next hop type Virtual appliance, 10.0.1.4), which forwards it. Direct peering would bypass the firewall, and service endpoints and NSG rules don't route traffic.",
   "link": "https://learn.microsoft.com/en-us/azure/firewall/tutorial-hybrid-portal"
  },
  {
@@ -63,7 +63,7 @@
   "ans": [
    1
   ],
-  "exp": "Azure Bastion provides browser-based RDP and SSH over TLS without public IPs on the VMs, and it works across VNet peering.",
+  "exp": "Azure Bastion in the hub gives browser-based RDP and SSH over TLS, without public IPs on the VMs, and (with Standard SKU or higher) it can reach VMs in peered spokes. A jump box or public IPs add attack surface and patching work, and a VPN for each admin is more to manage.",
   "link": "https://learn.microsoft.com/en-us/azure/bastion/vnet-peering"
  },
  {
@@ -82,7 +82,7 @@
   "ans": [
    1
   ],
-  "exp": "Private endpoints give the SQL server a private IP that on-premises clients can reach over VPN. Service endpoints do not work from on-premises.",
+  "exp": "A private endpoint gives the SQL server a private IP that on-premises clients can reach over VPN or ExpressRoute. The privatelink private DNS zone resolves its name to that IP, and DNS forwarding lets on-premises DNS servers use the zone. Service endpoints don't work from on-premises, and NSG rules or public endpoints keep traffic public.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview"
  },
  {
@@ -123,7 +123,7 @@
   "ans": [
    1
   ],
-  "exp": "Delegation works by setting the domain's name servers at the registrar to the Azure DNS name servers assigned to your zone.",
+  "exp": "To delegate a domain to Azure DNS, replace the domain's NS records at the registrar with the four Azure DNS name servers assigned to the proseware.com zone. Internet resolvers then ask Azure DNS for the domain. A or TXT records don't delegate anything, and Azure can't take over the domain by itself.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-delegate-domain-azure-dns"
  },
  {
@@ -142,7 +142,7 @@
   "ans": [
    1
   ],
-  "exp": "CNAME records are not allowed at the zone apex. An alias record points at the Azure resource and follows its IP address automatically.",
+  "exp": "CNAME records aren't allowed at the zone apex (proseware.com itself). An alias A record at the apex can point to the load balancer's public IP resource and updates automatically if the IP changes. A static A record would have to be updated by hand, and MX is for mail.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-alias"
  },
  {
@@ -171,7 +171,7 @@
    1,
    0
   ],
-  "exp": "A private DNS zone resolves names inside linked VNets. Auto-registration creates and updates A records for the VMs.",
+  "exp": "A private DNS zone resolves names only inside the VNets linked to it. With auto-registration turned on for a link, Azure creates and updates A records for VMs in that VNet automatically, so names stay correct when IPs change.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/private-dns-autoregistration"
  },
  {
@@ -190,7 +190,7 @@
   "ans": [
    1
   ],
-  "exp": "An internal load balancer has a private frontend that only the VNet and connected networks can reach. It handles any TCP port.",
+  "exp": "An internal Standard load balancer has a private frontend IP that only the VNet and connected networks can reach, and it can balance any TCP port, such as 8443. A public load balancer or a public Application Gateway listener would expose the app to the internet, and Traffic Manager works with public DNS.",
   "link": "https://learn.microsoft.com/en-us/azure/load-balancer/components"
  },
  {
@@ -209,7 +209,7 @@
   "ans": [
    1
   ],
-  "exp": "Inbound NAT rules forward a frontend port to one specific backend VM. Load-balancing rules spread traffic across the pool.",
+  "exp": "An inbound NAT rule forwards one frontend port (50001) to a specific backend VM on a specific port (3389), so admins can reach that one VM. A load-balancing rule spreads traffic across the whole pool, outbound rules handle outgoing traffic, and Floating IP is for special cases such as SQL clusters.",
   "link": "https://learn.microsoft.com/en-us/azure/load-balancer/inbound-nat-rules"
  },
  {
@@ -260,7 +260,7 @@
   "ans": [
    2
   ],
-  "exp": "VirtualAppliance sends traffic to the IP address given. None would drop it, and Internet would bypass the firewall.",
+  "exp": "The next hop type VirtualAppliance sends matching traffic to the IP you specify — here the firewall at 10.0.1.4. With 0.0.0.0/0 this forces all internet-bound traffic through the firewall. None would drop the traffic, and Internet would bypass the firewall.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
  },
  {
@@ -288,7 +288,7 @@
    2,
    2
   ],
-  "exp": "A /28 has 16 addresses; Azure reserves 5 (.0, .1, .2, .3 and .15), leaving 11. The first usable address is .4.",
+  "exp": "A /28 has 16 addresses. Azure reserves 5 in every subnet: the network address (.0), .1 for the default gateway, .2 and .3 for Azure DNS, and the broadcast address (.15). That leaves 11 usable addresses, starting at 10.0.2.4.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
  },
  {
@@ -337,7 +337,7 @@
   "ans": [
    1
   ],
-  "exp": "The hub, which owns the gateway, sets allow-gateway-transit. The spoke side sets use-remote-gateways.",
+  "exp": "The hub owns the VPN gateway, so its side of the peering sets --allow-gateway-transit. Each spoke's side sets --use-remote-gateways. Both are needed for spokes to reach on-premises through the hub.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/network/vnet/peering"
  },
  {
@@ -372,7 +372,7 @@
    3,
    1
   ],
-  "exp": "MX records route mail, TXT records are used for verification, and CNAME records map one name to another.",
+  "exp": "MX records tell other mail servers where to deliver email for the domain. TXT records hold text, often used for verification (such as SPF or proving domain ownership). CNAME records map one name to another name.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-zones-records"
  },
  {
@@ -393,7 +393,7 @@
   "ans": [
    2
   ],
-  "exp": "Blob private endpoints use privatelink.blob.core.windows.net. Each service has its own privatelink zone.",
+  "exp": "Private endpoints for Blob storage use the private DNS zone privatelink.blob.core.windows.net. The public name becomes a CNAME to the privatelink name, which the zone resolves to the private IP. Each service and sub-resource has its own privatelink zone.",
   "link": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns"
  },
  {
@@ -421,7 +421,7 @@
    0,
    2
   ],
-  "exp": "The default uses source IP, source port, destination IP, destination port and protocol. Client IP persistence keeps a client on one backend.",
+  "exp": "By default, Azure Load Balancer distributes traffic using a 5-tuple hash: source IP, source port, destination IP, destination port and protocol. Choosing Client IP session persistence (2-tuple) keeps each client on the same backend VM.",
   "link": "https://learn.microsoft.com/en-us/azure/load-balancer/distribution-mode-concepts"
  },
  {
@@ -443,7 +443,7 @@
   "ans": [
    1
   ],
-  "exp": "Service endpoints are named after the resource provider, for example Microsoft.Storage or Microsoft.Sql.",
+  "exp": "Service endpoints are named after the service's resource provider, so a storage endpoint is Microsoft.Storage (others include Microsoft.Sql and Microsoft.KeyVault). It's enabled on the subnet, and the storage firewall can then allow that subnet.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
  },
  {
@@ -470,7 +470,7 @@
    2,
    0
   ],
-  "exp": "Longest prefix match is applied first. For identical prefixes the order is user-defined, then BGP, then system.",
+  "exp": "Azure picks the route with the longest (most specific) prefix first. Only if several routes have the same prefix does it compare sources: user-defined routes win over BGP routes, which win over system routes.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
  },
  {
@@ -498,7 +498,7 @@
    0,
    1
   ],
-  "exp": "Connection Monitor tracks connectivity over time; effective security rules merge NSGs; IP flow verify tests one flow; next hop shows routing.",
+  "exp": "Connection Monitor tracks latency and reachability over time. Effective security rules show the merged NSG rules applying to a NIC. IP flow verify checks whether one specific flow is allowed or denied. Next hop shows where traffic to an address goes next.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"
  },
  {
@@ -579,7 +579,7 @@
    2,
    1
   ],
-  "exp": "Internet, None (drop), Virtual network gateway and Virtual appliance are user-defined route next-hop types.",
+  "exp": "In user-defined routes, Internet sends traffic straight out to the internet, None drops it, Virtual network gateway sends it to on-premises through the VPN or ExpressRoute gateway, and Virtual appliance sends it to an IP such as a firewall VM.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
  },
  {
@@ -606,7 +606,7 @@
    0,
    1
   ],
-  "exp": "Point-to-site serves single clients; peering links VNets; site-to-site links offices; ExpressRoute is a private circuit.",
+  "exp": "Point-to-site VPN connects one device, such as a laptop. VNet peering connects two Azure VNets over the Microsoft backbone without gateways. Site-to-site VPN builds an encrypted tunnel from an office over the internet. ExpressRoute is a private, dedicated circuit that doesn't use the internet.",
   "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways"
  },
  {
@@ -661,7 +661,7 @@
    2,
    1
   ],
-  "exp": "NSGs filter at Layer 3/4; ASGs group NICs; Azure Firewall adds FQDN and threat intelligence filtering; service tags represent Microsoft IP ranges.",
+  "exp": "A network security group does basic stateful allow/deny filtering on a subnet or NIC. An application security group groups NICs by role so rules can refer to them instead of IPs. Azure Firewall is a managed stateful firewall with FQDN rules and threat intelligence. Service tags are Microsoft-maintained groups of IP prefixes for Azure services.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
  },
  {
@@ -752,7 +752,7 @@
   "ans": [
    1
   ],
-  "exp": "IP flow verify names the NSG rule that denied the flow. Allowing it needs a higher-priority (lower-numbered) Allow rule, or a change to the deny rule.",
+  "exp": "IP flow verify names the NSG rule that denied the flow: Deny-SQL-From-Web. To allow the traffic, add an Allow rule with a lower priority number (which means higher priority) than that rule, or change the rule itself. Routes, restarts and service endpoints don't change NSG decisions.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/ip-flow-verify-overview"
  },
  {
@@ -771,7 +771,7 @@
   "ans": [
    1
   ],
-  "exp": "The public name is a CNAME to the privatelink name, which the private DNS zone resolves to the private endpoint's IP.",
+  "exp": "The public storage name resolves through a CNAME to the privatelink name, and the private DNS zone answers with a private IP. That's exactly how private endpoint DNS is meant to work, so traffic stays inside the VNet. With the public endpoint you'd see a public IP, and service endpoints don't change DNS.",
   "link": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns"
  },
  {
@@ -850,7 +850,7 @@
   "ans": [
    1
   ],
-  "exp": "A peering needs a link on both VNets. Initiated means only one side exists; both sides must show Connected.",
+  "exp": "A peering needs a link created on both VNets. The state Initiated means only one side has been created — here the vnet-data side is missing. Once both sides exist, both show Connected and traffic flows. Gateway transit, forwarded traffic and peering limits aren't the cause.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering"
  },
  {
@@ -869,7 +869,7 @@
   "ans": [
    1
   ],
-  "exp": "The firewall hop reports no issues; the destination hop reports the NSG rule Deny-All-Inbound in nsg-data.",
+  "exp": "Connection troubleshoot checks each hop. The firewall hop reports no issues, but the destination hop shows the NSG rule Deny-All-Inbound in nsg-data blocking the traffic. So the fix is on the destination subnet's NSG, not the firewall, routing or source VM.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/connection-troubleshoot-overview"
  },
  {
@@ -888,7 +888,7 @@
   "ans": [
    0
   ],
-  "exp": "The MX record points to Exchange Online Protection. The apex is an alias to pip-web, so it follows IP changes. www is a CNAME.",
+  "exp": "The MX record points to Exchange Online Protection, so mail is delivered to Exchange Online. The apex is an alias record targeting the pip-web public IP resource, so it updates automatically if the IP changes. www is a CNAME, not an alias, and the zone is public.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-alias"
  },
  {

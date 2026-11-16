@@ -14,7 +14,7 @@
   "ans": [
    1
   ],
-  "exp": "Every tenant gets an initial <name>.onmicrosoft.com domain, which cannot be removed. Custom domains are added on top.",
+  "exp": "Every new tenant gets an initial domain in the form <name>.onmicrosoft.com, which you can't remove. You add custom domains such as contoso.com on top and verify them with a DNS record. azurewebsites.net and cloudapp.net are used by App Service and cloud services, not Entra ID.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    2
   ],
-  "exp": "AzureAD and MSOnline are deprecated. Microsoft Graph PowerShell (New-MgUser, Update-MgUser) is the replacement.",
+  "exp": "The AzureAD and MSOnline modules are retired. Microsoft Graph PowerShell (the Microsoft.Graph module, with cmdlets such as New-MgUser and Update-MgUser) is the supported replacement. Az.Accounts handles Azure sign-in, not Entra user management.",
   "link": "https://learn.microsoft.com/en-us/powershell/microsoftgraph/overview"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    1
   ],
-  "exp": "Soft-deleted users are kept 30 days. After that the deletion is permanent and the object cannot be recovered.",
+  "exp": "Deleted users stay in Deleted users for 30 days, during which you can restore them with everything intact. After 30 days they're permanently deleted and can't be recovered — not even by support. You'd have to create a new account.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    1
   ],
-  "exp": "For synced users, on-premises AD is the source of authority; most attributes must be changed there and then sync to Entra ID.",
+  "exp": "For users synced from on-premises AD with Entra Connect, on-premises AD is the source of authority. Change attributes such as job title there, and the change syncs to Entra ID. Edits made in the Entra admin center would be blocked or overwritten.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/hybrid/whatis-hybrid-identity"
  },
  {
@@ -141,7 +141,7 @@
    0,
    2
   ],
-  "exp": "By default, members can register apps and invite guests (both can be turned off). They cannot assign admin roles.",
+  "exp": "By default, member users can register applications and invite guests; admins can turn both off in user settings and external collaboration settings. Members can't assign Entra admin roles, and creating subscriptions needs a billing account or offer.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
  },
  {
@@ -159,7 +159,7 @@
   "ans": [
    1
   ],
-  "exp": "Blocking sign-in (accountEnabled = false) stops authentication while keeping the account, memberships, and data.",
+  "exp": "Setting 'Account enabled' to No (blocking sign-in) stops the user from authenticating straight away, while keeping the account, its group memberships, licences and data. Removing licences or groups doesn't stop sign-in, and changing the display name has no effect on access.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-user-profile-info"
  },
  {
@@ -195,7 +195,7 @@
   "ans": [
    1
   ],
-  "exp": "Helpdesk Administrator (or Password Administrator) can reset passwords for non-admins and limited admin roles, with fewer rights than User Administrator.",
+  "exp": "Password Administrator and Helpdesk Administrator can reset passwords for non-administrators (and some limited admin roles), which is all a helpdesk needs. User Administrator can also create and manage users, Global Administrator can do everything, and Privileged Authentication Administrator can reset any user, including admins.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"
  },
  {
@@ -213,7 +213,7 @@
   "ans": [
    1
   ],
-  "exp": "External collaboration settings include collaboration restrictions: an allow list or deny list of domains.",
+  "exp": "External collaboration settings include collaboration restrictions, where you can allow invitations only to specific domains (allow list) or block specific domains (deny list). Conditional Access and named locations control sign-in conditions, and Azure Policy controls resources.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/allow-deny-list"
  },
  {
@@ -231,7 +231,7 @@
   "ans": [
    1
   ],
-  "exp": "Guest invite settings in External collaboration settings control who can invite (everyone, members, specific admin roles, or no one).",
+  "exp": "Guest invite settings, under External collaboration settings, control who can invite guests: anyone, member users, only users in admin roles and the Guest Inviter role, or nobody. App registrations, password reset and device settings don't control invitations.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/external-collaboration-settings-configure"
  },
  {
@@ -249,7 +249,7 @@
   "ans": [
    1
   ],
-  "exp": "Guests get an invitation email (or a direct link) and redeem it, consenting to the tenant's permissions.",
+  "exp": "B2B guests get an invitation email (or a direct link) and redeem it by signing in with their own account and consenting to your tenant's permissions. You never send them a password, they don't get a mailbox in your tenant, and until they redeem, their status shows as pending.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/redemption-experience"
  },
  {
@@ -288,7 +288,7 @@
    false,
    true
   ],
-  "exp": "Guests can join security groups and receive RBAC roles. No P2 license is needed to invite. Unredeemed invitations show Pending acceptance.",
+  "exp": "Guests can be added to security groups and given Azure RBAC roles, just like members. Inviting guests doesn't need a P2 licence. Until a guest redeems their invitation, their status shows as 'Pending acceptance'.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"
  },
  {
@@ -306,7 +306,7 @@
   "ans": [
    1
   ],
-  "exp": "Guest users have limited directory read access by default. The level is configurable in External collaboration settings.",
+  "exp": "By default, guests have limited directory access: they can see their own profile and limited details of other users and of groups they belong to, but they can't browse the whole directory like members. You can make guest access more or less restrictive in External collaboration settings.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
  },
  {
@@ -324,7 +324,7 @@
   "ans": [
    1
   ],
-  "exp": "Microsoft 365 groups provide collaboration resources: mailbox, calendar, SharePoint site, Planner, and Teams integration.",
+  "exp": "A Microsoft 365 group gives its members shared collaboration tools: a mailbox, calendar, SharePoint site, Planner and Teams integration. A security group is only for access and policies, and a distribution list only sends email.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"
  },
  {
@@ -342,7 +342,7 @@
   "ans": [
    1
   ],
-  "exp": "Devices can only be members of security groups, and automatic membership by OS needs a dynamic device rule.",
+  "exp": "Devices can only be members of security groups, and dynamic device membership adds every device that matches a rule, such as Windows 11 (deviceOSType and deviceOSVersion). Microsoft 365 groups can't contain devices, and a dynamic user rule would add users, not devices.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
  },
  {
@@ -378,7 +378,7 @@
   "ans": [
    1
   ],
-  "exp": "Once dynamic, the rule is the only source of membership. Existing members that don't match are removed.",
+  "exp": "Once a group uses dynamic membership, the rule is the only source of members. Entra ID recalculates membership from the rule, so manually added members who don't match are removed. The change isn't blocked, and nobody is converted to a guest.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-change-type"
  },
  {
@@ -396,7 +396,7 @@
   "ans": [
    1
   ],
-  "exp": "Dynamic groups don't allow manual member adds or removes; edit the rule or the user's attributes instead.",
+  "exp": "In a dynamic group, the rule decides membership, so even owners can't add or remove members manually. To include the user, change the rule or the user's attributes (such as department) so they match.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
  },
  {
@@ -450,7 +450,7 @@
   "ans": [
    1
   ],
-  "exp": "A group expiration policy sets a lifetime; owners get renewal notices and unrenewed groups are deleted (restorable for 30 days).",
+  "exp": "A group expiration policy gives Microsoft 365 groups a lifetime, such as 180 days. Owners get renewal emails, and groups nobody renews are deleted (and can be restored for 30 days). Active groups are renewed automatically. Naming policies control names, and access reviews check membership.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-lifecycle"
  },
  {
@@ -489,7 +489,7 @@
    false,
    true
   ],
-  "exp": "Security groups support nesting; M365 groups hold users only; dynamic processing can take minutes or longer; dynamic groups need P1.",
+  "exp": "Security groups can contain other security groups (nesting). Microsoft 365 groups only hold users, not devices. Dynamic membership is processed in the background and can take minutes or longer. Dynamic groups need Entra ID P1 for the users in them.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"
  },
  {
@@ -507,7 +507,7 @@
   "ans": [
    1
   ],
-  "exp": "Group-based licensing only applies to direct members; nested group members are not licensed through the parent.",
+  "exp": "Group-based licensing only applies to direct members of the group. Members of a nested group don't get the licence from the parent group. Dynamic membership rules match user or device attributes, not other groups, and nesting is supported for security groups.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-group-advanced"
  },
  {
@@ -543,7 +543,7 @@
   "ans": [
    1
   ],
-  "exp": "usageLocation (a two-letter country code) is required because service availability varies by country.",
+  "exp": "A user must have usageLocation (a two-letter country code) set before you can assign a licence, because some services aren't available in every country. Job title, department and manager are optional and don't affect licensing.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign"
  },
  {
@@ -579,7 +579,7 @@
   "ans": [
    1
   ],
-  "exp": "Direct and inherited assignments coexist; removing the group membership only removes the inherited path.",
+  "exp": "A user can have the same licence both directly and through a group, and the two assignments are tracked separately. Removing the group membership only removes the inherited assignment; the direct one keeps the licence active. The user isn't deleted and doesn't use two licences.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-group-advanced"
  },
  {
@@ -633,7 +633,7 @@
   "ans": [
    0
   ],
-  "exp": "Access reviews (with PIM and Identity Protection) are P2/Governance features. The others are P1 or lower.",
+  "exp": "Access reviews — regular checks of who still needs group membership, app access or roles — need Microsoft Entra ID P2 (or ID Governance), like PIM and Identity Protection. SSPR for cloud users is included in all tiers, and group-based licensing and Conditional Access need P1.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
  },
  {
@@ -759,7 +759,7 @@
   "ans": [
    0
   ],
-  "exp": "Writeback must be enabled in both Entra Connect and in the Password reset blade's on-premises integration settings.",
+  "exp": "Password writeback must be turned on in two places: in Entra Connect, and in the Entra admin center under Password reset → On-premises integration ('Write back passwords to your on-premises directory'). P1 is enough, and Conditional Access and security questions don't affect writeback.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr-writeback"
  },
  {
@@ -777,7 +777,7 @@
   "ans": [
    0
   ],
-  "exp": "Users go to aka.ms/sspr, which redirects to the password reset portal, or use the 'Forgot my password' link at sign-in.",
+  "exp": "Users reset forgotten passwords at https://aka.ms/sspr, which redirects to passwordreset.microsoftonline.com, or with the 'Forgot my password' link on the sign-in page. The Azure portal, My Apps and login.windows.net addresses aren't the reset portal.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr"
  },
  {
@@ -888,7 +888,7 @@
   "ans": [
    1
   ],
-  "exp": "Administrative units restrict the scope of Entra role assignments to a subset of users, groups, or devices.",
+  "exp": "An administrative unit groups a subset of users (here, the Lahore office). Assigning Helpdesk Administrator scoped to that unit lets staff reset passwords only for those users. Management groups and resource groups organise Azure resources, not Entra users, and device groups don't limit admin roles.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units"
  },
  {

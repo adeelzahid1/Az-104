@@ -68,7 +68,7 @@
   "ans": [
    0
   ],
-  "exp": "Default outbound rules allow VNet and internet traffic (actual outbound connectivity still needs an outbound path).",
+  "exp": "The default NSG rule AllowInternetOutBound allows outbound traffic to the internet, so NSGs don't block it by default. But a VM still needs an outbound path, such as a NAT gateway, a public IP or a load balancer outbound rule — especially in newer VNets, whose subnets are private with no default outbound access.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
  },
  {
@@ -309,7 +309,7 @@
    true,
    true
   ],
-  "exp": "A NIC can join several ASGs; rule members must share a VNet; ASGs simplify rules; ASGs are regional resources.",
+  "exp": "A NIC can belong to several application security groups. All ASGs in one rule must be in the same VNet. ASGs let you write rules by application role instead of IP addresses. They're regional resources.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
  },
  {
@@ -618,7 +618,7 @@
    true,
    true
   ],
-  "exp": "Peered access works; disabling public access is optional; network policies for private endpoints can be enabled; endpoints map to specific resources.",
+  "exp": "A private endpoint can be reached from peered VNets and from on-premises. Disabling the service's public endpoint is optional, though recommended. With network policies enabled on the subnet, NSGs and UDRs apply to private endpoint traffic. Each private endpoint maps to one resource and sub-resource (for example blob).",
   "link": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"
  },
  {
@@ -802,7 +802,7 @@
   "ans": [
    0
   ],
-  "exp": "DDoS Network Protection (or IP Protection) adds advanced mitigation on top of the default infrastructure protection.",
+  "exp": "Every public IP gets basic DDoS infrastructure protection for free. Azure DDoS Network Protection (or per-IP DDoS IP Protection) adds adaptive tuning for your traffic, attack telemetry and alerts, and cost protection for scale-out during an attack. NSGs and Bastion don't mitigate DDoS.",
   "link": "https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview"
  },
  {
@@ -857,7 +857,7 @@
    0,
    1
   ],
-  "exp": "Service endpoints are subnet settings that carry the VNet identity; they don't give private IPs or work from on-premises.",
+  "exp": "Service endpoints are turned on per subnet and per service (for example Microsoft.Storage), and they carry the subnet's identity to the service so its firewall can allow that subnet. The service still uses its public IP — no private IP — and they don't work from on-premises. Use private endpoints for those needs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
  },
  {

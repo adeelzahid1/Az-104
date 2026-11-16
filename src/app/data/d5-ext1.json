@@ -410,7 +410,7 @@
   "ans": [
    0
   ],
-  "exp": "project selects which columns appear in the output (and can rename them). where filters rows, summarize aggregates, and extend adds calculated columns.",
+  "exp": "project chooses which columns appear in the output, and can rename them (project Name = Computer). where filters rows, summarize aggregates them (count, avg and so on), and extend adds calculated columns while keeping the existing ones.",
   "link": "https://learn.microsoft.com/en-us/kusto/query/project-operator"
  },
  {
@@ -482,7 +482,7 @@
   "ans": [
    0
   ],
-  "exp": "render timechart draws the query result as a time chart. render also supports barchart, piechart and others. plot, chart() and graph aren't KQL operators.",
+  "exp": "render timechart draws the query result as a line chart over time, usually after summarize ... by bin(TimeGenerated, ...). render also supports barchart, piechart, columnchart and others. plot, chart() and graph aren't KQL operators.",
   "link": "https://learn.microsoft.com/en-us/kusto/query/render-operator"
  },
  {
@@ -791,7 +791,7 @@
   "ans": [
    0
   ],
-  "exp": "Alert severities run from Sev 0 (Critical) through Sev 1 (Error), Sev 2 (Warning) and Sev 3 (Informational) to Sev 4 (Verbose). Sev 0 is the most critical.",
+  "exp": "Alert severities run from Sev 0 (Critical) through Sev 1 (Error), Sev 2 (Warning) and Sev 3 (Informational) to Sev 4 (Verbose). Sev 0 is the most critical — a lower number means a more serious alert.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
  },
  {
@@ -907,7 +907,7 @@
    true,
    true
   ],
-  "exp": "Platform metrics are near real-time; memory comes from in-guest counters through AMA and the DCR; action groups are reusable.",
+  "exp": "Platform metrics such as CPU are near real-time, so the metric alert can fire within about a minute. Free memory is an in-guest counter collected by AMA through the DCR, so the log alert depends on it — remove the DCR and no new data arrives. One action group can be shared by many alert rules.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/monitor-virtual-machine-alerts"
  }
 ]

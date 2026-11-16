@@ -68,7 +68,7 @@
   "ans": [
    1
   ],
-  "exp": "B2B guests bring their own credentials and get userType=Guest with restricted default directory permissions. Guests can join security groups too.",
+  "exp": "With B2B collaboration, Anna signs in with her own Fabrikam account, so you never set or manage her password. Her account in your tenant has userType Guest, which gets more limited default permissions than members. Guests can be added to security groups as well as Microsoft 365 groups.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"
  },
  {
@@ -86,7 +86,7 @@
   "ans": [
    2
   ],
-  "exp": "Dynamic membership (user or device) requires Entra ID P1. Assigned-membership groups work on the Free tier.",
+  "exp": "Dynamic membership — where Entra ID adds and removes users or devices automatically from a rule — needs a Microsoft Entra ID P1 licence. Groups with assigned (manual) membership, whether security or Microsoft 365, work on the Free tier, and sharing a SharePoint site doesn't need P1.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    1
   ],
-  "exp": "Dynamic rules are evaluated automatically on attribute change; membership updates without admin action (processing can take some minutes).",
+  "exp": "Dynamic groups are re-evaluated whenever a user's attributes change. When the department becomes \"Sales\", the rule matches and Entra ID adds the user automatically, usually within minutes (large tenants can take longer). No admin sync, invitation or sign-in is needed.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    1
   ],
-  "exp": "Security groups can contain users, devices, service principals, and other groups. Microsoft 365 groups contain users only.",
+  "exp": "Security groups can contain users, devices, service principals and other groups, so they're used to target device settings and policies. Microsoft 365 groups and distribution groups only contain users, because they're built for collaboration and email. Mail-enabled security groups can't hold devices either.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"
  },
  {
@@ -141,7 +141,7 @@
    1,
    2
   ],
-  "exp": "One dynamic group targets users OR devices, never both; device rules use device properties. Devices go in security groups.",
+  "exp": "A dynamic group's rule targets either users or devices, never both in the same group. Device rules can use device properties such as deviceOSType, deviceOSVersion or deviceOwnership. Devices can only be members of security groups, not Microsoft 365 groups.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
  },
  {
@@ -177,7 +177,7 @@
   "ans": [
    2
   ],
-  "exp": "PIM, Identity Protection, and access reviews are P2. Conditional Access, dynamic groups, and SSPR writeback are P1 features.",
+  "exp": "Privileged Identity Management (just-in-time admin roles) and Identity Protection (risk-based sign-in and user policies) need Microsoft Entra ID P2, as do access reviews. Conditional Access, dynamic groups and SSPR with on-premises writeback only need P1.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
  },
  {
@@ -213,7 +213,7 @@
   "ans": [
    1
   ],
-  "exp": "Password writeback requires P1 or higher plus the writeback option enabled in Entra Connect (and in the Password reset blade).",
+  "exp": "Password writeback lets a password reset in the cloud be written back to on-premises AD, so the same password works on domain PCs. It needs Microsoft Entra ID P1 (or higher) and the password writeback option turned on in Entra Connect (or Cloud Sync). The Free tier can't do it, and P2 isn't required.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-writeback"
  },
  {
@@ -234,7 +234,7 @@
    false,
    false
   ],
-  "exp": "Guests can hold admin roles; userType is editable; group owners must be users or service principals, not groups; display name is separate from UPN.",
+  "exp": "Guests can be given Entra admin roles, and you can change a user's userType from Guest to Member later. Group owners must be users or service principals, not groups. And the display name is only a label: the sign-in name (UPN) doesn't change when you edit it.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
  },
  {
@@ -288,7 +288,7 @@
   "ans": [
    1
   ],
-  "exp": "Entra registered is for personal/BYOD devices. Entra join is for corporate-owned devices; hybrid join is for on-premises domain-joined corporate machines.",
+  "exp": "Microsoft Entra registered is for personal (BYOD) devices: the user keeps a personal account on the device and adds a work account, so the organisation can manage access without owning the device. Entra join is for corporate cloud-managed devices, and hybrid join or domain join is for corporate PCs in on-premises AD.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/devices/overview"
  },
  {
@@ -306,7 +306,7 @@
   "ans": [
    1
   ],
-  "exp": "Contributor manages resources but cannot assign roles. Owner can also grant access; User Access Administrator manages access only.",
+  "exp": "Contributor can create, change and delete every kind of resource in its scope, but it can't assign roles (it has no roleAssignments/write permission). Owner can also grant access to others, User Access Administrator only manages access, and Reader can only view.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -378,7 +378,7 @@
   "ans": [
    1
   ],
-  "exp": "RBAC is additive: the union of assignments applies. Contributor governs inside RG1; Reader applies elsewhere in Sub1. There is no \"most restrictive wins\" rule.",
+  "exp": "Azure RBAC is additive: a user's effective permissions are the combination of all their role assignments. Reader on the subscription lets User1 view everything, and Contributor on RG1 adds full management there. There's no 'most restrictive wins' — only deny assignments can take permissions away.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
  },
  {
@@ -396,7 +396,7 @@
   "ans": [
    0
   ],
-  "exp": "Entra directory roles and Azure resource roles are separate systems. A Global Admin has no automatic subscription access.",
+  "exp": "Microsoft Entra roles (such as Global Administrator) control the directory — users, groups and settings. Azure RBAC roles (such as Owner or Reader) control Azure resources. They're separate systems, so a Global Administrator has no access to subscriptions unless they get an RBAC role or elevate their access.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/rbac-and-directory-admin-roles"
  },
  {
@@ -414,7 +414,7 @@
   "ans": [
    1
   ],
-  "exp": "The documented elevate-access toggle grants User Access Administrator at root scope \"/\" and is intended to be temporary.",
+  "exp": "A Global Administrator can turn on 'Access management for Azure resources' in the Entra properties. This elevates them to User Access Administrator at the root scope (/), so they can grant themselves access to any subscription. Turn it off again once the problem is fixed.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin"
  },
  {
@@ -432,7 +432,7 @@
   "ans": [
    2
   ],
-  "exp": "AssignableScopes lists the management groups, subscriptions, or resource groups where the role may be assigned.",
+  "exp": "AssignableScopes lists where a custom role can be assigned — specific management groups, subscriptions or resource groups. Actions and NotActions define control-plane permissions, and DataActions define data permissions, but none of these control where the role is available.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
  },
  {
@@ -450,7 +450,7 @@
   "ans": [
    0
   ],
-  "exp": "*/read grants all reads; add the specific restart action. \"*\" with NotActions is far too broad; Microsoft.Compute/* grants full compute control.",
+  "exp": "\"*/read\" grants every read operation, and adding \"Microsoft.Compute/virtualMachines/restart/action\" allows exactly one extra action. \"*\" with NotActions \"*/write\" would still allow deletes and other actions, Microsoft.Compute/* allows everything on compute, and restart isn't a data action.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
  },
  {
@@ -468,7 +468,7 @@
   "ans": [
    1
   ],
-  "exp": "NotActions only subtracts within the same role; it is NOT a deny — another role assignment can still grant the operation.",
+  "exp": "NotActions only removes operations from that role's own Actions list. It isn't a deny: if the user has another role assignment that grants the operation, they can still do it. To block an operation no matter what other roles say, you'd need a deny assignment.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
  },
  {
@@ -487,7 +487,7 @@
    0,
    2
   ],
-  "exp": "Owner and User Access Administrator include Microsoft.Authorization/roleAssignments/write. Contributor explicitly excludes it.",
+  "exp": "To grant access, a user needs Microsoft.Authorization/roleAssignments/write. Owner and User Access Administrator both include it. Contributor explicitly excludes it, and Reader on the subscription only gives read access.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -562,7 +562,7 @@
   "ans": [
    1
   ],
-  "exp": "Support Request Contributor is the least-privilege role for creating support tickets. Billing Reader is for invoices.",
+  "exp": "Support Request Contributor can create and manage support requests and nothing else, so it's the least-privilege choice. Contributor and Owner give far more access, and Billing Reader is for viewing invoices and billing data, not support tickets.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -583,7 +583,7 @@
    3,
    0
   ],
-  "exp": "Invite the guest → they redeem → select them as the principal → assign Virtual Machine Contributor at the RG scope.",
+  "exp": "First invite the engineer as a B2B guest and let them redeem the invitation, so the guest exists in your directory. Then select the guest as the principal and assign Virtual Machine Contributor at the RG-App scope. That role manages VMs only, and the scope keeps it to one resource group.",
   "link": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"
  },
  {
@@ -601,7 +601,7 @@
   "ans": [
    1
   ],
-  "exp": "Policy governs resource compliance and properties; RBAC governs identity permissions. Policy denies apply even to Owners.",
+  "exp": "Azure Policy controls what resources may look like — allowed regions, SKUs, required tags — whoever deploys them. RBAC controls who can perform which actions. They work together: a user can have the right role and still be blocked by a policy.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
  },
  {
@@ -619,7 +619,7 @@
   "ans": [
    1
   ],
-  "exp": "The built-in \"Allowed locations\" policy with Deny blocks non-compliant deployments. Locks, NSGs, and RBAC cannot filter by region.",
+  "exp": "The built-in 'Allowed locations' policy with the Deny effect blocks any deployment outside the regions you list. Locks only stop deletes or changes, NSGs filter network traffic, and RBAC controls who can act, not where resources are created.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/overview"
  },
  {
@@ -655,7 +655,7 @@
   "ans": [
    1
   ],
-  "exp": "DeployIfNotExists deploys missing configuration; remediation tasks run under a managed identity with the needed role assignments.",
+  "exp": "DeployIfNotExists checks for a related resource or setting (such as the monitoring agent) and deploys it if it's missing. Remediation tasks fix existing resources, and both run as the policy assignment's managed identity, which needs the right RBAC roles. Append and Modify change properties, and Deny blocks requests.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
  },
  {
@@ -691,7 +691,7 @@
   "ans": [
    1
   ],
-  "exp": "Exclusions and exemptions exist for this. A second \"allow\" policy cannot override a Deny — policies only restrict.",
+  "exp": "Policy assignments have exclusions (the scope isn't evaluated) and exemptions (evaluated but marked Exempt, optionally with an expiry), so exclude RG-Lab or create an exemption for it. A second 'allow' policy can't override a deny, because all policies apply together. Moving tenants or deleting the policy is overkill.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure"
  },
  {
@@ -745,7 +745,7 @@
   "ans": [
    1
   ],
-  "exp": "ReadOnly restricts callers to GET operations; listKeys is a POST, so key listing (and portal data browsing via keys) fails.",
+  "exp": "A ReadOnly lock only allows GET (read) requests on the control plane. Listing storage account keys is a POST operation (listKeys), so it fails — which also breaks portal tools that use account keys to browse data. Reading blobs with existing credentials still works, and nothing is deleted or disabled.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -763,7 +763,7 @@
   "ans": [
    1
   ],
-  "exp": "Locks at a parent scope are inherited by all child resources, and nobody — Owner included — bypasses them without removing the lock first.",
+  "exp": "Locks are inherited: a CanNotDelete lock on a resource group protects the group and every resource in it, including resources added later. Locks don't expire. Even an Owner has to remove the lock before deleting anything.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -781,7 +781,7 @@
   "ans": [
    1
   ],
-  "exp": "Lock management needs Microsoft.Authorization/locks/* permissions, held by Owner and User Access Administrator.",
+  "exp": "Creating or deleting locks needs Microsoft.Authorization/locks/* permissions. Owner and User Access Administrator have them. Contributor and Reader don't, and Global Administrator is an Entra role with no Azure access by default.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -799,7 +799,7 @@
   "ans": [
    1
   ],
-  "exp": "Tags are not inherited from resource groups by default; use the built-in inherit-tag policy to force it.",
+  "exp": "Tags aren't inherited by default. Resources in a resource group don't get its tags automatically, so VM1 has no tags. To copy tags down automatically, use the built-in 'Inherit a tag from the resource group' policy.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources"
  },
  {
@@ -817,7 +817,7 @@
   "ans": [
    1
   ],
-  "exp": "The built-in inherit-a-tag policy (Modify effect, with remediation for existing resources) automates tag inheritance.",
+  "exp": "The built-in policy 'Inherit a tag from the resource group if missing' (or 'Inherit a tag from the resource group') uses the Modify effect to add the tag to new or updated resources. A remediation task applies it to existing resources. Locks, templates and Advisor don't copy tags.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies"
  },
  {
@@ -835,7 +835,7 @@
   "ans": [
    1
   ],
-  "exp": "Moves don't change region or restart the VM; source and destination groups are locked during the operation.",
+  "exp": "Moving a resource between resource groups only changes its metadata. The VM keeps its region and keeps running without a restart. While the move runs, both resource groups are locked against create, update and delete operations.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"
  },
  {
@@ -871,7 +871,7 @@
   "ans": [
    1
   ],
-  "exp": "Both Azure Policy and RBAC assignments inherit down the management group hierarchy to new subscriptions automatically.",
+  "exp": "Both RBAC role assignments and policy assignments are inherited down the hierarchy. Bob's Reader role at the root applies to every subscription, and the policy on Corp applies to everything under Corp. So Sub9 gets both automatically.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -889,7 +889,7 @@
   "ans": [
    1
   ],
-  "exp": "Budgets alert (email/action groups) but never deallocate resources; add automation via action groups if you want enforcement.",
+  "exp": "Budgets only send notifications (email or action groups) when thresholds are reached. They never stop or deallocate resources by themselves, block deployments or cancel the subscription. To stop resources automatically, attach an action group that runs automation such as a runbook or Logic App.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
  },
  {
