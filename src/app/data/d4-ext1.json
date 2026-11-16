@@ -1,52 +1,916 @@
 [
-{"id":"D4-051","sub":"VNets","type":"mcq","diff":1,"q":"Which address ranges should a VNet normally use?","opts":["Private RFC 1918 ranges such as 10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16","Any public range you like","Only 169.254.0.0/16","224.0.0.0/4"],"ans":[0],"exp":"Use private ranges that don't overlap with networks you'll connect to.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"},
-{"id":"D4-052","sub":"VNets","type":"mcq","diff":2,"q":"Which CLI command creates a VNet with one subnet?","opts":["az network vnet create -g RG1 -n VNet1 --address-prefix 10.0.0.0/16 --subnet-name Web --subnet-prefix 10.0.1.0/24","az vnet new VNet1 10.0.0.0/16","az network create vnet VNet1","az group vnet create"],"ans":[0],"exp":"az network vnet create can create the first subnet inline.","link":"https://learn.microsoft.com/en-us/cli/azure/network/vnet"},
-{"id":"D4-053","sub":"VNets","type":"mcq","diff":2,"q":"Which CLI command adds a subnet to an existing VNet?","opts":["az network vnet subnet create -g RG1 --vnet-name VNet1 -n App --address-prefixes 10.0.2.0/24","az network subnet add App","az vnet update --add-subnet App","az network vnet create --subnet App"],"ans":[0],"exp":"Subnets are child resources of the VNet.","link":"https://learn.microsoft.com/en-us/cli/azure/network/vnet/subnet"},
-{"id":"D4-054","sub":"Subnets","type":"mcq","diff":2,"q":"What's the smallest subnet size Azure allows for IPv4?","opts":["/29","/30","/28","/24"],"ans":[0],"exp":"/29 is the smallest: 8 addresses with 3 usable.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"},
-{"id":"D4-055","sub":"Subnets","type":"mcq","diff":3,"q":"Can you change a subnet's address range while VMs are deployed in it?","opts":["Only if the new range still contains all the existing IP addresses in use; otherwise remove the resources first","Yes, always","Never","Only for /24 subnets"],"ans":[0],"exp":"Subnet changes must keep existing IP allocations valid.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet"},
-{"id":"D4-056","sub":"Subnets","type":"mcq","diff":2,"q":"What's the minimum recommended size for GatewaySubnet?","opts":["/27","/29","/30","/16"],"ans":[0],"exp":"Microsoft recommends /27 or larger for GatewaySubnet.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings"},
-{"id":"D4-057","sub":"Subnets","type":"mcq","diff":3,"q":"A subnet is delegated to Microsoft.Web/serverFarms. What does that mean?","opts":["The subnet is dedicated to that service (here, App Service VNet integration), which can create service-specific resources in it","Anyone can deploy VMs there","The subnet is deleted","The subnet becomes public"],"ans":[0],"exp":"Subnet delegation lets a PaaS service inject resources into the subnet.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/subnet-delegation-overview"},
-{"id":"D4-058","sub":"VNets","type":"mcq","diff":2,"q":"VMs in VNet1 need a custom DNS server (10.0.0.10, a domain controller). Where do you set it?","opts":["VNet1 → DNS servers → Custom (10.0.0.10)","An NSG rule","A route table","A private DNS zone only"],"ans":[0],"exp":"DNS servers are set at the VNet level (a NIC can override); VMs pick them up via DHCP after a restart or lease renewal.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/manage-virtual-network"},
-{"id":"D4-059","sub":"VNets","type":"mcq","diff":3,"q":"VMs aren't picking up a newly configured custom DNS server on the VNet. What should you do?","opts":["Restart the VMs (or renew DHCP leases) so they receive the new DNS settings","Delete the VNet","Add an NSG rule","Change the subnet prefix"],"ans":[0],"exp":"DNS changes are applied through DHCP.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/manage-virtual-network"},
-{"id":"D4-060","sub":"IP addressing","type":"mcq","diff":2,"q":"A domain controller VM needs a private IP that never changes. Configure:","opts":["Static private IP allocation on the NIC","A static public IP","A DHCP reservation inside Windows","A DNS A record"],"ans":[0],"exp":"Set the NIC IP configuration to Static in Azure. Don't set static IPs inside the guest OS.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-networks-static-private-ip-arm-pportal"},
-{"id":"D4-061","sub":"IP addressing","type":"mcq","diff":3,"q":"Why shouldn't you configure a static IP manually inside a Windows VM's network adapter settings?","opts":["It can cause loss of connectivity if it doesn't match Azure's assignment; configure the IP on the Azure NIC instead","It costs more","It disables DNS","It's required"],"ans":[0],"exp":"Azure assigns IPs via DHCP; mismatched in-guest settings break connectivity.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-network-interface-addresses"},
-{"id":"D4-062","sub":"Public IPs","type":"mcq","diff":2,"q":"Which CLI command creates a static Standard public IP?","opts":["az network public-ip create -g RG1 -n pip1 --sku Standard --allocation-method Static","az public-ip new pip1","az network ip create --static","az vm ip add"],"ans":[0],"exp":"Specify the Standard SKU and static allocation.","link":"https://learn.microsoft.com/en-us/cli/azure/network/public-ip"},
-{"id":"D4-063","sub":"Public IPs","type":"mcq","diff":3,"q":"A Standard public IP should survive a full zone failure. Which option?","opts":["Zone-redundant public IP (zones 1, 2, 3)","Zonal (zone 1 only)","No zone","Basic SKU"],"ans":[0],"exp":"Zone-redundant IPs are served from all zones.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses"},
-{"id":"D4-064","sub":"Public IPs","type":"mcq","diff":2,"q":"You need a contiguous range of static public IPs for allowlisting with a partner. Which resource?","opts":["Public IP prefix","Public IP address list","NAT rule","Load balancer frontend"],"ans":[0],"exp":"A public IP prefix reserves a contiguous block of addresses.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix"},
-{"id":"D4-065","sub":"Public IPs","type":"mcq","diff":3,"q":"Many VMs without public IPs need outbound internet access from a few predictable public IPs. Best service?","opts":["NAT Gateway associated with the subnet","Public IPs on every VM","A service endpoint","Bastion"],"ans":[0],"exp":"NAT Gateway provides scalable outbound SNAT from static IPs or prefixes.","link":"https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"},
-{"id":"D4-066","sub":"Public IPs","type":"mcq","diff":3,"q":"A subnet has a NAT Gateway, and a VM in it also has an instance-level public IP. Which IP does the VM's outbound traffic use?","opts":["The VM's own public IP","The NAT Gateway's public IP (NAT Gateway takes precedence for outbound)","Both alternately","None"],"ans":[1],"exp":"NAT Gateway takes precedence over other outbound methods, including instance-level public IPs and load balancer outbound rules. The VM's public IP is still used for inbound traffic.","link":"https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"},
-{"id":"D4-067","sub":"Public IPs","type":"mcq","diff":2,"q":"Microsoft has been retiring default outbound access for VMs. What's the recommended explicit outbound method?","opts":["NAT Gateway (or a load balancer outbound rule, or an instance public IP)","Rely on implicit default outbound IPs","Service endpoints","Private DNS"],"ans":[0],"exp":"Use explicit outbound methods; new subnets can be created as private subnets.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"},
-{"id":"D4-068","sub":"VNet peering","type":"mcq","diff":2,"q":"Which CLI command creates one side of a peering from VNet1 to VNet2?","opts":["az network vnet peering create -g RG1 -n v1-to-v2 --vnet-name VNet1 --remote-vnet VNet2 --allow-vnet-access","az vnet peer VNet1 VNet2","az network peering add","az network vnet connect"],"ans":[0],"exp":"You create peering on each side (or use the portal, which can create both).","link":"https://learn.microsoft.com/en-us/cli/azure/network/vnet/peering"},
-{"id":"D4-069","sub":"VNet peering","type":"mcq","diff":3,"q":"Peering shows 'Initiated' on VNet1 and doesn't exist on VNet2. What's wrong?","opts":["The peering hasn't been created on VNet2 yet; both sides must be configured to reach 'Connected'","Address overlap","The NSG blocks it","Different regions"],"ans":[0],"exp":"Peering needs links on both VNets.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering"},
-{"id":"D4-070","sub":"VNet peering","type":"mcq","diff":3,"q":"After adding a new address prefix to VNet1, peered VNet2 can't reach the new range. What should you do?","opts":["Sync the peering (resync the remote address space) on the peering link","Delete VNet2","Add an NSG rule","Change DNS"],"ans":[0],"exp":"After an address-space change, sync the peering to update the remote side.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/update-virtual-network-peering-address-space"},
-{"id":"D4-071","sub":"VNet peering","type":"mcq","diff":2,"q":"An NVA in the hub forwards traffic from Spoke1 to Spoke2. Which peering setting must allow traffic that didn't originate in the peered VNet?","opts":["Allow forwarded traffic","Allow gateway transit","Use remote gateways","Allow virtual network access only"],"ans":[0],"exp":"Forwarded traffic covers traffic routed through an NVA.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering"},
-{"id":"D4-072","sub":"VNet peering","type":"mcq","diff":2,"q":"How is VNet peering billed?","opts":["Per GB of ingress and egress traffic across the peering (higher for global)","Free always","Per hour per peering","Per VM"],"ans":[0],"exp":"Peering charges for data transfer in both directions.","link":"https://azure.microsoft.com/pricing/details/virtual-network/"},
-{"id":"D4-073","sub":"VNet peering","type":"yesno","diff":2,"q":"Answer Yes or No:","stmts":["VNets in different Entra tenants can be peered","Peering is supported between VNets in different regions","Peering requires a VPN gateway","Overlapping address spaces can be peered if you use NAT"],"ans":[true,true,false,false],"exp":"Cross-tenant and global peering are supported; no gateway is needed; overlapping spaces can't peer.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"},
-{"id":"D4-074","sub":"VPN","type":"mcq","diff":2,"q":"Which service connects an on-premises network to an Azure VNet over an encrypted IPsec tunnel across the internet?","opts":["Site-to-site VPN through a VPN gateway","ExpressRoute","VNet peering","Bastion"],"ans":[0],"exp":"Site-to-site VPN uses IPsec/IKE over the internet.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways"},
-{"id":"D4-075","sub":"VPN","type":"mcq","diff":2,"q":"Which resource represents your on-premises VPN device and address ranges in Azure?","opts":["Local network gateway","Virtual network gateway","Connection","NAT gateway"],"ans":[0],"exp":"The local network gateway holds the on-premises public IP and prefixes.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-site-to-site-portal"},
-{"id":"D4-076","sub":"VPN","type":"order","diff":2,"q":"Order the steps to create a site-to-site VPN:","items":["Create the connection with a shared key","Create GatewaySubnet and the virtual network gateway","Create the local network gateway","Configure the on-premises VPN device"],"ans":[1,2,0,3],"exp":"Gateway → local network gateway → connection → configure the on-prem device.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-site-to-site-portal"},
-{"id":"D4-077","sub":"VPN","type":"mcq","diff":2,"q":"Individual remote users' laptops need a VPN to the Azure VNet. Which option?","opts":["Point-to-site VPN","Site-to-site VPN","ExpressRoute","VNet peering"],"ans":[0],"exp":"Point-to-site connects individual clients.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-about"},
-{"id":"D4-078","sub":"ExpressRoute","type":"mcq","diff":2,"q":"Which connectivity option gives a private, dedicated connection to Azure that doesn't go over the public internet?","opts":["ExpressRoute","Site-to-site VPN","Point-to-site VPN","Bastion"],"ans":[0],"exp":"ExpressRoute uses a connectivity provider's private circuit.","link":"https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"},
-{"id":"D4-079","sub":"VPN","type":"mcq","diff":3,"q":"Deploying a new VPN gateway takes a long time. Typically how long?","opts":["Up to about 45 minutes or more","Seconds","24 hours","5 minutes always"],"ans":[0],"exp":"Gateway creation commonly takes 30–45+ minutes.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-create-gateway-portal"},
-{"id":"D4-080","sub":"Routing","type":"mcq","diff":1,"q":"Without any UDRs, how does Azure route traffic between subnets in the same VNet?","opts":["Automatically with system routes","It doesn't — you must add routes","Through the internet","Through a VPN gateway"],"ans":[0],"exp":"System routes cover intra-VNet traffic.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"},
-{"id":"D4-081","sub":"Routing","type":"mcq","diff":2,"q":"Which CLI commands create a route table and a route to an NVA?","opts":["az network route-table create ... then az network route-table route create --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.100.4","az network route add --nva","az vnet route create","az network nva route"],"ans":[0],"exp":"Create the table, add routes, then associate it with subnets.","link":"https://learn.microsoft.com/en-us/cli/azure/network/route-table"},
-{"id":"D4-082","sub":"Routing","type":"mcq","diff":2,"q":"You created a route table with a UDR, but traffic doesn't follow it. What's commonly missing?","opts":["Associating the route table with the subnet","An NSG","DNS","A public IP"],"ans":[0],"exp":"Route tables apply only when associated with subnets.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/manage-route-table"},
-{"id":"D4-083","sub":"Routing","type":"mcq","diff":3,"q":"Routes for 10.0.0.0/16 (→ VNet) and 10.0.5.0/24 (→ NVA) both exist. Where does traffic to 10.0.5.20 go?","opts":["To the NVA — longest prefix match wins","To the VNet route","It's dropped","Load-balanced across both"],"ans":[0],"exp":"The most specific prefix (/24) wins.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"},
-{"id":"D4-084","sub":"Routing","type":"mcq","diff":3,"q":"Which route table setting stops on-premises BGP routes from the VPN gateway from being added to a subnet?","opts":["Propagate gateway routes = No (disable BGP route propagation)","Next hop None","IP forwarding off","Remove the NSG"],"ans":[0],"exp":"Disabling gateway route propagation keeps BGP routes out.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"},
-{"id":"D4-085","sub":"Routing","type":"mcq","diff":2,"q":"Traffic arrives at an NVA VM but isn't forwarded on. What's commonly missing?","opts":["IP forwarding on the NVA's NIC in Azure, plus forwarding enabled inside the OS","A public IP","A bigger VM size","Accelerated networking"],"ans":[0],"exp":"Both the Azure NIC setting and OS-level forwarding are required.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface"},
-{"id":"D4-086","sub":"Routing","type":"multi","diff":2,"q":"Which TWO are valid UDR next-hop types?","opts":["Virtual appliance","Virtual network gateway","Storage account","Load balancer rule"],"ans":[0,1],"exp":"Next hops: Virtual appliance, Virtual network gateway, Virtual network, Internet, None.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"},
-{"id":"D4-087","sub":"Routing","type":"mcq","diff":3,"q":"With 0.0.0.0/0 → NVA on a subnet, VMs still reach Azure Storage directly through a service endpoint. Why?","opts":["Service endpoint routes are more specific system routes that apply for the service's prefixes","UDRs never apply to storage","The NVA is down","Storage is private"],"ans":[0],"exp":"Service endpoints add optimized routes for service prefixes, which bypass the default route.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"},
-{"id":"D4-088","sub":"Routing","type":"yesno","diff":3,"q":"Answer Yes or No:","stmts":["One route table can be associated with multiple subnets","A UDR can override the system route for VNet-local traffic","System routes can be deleted","Effective routes can be viewed per NIC"],"ans":[true,true,false,true],"exp":"Route tables can be shared; UDRs can override VNet routes; system routes can't be deleted, only overridden; effective routes are per NIC.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"},
-{"id":"D4-089","sub":"Troubleshooting","type":"mcq","diff":2,"q":"Two VMs in peered VNets can ping by IP but not by hostname. What's the cause?","opts":["Azure-provided DNS doesn't resolve names across VNets; use a private DNS zone linked to both VNets or a custom DNS server","An NSG blocks ICMP","A route problem","Peering is broken"],"ans":[0],"exp":"Cross-VNet name resolution needs private DNS or a custom DNS server.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances"},
-{"id":"D4-090","sub":"Troubleshooting","type":"mcq","diff":2,"q":"Which Network Watcher tool shows whether VM1 can reach an FQDN on port 443 right now, including latency and the hops?","opts":["Connection troubleshoot","Topology","Flow logs","Effective routes"],"ans":[0],"exp":"Connection troubleshoot tests connectivity from a VM to a destination at a point in time.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/connection-troubleshoot-overview"},
-{"id":"D4-091","sub":"Troubleshooting","type":"mcq","diff":3,"q":"Ping (ICMP) between two Windows VMs fails, but RDP between them works. What's the likely cause?","opts":["The Windows Firewall inside the guest blocks ICMP by default","The NSG blocks all traffic","Peering is broken","DNS"],"ans":[0],"exp":"The guest OS firewall often blocks ICMP.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-troubleshoot-connectivity-problem-between-vms"},
-{"id":"D4-092","sub":"Troubleshooting","type":"mcq","diff":2,"q":"You can't RDP to a VM. Which first checks are correct?","opts":["NSG rules (effective security rules), VM running state, public IP/Bastion path, and the guest firewall","Delete the VM","Change the storage tier","Add a budget"],"ans":[0],"exp":"Check the network path, the NSGs, and the VM state.","link":"https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/troubleshoot-rdp-connection"},
-{"id":"D4-093","sub":"VNets","type":"mcq","diff":3,"q":"Which feature isolates a whole subnet from internet outbound access by default for new deployments?","opts":["Private subnet (defaultOutboundAccess = false)","A service endpoint","An NSG on the NIC","Bastion"],"ans":[0],"exp":"Private subnets disable default outbound access, so outbound must be explicit.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"},
-{"id":"D4-094","sub":"VNets","type":"mcq","diff":2,"q":"Which service centrally manages connectivity configurations (hub-spoke, mesh) and security admin rules across many VNets?","opts":["Azure Virtual Network Manager","Network Watcher","Azure Firewall Manager only","Traffic Manager"],"ans":[0],"exp":"Virtual Network Manager handles connectivity and security admin rules at scale.","link":"https://learn.microsoft.com/en-us/azure/virtual-network-manager/overview"},
-{"id":"D4-095","sub":"VNets","type":"mcq","diff":2,"q":"Can a VNet span multiple subscriptions?","opts":["No — a VNet belongs to one subscription; use peering to connect VNets across subscriptions","Yes","Only in the same region","Only with ExpressRoute"],"ans":[0],"exp":"Each VNet lives in one subscription.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"},
-{"id":"D4-096","sub":"VNets","type":"mcq","diff":3,"q":"Can you move a VM's NIC to a different VNet?","opts":["No — a NIC's VNet can't change; create a new NIC in the target VNet (or recreate the VM)","Yes, edit the NIC","Yes, with peering","Only stopped VMs"],"ans":[0],"exp":"A NIC is bound to its VNet; you can only change subnets within the same VNet.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface"},
-{"id":"D4-097","sub":"VNets","type":"mcq","diff":2,"q":"Can a VM's NIC move to a different subnet in the SAME VNet?","opts":["Yes — change the subnet in the NIC's IP configuration (static IPs must be updated)","No","Only with a new VNet","Only for Linux"],"ans":[0],"exp":"Subnet changes within the same VNet are supported.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface-addresses"},
-{"id":"D4-098","sub":"VNets","type":"mcq","diff":3,"q":"VNet1 in West Europe must connect to VNet2 in East US with an encrypted tunnel through gateways (not peering). Which option?","opts":["VNet-to-VNet VPN connection","Global peering","ExpressRoute Direct","Service endpoint"],"ans":[0],"exp":"VNet-to-VNet uses VPN gateways with IPsec.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-vnet-vnet-resource-manager-portal"},
-{"id":"D4-099","sub":"IP addressing","type":"mcq","diff":2,"q":"Can a VM NIC have multiple IP configurations?","opts":["Yes — a NIC can have multiple private IPs (and associated public IPs)","No, one IP only","Only Linux VMs","Only for load balancers"],"ans":[0],"exp":"NICs support secondary IP configurations.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-multiple-ip-addresses-portal"},
-{"id":"D4-100","sub":"VNets","type":"yesno","diff":3,"ctx":"VNet-Hub (10.0.0.0/16) has GatewaySubnet and a VPN gateway. VNet-Spoke (10.1.0.0/16) is peered with 'Use remote gateways'. On-premises is 192.168.0.0/16.","q":"Answer Yes or No:","stmts":["VNet-Spoke VMs can reach on-premises through the hub gateway","VNet-Spoke can also deploy its own VPN gateway while using remote gateways","Hub peering must have 'Allow gateway transit' enabled","The spoke address space must not overlap 192.168.0.0/16"],"ans":[true,false,true,true],"exp":"Gateway transit works when the hub allows it; a spoke using remote gateways can't have its own gateway; address spaces must not overlap.","link":"https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"}
+ {
+  "id": "D4-051",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which address ranges should a VNet normally use?",
+  "opts": [
+   "Private RFC 1918 ranges such as 10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16",
+   "Any public range you like",
+   "Only 169.254.0.0/16",
+   "224.0.0.0/4"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "VNets normally use private address ranges from RFC 1918 — 10.0.0.0/8, 172.16.0.0/12 or 192.168.0.0/16 — and they must not overlap with networks you'll connect to, such as on-premises or other VNets. Public ranges you don't own cause routing problems, 169.254.0.0/16 is link-local, and 224.0.0.0/4 is multicast.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-052",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a VNet with one subnet?",
+  "opts": [
+   "az network vnet create -g RG1 -n VNet1 --address-prefix 10.0.0.0/16 --subnet-name Web --subnet-prefix 10.0.1.0/24",
+   "az vnet new VNet1 10.0.0.0/16",
+   "az network create vnet VNet1",
+   "az group vnet create"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az network vnet create creates a VNet with --address-prefix, and can create its first subnet at the same time with --subnet-name and --subnet-prefix. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/vnet"
+ },
+ {
+  "id": "D4-053",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command adds a subnet to an existing VNet?",
+  "opts": [
+   "az network vnet subnet create -g RG1 --vnet-name VNet1 -n App --address-prefixes 10.0.2.0/24",
+   "az network subnet add App",
+   "az vnet update --add-subnet App",
+   "az network vnet create --subnet App"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Subnets are child resources of a VNet, so you add one with az network vnet subnet create, giving --vnet-name, the subnet name and --address-prefixes. az network vnet create makes a new VNet, and the other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/vnet/subnet"
+ },
+ {
+  "id": "D4-054",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's the smallest subnet size Azure allows for IPv4?",
+  "opts": [
+   "/29",
+   "/30",
+   "/28",
+   "/24"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The smallest IPv4 subnet in Azure is /29: 8 addresses, of which Azure reserves 5, leaving 3 usable. Azure doesn't allow /30 or smaller subnets.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-055",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can you change a subnet's address range while VMs are deployed in it?",
+  "opts": [
+   "Only if the new range still contains all the existing IP addresses in use; otherwise remove the resources first",
+   "Yes, always",
+   "Never",
+   "Only for /24 subnets"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "You can change a subnet's address range while resources are in it, but only if the new range still includes every IP address already in use. Otherwise remove or move those resources first. It isn't limited to /24 subnets.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet"
+ },
+ {
+  "id": "D4-056",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's the minimum recommended size for GatewaySubnet?",
+  "opts": [
+   "/27",
+   "/29",
+   "/30",
+   "/16"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "GatewaySubnet can technically be as small as /29, but Microsoft recommends /27 or larger so there's room for gateway instances, active-active configurations and running VPN and ExpressRoute gateways together.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings"
+ },
+ {
+  "id": "D4-057",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A subnet is delegated to Microsoft.Web/serverFarms. What does that mean?",
+  "opts": [
+   "The subnet is dedicated to that service (here, App Service VNet integration), which can create service-specific resources in it",
+   "Anyone can deploy VMs there",
+   "The subnet is deleted",
+   "The subnet becomes public"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Delegating a subnet to a service such as Microsoft.Web/serverFarms (App Service VNet integration) dedicates it to that service, which can then create its own resources and network policies in the subnet. You can't deploy unrelated resources, such as VMs, there. The subnet isn't deleted or made public.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/subnet-delegation-overview"
+ },
+ {
+  "id": "D4-058",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VMs in VNet1 need a custom DNS server (10.0.0.10, a domain controller). Where do you set it?",
+  "opts": [
+   "VNet1 → DNS servers → Custom (10.0.0.10)",
+   "An NSG rule",
+   "A route table",
+   "A private DNS zone only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "DNS servers are set at the VNet level (a NIC can override); VMs pick them up via DHCP after a restart or lease renewal.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/manage-virtual-network"
+ },
+ {
+  "id": "D4-059",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "VMs aren't picking up a newly configured custom DNS server on the VNet. What should you do?",
+  "opts": [
+   "Restart the VMs (or renew DHCP leases) so they receive the new DNS settings",
+   "Delete the VNet",
+   "Add an NSG rule",
+   "Change the subnet prefix"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "VMs get their DNS server settings through DHCP when they start or renew their lease. After changing the VNet's custom DNS servers, restart the VMs (or renew the DHCP lease inside the OS) so they pick up the new server. Deleting the VNet or changing NSGs and subnet prefixes isn't needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/manage-virtual-network"
+ },
+ {
+  "id": "D4-060",
+  "sub": "IP addressing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A domain controller VM needs a private IP that never changes. Configure:",
+  "opts": [
+   "Static private IP allocation on the NIC",
+   "A static public IP",
+   "A DHCP reservation inside Windows",
+   "A DNS A record"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Set the private IP allocation on the VM's network interface IP configuration to Static in Azure. Azure then always hands that address to the VM through DHCP, even after a stop or redeploy. A public IP isn't the private address, a DHCP reservation inside Windows has no effect in Azure, and a DNS record doesn't fix the IP.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-networks-static-private-ip-arm-pportal"
+ },
+ {
+  "id": "D4-061",
+  "sub": "IP addressing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Why shouldn't you configure a static IP manually inside a Windows VM's network adapter settings?",
+  "opts": [
+   "It can cause loss of connectivity if it doesn't match Azure's assignment; configure the IP on the Azure NIC instead",
+   "It costs more",
+   "It disables DNS",
+   "It's required"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure assigns IP addresses to VMs through DHCP. If you hard-code an IP inside Windows that doesn't match what Azure assigned to the NIC, the VM can lose network connectivity. Set static IPs on the Azure NIC instead and leave the guest OS on DHCP.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-network-interface-addresses"
+ },
+ {
+  "id": "D4-062",
+  "sub": "Public IPs",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a static Standard public IP?",
+  "opts": [
+   "az network public-ip create -g RG1 -n pip1 --sku Standard --allocation-method Static",
+   "az public-ip new pip1",
+   "az network ip create --static",
+   "az vm ip add"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az network public-ip create with --sku Standard and --allocation-method Static creates a Standard public IP with a fixed address. Standard IPs are always static. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/public-ip"
+ },
+ {
+  "id": "D4-063",
+  "sub": "Public IPs",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A Standard public IP should survive a full zone failure. Which option?",
+  "opts": [
+   "Zone-redundant public IP (zones 1, 2, 3)",
+   "Zonal public IP (zone 1 only)",
+   "A public IP created in the paired region",
+   "Basic SKU public IP"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A zone-redundant public IP (zones 1, 2 and 3) is served from every zone, so it keeps working if one zone fails. A zonal IP (zone 1 only) goes down with that zone. Basic public IPs were retired and never supported zones, and an IP is always tied to one region.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses"
+ },
+ {
+  "id": "D4-064",
+  "sub": "Public IPs",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need a contiguous range of static public IPs for allowlisting with a partner. Which resource?",
+  "opts": [
+   "Public IP prefix",
+   "Public IP address list",
+   "NAT rule",
+   "Load balancer frontend"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A public IP prefix reserves a contiguous block of static public IPs, for example a /28 of 16 addresses, from which you create individual public IPs. Partners can then allow the whole range in one rule. The other options don't reserve address ranges.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix"
+ },
+ {
+  "id": "D4-065",
+  "sub": "Public IPs",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Many VMs without public IPs need outbound internet access from a few predictable public IPs. Best service?",
+  "opts": [
+   "NAT Gateway associated with the subnet",
+   "Public IPs on every VM",
+   "A service endpoint",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A NAT Gateway attached to the subnet gives every VM in it outbound internet access through one or a few static public IPs (or a prefix), without the VMs having public IPs. It scales and avoids SNAT port exhaustion. Public IPs on every VM expose them, and service endpoints and Bastion don't provide internet access.",
+  "link": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"
+ },
+ {
+  "id": "D4-066",
+  "sub": "Public IPs",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A subnet has a NAT Gateway, and a VM in it also has an instance-level public IP. Which IP does the VM's outbound traffic use?",
+  "opts": [
+   "The VM's own public IP",
+   "The NAT Gateway's public IP (NAT Gateway takes precedence for outbound)",
+   "Both alternately",
+   "None"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "NAT Gateway takes precedence over other outbound methods, including instance-level public IPs and load balancer outbound rules. The VM's public IP is still used for inbound traffic.",
+  "link": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview"
+ },
+ {
+  "id": "D4-067",
+  "sub": "Public IPs",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Microsoft has been retiring default outbound access for VMs. What's the recommended explicit outbound method?",
+  "opts": [
+   "NAT Gateway (or a load balancer outbound rule, or an instance public IP)",
+   "Rely on implicit default outbound IPs",
+   "Service endpoints",
+   "Private DNS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Microsoft is retiring default (implicit) outbound internet access for VMs, so new deployments should use an explicit method: a NAT Gateway (recommended), a load balancer outbound rule, or a public IP on the VM. Subnets can also be created as private subnets. Service endpoints and private DNS don't provide internet access.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"
+ },
+ {
+  "id": "D4-068",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates one side of a peering from VNet1 to VNet2?",
+  "opts": [
+   "az network vnet peering create -g RG1 -n v1-to-v2 --vnet-name VNet1 --remote-vnet VNet2 --allow-vnet-access",
+   "az vnet peer VNet1 VNet2",
+   "az network peering add",
+   "az network vnet connect"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az network vnet peering create creates the peering from one VNet (--vnet-name) to another (--remote-vnet). Peering has two sides, so run it again from VNet2 to VNet1 (the portal can create both at once). The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/vnet/peering"
+ },
+ {
+  "id": "D4-069",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Peering shows 'Initiated' on VNet1 and doesn't exist on VNet2. What's wrong?",
+  "opts": [
+   "The peering hasn't been created on VNet2 yet; both sides must be configured to reach 'Connected'",
+   "Address overlap",
+   "The NSG blocks it",
+   "Different regions"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A peering has a link on each VNet. 'Initiated' means only VNet1's side exists. Create the peering on VNet2 as well, and both sides change to Connected. Address overlap would block creation, and NSGs don't affect the peering state.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering"
+ },
+ {
+  "id": "D4-070",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After adding a new address prefix to VNet1, peered VNet2 can't reach the new range. What should you do?",
+  "opts": [
+   "Sync the peering (resync the remote address space) on the peering link",
+   "Delete VNet2",
+   "Add an NSG rule",
+   "Change DNS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When you change the address space of a peered VNet, the remote VNet doesn't learn the new prefix automatically. Run 'Sync' on the peering link (or az network vnet peering sync) so the new range is advertised. Deleting VNets or changing NSGs and DNS isn't the fix.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/update-virtual-network-peering-address-space"
+ },
+ {
+  "id": "D4-071",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An NVA in the hub forwards traffic from Spoke1 to Spoke2. Which peering setting must allow traffic that didn't originate in the peered VNet?",
+  "opts": [
+   "Allow forwarded traffic",
+   "Allow gateway transit",
+   "Use remote gateways",
+   "Allow virtual network access only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "'Allow forwarded traffic' lets a peering accept traffic that didn't start in the peered VNet — for example traffic from Spoke1 that the hub's network virtual appliance passes on to Spoke2. Gateway transit and remote gateways are for sharing a VPN or ExpressRoute gateway.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering"
+ },
+ {
+  "id": "D4-072",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How is VNet peering billed?",
+  "opts": [
+   "Per GB of ingress and egress traffic across the peering (higher for global)",
+   "Free always",
+   "Per hour per peering",
+   "Per VM"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "VNet peering is charged per GB of data, for both inbound and outbound traffic across the peering. Global peering, between regions, costs more than regional peering. There's no hourly charge per peering and no charge per VM.",
+  "link": "https://azure.microsoft.com/pricing/details/virtual-network/"
+ },
+ {
+  "id": "D4-073",
+  "sub": "VNet peering",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "VNets in different Entra tenants can be peered",
+   "Peering is supported between VNets in different regions",
+   "Peering requires a VPN gateway",
+   "Overlapping address spaces can be peered if you use NAT"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "VNets can be peered across Entra tenants (with permissions on both sides) and across regions (global peering). Peering doesn't need a VPN gateway. Overlapping address spaces can never be peered, even with NAT.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+ },
+ {
+  "id": "D4-074",
+  "sub": "VPN",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which service connects an on-premises network to an Azure VNet over an encrypted IPsec tunnel across the internet?",
+  "opts": [
+   "Site-to-site VPN through a VPN gateway",
+   "ExpressRoute",
+   "VNet peering",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A site-to-site VPN uses a VPN gateway in Azure to build an encrypted IPsec/IKE tunnel over the internet to your on-premises VPN device. ExpressRoute is a private circuit that doesn't go over the internet, peering connects VNets, and Bastion gives VM access.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways"
+ },
+ {
+  "id": "D4-075",
+  "sub": "VPN",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which resource represents your on-premises VPN device and address ranges in Azure?",
+  "opts": [
+   "Local network gateway",
+   "Virtual network gateway",
+   "Connection",
+   "NAT gateway"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A local network gateway represents your on-premises side in Azure: the public IP of your VPN device and the address ranges behind it. The virtual network gateway is the Azure end of the tunnel, and the connection links the two.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-site-to-site-portal"
+ },
+ {
+  "id": "D4-076",
+  "sub": "VPN",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps to create a site-to-site VPN:",
+  "items": [
+   "Create the connection with a shared key",
+   "Create GatewaySubnet and the virtual network gateway",
+   "Create the local network gateway",
+   "Configure the on-premises VPN device"
+  ],
+  "ans": [
+   1,
+   2,
+   0,
+   3
+  ],
+  "exp": "Create GatewaySubnet and the virtual network gateway first (this can take 30–45 minutes). Create the local network gateway describing your on-premises device. Create the connection between them with a shared key. Finally configure the on-premises VPN device with the same key and settings.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-site-to-site-portal"
+ },
+ {
+  "id": "D4-077",
+  "sub": "VPN",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Individual remote users' laptops need a VPN to the Azure VNet. Which option?",
+  "opts": [
+   "Point-to-site VPN",
+   "Site-to-site VPN",
+   "ExpressRoute",
+   "VNet peering"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A point-to-site VPN connects individual computers (for example remote workers' laptops) to the VNet through the VPN gateway, using a VPN client on each device. Site-to-site connects whole networks, ExpressRoute is a private circuit, and peering connects VNets.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/point-to-site-about"
+ },
+ {
+  "id": "D4-078",
+  "sub": "ExpressRoute",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which connectivity option gives a private, dedicated connection to Azure that doesn't go over the public internet?",
+  "opts": [
+   "ExpressRoute",
+   "Site-to-site VPN",
+   "Point-to-site VPN",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ExpressRoute connects your network to Azure through a connectivity provider's private, dedicated circuit, so traffic never crosses the public internet. That gives predictable speed and latency. Site-to-site and point-to-site VPNs use encrypted tunnels over the internet, and Bastion is for VM access.",
+  "link": "https://learn.microsoft.com/en-us/azure/expressroute/expressroute-introduction"
+ },
+ {
+  "id": "D4-079",
+  "sub": "VPN",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Deploying a new VPN gateway takes a long time. Typically how long?",
+  "opts": [
+   "Up to about 45 minutes or more",
+   "Seconds",
+   "24 hours",
+   "5 minutes always"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Creating a VPN gateway usually takes about 30–45 minutes, sometimes longer, because Azure deploys and configures dedicated gateway instances. Plan for it in your deployments.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/tutorial-create-gateway-portal"
+ },
+ {
+  "id": "D4-080",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Without any UDRs, how does Azure route traffic between subnets in the same VNet?",
+  "opts": [
+   "Automatically with system routes",
+   "It doesn't — you must add routes",
+   "Through the internet",
+   "Through a VPN gateway"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure adds system routes automatically, so every subnet in a VNet can reach every other subnet with no configuration. You only add user-defined routes to change this behaviour, for example to send traffic through a firewall.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-081",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI commands create a route table and a route to an NVA?",
+  "opts": [
+   "az network route-table create ... then az network route-table route create --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.100.4",
+   "az network route add --nva",
+   "az vnet route create",
+   "az network nva route"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Create the route table with az network route-table create, then add the route with az network route-table route create, using --next-hop-type VirtualAppliance and --next-hop-ip-address set to the NVA. Finally associate the route table with the subnet. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/route-table"
+ },
+ {
+  "id": "D4-082",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You created a route table with a UDR, but traffic doesn't follow it. What's commonly missing?",
+  "opts": [
+   "Associating the route table with the subnet",
+   "An NSG",
+   "DNS",
+   "A public IP"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A route table does nothing until it's associated with one or more subnets. If traffic ignores your UDR, check that the table is attached to the source subnet. NSGs, DNS and public IPs don't make routes take effect.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/manage-route-table"
+ },
+ {
+  "id": "D4-083",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Routes for 10.0.0.0/16 (→ VNet) and 10.0.5.0/24 (→ NVA) both exist. Where does traffic to 10.0.5.20 go?",
+  "opts": [
+   "To the NVA — longest prefix match wins",
+   "To the VNet route",
+   "It's dropped",
+   "Load-balanced across both"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure picks the most specific matching route (longest prefix match) first. 10.0.5.20 matches both 10.0.0.0/16 and 10.0.5.0/24, but /24 is more specific, so the traffic goes to the NVA. Only when prefixes are identical does the route source (user-defined, BGP, system) decide.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-084",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which route table setting stops on-premises BGP routes from the VPN gateway from being added to a subnet?",
+  "opts": [
+   "Propagate gateway routes = No (disable BGP route propagation)",
+   "Next hop None",
+   "IP forwarding off",
+   "Remove the NSG"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Setting 'Propagate gateway routes' to No on a route table (disabling BGP route propagation) stops routes learned by the VPN or ExpressRoute gateway from being added to subnets using that table. A None next hop, IP forwarding and NSGs don't control route propagation.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-085",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Traffic arrives at an NVA VM but isn't forwarded on. What's commonly missing?",
+  "opts": [
+   "IP forwarding on the NVA's NIC in Azure, plus forwarding enabled inside the OS",
+   "A public IP",
+   "A bigger VM size",
+   "Accelerated networking"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "For a VM to forward traffic not addressed to itself, IP forwarding must be enabled on its network interface in Azure, and forwarding must also be turned on inside the operating system (for example the routing role on Windows or net.ipv4.ip_forward on Linux). A public IP, a bigger size or accelerated networking won't help.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface"
+ },
+ {
+  "id": "D4-086",
+  "sub": "Routing",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO are valid UDR next-hop types?",
+  "opts": [
+   "Virtual appliance",
+   "Virtual network gateway",
+   "Storage account",
+   "Load balancer rule"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "Valid next-hop types for a user-defined route are Virtual appliance, Virtual network gateway, Virtual network, Internet and None. A storage account or load balancer rule can't be a next hop.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-087",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "With 0.0.0.0/0 → NVA on a subnet, VMs still reach Azure Storage directly through a service endpoint. Why?",
+  "opts": [
+   "Service endpoint routes are more specific system routes that apply for the service's prefixes",
+   "UDRs never apply to storage",
+   "The NVA is down",
+   "Storage is private"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Enabling a service endpoint adds system routes for that service's public IP prefixes, with next hop VirtualNetworkServiceEndpoint. These are more specific than 0.0.0.0/0, so traffic to Azure Storage takes the service endpoint route instead of going through the NVA. UDRs do still apply to other traffic.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-088",
+  "sub": "Routing",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "One route table can be associated with multiple subnets",
+   "A UDR can override the system route for VNet-local traffic",
+   "System routes can be deleted",
+   "Effective routes can be viewed per NIC"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "Route tables can be shared; UDRs can override VNet routes; system routes can't be deleted, only overridden; effective routes are per NIC.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-089",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Two VMs in peered VNets can ping by IP but not by hostname. What's the cause?",
+  "opts": [
+   "Azure-provided DNS doesn't resolve names across VNets; use a private DNS zone linked to both VNets or a custom DNS server",
+   "An NSG blocks ICMP",
+   "A route problem",
+   "Peering is broken"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Pinging by IP works, so routing and NSGs are fine. Azure-provided DNS only resolves names within one VNet, though, so names in the peered VNet don't resolve. Fix it with a private DNS zone linked to both VNets (ideally with auto-registration) or your own DNS server.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances"
+ },
+ {
+  "id": "D4-090",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Network Watcher tool shows whether VM1 can reach an FQDN on port 443 right now, including latency and the hops?",
+  "opts": [
+   "Connection troubleshoot",
+   "Topology",
+   "Flow logs",
+   "Effective routes"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Network Watcher connection troubleshoot tests a connection from a VM to a destination (a VM, FQDN or IP) on a port, right now. It reports whether it's reachable, the latency and each hop, along with any NSG or routing problem. Topology draws a diagram, flow logs record past traffic, and effective routes only list routes.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/connection-troubleshoot-overview"
+ },
+ {
+  "id": "D4-091",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Ping (ICMP) between two Windows VMs fails, but RDP between them works. What's the likely cause?",
+  "opts": [
+   "The Windows Firewall inside the guest blocks ICMP by default",
+   "The NSG blocks all traffic",
+   "Peering is broken",
+   "DNS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "RDP works, so the network path and NSGs allow traffic between the VMs. Ping fails because Windows Firewall inside the guest blocks inbound ICMP echo requests by default. Allow ICMP in Windows Firewall if you need ping. Peering and DNS are clearly working.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-troubleshoot-connectivity-problem-between-vms"
+ },
+ {
+  "id": "D4-092",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You can't RDP to a VM. Which first checks are correct?",
+  "opts": [
+   "NSG rules (effective security rules), VM running state, public IP/Bastion path, and the guest firewall",
+   "Delete the VM",
+   "Change the storage tier",
+   "Add a budget"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Start with the network path: check effective security rules for an NSG blocking 3389, that the VM is running, how you reach it (public IP or Bastion), and the Windows Firewall inside the VM. Deleting the VM, changing storage or adding budgets doesn't diagnose anything.",
+  "link": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/troubleshoot-rdp-connection"
+ },
+ {
+  "id": "D4-093",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which feature isolates a whole subnet from internet outbound access by default for new deployments?",
+  "opts": [
+   "Private subnet (defaultOutboundAccess = false)",
+   "A service endpoint",
+   "An NSG on the NIC",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A private subnet (defaultOutboundAccess = false) turns off Azure's default outbound internet access for VMs in it, so outbound access must come from an explicit method such as a NAT Gateway. Service endpoints, NSGs on individual NICs and Bastion don't change default outbound access for the whole subnet.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"
+ },
+ {
+  "id": "D4-094",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which service centrally manages connectivity configurations (hub-spoke, mesh) and security admin rules across many VNets?",
+  "opts": [
+   "Azure Virtual Network Manager",
+   "Network Watcher",
+   "Azure Firewall Manager only",
+   "Traffic Manager"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Virtual Network Manager manages many VNets centrally: it can create hub-and-spoke or mesh connectivity configurations and apply security admin rules across VNets and subscriptions. Network Watcher diagnoses networks, Firewall Manager manages firewall policies, and Traffic Manager does DNS load balancing.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network-manager/overview"
+ },
+ {
+  "id": "D4-095",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can a VNet span multiple subscriptions?",
+  "opts": [
+   "No — a VNet belongs to one subscription; use peering to connect VNets across subscriptions",
+   "Yes",
+   "Only in the same region",
+   "Only with ExpressRoute"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A VNet belongs to exactly one subscription and one region. To connect VNets in different subscriptions (even different tenants), peer them. Region and ExpressRoute don't change this.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-096",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can you move a VM's NIC to a different VNet?",
+  "opts": [
+   "No — a NIC's VNet can't change; create a new NIC in the target VNet (or recreate the VM)",
+   "Yes, edit the NIC",
+   "Yes, with peering",
+   "Only stopped VMs"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A network interface is tied to the VNet it was created in and can't be moved to another VNet. Create a new NIC in the target VNet and attach it (with the VM deallocated), or recreate the VM. Peering connects VNets but doesn't move NICs.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface"
+ },
+ {
+  "id": "D4-097",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can a VM's NIC move to a different subnet in the SAME VNet?",
+  "opts": [
+   "Yes — change the subnet in the NIC's IP configuration (static IPs must be updated)",
+   "No",
+   "Only with a new VNet",
+   "Only for Linux"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Within the same VNet you can change a NIC's subnet by editing its IP configuration. If it has a static private IP, choose a new address in the new subnet, because the old one won't fit. This works for Windows and Linux VMs.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface-addresses"
+ },
+ {
+  "id": "D4-098",
+  "sub": "VNets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "VNet1 in West Europe must connect to VNet2 in East US with an encrypted tunnel through gateways (not peering). Which option?",
+  "opts": [
+   "VNet-to-VNet VPN connection",
+   "Global peering",
+   "ExpressRoute Direct",
+   "Service endpoint"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A VNet-to-VNet connection links two VPN gateways — one in each VNet — with an encrypted IPsec/IKE tunnel, which works across regions. Global peering also connects regions but doesn't use gateways or IPsec. ExpressRoute Direct connects to Microsoft's network from your own site, and service endpoints are for PaaS access.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-vnet-vnet-resource-manager-portal"
+ },
+ {
+  "id": "D4-099",
+  "sub": "IP addressing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can a VM NIC have multiple IP configurations?",
+  "opts": [
+   "Yes — a NIC can have multiple private IPs (and associated public IPs)",
+   "No, one IP only",
+   "Only Linux VMs",
+   "Only for load balancers"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A network interface can have several IP configurations: one primary and extra secondary private IPs, each optionally with its own public IP. That's useful for hosting several websites or certificates on one VM. It works on Windows and Linux (the OS must be configured to use the extra addresses).",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/virtual-network-multiple-ip-addresses-portal"
+ },
+ {
+  "id": "D4-100",
+  "sub": "VNets",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "VNet-Hub (10.0.0.0/16) has GatewaySubnet and a VPN gateway. VNet-Spoke (10.1.0.0/16) is peered with 'Use remote gateways'. On-premises is 192.168.0.0/16.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "VNet-Spoke VMs can reach on-premises through the hub gateway",
+   "VNet-Spoke can also deploy its own VPN gateway while using remote gateways",
+   "Hub peering must have 'Allow gateway transit' enabled",
+   "The spoke address space must not overlap 192.168.0.0/16"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "Gateway transit works when the hub allows it; a spoke using remote gateways can't have its own gateway; address spaces must not overlap.",
+  "link": "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit"
+ }
 ]

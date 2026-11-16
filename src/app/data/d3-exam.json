@@ -82,7 +82,7 @@
   "ans": [
    2
   ],
-  "exp": "Geo-replication needs the Premium SKU. Docker Hub public repositories are not private.",
+  "exp": "Geo-replication is a Premium-only feature of Azure Container Registry. It keeps the registry's images in several regions, so North Europe gets a local replica. Basic and Standard can't replicate, and a public Docker Hub repository wouldn't keep the images private.",
   "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus"
  },
  {
@@ -241,7 +241,7 @@
    1,
    0
   ],
-  "exp": "--zone takes the zone number. --generate-ssh-keys creates a key pair if none exists.",
+  "exp": "--zone takes the availability zone number (1, 2 or 3), not a region or availability set name. --generate-ssh-keys creates an SSH key pair if you don't have one and adds the public key to the VM, which is the secure default for Linux.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/vm"
  },
  {
@@ -343,7 +343,7 @@
   "ans": [
    2
   ],
-  "exp": "Deployment slots start at the Standard tier (S1). Free, Shared and Basic have no slots.",
+  "exp": "Deployment slots start at the Standard tier, so S1 is the cheapest SKU where az webapp deployment slot create succeeds. Free (F1), Shared (D1) and Basic (B1) don't support slots, so the second command would fail on them.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
  },
  {
@@ -386,7 +386,7 @@
   "ans": [
    0
   ],
-  "exp": "Autoscale never goes above the maximum, so the count stays at 10.",
+  "exp": "Autoscale always respects the maximum instance count. The scale set is already at the maximum of 10, so even with CPU at 90% it can't add more and stays at 10. To scale further, raise the maximum.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
  },
  {
@@ -407,7 +407,7 @@
   "ans": [
    2
   ],
-  "exp": "AcrPull is the least-privileged role for pulling images. AcrPush also allows pushing.",
+  "exp": "AcrPull lets an identity pull images from the registry and nothing else, so it's the least-privileged role for running containers. AcrPush also allows pushing, Reader only shows the registry resource, and Owner gives full control.",
   "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-roles"
  },
  {
@@ -463,7 +463,7 @@
    1,
    2
   ],
-  "exp": "Availability sets support up to 3 fault domains (depending on region) and up to 20 update domains.",
+  "exp": "An availability set supports up to 3 fault domains (in most regions; some allow 2) and up to 20 update domains. Fault domains spread VMs across racks, and update domains spread them across maintenance groups.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
  },
  {
@@ -569,7 +569,7 @@
    0,
    1
   ],
-  "exp": "Zones give 99.99%, availability sets 99.95%, and a single VM with premium disks 99.9%.",
+  "exp": "The more independent your VMs are, the higher the SLA. VMs spread across availability zones (separate datacenters) get 99.99%. VMs in an availability set (separate racks in one datacenter) get 99.95%. A single VM with all Premium SSD or Ultra disks gets 99.9%.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
  },
  {
@@ -695,7 +695,7 @@
   "ans": [
    0
   ],
-  "exp": "dependsOn sets deployment order: Resource Manager waits for the NIC before creating the VM.",
+  "exp": "dependsOn tells Resource Manager the order to deploy things: the VM waits until the network interface it references has been created. Without it, ARM might try to create the VM before its NIC exists. It doesn't control deletion or resource group placement, and resources with dependencies aren't deployed in parallel.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/resource-dependency"
  },
  {
@@ -755,7 +755,7 @@
   "ans": [
    1
   ],
-  "exp": "if (deployDiag) deploys the resource only when the parameter is true.",
+  "exp": "A Bicep resource written with if (condition) is deployed only when the condition is true. The parameter deployDiag defaults to false, so with default values the diagnostic setting is skipped and the deployment still succeeds. Pass deployDiag=true to create it.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/conditional-resource-deployment"
  },
  {
@@ -815,7 +815,7 @@
   "ans": [
    1
   ],
-  "exp": "The rule adds 2 instances, but the maximum is 6, so autoscale stops at 6.",
+  "exp": "The rule would add 2 instances (5 → 7), but autoscale caps the count at the maximum, which is 6. So the scale set ends up with 6 instances. It never goes above the maximum or below the minimum.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
  },
  {

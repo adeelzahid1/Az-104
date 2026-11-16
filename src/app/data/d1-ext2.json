@@ -14,7 +14,7 @@
   "ans": [
    0
   ],
-  "exp": "Reader can view all resources but cannot make changes.",
+  "exp": "Reader can view every resource and setting within its scope but can't create, change or delete anything, and can't assign roles. Contributor and Owner can change resources, and User Access Administrator can change role assignments.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    1
   ],
-  "exp": "Virtual Machine Contributor manages VMs but not the VNet or storage accounts they connect to.",
+  "exp": "Virtual Machine Contributor can create and manage VMs but not the virtual network or storage accounts they connect to (it only gets the join permissions it needs). Contributor on RG-Dev would also allow managing the VNet and storage. Network Contributor is the opposite (networking only), and Owner is far more than needed.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/compute"
  },
  {
@@ -86,7 +86,7 @@
   "ans": [
    0
   ],
-  "exp": "Network Contributor manages networking resources only.",
+  "exp": "Network Contributor lets you manage networking resources such as virtual networks, subnets, NSGs, load balancers and public IPs, but not VMs or storage. Virtual Machine Contributor is the opposite. Contributor would include VMs, and Security Admin is a Defender for Cloud role.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/networking"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    0
   ],
-  "exp": "Billing Reader grants read access to billing data only.",
+  "exp": "Billing Reader can read billing data such as invoices and cost information, without access to resources. Reader would show all resources. Cost Management Contributor can also change cost settings like budgets, which goes beyond view-only. Owner is full control.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/management-and-governance"
  },
  {
@@ -158,7 +158,7 @@
   "ans": [
    0
   ],
-  "exp": "Access control (IAM) is the RBAC blade on every scope.",
+  "exp": "Every scope (management group, subscription, resource group and resource) has an Access control (IAM) blade, where Add → Add role assignment creates an Azure RBAC assignment. Entra ID → Roles and administrators is for directory roles such as User Administrator, which are a different system.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal"
  },
  {
@@ -176,7 +176,7 @@
   "ans": [
    0
   ],
-  "exp": "Check access shows a principal's assignments and inherited access at that scope.",
+  "exp": "Access control (IAM) → Check access lets you pick a user, group or identity and see every role they have at that scope, including roles inherited from higher scopes and through group membership. The Activity log shows past operations, not current access, and Advisor and Policy don't report RBAC.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/check-access"
  },
  {
@@ -212,7 +212,7 @@
   "ans": [
    0
   ],
-  "exp": "New-AzRoleAssignment creates a role assignment; New-AzRoleDefinition creates a custom role.",
+  "exp": "New-AzRoleAssignment creates a role assignment, for example -SignInName, -RoleDefinitionName and -ResourceGroupName. New-AzRoleDefinition creates a custom role (the definition, not the assignment). Add-AzRole and Set-AzRbac don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-powershell"
  },
  {
@@ -248,7 +248,7 @@
   "ans": [
    1
   ],
-  "exp": "Locks override RBAC permissions for everyone. The lock must be removed first (Owner can remove it).",
+  "exp": "Resource locks apply to everyone, whatever role they have — they are a safety net on top of RBAC. While the ReadOnly lock is in place even an Owner can't delete or change resources in RG1. The Owner can remove the lock first (Owners have lock permissions), then delete.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -266,7 +266,7 @@
   "ans": [
    0
   ],
-  "exp": "Azure RBAC is an authorization system built on Azure Resource Manager.",
+  "exp": "Azure RBAC is the authorisation system of Azure Resource Manager: every management request goes through ARM, and ARM checks the caller's role assignments before running it. Azure Policy is a separate governance service, Entra Connect syncs identities, and Azure Monitor collects telemetry.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
  },
  {
@@ -285,7 +285,7 @@
    1,
    3
   ],
-  "exp": "Contributor cannot write to Microsoft.Authorization, which covers role assignments and locks.",
+  "exp": "Contributor has Actions = * but NotActions removes Microsoft.Authorization/*/Write and Delete. Creating role assignments and creating locks are both Microsoft.Authorization write operations, so Contributor can't do them. It can create VMs and delete resource groups, because those are ordinary resource operations.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -342,7 +342,7 @@
   "ans": [
    0
   ],
-  "exp": "Role assignment conditions add fine-grained ABAC checks, for example on storage blob attributes.",
+  "exp": "Role assignment conditions (attribute-based access control) add an extra check to a role assignment, such as 'only blobs with index tag Project=Alpha' or 'only containers named logs'. They make a role narrower. They don't deny the whole tenant, schedule assignments (that's PIM) or enforce MFA (that's Conditional Access).",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-overview"
  },
  {
@@ -378,7 +378,7 @@
   "ans": [
    0
   ],
-  "exp": "User Access Administrator has Microsoft.Authorization/* rights, which cover assignments and locks.",
+  "exp": "User Access Administrator has full rights on Microsoft.Authorization, which covers role assignments and management locks, and no rights on other resources. Contributor manages resources but is explicitly blocked from Microsoft.Authorization writes, so it can't manage locks or access.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -414,7 +414,7 @@
   "ans": [
    0
   ],
-  "exp": "Owner = Contributor rights + role assignment rights.",
+  "exp": "Owner has every permission on resources at its scope and can also assign roles to others. That's effectively Contributor plus User Access Administrator. It can delete resources and isn't limited to billing.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -432,7 +432,7 @@
   "ans": [
    1
   ],
-  "exp": "RBAC is additive. The union of Reader and Contributor gives Contributor capabilities.",
+  "exp": "Azure RBAC is additive: a user's effective permissions are the combination (union) of all their role assignments, direct or through groups. Reader plus Contributor on RG1 gives everything Contributor allows. Roles never cancel each other out; only a deny assignment can take permissions away.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
  },
  {
@@ -450,7 +450,7 @@
   "ans": [
    1
   ],
-  "exp": "Deny assignments block actions even if a role assignment grants them.",
+  "exp": "Deny assignments are evaluated before role assignments. If a deny assignment blocks an action, the user can't do it even if one of their roles allows it. They are created by Azure itself, for example by deployment stacks with deny settings, not added directly by administrators.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/deny-assignments"
  },
  {
@@ -468,7 +468,7 @@
   "ans": [
    1
   ],
-  "exp": "DataActions and NotDataActions define data-plane operations; Actions covers the control plane.",
+  "exp": "Role definitions separate the control plane from the data plane. Actions and NotActions cover management operations, such as creating a storage account. DataActions and NotDataActions cover operations on the data inside, such as reading or writing blob contents. AssignableScopes says where the role can be assigned.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
  },
  {
@@ -486,7 +486,7 @@
   "ans": [
    0
   ],
-  "exp": "The portal lets you clone a role and then edit its permissions.",
+  "exp": "In any scope's Access control (IAM) → Roles, you can pick a built-in role and choose Clone to start a custom role with its permissions already filled in, then add or remove actions. Entra ID → Roles is for directory roles, and policy definitions are a different feature.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-portal"
  },
  {
@@ -504,7 +504,7 @@
   "ans": [
    0
   ],
-  "exp": "az role definition create accepts a JSON role definition.",
+  "exp": "az role definition create --role-definition role.json creates a custom role from a JSON file that contains Name, Actions, NotActions, DataActions and AssignableScopes. az role assignment create only assigns an existing role, and policy definitions are a different feature.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli"
  },
  {
@@ -540,7 +540,7 @@
   "ans": [
    1
   ],
-  "exp": "A custom role can include only one management group in AssignableScopes.",
+  "exp": "A custom role's AssignableScopes can list several subscriptions and resource groups, but at most one management group. This is a platform limit, so 'unlimited' and 'up to 5' are wrong; management groups are allowed, just only one.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
  },
  {
@@ -558,7 +558,7 @@
   "ans": [
    1
   ],
-  "exp": "NotActions just removes permissions from that one role's grant. Contributor still grants delete.",
+  "exp": "NotActions is not a deny. It only removes actions from that one custom role. Because RBAC is additive, the user's Contributor role still includes Microsoft.Compute/virtualMachines/delete, so the user can delete the VM. Only a deny assignment could block it.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-definitions"
  },
  {
@@ -594,7 +594,7 @@
   "ans": [
    0
   ],
-  "exp": "VM operations follow the Microsoft.Compute/virtualMachines/<operation>/action format.",
+  "exp": "Starting a VM is an action, so its operation string is Microsoft.Compute/virtualMachines/start/action. The /write operation creates or updates the VM definition, which is a different permission. Strings like Microsoft.Compute/start or Microsoft.VM/start don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/compute"
  },
  {
@@ -615,7 +615,7 @@
    3,
    0
   ],
-  "exp": "Write the JSON → create the definition → verify it exists → assign it.",
+  "exp": "First write the JSON with Name, Actions and AssignableScopes. Then create the role with az role definition create. Check it exists with az role definition list --custom-role-only true. Only then can you assign it with az role assignment create, because a role must exist before it can be assigned.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles-cli"
  },
  {
@@ -672,7 +672,7 @@
   "ans": [
    0
   ],
-  "exp": "Monitoring Reader can read all monitoring data.",
+  "exp": "Monitoring Reader can read all monitoring data — metrics, logs and alert settings — but can't change anything. Monitoring Contributor can also create alerts and change diagnostic settings. Log Analytics Contributor can manage workspaces, which is more than read-only.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/roles-permissions-security"
  },
  {
@@ -726,7 +726,7 @@
   "ans": [
    1
   ],
-  "exp": "Guests switch directories in the portal and see only resources where they have role assignments.",
+  "exp": "A guest who is given Reader on RG1 signs in with their own account, switches to your directory in the portal, and sees only the resources in RG1. They don't see other resource groups or the rest of the tenant, because they have no role anywhere else.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-external-users"
  },
  {
@@ -785,7 +785,7 @@
   "ans": [
    0
   ],
-  "exp": "Directory roles are managed in Entra ID's Roles and administrators blade, not in Azure IAM.",
+  "exp": "Directory roles such as User Administrator or Global Administrator control Entra ID itself and are assigned in Entra ID → Roles and administrators. Access control (IAM) on a subscription assigns Azure RBAC roles for resources. These two role systems are separate.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/manage-roles-portal"
  },
  {
@@ -839,7 +839,7 @@
   "ans": [
    0
   ],
-  "exp": "Application Administrator manages app registrations and enterprise apps.",
+  "exp": "Application Administrator can create and manage app registrations and enterprise applications, including their single sign-on and proxy settings, without broader directory rights. Global Administrator would be far too much, User Administrator manages users and groups, and Cloud Device Administrator manages devices.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"
  },
  {
@@ -893,7 +893,7 @@
   "ans": [
    1
   ],
-  "exp": "System-assigned identities are tied to the resource lifecycle and are removed with it.",
+  "exp": "A system-assigned managed identity is created with its resource and shares its lifecycle, so deleting the VM deletes the identity and its role assignments stop working. If you need an identity that outlives the resource or is shared by several resources, use a user-assigned identity.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
  },
  {

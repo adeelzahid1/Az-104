@@ -330,7 +330,7 @@
    2,
    1
   ],
-  "exp": "Dynamic groups and Conditional Access need P1. PIM is a P2 (or Entra ID Governance) feature.",
+  "exp": "Dynamic membership groups need Microsoft Entra ID P1, because group rules are a premium feature. Conditional Access also needs P1. Privileged Identity Management (just-in-time, approval-based admin roles) needs P2 or Entra ID Governance. The Free edition includes neither dynamic groups nor Conditional Access.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
  },
  {

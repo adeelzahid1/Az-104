@@ -14,7 +14,7 @@
   "ans": [
    0
   ],
-  "exp": "Zones are separate locations inside a region.",
+  "exp": "An availability zone is a physically separate location inside one Azure region — one or more datacenters with independent power, cooling and networking. Spreading VMs across zones protects them from a whole datacenter failing. A paired region is a different region, a rack is a fault domain, and a resource group is just a management container.",
   "link": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview"
  },
  {
@@ -32,7 +32,7 @@
   "ans": [
    0
   ],
-  "exp": "A VM uses either an availability set or a zone, not both.",
+  "exp": "A VM is placed either in an availability set (spread across racks in one datacenter) or in an availability zone (separate datacenters), not both. An availability set doesn't span zones. For zone-level resilience, deploy VMs to different zones or use a zone-spanning scale set.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    0
   ],
-  "exp": "Each update domain is rebooted as a group, one at a time.",
+  "exp": "During planned maintenance, Azure reboots one update domain at a time, so VMs in the same update domain may be rebooted together while the others keep running. They aren't deleted or moved to another region, and they can still be rebooted.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    0
   ],
-  "exp": "VMs are spread round-robin across UDs: 6 VMs over 5 UDs puts 2 in one UD.",
+  "exp": "Azure spreads VMs across update domains round-robin: VMs 1–5 go into update domains 0–4, and VM 6 goes back to update domain 0. So one update domain holds 2 VMs and the others hold 1.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    0
   ],
-  "exp": "Managed-disk VMs need the Aligned availability set SKU.",
+  "exp": "Availability sets for VMs with managed disks must use the Aligned SKU, which aligns the disks' storage fault domains with the VMs' fault domains so one storage failure doesn't take down several VMs. Classic is for unmanaged disks, and Premium and Zonal aren't availability set SKUs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    0
   ],
-  "exp": "Proximity placement groups keep VMs physically close.",
+  "exp": "A proximity placement group keeps VMs physically close together (in the same datacenter) to get the lowest network latency between them, for example for tightly coupled apps. Availability zones and sets do the opposite: they spread VMs apart for resilience. Dedicated hosts give hardware isolation, not low latency.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/co-location"
  },
  {
@@ -197,7 +197,7 @@
   "ans": [
    0
   ],
-  "exp": "az vm resize changes the VM size (it restarts the VM).",
+  "exp": "az vm resize --size Standard_D4s_v5 changes a VM's size, which restarts the VM. If the new size isn't on the current hardware cluster, deallocate the VM first. Use az vm list-vm-resize-options to see which sizes are available. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/vm"
  },
  {
@@ -215,7 +215,7 @@
   "ans": [
    0
   ],
-  "exp": "Resizing always restarts the VM; changing hardware clusters also requires deallocation.",
+  "exp": "Resizing always restarts a running VM, because it needs different resources from the host. If the new size isn't available on the current hardware cluster, the VM must also be deallocated first so it can move to new hardware. This is the same for Windows and Linux.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/resize-vm"
  },
  {
@@ -233,7 +233,7 @@
   "ans": [
    0
   ],
-  "exp": "Only deallocation stops compute charges; storage is still billed.",
+  "exp": "Shutting down from inside the operating system stops the OS, but the VM stays allocated on its host, so you keep paying for compute. Stopping (deallocating) from the portal or CLI releases the host, which stops compute charges, though you still pay for disks. Neither option deletes disks or the VM.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing"
  },
  {
@@ -251,7 +251,7 @@
   "ans": [
    0
   ],
-  "exp": "Redeploy migrates the VM to a new node (temp disk data is lost).",
+  "exp": "Redeploy shuts the VM down, moves it to a new host in Azure and starts it again, keeping its disks and configuration. It's the fix for problems caused by the underlying host. Data on the temp disk is lost. Reapply only reapplies configuration on the same host, and resetting the password or resizing doesn't move hosts.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/troubleshooting/redeploy-to-new-node-windows"
  },
  {
@@ -269,7 +269,7 @@
   "ans": [
    0
   ],
-  "exp": "Reset password uses the VMAccess extension.",
+  "exp": "'Reset password' in the portal (Help → Reset password) uses the VMAccess extension, through the VM agent, to set a new password for the local administrator account without logging in. Recreating the VM is unnecessary, Bastion still needs a valid password, and support isn't needed.",
   "link": "https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/reset-local-password-without-agent"
  },
  {
@@ -287,7 +287,7 @@
   "ans": [
    0
   ],
-  "exp": "Run Command executes scripts through the VM agent.",
+  "exp": "Run Command runs a PowerShell or shell script inside the VM through the VM agent, directly from the portal or CLI, with no RDP, SSH or network access to the VM needed. Bastion still needs RDP or SSH, Network Watcher diagnoses networking, and the serial console is a text console rather than a script runner.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/run-command-overview"
  },
  {
@@ -305,7 +305,7 @@
   "ans": [
    0
   ],
-  "exp": "Boot diagnostics captures screenshots and serial logs; Serial Console gives interactive access.",
+  "exp": "Boot diagnostics captures a screenshot of the VM's console and its serial log, so you can see a blue screen or boot error. Serial Console gives interactive access to the VM's console even when networking is broken. The Activity log, Advisor and IP flow verify don't show what's on the VM's screen.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/boot-diagnostics"
  },
  {
@@ -323,7 +323,7 @@
   "ans": [
    0
   ],
-  "exp": "Auto-shutdown schedules a daily shutdown, with optional notification.",
+  "exp": "Each VM has an Auto-shutdown setting that stops (deallocates) it at a set time every day, for example 19:00, and can email you first. That's the simplest way to save costs on dev VMs. Policies, locks and budgets don't shut VMs down.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/auto-shutdown-vm"
  },
  {
@@ -341,7 +341,7 @@
   "ans": [
    0
   ],
-  "exp": "Update Manager assesses and schedules patches for Windows and Linux machines.",
+  "exp": "Azure Update Manager checks Windows and Linux machines (in Azure and, via Azure Arc, elsewhere) for missing updates, and installs them on demand or on schedules called maintenance configurations. Advisor gives recommendations, Network Watcher diagnoses networks, and Azure Policy alone doesn't install patches.",
   "link": "https://learn.microsoft.com/en-us/azure/update-manager/overview"
  },
  {
@@ -359,7 +359,7 @@
   "ans": [
    0
   ],
-  "exp": "The VM agent is required for extensions such as Custom Script, VMAccess, and monitoring agents.",
+  "exp": "The Azure VM agent runs inside the VM and talks to the Azure platform. It handles provisioning (for example setting the admin account) and runs VM extensions such as Custom Script, VMAccess (reset password), Run Command and monitoring agents. It doesn't encrypt disks, back up the VM or act as antivirus.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/agent-windows"
  },
  {
@@ -377,7 +377,7 @@
   "ans": [
    0
   ],
-  "exp": "Dedicated Host gives you single-tenant physical servers.",
+  "exp": "Azure Dedicated Host gives you a whole physical server that runs only your VMs, which meets compliance rules that ban sharing hardware with other customers. Availability sets and proximity placement groups still use shared hosts, and Spot VMs use spare shared capacity.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/dedicated-hosts"
  },
  {
@@ -395,7 +395,7 @@
   "ans": [
    0
   ],
-  "exp": "Spot VMs use spare capacity at deep discounts but can be evicted.",
+  "exp": "Spot VMs run on Azure's spare capacity at large discounts, but Azure can evict them when it needs the capacity back. That's fine for batch jobs that can restart. Reserved instances need a 1- or 3-year commitment, dedicated hosts cost more, and Premium SSD is a disk type.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms"
  },
  {
@@ -413,7 +413,7 @@
   "ans": [
    0
   ],
-  "exp": "On eviction, Spot VMs are either deallocated or deleted.",
+  "exp": "When Azure evicts a Spot VM, it either deallocates it (keeping the disks, so you can start it later) or deletes it, depending on the eviction policy you chose. Stop or Restart, Pause or Snapshot and Hibernate aren't Spot eviction policies.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms"
  },
  {
@@ -431,7 +431,7 @@
   "ans": [
    0
   ],
-  "exp": "Accelerated networking bypasses the host virtual switch on supported sizes.",
+  "exp": "Accelerated networking uses SR-IOV so network traffic goes directly between the VM and the network card, bypassing the host's virtual switch. That gives lower latency, less jitter and higher throughput on supported VM sizes. IP forwarding, static IPs and multiple NICs don't improve performance.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview"
  },
  {
@@ -449,7 +449,7 @@
   "ans": [
    0
   ],
-  "exp": "NICs can be added or removed only when the VM is deallocated, within the size's NIC limit.",
+  "exp": "You can only add or remove network interfaces while the VM is stopped (deallocated), and the VM size must support that many NICs. Add the NIC, then start the VM. You don't need to recreate the VM or add a load balancer.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface-vm"
  },
  {
@@ -467,7 +467,7 @@
   "ans": [
    0
   ],
-  "exp": "IP forwarding lets a NIC accept traffic destined for other IPs.",
+  "exp": "By default Azure drops traffic arriving at a NIC that isn't addressed to that NIC's IP. Enabling IP forwarding on the NIC lets a firewall or router VM receive and pass on traffic for other addresses (the OS must also be set to forward). Accelerated networking, DNS and static IPs don't change this.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface"
  },
  {
@@ -485,7 +485,7 @@
   "ans": [
    0
   ],
-  "exp": "SSE is always on; a disk encryption set enables CMK.",
+  "exp": "Server-side encryption (SSE) is always on for managed disks, using platform-managed keys by default. To use your own key, create a disk encryption set that points to a key in Key Vault and assign it to the disks. It covers OS and data disks, needs no manual enabling, and doesn't use BitLocker.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
  },
  {
@@ -503,7 +503,7 @@
   "ans": [
    0
   ],
-  "exp": "A disk encryption set references the Key Vault key and is assigned to disks.",
+  "exp": "A disk encryption set is the resource that links managed disks to a customer-managed key in Key Vault. You assign it to disks, and it uses a managed identity to reach the key. Encryption scopes are for Blob storage, and a Recovery Services vault is for backup.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
  },
  {
@@ -521,7 +521,7 @@
   "ans": [
    0
   ],
-  "exp": "Encryption at host requires registering the subscription feature.",
+  "exp": "Encryption at host must be turned on for the subscription first by registering the EncryptionAtHost feature for the Microsoft.Compute provider. After that you can enable it per VM. Creating a disk encryption set is only needed if you want customer-managed keys.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal"
  },
  {
@@ -539,7 +539,7 @@
   "ans": [
    0
   ],
-  "exp": "The vault must allow disk encryption to retrieve secrets and keys.",
+  "exp": "Azure Disk Encryption needs the key vault's 'Azure Disk Encryption for volume encryption' access setting (enabledForDiskEncryption) turned on, so the Azure platform can store and read the BitLocker or dm-crypt secrets. Template deployment, purge protection and network settings are separate options.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-key-vault"
  },
  {
@@ -557,7 +557,7 @@
   "ans": [
    0
   ],
-  "exp": "az vm encryption enable configures ADE using the specified vault.",
+  "exp": "az vm encryption enable turns on Azure Disk Encryption for a VM, with --disk-encryption-keyvault pointing to the vault (and optionally --key-encryption-key for a KEK). It installs the encryption extension, which runs BitLocker or dm-crypt. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-cli-quickstart"
  },
  {
@@ -594,7 +594,7 @@
   "ans": [
    0
   ],
-  "exp": "az vmss create defines the image and instance count.",
+  "exp": "az vmss create creates a virtual machine scale set with the image and starting instance count you give, here 2 (it also creates the network and, by default, a load balancer). az vm create creates single VMs, and the other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/vmss"
  },
  {
@@ -612,7 +612,7 @@
   "ans": [
    0
   ],
-  "exp": "az vmss scale changes capacity manually.",
+  "exp": "az vmss scale --new-capacity 5 manually sets a scale set to 5 instances. If autoscale is configured, it may change the count again at its next evaluation. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/vmss"
  },
  {
@@ -630,7 +630,7 @@
   "ans": [
    0
   ],
-  "exp": "Thresholds that are too close cause flapping; leave a margin and use cooldowns.",
+  "exp": "Flapping happens when scaling out pushes CPU just below the scale-in threshold, which removes an instance, which pushes CPU back above the scale-out threshold, and so on. Leave a wide gap between the thresholds (for example out above 70%, in below 30%) and use cooldown periods. Removing the maximum or lowering the minimum doesn't stop it.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-best-practices"
  },
  {
@@ -648,7 +648,7 @@
   "ans": [
    0
   ],
-  "exp": "Recurrence profiles scale on a schedule.",
+  "exp": "An autoscale profile with a recurrence schedule sets the instance count for set times, for example more instances on weekdays from 8:00 to 18:00 and fewer at other times. It scales before the load arrives. Metric rules only react after CPU rises, budgets don't scale, and manual scaling needs someone every morning.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-multiprofile"
  },
  {
@@ -702,7 +702,7 @@
   "ans": [
    0
   ],
-  "exp": "Automatic repairs delete and recreate instances that fail health checks.",
+  "exp": "Automatic instance repairs watch each instance's health, using the Application Health extension or a load balancer health probe. Instances that stay unhealthy are deleted and recreated automatically. Rolling upgrades change instances in batches, overprovisioning creates extra VMs during scale-out, and Spot is a pricing option.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-automatic-instance-repairs"
  },
  {
@@ -720,7 +720,7 @@
   "ans": [
    0
   ],
-  "exp": "Zone-spanning scale sets distribute instances across zones.",
+  "exp": "When you create a scale set, you can specify zones 1, 2 and 3, and Azure spreads the instances across those zones so the set survives a zone failure. Zones can't be added to a scale set afterwards. Fault domain count spreads instances across racks, not zones.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones"
  },
  {
@@ -741,7 +741,7 @@
    0,
    3
   ],
-  "exp": "Collect metric → compare to threshold → apply change within limits → cooldown.",
+  "exp": "Autoscale first collects the metric (for example average CPU) over the time window. It compares that value with the rule's threshold. If the rule fires, it changes the instance count but stays within the minimum and maximum. It then waits for the cooldown before evaluating again, so instances can settle.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
  },
  {
@@ -780,7 +780,7 @@
   "ans": [
    0
   ],
-  "exp": "Resource Mover handles cross-region moves with dependency checks.",
+  "exp": "Azure Resource Mover moves resources such as VMs, NICs, NSGs, VNets, public IPs and load balancers to another region together. It checks dependencies so related resources move as a group. Azure Migrate is mainly for on-premises workloads, AzCopy copies data, and Export template doesn't move anything.",
   "link": "https://learn.microsoft.com/en-us/azure/resource-mover/overview"
  },
  {
@@ -816,7 +816,7 @@
   "ans": [
    0
   ],
-  "exp": "Resource IDs include the resource group name, so they change on move.",
+  "exp": "A resource ID includes the subscription and resource group, for example /subscriptions/…/resourceGroups/RG1/providers/Microsoft.Compute/virtualMachines/VM1. After moving to RG2 the ID changes, so update any scripts, templates or alerts that use the old ID. The VM's name and region stay the same.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"
  },
  {
@@ -834,7 +834,7 @@
   "ans": [
    0
   ],
-  "exp": "Encrypted VM moves need key vaults and keys in the target region.",
+  "exp": "A VM using Azure Disk Encryption needs its keys and secrets in a key vault in the same region as the VM. To move it to another region, you need a key vault in the target region and must copy the encryption keys and secrets there as part of the move. Encrypted VMs can be moved, but encryption isn't removed automatically.",
   "link": "https://learn.microsoft.com/en-us/azure/resource-mover/tutorial-move-region-encrypted-virtual-machines"
  },
  {
@@ -852,7 +852,7 @@
   "ans": [
    0
   ],
-  "exp": "Bastion provides RDP/SSH over TLS without exposing VMs.",
+  "exp": "Azure Bastion lets you RDP or SSH to VMs from the Azure portal over TLS (port 443), without public IPs on the VMs and without opening port 3389 to the internet. Opening 3389 to Any invites brute-force attacks, and a public IP exposes the VM. FTP is unrelated.",
   "link": "https://learn.microsoft.com/en-us/azure/bastion/bastion-overview"
  },
  {
@@ -870,7 +870,7 @@
   "ans": [
    0
   ],
-  "exp": "Trusted launch enables Secure Boot, vTPM, and integrity monitoring on Gen2 VMs.",
+  "exp": "Trusted launch turns on Secure Boot (only signed boot components can load), a virtual TPM, and boot integrity monitoring on Generation 2 VMs, protecting them against rootkits and boot-level malware. Encryption at host protects data at rest, accelerated networking speeds up networking, and just-in-time access limits management ports.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch"
  },
  {
@@ -888,7 +888,7 @@
   "ans": [
    0
   ],
-  "exp": "Gen2 VMs use UEFI and support features like Trusted launch.",
+  "exp": "Generation 2 VMs boot with UEFI instead of BIOS, support OS disks larger than 2 TB, and are needed for features such as Trusted launch. Generation 1 uses BIOS. Classic is the old deployment model, not a VM generation.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/generation-2"
  },
  {

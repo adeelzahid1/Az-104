@@ -1,52 +1,924 @@
 [
-{"id":"D4-101","sub":"NSG","type":"mcq","diff":1,"q":"What's the valid priority range for custom NSG rules?","opts":["100–4096","1–65535","0–100","1000–9999"],"ans":[0],"exp":"Custom rules use priorities 100–4096; default rules sit at 65000+.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-102","sub":"NSG","type":"mcq","diff":1,"q":"Which default inbound rule blocks everything not explicitly allowed?","opts":["DenyAllInBound (65500)","DenyInternet","BlockAll (4096)","There's no default deny"],"ans":[0],"exp":"DenyAllInBound is the final default rule.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-103","sub":"NSG","type":"mcq","diff":2,"q":"Which default rule allows Azure load balancer health probes to reach VMs?","opts":["AllowAzureLoadBalancerInBound (65001)","AllowVnetInBound","AllowInternetInBound","No rule; probes bypass NSGs"],"ans":[0],"exp":"The AzureLoadBalancer service tag is allowed by default.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-104","sub":"NSG","type":"mcq","diff":2,"q":"By default, can VMs reach the internet outbound under NSG rules?","opts":["Yes — the default AllowInternetOutBound rule allows it","No","Only on port 80","Only with a NAT gateway"],"ans":[0],"exp":"Default outbound rules allow VNet and internet traffic (actual outbound connectivity still needs an outbound path).","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-105","sub":"NSG","type":"mcq","diff":2,"q":"Which CLI command creates an NSG rule allowing HTTPS from the internet?","opts":["az network nsg rule create -g RG1 --nsg-name nsg1 -n AllowHttps --priority 200 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 443 --source-address-prefixes Internet","az nsg allow 443","az network rule add https","az vm open-port --all"],"ans":[0],"exp":"Rules need a priority, direction, access, protocol, and ports and prefixes.","link":"https://learn.microsoft.com/en-us/cli/azure/network/nsg/rule"},
-{"id":"D4-106","sub":"NSG","type":"mcq","diff":2,"q":"Which CLI command associates an NSG with a subnet?","opts":["az network vnet subnet update -g RG1 --vnet-name VNet1 -n Web --network-security-group nsg1","az network nsg attach Web","az nsg link subnet","az network vnet update --nsg nsg1"],"ans":[0],"exp":"Subnet update with --network-security-group.","link":"https://learn.microsoft.com/en-us/cli/azure/network/vnet/subnet"},
-{"id":"D4-107","sub":"NSG","type":"mcq","diff":3,"q":"The subnet NSG allows inbound 443, but the NIC NSG has no custom rules. Can internet clients reach the VM on 443?","opts":["No — the NIC NSG's default DenyAllInBound blocks it; both NSGs must allow","Yes — the subnet NSG is enough","Yes, only for HTTPS","Only from the VNet"],"ans":[0],"exp":"When both NSGs exist, traffic must pass both.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"},
-{"id":"D4-108","sub":"NSG","type":"mcq","diff":3,"q":"A subnet NSG denies outbound port 25. The NIC NSG allows outbound 25. Can the VM send SMTP on 25?","opts":["No — outbound is evaluated NIC then subnet, and the subnet NSG denies it","Yes, the NIC wins","Yes, allow always wins","Depends on priority numbers across NSGs"],"ans":[0],"exp":"Both NSGs must allow; the subnet denial blocks it.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"},
-{"id":"D4-109","sub":"NSG","type":"mcq","diff":2,"q":"Can you delete the default NSG rules?","opts":["No — but you can override them with higher-priority (lower number) custom rules","Yes","Only DenyAll","Only with Owner"],"ans":[0],"exp":"Default rules can't be removed, only overridden.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-110","sub":"NSG","type":"mcq","diff":2,"q":"You want one NSG rule to allow traffic to several ports (80, 443, 8080). Is this possible?","opts":["Yes — augmented security rules allow multiple ports and IP ranges in one rule","No, one port per rule","Only with ASGs","Only outbound"],"ans":[0],"exp":"Augmented rules support lists of ports and prefixes.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-111","sub":"NSG","type":"multi","diff":3,"q":"Which TWO can be used as the source of an NSG rule?","opts":["A service tag like Internet","An application security group","An Entra user group","A storage account name"],"ans":[0,1],"exp":"Sources can be IPs/CIDRs, service tags, or ASGs.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-112","sub":"NSG","type":"mcq","diff":3,"q":"An NSG rule should allow VMs to reach Azure SQL in West Europe only. Which destination?","opts":["The service tag Sql.WestEurope","Internet","VirtualNetwork","0.0.0.0/0"],"ans":[0],"exp":"Regional service tags scope prefixes to one region.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview"},
-{"id":"D4-113","sub":"NSG","type":"mcq","diff":2,"q":"A rule is changed from Allow to Deny while connections are active. What happens to existing flows?","opts":["Existing connections may continue until they end; new connections are blocked","All flows drop instantly","Nothing changes for 24 hours","The VM restarts"],"ans":[0],"exp":"Changes affect new flows; established flows may persist.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-114","sub":"NSG","type":"order","diff":2,"q":"Order NSG processing for INBOUND traffic to a VM:","items":["Evaluate the NIC NSG rules by priority","Packet arrives at the subnet","Evaluate the subnet NSG rules by priority","Deliver to the VM if both allow"],"ans":[1,2,0,3],"exp":"Subnet → subnet NSG → NIC NSG → VM.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"},
-{"id":"D4-115","sub":"ASG","type":"mcq","diff":2,"q":"Web VMs must accept 443 from the internet, and DB VMs must accept 1433 only from web VMs. Cleanest NSG design?","opts":["ASGs 'asg-web' and 'asg-db'; rule 1: Internet → asg-web 443; rule 2: asg-web → asg-db 1433","One rule per VM IP","Separate VNets for each VM","Service endpoints"],"ans":[0],"exp":"ASGs make role-based rules independent of IPs.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"},
-{"id":"D4-116","sub":"ASG","type":"mcq","diff":2,"q":"How do you put a VM into an application security group?","opts":["Associate the VM's NIC (IP configuration) with the ASG","Tag the VM","Add the VM to a resource group","Assign an RBAC role"],"ans":[0],"exp":"ASG membership is set on NIC IP configurations.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"},
-{"id":"D4-117","sub":"ASG","type":"yesno","diff":2,"q":"Answer Yes or No about ASGs:","stmts":["A NIC can belong to multiple ASGs","ASGs can be used across VNets in the same rule","ASGs reduce the need to manage IP addresses in rules","ASGs are created per region"],"ans":[true,false,true,true],"exp":"A NIC can join several ASGs; rule members must share a VNet; ASGs simplify rules; ASGs are regional resources.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"},
-{"id":"D4-118","sub":"Azure Firewall","type":"mcq","diff":2,"q":"Which managed service provides centralized, stateful Layer 3–7 filtering with FQDN rules and threat intelligence?","opts":["Azure Firewall","NSG","Application security group","Route table"],"ans":[0],"exp":"Azure Firewall is a managed firewall-as-a-service. NSGs are basic L3/L4 filters.","link":"https://learn.microsoft.com/en-us/azure/firewall/overview"},
-{"id":"D4-119","sub":"Azure Firewall","type":"mcq","diff":3,"q":"Which subnet name does Azure Firewall require?","opts":["AzureFirewallSubnet (/26 or larger)","FirewallSubnet","GatewaySubnet","Any name"],"ans":[0],"exp":"Azure Firewall needs AzureFirewallSubnet, /26 minimum.","link":"https://learn.microsoft.com/en-us/azure/firewall/firewall-faq"},
-{"id":"D4-120","sub":"Bastion","type":"mcq","diff":2,"q":"Which port must target VMs allow from AzureBastionSubnet for RDP through Bastion?","opts":["3389 (RDP) / 22 (SSH) from the Bastion subnet","443 from the internet","445","None"],"ans":[0],"exp":"Bastion connects to VMs over RDP/SSH privately.","link":"https://learn.microsoft.com/en-us/azure/bastion/bastion-nsg"},
-{"id":"D4-121","sub":"Bastion","type":"mcq","diff":3,"q":"Can one Bastion host reach VMs in a peered VNet?","opts":["Yes — Bastion supports connecting to VMs in peered VNets","No, only its own VNet","Only with global peering disabled","Only with Premium SKU and VPN"],"ans":[0],"exp":"Bastion works across VNet peering.","link":"https://learn.microsoft.com/en-us/azure/bastion/vnet-peering"},
-{"id":"D4-122","sub":"Bastion","type":"mcq","diff":2,"q":"Which Bastion SKU is free, shared, and intended only for dev/test with one connection at a time?","opts":["Developer","Basic","Standard","Premium"],"ans":[0],"exp":"The Developer SKU is a free, lightweight option without a dedicated subnet.","link":"https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"},
-{"id":"D4-123","sub":"Bastion","type":"mcq","diff":3,"q":"Which Bastion SKU adds session recording and private-only deployment?","opts":["Premium","Standard","Basic","Developer"],"ans":[0],"exp":"Premium adds session recording and private-only Bastion.","link":"https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"},
-{"id":"D4-124","sub":"Bastion","type":"mcq","diff":2,"q":"Can you upgrade Bastion Basic to Standard?","opts":["Yes, upgrading is supported (downgrading isn't)","No, you must redeploy","Only via support","Only downgrade"],"ans":[0],"exp":"SKU upgrades are supported; downgrades require redeployment.","link":"https://learn.microsoft.com/en-us/azure/bastion/upgrade-sku"},
-{"id":"D4-125","sub":"Just-in-time","type":"mcq","diff":3,"q":"RDP should be open only on request, for 3 hours, from the requester's IP. Which feature?","opts":["Just-in-time VM access (Microsoft Defender for Cloud)","Bastion Basic","A permanent NSG rule","Service endpoints"],"ans":[0],"exp":"JIT opens NSG rules temporarily on approval.","link":"https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-overview"},
-{"id":"D4-126","sub":"Service endpoints","type":"mcq","diff":2,"q":"Where do you enable a service endpoint?","opts":["On the subnet (selecting services like Microsoft.Storage or Microsoft.Sql)","On the VM","On the storage account only","In Entra ID"],"ans":[0],"exp":"Service endpoints are a subnet setting; the PaaS firewall then allows the subnet.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"},
-{"id":"D4-127","sub":"Service endpoints","type":"mcq","diff":3,"q":"VMs should reach only ONE specific storage account through the service endpoint, not all storage accounts. Which feature?","opts":["Service endpoint policies","NSG rules with the Storage tag","Private DNS","Bastion"],"ans":[0],"exp":"Service endpoint policies restrict endpoint traffic to specific resources.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoint-policies-overview"},
-{"id":"D4-128","sub":"Service endpoints","type":"mcq","diff":2,"q":"When a VM uses a storage service endpoint, what source IP does the storage account see?","opts":["The VM's private IP (subnet identity) instead of a public IP","The VM's public IP","The gateway IP","168.63.129.16"],"ans":[0],"exp":"Endpoint traffic carries the private source IP and VNet identity.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"},
-{"id":"D4-129","sub":"Service endpoints","type":"mcq","diff":3,"q":"After you enable a service endpoint, a storage firewall IP rule that allowed the VM's public IP stops matching. Why?","opts":["Traffic now arrives with the private source IP, so you need a VNet rule instead of an IP rule","The firewall resets","The IP rule expires","Service endpoints block storage"],"ans":[0],"exp":"Switch to VNet rules for subnets with service endpoints.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"},
-{"id":"D4-130","sub":"Private endpoints","type":"mcq","diff":2,"q":"Which Azure service underlies private endpoints?","opts":["Azure Private Link","Azure Front Door","Traffic Manager","Network Watcher"],"ans":[0],"exp":"Private endpoints are part of Private Link.","link":"https://learn.microsoft.com/en-us/azure/private-link/private-link-overview"},
-{"id":"D4-131","sub":"Private endpoints","type":"mcq","diff":3,"q":"You publish your own app behind a Standard load balancer for consumers in other tenants to reach privately. Which feature?","opts":["Private Link service","Private endpoint only","Service endpoint","VNet peering"],"ans":[0],"exp":"A Private Link service exposes your service; consumers create private endpoints to it.","link":"https://learn.microsoft.com/en-us/azure/private-link/private-link-service-overview"},
-{"id":"D4-132","sub":"Private endpoints","type":"mcq","diff":3,"q":"On-premises clients must resolve a private endpoint's FQDN through a VPN. Recommended design?","opts":["Forward the on-prem DNS zone for privatelink.* to Azure DNS Private Resolver (inbound endpoint) linked to the private DNS zone","Use public DNS","Hosts files only","Service endpoint"],"ans":[0],"exp":"DNS Private Resolver lets on-premises DNS query Azure private zones.","link":"https://learn.microsoft.com/en-us/azure/dns/dns-private-resolver-overview"},
-{"id":"D4-133","sub":"Private endpoints","type":"mcq","diff":2,"q":"A private endpoint connection shows 'Pending'. What's needed?","opts":["The resource owner must approve the connection","Recreate the VNet","Enable a service endpoint","Change DNS"],"ans":[0],"exp":"Manual approval is needed when the requester lacks permission on the target resource.","link":"https://learn.microsoft.com/en-us/azure/private-link/manage-private-endpoint"},
-{"id":"D4-134","sub":"Private endpoints","type":"yesno","diff":3,"q":"Answer Yes or No:","stmts":["A private endpoint can be reached from a peered VNet","A private endpoint requires disabling the service's public endpoint","Private endpoints support NSG and UDR policies when network policies are enabled on the subnet","Each private endpoint maps to one specific resource (and sub-resource)"],"ans":[true,false,true,true],"exp":"Peered access works; disabling public access is optional; network policies for private endpoints can be enabled; endpoints map to specific resources.","link":"https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"},
-{"id":"D4-135","sub":"Service vs private endpoint","type":"mcq","diff":2,"q":"Requirement: on-premises servers must reach Azure SQL Database privately over ExpressRoute, without public endpoints. Choose:","opts":["Private endpoint for the SQL server","Service endpoint on a subnet","Public endpoint with a firewall rule","VNet peering"],"ans":[0],"exp":"Only private endpoints are reachable from on-premises.","link":"https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview"},
-{"id":"D4-136","sub":"Service vs private endpoint","type":"mcq","diff":2,"q":"Requirement: VNet VMs must reach a storage account with the least cost and no DNS changes, and the account's public endpoint can stay. Choose:","opts":["Service endpoint plus a VNet firewall rule","Private endpoint","ExpressRoute","Bastion"],"ans":[0],"exp":"Service endpoints are free and need no DNS changes.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"},
-{"id":"D4-137","sub":"Troubleshooting","type":"mcq","diff":3,"q":"A VM resolves mystorage.blob.core.windows.net to a public IP even though a private endpoint exists. What's the likely cause?","opts":["The privatelink.blob.core.windows.net private DNS zone isn't linked to the VM's VNet (or the VNet uses a custom DNS server without forwarding)","The NSG blocks DNS","Storage firewall","Wrong redundancy"],"ans":[0],"exp":"DNS integration determines whether the private IP is returned.","link":"https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns"},
-{"id":"D4-138","sub":"Troubleshooting","type":"mcq","diff":2,"q":"Which Network Watcher feature diagnoses whether NSGs allow traffic between a source and a destination, showing every rule evaluated?","opts":["NSG diagnostics","Topology","Packet capture","VPN troubleshoot"],"ans":[0],"exp":"NSG diagnostics evaluates rules across the path.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-network-configuration-diagnostics-overview"},
-{"id":"D4-139","sub":"Troubleshooting","type":"mcq","diff":3,"q":"The 'Effective security rules' view is empty or unavailable for a VM. What's a common reason?","opts":["The VM must be running to show effective rules","There's no NSG","The VM is Linux","Bastion is enabled"],"ans":[0],"exp":"Effective rules and routes require a running VM.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/diagnose-network-traffic-filter-problem"},
-{"id":"D4-140","sub":"Troubleshooting","type":"mcq","diff":2,"q":"Which NSG flow log destination is used for analysis with Traffic Analytics?","opts":["A storage account, processed into a Log Analytics workspace","Event Hub only","The NSG itself","Azure DNS"],"ans":[0],"exp":"Flow logs land in storage; Traffic Analytics processes them into Log Analytics.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics"},
-{"id":"D4-141","sub":"Troubleshooting","type":"mcq","diff":3,"q":"Microsoft is retiring NSG flow logs. What's the recommended replacement?","opts":["Virtual network flow logs","Packet capture","Activity log","Connection monitor"],"ans":[0],"exp":"VNet flow logs cover the whole VNet and replace NSG flow logs.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview"},
-{"id":"D4-142","sub":"NSG","type":"yesno","diff":3,"ctx":"Subnet Web has nsg-web: priority 100 Allow TCP 443 from Internet; priority 200 Deny TCP 443 from 203.0.113.0/24. VM1's NIC has no NSG.","q":"Answer Yes or No:","stmts":["A client at 203.0.113.5 can reach VM1 on 443","A client at 198.51.100.7 can reach VM1 on 443","VM1 can reach the internet outbound under default rules","Another VM in the same VNet can reach VM1 on port 22 (by NSG rules)"],"ans":[true,true,true,true],"exp":"Rule 100 matches first for all internet clients, including 203.0.113.5, so the deny at 200 never applies; default outbound allows internet; AllowVnetInBound allows port 22 within the VNet.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-143","sub":"NSG","type":"mcq","diff":3,"q":"In the previous scenario, how do you block 203.0.113.0/24 while allowing everyone else on 443?","opts":["Give the deny rule a lower priority number than the allow (for example, deny at 90)","Delete the allow","Add the deny to the NIC only","Use a route"],"ans":[0],"exp":"The deny must be evaluated before the broader allow.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"},
-{"id":"D4-144","sub":"DDoS","type":"mcq","diff":2,"q":"Which service adds adaptive tuning, attack telemetry, and cost protection against DDoS for public IPs in a VNet?","opts":["Azure DDoS Network Protection","Infrastructure protection (default only)","NSG","Bastion"],"ans":[0],"exp":"DDoS Network Protection (or IP Protection) adds advanced mitigation on top of the default infrastructure protection.","link":"https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview"},
-{"id":"D4-145","sub":"Azure Firewall","type":"mcq","diff":3,"q":"Azure Firewall must translate inbound traffic from its public IP on port 3389 to a VM's private IP. Which rule type?","opts":["DNAT rule","Network rule","Application rule","Threat intel rule"],"ans":[0],"exp":"DNAT rules translate inbound destinations.","link":"https://learn.microsoft.com/en-us/azure/firewall/tutorial-firewall-dnat"},
-{"id":"D4-146","sub":"Azure Firewall","type":"mcq","diff":2,"q":"Outbound web access must be allowed only to *.microsoft.com. Which Azure Firewall rule type?","opts":["Application rule (FQDN)","Network rule (IP)","DNAT rule","NSG rule"],"ans":[0],"exp":"Application rules filter by FQDN.","link":"https://learn.microsoft.com/en-us/azure/firewall/features"},
-{"id":"D4-147","sub":"Service endpoints","type":"multi","diff":2,"q":"Which TWO statements about service endpoints are true?","opts":["They're configured per subnet and per service","They extend the VNet identity to the service","They give the PaaS resource a private IP","They work from on-premises networks"],"ans":[0,1],"exp":"Service endpoints are subnet settings that carry the VNet identity; they don't give private IPs or work from on-premises.","link":"https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"},
-{"id":"D4-148","sub":"Bastion","type":"order","diff":2,"q":"Order the steps to deploy Azure Bastion:","items":["Create the Bastion resource (SKU, public IP)","Create AzureBastionSubnet (/26 or larger) in the VNet","Connect to a VM from the portal via Bastion","Make sure VM NSGs allow RDP/SSH from the Bastion subnet"],"ans":[1,0,3,2],"exp":"Subnet → Bastion → NSG check → connect.","link":"https://learn.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal"},
-{"id":"D4-149","sub":"Bastion","type":"mcq","diff":2,"q":"Bastion is deployed in the hub, and VMs are in a peered spoke. Do the spoke VMs need public IPs?","opts":["No","Yes","Only Windows VMs","Only with Basic SKU"],"ans":[0],"exp":"Bastion reaches VMs over private IPs across peering.","link":"https://learn.microsoft.com/en-us/azure/bastion/vnet-peering"},
-{"id":"D4-150","sub":"Secure access","type":"yesno","diff":3,"ctx":"VNet1/SubnetA has a Microsoft.Storage service endpoint. Storage account st1 allows only SubnetA via a VNet rule. A private endpoint for st1 (blob) exists in SubnetB, with DNS correctly configured.","q":"Answer Yes or No:","stmts":["A VM in SubnetA can access st1 blobs","A VM in SubnetB can access st1 blobs through the private endpoint","An on-premises server over VPN can access st1 through the private endpoint (with DNS forwarding configured)","An on-premises server can access st1 through SubnetA's service endpoint"],"ans":[true,true,true,false],"exp":"The VNet rule allows SubnetA; private endpoint traffic isn't blocked by the firewall; on-premises can use the private endpoint; service endpoints don't extend to on-premises.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"}
+ {
+  "id": "D4-101",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What's the valid priority range for custom NSG rules?",
+  "opts": [
+   "100–4096",
+   "1–65535",
+   "0–100",
+   "1000–9999"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Custom NSG rules use priorities from 100 to 4096, where lower numbers are processed first. The built-in default rules sit at 65000–65500, so custom rules always come before them. Other ranges aren't valid.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-102",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which default inbound rule blocks everything not explicitly allowed?",
+  "opts": [
+   "DenyAllInBound (65500)",
+   "DenyInternet",
+   "BlockAll (4096)",
+   "There's no default deny"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Every NSG ends its inbound rules with DenyAllInBound (priority 65500), which blocks anything not allowed by an earlier rule. The defaults before it allow VNet traffic (65000) and Azure Load Balancer probes (65001). DenyInternet and BlockAll aren't default rules.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-103",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which default rule allows Azure load balancer health probes to reach VMs?",
+  "opts": [
+   "AllowAzureLoadBalancerInBound (65001)",
+   "AllowVnetInBound",
+   "AllowInternetInBound",
+   "No rule; probes bypass NSGs"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The default rule AllowAzureLoadBalancerInBound (priority 65001) allows traffic from the AzureLoadBalancer service tag (168.63.129.16), which is where health probes come from. Without it, every backend would look unhealthy. Probes don't bypass NSGs, so keep this rule or allow the tag yourself.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-104",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "By default, can VMs reach the internet outbound under NSG rules?",
+  "opts": [
+   "Yes — the default AllowInternetOutBound rule allows it",
+   "No",
+   "Only on port 80",
+   "Only with a NAT gateway"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Default outbound rules allow VNet and internet traffic (actual outbound connectivity still needs an outbound path).",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-105",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates an NSG rule allowing HTTPS from the internet?",
+  "opts": [
+   "az network nsg rule create -g RG1 --nsg-name nsg1 -n AllowHttps --priority 200 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 443 --source-address-prefixes Internet",
+   "az nsg allow 443",
+   "az network rule add https",
+   "az vm open-port --all"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az network nsg rule create needs the NSG name, a rule name, a priority, a direction, an access type (Allow or Deny), a protocol, destination ports and a source. Here it allows inbound TCP 443 from the Internet service tag. az vm open-port opens ports through the VM, and the other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/nsg/rule"
+ },
+ {
+  "id": "D4-106",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command associates an NSG with a subnet?",
+  "opts": [
+   "az network vnet subnet update -g RG1 --vnet-name VNet1 -n Web --network-security-group nsg1",
+   "az network nsg attach Web",
+   "az nsg link subnet",
+   "az network vnet update --nsg nsg1"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "An NSG is associated with a subnet through the subnet itself: az network vnet subnet update --network-security-group nsg1. To attach it to a NIC instead, use az network nic update. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/network/vnet/subnet"
+ },
+ {
+  "id": "D4-107",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 3,
+  "q": "The subnet NSG allows inbound 443, but the NIC NSG has no custom rules. Can internet clients reach the VM on 443?",
+  "opts": [
+   "No — the NIC NSG's default DenyAllInBound blocks it; both NSGs must allow",
+   "Yes — the subnet NSG is enough",
+   "Yes, only for HTTPS",
+   "Only from the VNet"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When a VM has NSGs on both its subnet and its NIC, inbound traffic must be allowed by both. The subnet NSG allows 443, but the NIC NSG only has its default rules, and DenyAllInBound blocks traffic from the internet. Add an allow rule for 443 to the NIC NSG, or remove the NIC NSG.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"
+ },
+ {
+  "id": "D4-108",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A subnet NSG denies outbound port 25. The NIC NSG allows outbound 25. Can the VM send SMTP on 25?",
+  "opts": [
+   "No — outbound is evaluated NIC then subnet, and the subnet NSG denies it",
+   "Yes, the NIC wins",
+   "Yes, allow always wins",
+   "Depends on priority numbers across NSGs"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Outbound traffic is checked by the NIC's NSG first and then the subnet's NSG, and both must allow it. The NIC allows port 25, but the subnet denies it, so the traffic is blocked. Priority numbers are only compared within one NSG, never across two NSGs.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"
+ },
+ {
+  "id": "D4-109",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can you delete the default NSG rules?",
+  "opts": [
+   "No — but you can override them with higher-priority (lower number) custom rules",
+   "Yes",
+   "Only DenyAll",
+   "Only with Owner"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The default rules (AllowVnetInBound, DenyAllInBound and the others) can't be deleted. You change their effect by adding custom rules with lower priority numbers, which are processed first. This applies to everyone, including Owners.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-110",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You want one NSG rule to allow traffic to several ports (80, 443, 8080). Is this possible?",
+  "opts": [
+   "Yes — augmented security rules allow multiple ports and IP ranges in one rule",
+   "No, one port per rule",
+   "Only with ASGs",
+   "Only outbound"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Augmented security rules let one NSG rule list several ports (for example 80, 443 and 8080), port ranges and several IP prefixes, so you need fewer rules. They work inbound and outbound, with or without ASGs.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-111",
+  "sub": "NSG",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO can be used as the source of an NSG rule?",
+  "opts": [
+   "A service tag like Internet",
+   "An application security group",
+   "An Entra user group",
+   "A storage account name"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "An NSG rule's source can be an IP address or CIDR range, a service tag (such as Internet, VirtualNetwork or AzureLoadBalancer), or an application security group. Entra user groups and storage account names can't be used, because NSGs filter network traffic, not identities.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-112",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An NSG rule should allow VMs to reach Azure SQL in West Europe only. Which destination?",
+  "opts": [
+   "The service tag Sql.WestEurope",
+   "Internet",
+   "VirtualNetwork",
+   "0.0.0.0/0"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Regional service tags such as Sql.WestEurope contain only the IP ranges of Azure SQL in that region, so the rule allows SQL in West Europe and nowhere else. Internet and 0.0.0.0/0 would allow everything, and VirtualNetwork covers only your own networks.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview"
+ },
+ {
+  "id": "D4-113",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A rule is changed from Allow to Deny while connections are active. What happens to existing flows?",
+  "opts": [
+   "Existing connections may continue until they end; new connections are blocked",
+   "All flows drop instantly",
+   "Nothing changes for 24 hours",
+   "The VM restarts"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "NSGs are stateful. When you change a rule, existing connections that were already allowed can keep going until they end. New connections follow the updated rule straight away, so they're blocked. VMs don't restart, and there's no 24-hour delay.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-114",
+  "sub": "NSG",
+  "type": "order",
+  "diff": 2,
+  "q": "Order NSG processing for INBOUND traffic to a VM:",
+  "items": [
+   "Evaluate the NIC NSG rules by priority",
+   "Packet arrives at the subnet",
+   "Evaluate the subnet NSG rules by priority",
+   "Deliver to the VM if both allow"
+  ],
+  "ans": [
+   1,
+   2,
+   0,
+   3
+  ],
+  "exp": "For inbound traffic, the packet reaches the subnet first, so the subnet NSG is checked first (in priority order), then the NIC NSG. The VM receives the packet only if both allow it. Outbound is the reverse: NIC first, then subnet.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"
+ },
+ {
+  "id": "D4-115",
+  "sub": "ASG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Web VMs must accept 443 from the internet, and DB VMs must accept 1433 only from web VMs. Cleanest NSG design?",
+  "opts": [
+   "ASGs 'asg-web' and 'asg-db'; rule 1: Internet → asg-web 443; rule 2: asg-web → asg-db 1433",
+   "One rule per VM IP",
+   "Separate VNets for each VM",
+   "Service endpoints"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Put web VMs' NICs in asg-web and database VMs' NICs in asg-db. Then two rules do the job: Internet → asg-web on 443, and asg-web → asg-db on 1433. New VMs are covered as soon as they join the right ASG, with no IP addresses to maintain. One rule per IP is fragile, and separate VNets or service endpoints don't address this.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+ },
+ {
+  "id": "D4-116",
+  "sub": "ASG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you put a VM into an application security group?",
+  "opts": [
+   "Associate the VM's NIC (IP configuration) with the ASG",
+   "Tag the VM",
+   "Add the VM to a resource group",
+   "Assign an RBAC role"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ASG membership is set on a VM's network interface — specifically its IP configuration — by adding it to the application security group. Resource tags, resource groups and RBAC roles don't affect ASG membership.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+ },
+ {
+  "id": "D4-117",
+  "sub": "ASG",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No about ASGs:",
+  "stmts": [
+   "A NIC can belong to multiple ASGs",
+   "ASGs can be used across VNets in the same rule",
+   "ASGs reduce the need to manage IP addresses in rules",
+   "ASGs are created per region"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "A NIC can join several ASGs; rule members must share a VNet; ASGs simplify rules; ASGs are regional resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+ },
+ {
+  "id": "D4-118",
+  "sub": "Azure Firewall",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which managed service provides centralized, stateful Layer 3–7 filtering with FQDN rules and threat intelligence?",
+  "opts": [
+   "Azure Firewall",
+   "NSG",
+   "Application security group",
+   "Route table"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Firewall is a managed, stateful firewall service that filters from Layer 3 to Layer 7. It supports FQDN-based application rules, network rules, DNAT, and threat-intelligence filtering, and is managed centrally. NSGs are basic Layer 3/4 filters, ASGs group NICs, and route tables steer traffic.",
+  "link": "https://learn.microsoft.com/en-us/azure/firewall/overview"
+ },
+ {
+  "id": "D4-119",
+  "sub": "Azure Firewall",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which subnet name does Azure Firewall require?",
+  "opts": [
+   "AzureFirewallSubnet (/26 or larger)",
+   "FirewallSubnet",
+   "GatewaySubnet",
+   "Any name"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Firewall must be deployed into a dedicated subnet named exactly AzureFirewallSubnet, at least /26, so it can scale. Other names aren't accepted, and GatewaySubnet is reserved for VPN and ExpressRoute gateways.",
+  "link": "https://learn.microsoft.com/en-us/azure/firewall/firewall-faq"
+ },
+ {
+  "id": "D4-120",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which port must target VMs allow from AzureBastionSubnet for RDP through Bastion?",
+  "opts": [
+   "3389 (RDP) / 22 (SSH) from the Bastion subnet",
+   "443 from the internet",
+   "445",
+   "None"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Bastion connects to target VMs privately over RDP (3389) or SSH (22) from the AzureBastionSubnet. So the VMs' NSGs must allow those ports from the Bastion subnet — not from the internet. Users reach Bastion itself over 443, but that's Bastion's side, not the VMs'.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/bastion-nsg"
+ },
+ {
+  "id": "D4-121",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can one Bastion host reach VMs in a peered VNet?",
+  "opts": [
+   "Yes — Bastion supports connecting to VMs in peered VNets",
+   "No, only its own VNet",
+   "Only with global peering disabled",
+   "Only with Premium SKU and VPN"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Bastion can reach VMs in VNets that are peered with its own VNet, so one Bastion in a hub can serve VMs in all the spokes. That works with regional and global peering and with the Basic SKU.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/vnet-peering"
+ },
+ {
+  "id": "D4-122",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Bastion SKU is free, shared, and intended only for dev/test with one connection at a time?",
+  "opts": [
+   "Developer",
+   "Basic",
+   "Standard",
+   "Premium"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The Developer SKU of Bastion is free and uses shared infrastructure, so it needs no AzureBastionSubnet or public IP. It allows one connection at a time and is meant for dev/test only. Basic, Standard and Premium are dedicated, paid deployments.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"
+ },
+ {
+  "id": "D4-123",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which Bastion SKU adds session recording and private-only deployment?",
+  "opts": [
+   "Premium",
+   "Standard",
+   "Basic",
+   "Developer"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The Premium SKU of Bastion adds graphical session recording and private-only deployment, where Bastion has no public IP and is reached over a private connection. Standard adds native client support and shareable links, Basic is browser-only, and Developer is the free shared option.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"
+ },
+ {
+  "id": "D4-124",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can you upgrade Bastion Basic to Standard?",
+  "opts": [
+   "Yes, upgrading is supported (downgrading isn't)",
+   "No, you must redeploy",
+   "Only via support",
+   "Only downgrade"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "You can upgrade a Bastion host from Basic to Standard (or Premium) in place, without redeploying. You can't downgrade; to go back to a lower SKU, delete Bastion and deploy it again.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/upgrade-sku"
+ },
+ {
+  "id": "D4-125",
+  "sub": "Just-in-time",
+  "type": "mcq",
+  "diff": 3,
+  "q": "RDP should be open only on request, for 3 hours, from the requester's IP. Which feature?",
+  "opts": [
+   "Just-in-time VM access (Microsoft Defender for Cloud)",
+   "Bastion Basic",
+   "A permanent NSG rule",
+   "Service endpoints"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Just-in-time (JIT) VM access in Microsoft Defender for Cloud keeps management ports such as RDP closed. When someone requests access, it temporarily adds an NSG rule allowing RDP from the requester's IP for a set time (for example 3 hours), then removes it. A permanent NSG rule stays open all the time.",
+  "link": "https://learn.microsoft.com/en-us/azure/defender-for-cloud/just-in-time-access-overview"
+ },
+ {
+  "id": "D4-126",
+  "sub": "Service endpoints",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Where do you enable a service endpoint?",
+  "opts": [
+   "On the subnet (selecting services like Microsoft.Storage or Microsoft.Sql)",
+   "On the VM",
+   "On the storage account only",
+   "In Entra ID"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Service endpoints are enabled on a subnet: choose the services you need, such as Microsoft.Storage or Microsoft.Sql. Then the PaaS resource's firewall can allow that subnet with a VNet rule. They aren't set on VMs or in Entra ID.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
+ },
+ {
+  "id": "D4-127",
+  "sub": "Service endpoints",
+  "type": "mcq",
+  "diff": 3,
+  "q": "VMs should reach only ONE specific storage account through the service endpoint, not all storage accounts. Which feature?",
+  "opts": [
+   "Service endpoint policies",
+   "NSG rules with the Storage tag",
+   "Private DNS",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A service endpoint by itself allows the subnet to reach every storage account in Azure. A service endpoint policy restricts endpoint traffic to the specific storage accounts you list, which helps prevent data being copied out to other accounts. NSG rules with the Storage tag can't tell accounts apart.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoint-policies-overview"
+ },
+ {
+  "id": "D4-128",
+  "sub": "Service endpoints",
+  "type": "mcq",
+  "diff": 2,
+  "q": "When a VM uses a storage service endpoint, what source IP does the storage account see?",
+  "opts": [
+   "The VM's private IP (subnet identity) instead of a public IP",
+   "The VM's public IP",
+   "The gateway IP",
+   "168.63.129.16"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "With a service endpoint, traffic to Azure Storage carries the VM's private IP and the subnet's identity instead of a public IP. That's what lets the storage firewall match a VNet rule for that subnet.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
+ },
+ {
+  "id": "D4-129",
+  "sub": "Service endpoints",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After you enable a service endpoint, a storage firewall IP rule that allowed the VM's public IP stops matching. Why?",
+  "opts": [
+   "Traffic now arrives with the private source IP, so you need a VNet rule instead of an IP rule",
+   "The firewall resets",
+   "The IP rule expires",
+   "Service endpoints block storage"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Once the service endpoint is on, traffic from the subnet reaches Storage with the VM's private IP and subnet identity, not its public IP. So the old IP rule no longer matches. Add a VNet rule for the subnet instead. Firewall rules don't reset or expire.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
+ },
+ {
+  "id": "D4-130",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Azure service underlies private endpoints?",
+  "opts": [
+   "Azure Private Link",
+   "Azure Front Door",
+   "Traffic Manager",
+   "Network Watcher"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Private endpoints are part of Azure Private Link: the private endpoint is the network interface in your VNet that connects privately to a PaaS service or to a Private Link service. Front Door, Traffic Manager and Network Watcher aren't involved.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/private-link-overview"
+ },
+ {
+  "id": "D4-131",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You publish your own app behind a Standard load balancer for consumers in other tenants to reach privately. Which feature?",
+  "opts": [
+   "Private Link service",
+   "Private endpoint only",
+   "Service endpoint",
+   "VNet peering"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A Private Link service puts your own app (behind a Standard load balancer) on Private Link, so customers in other VNets or tenants can create private endpoints to it and reach it privately. You don't need peering, and service endpoints only work with Azure PaaS services.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/private-link-service-overview"
+ },
+ {
+  "id": "D4-132",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 3,
+  "q": "On-premises clients must resolve a private endpoint's FQDN through a VPN. Recommended design?",
+  "opts": [
+   "Forward the on-prem DNS zone for privatelink.* to Azure DNS Private Resolver (inbound endpoint) linked to the private DNS zone",
+   "Use public DNS",
+   "Hosts files only",
+   "Service endpoint"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "On-premises DNS servers can't query Azure private DNS zones directly. Deploy Azure DNS Private Resolver with an inbound endpoint in the VNet linked to the privatelink zone, then set your on-premises DNS to conditionally forward privatelink.* zones to that endpoint's IP. Public DNS returns the public IP, and hosts files don't scale.",
+  "link": "https://learn.microsoft.com/en-us/azure/dns/dns-private-resolver-overview"
+ },
+ {
+  "id": "D4-133",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A private endpoint connection shows 'Pending'. What's needed?",
+  "opts": [
+   "The resource owner must approve the connection",
+   "Recreate the VNet",
+   "Enable a service endpoint",
+   "Change DNS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "If the person creating a private endpoint doesn't have permission on the target resource, the connection waits in Pending until the resource's owner approves it (under the resource's Private endpoint connections). Recreating the VNet, adding service endpoints or changing DNS doesn't approve it.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/manage-private-endpoint"
+ },
+ {
+  "id": "D4-134",
+  "sub": "Private endpoints",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A private endpoint can be reached from a peered VNet",
+   "A private endpoint requires disabling the service's public endpoint",
+   "Private endpoints support NSG and UDR policies when network policies are enabled on the subnet",
+   "Each private endpoint maps to one specific resource (and sub-resource)"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "Peered access works; disabling public access is optional; network policies for private endpoints can be enabled; endpoints map to specific resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"
+ },
+ {
+  "id": "D4-135",
+  "sub": "Service vs private endpoint",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Requirement: on-premises servers must reach Azure SQL Database privately over ExpressRoute, without public endpoints. Choose:",
+  "opts": [
+   "Private endpoint for the SQL server",
+   "Service endpoint on a subnet",
+   "Public endpoint with a firewall rule",
+   "VNet peering"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Only a private endpoint gives Azure SQL Database a private IP that on-premises servers can reach over ExpressRoute or VPN, with public network access disabled. Service endpoints only work from Azure subnets, a public endpoint isn't private, and peering connects VNets rather than PaaS services.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-sql/database/private-endpoint-overview"
+ },
+ {
+  "id": "D4-136",
+  "sub": "Service vs private endpoint",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Requirement: VNet VMs must reach a storage account with the least cost and no DNS changes, and the account's public endpoint can stay. Choose:",
+  "opts": [
+   "Service endpoint plus a VNet firewall rule",
+   "Private endpoint",
+   "ExpressRoute",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A service endpoint is free and needs no DNS changes: enable it on the subnet and add a VNet rule to the storage firewall, and the account's public endpoint stays as it is. A private endpoint costs money and needs privatelink DNS. ExpressRoute and Bastion don't apply.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
+ },
+ {
+  "id": "D4-137",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A VM resolves mystorage.blob.core.windows.net to a public IP even though a private endpoint exists. What's the likely cause?",
+  "opts": [
+   "The privatelink.blob.core.windows.net private DNS zone isn't linked to the VM's VNet (or the VNet uses a custom DNS server without forwarding)",
+   "The NSG blocks DNS",
+   "Storage firewall",
+   "Wrong redundancy"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A private endpoint only works for clients that resolve the name to the private IP. If the privatelink.blob.core.windows.net zone isn't linked to the VM's VNet — or the VNet uses a custom DNS server that doesn't forward to Azure DNS — the name resolves to the public IP. NSGs, the firewall and redundancy don't affect name resolution.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns"
+ },
+ {
+  "id": "D4-138",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Network Watcher feature diagnoses whether NSGs allow traffic between a source and a destination, showing every rule evaluated?",
+  "opts": [
+   "NSG diagnostics",
+   "Topology",
+   "Packet capture",
+   "VPN troubleshoot"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Network Watcher NSG diagnostics checks whether traffic from a source to a destination would be allowed, and shows every NSG and rule evaluated along the way and the final verdict. Topology draws a diagram, packet capture records traffic, and VPN troubleshoot checks gateways.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-network-configuration-diagnostics-overview"
+ },
+ {
+  "id": "D4-139",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 3,
+  "q": "The 'Effective security rules' view is empty or unavailable for a VM. What's a common reason?",
+  "opts": [
+   "The VM must be running to show effective rules",
+   "There's no NSG",
+   "The VM is Linux",
+   "Bastion is enabled"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Effective security rules (and effective routes) are read from the running network interface, so the VM must be running. If it's stopped or deallocated, the view is empty or unavailable. It works for Linux and Windows, whether or not Bastion is used.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/diagnose-network-traffic-filter-problem"
+ },
+ {
+  "id": "D4-140",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which NSG flow log destination is used for analysis with Traffic Analytics?",
+  "opts": [
+   "A storage account, processed into a Log Analytics workspace",
+   "Event Hub only",
+   "The NSG itself",
+   "Azure DNS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Flow logs are written to a storage account. Traffic Analytics then processes them into a Log Analytics workspace, which provides the maps and dashboards. Event Hub isn't the destination for Traffic Analytics, and flow logs aren't stored in the NSG or DNS.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics"
+ },
+ {
+  "id": "D4-141",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Microsoft is retiring NSG flow logs. What's the recommended replacement?",
+  "opts": [
+   "Virtual network flow logs",
+   "Packet capture",
+   "Activity log",
+   "Connection monitor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Microsoft is retiring NSG flow logs in favour of virtual network flow logs, which are enabled on a whole VNet (or subnet or NIC) and also capture traffic that NSGs don't see. Packet capture, the Activity log and Connection Monitor do different jobs.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview"
+ },
+ {
+  "id": "D4-142",
+  "sub": "NSG",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "Subnet Web has nsg-web: priority 100 Allow TCP 443 from Internet; priority 200 Deny TCP 443 from 203.0.113.0/24. VM1's NIC has no NSG.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A client at 203.0.113.5 can reach VM1 on 443",
+   "A client at 198.51.100.7 can reach VM1 on 443",
+   "VM1 can reach the internet outbound under default rules",
+   "Another VM in the same VNet can reach VM1 on port 22 (by NSG rules)"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "exp": "Rule 100 matches first for all internet clients, including 203.0.113.5, so the deny at 200 never applies; default outbound allows internet; AllowVnetInBound allows port 22 within the VNet.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-143",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 3,
+  "q": "In the previous scenario, how do you block 203.0.113.0/24 while allowing everyone else on 443?",
+  "opts": [
+   "Give the deny rule a lower priority number than the allow (for example, deny at 90)",
+   "Delete the allow",
+   "Add the deny to the NIC only",
+   "Use a route"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "NSG rules are processed from the lowest number. To block 203.0.113.0/24 but still allow everyone else on 443, the deny for that range must have a lower number than the broad allow — for example deny at 90 and allow at 100. Deleting the allow blocks everyone, and routes don't filter traffic.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-144",
+  "sub": "DDoS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which service adds adaptive tuning, attack telemetry, and cost protection against DDoS for public IPs in a VNet?",
+  "opts": [
+   "Azure DDoS Network Protection",
+   "Infrastructure protection (default only)",
+   "NSG",
+   "Bastion"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "DDoS Network Protection (or IP Protection) adds advanced mitigation on top of the default infrastructure protection.",
+  "link": "https://learn.microsoft.com/en-us/azure/ddos-protection/ddos-protection-overview"
+ },
+ {
+  "id": "D4-145",
+  "sub": "Azure Firewall",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Azure Firewall must translate inbound traffic from its public IP on port 3389 to a VM's private IP. Which rule type?",
+  "opts": [
+   "DNAT rule",
+   "Network rule",
+   "Application rule",
+   "Threat intel rule"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A DNAT (destination network address translation) rule in Azure Firewall translates traffic arriving at the firewall's public IP and port to a private IP and port inside the VNet, here a VM on 3389. Network rules allow or deny by IP and port, application rules filter by FQDN, and threat intelligence blocks known malicious IPs.",
+  "link": "https://learn.microsoft.com/en-us/azure/firewall/tutorial-firewall-dnat"
+ },
+ {
+  "id": "D4-146",
+  "sub": "Azure Firewall",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Outbound web access must be allowed only to *.microsoft.com. Which Azure Firewall rule type?",
+  "opts": [
+   "Application rule (FQDN)",
+   "Network rule (IP)",
+   "DNAT rule",
+   "NSG rule"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Firewall application rules filter outbound HTTP and HTTPS by FQDN, including wildcards such as *.microsoft.com. Network rules work only with IP addresses and ports, DNAT rules are for inbound translation, and NSGs can't filter by domain name.",
+  "link": "https://learn.microsoft.com/en-us/azure/firewall/features"
+ },
+ {
+  "id": "D4-147",
+  "sub": "Service endpoints",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO statements about service endpoints are true?",
+  "opts": [
+   "They're configured per subnet and per service",
+   "They extend the VNet identity to the service",
+   "They give the PaaS resource a private IP",
+   "They work from on-premises networks"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "Service endpoints are subnet settings that carry the VNet identity; they don't give private IPs or work from on-premises.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-endpoints-overview"
+ },
+ {
+  "id": "D4-148",
+  "sub": "Bastion",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps to deploy Azure Bastion:",
+  "items": [
+   "Create the Bastion resource (SKU, public IP)",
+   "Create AzureBastionSubnet (/26 or larger) in the VNet",
+   "Connect to a VM from the portal via Bastion",
+   "Make sure VM NSGs allow RDP/SSH from the Bastion subnet"
+  ],
+  "ans": [
+   1,
+   0,
+   3,
+   2
+  ],
+  "exp": "First create AzureBastionSubnet (/26 or larger), because Bastion is deployed into it. Then create the Bastion resource with its SKU and public IP. Make sure the target VMs' NSGs allow RDP or SSH from the Bastion subnet. Finally connect from the portal.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal"
+ },
+ {
+  "id": "D4-149",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Bastion is deployed in the hub, and VMs are in a peered spoke. Do the spoke VMs need public IPs?",
+  "opts": [
+   "No",
+   "Yes",
+   "Only Windows VMs",
+   "Only with Basic SKU"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "No. Bastion connects to VMs over their private IPs, and that works across VNet peering, so spoke VMs need no public IPs. That's one of Bastion's main benefits, whatever the OS or SKU.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/vnet-peering"
+ },
+ {
+  "id": "D4-150",
+  "sub": "Secure access",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "VNet1/SubnetA has a Microsoft.Storage service endpoint. Storage account st1 allows only SubnetA via a VNet rule. A private endpoint for st1 (blob) exists in SubnetB, with DNS correctly configured.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A VM in SubnetA can access st1 blobs",
+   "A VM in SubnetB can access st1 blobs through the private endpoint",
+   "An on-premises server over VPN can access st1 through the private endpoint (with DNS forwarding configured)",
+   "An on-premises server can access st1 through SubnetA's service endpoint"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "The VNet rule allows SubnetA; private endpoint traffic isn't blocked by the firewall; on-premises can use the private endpoint; service endpoints don't extend to on-premises.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"
+ }
 ]

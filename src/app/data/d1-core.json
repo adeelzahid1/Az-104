@@ -50,7 +50,7 @@
   "ans": [
    1
   ],
-  "exp": "Deleted users are soft-deleted for 30 days and then permanently removed.",
+  "exp": "When you delete a user, Microsoft Entra ID moves it to Deleted users and keeps it for 30 days. During that time you can restore it with all its properties, group memberships and licences. After 30 days it is permanently deleted and can't be recovered. 7, 14 and 90 days are not the Entra ID retention period.",
   "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"
  },
  {
@@ -195,7 +195,7 @@
   "ans": [
    1
   ],
-  "exp": "SSPR scoping options are None / Selected (one group) / All.",
+  "exp": "In Entra ID → Password reset → Properties, SSPR can be set to None (off), Selected (one group of users) or All (every user). You can't pick individual users one by one; you put them in a group and select that group. SSPR is not limited to administrators — in fact it is aimed at ordinary users so they don't need the helpdesk.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
  },
  {
@@ -252,7 +252,7 @@
   "ans": [
    0
   ],
-  "exp": "Bulk create uses a CSV template downloaded from the portal's Users blade.",
+  "exp": "The Users blade has Bulk operations → Bulk create. You download a CSV template, fill in one row per user and upload it, and Entra ID creates them all. JSON isn't accepted, the New user form creates one user at a time, and PowerShell or the CLI are alternatives, not the only option.",
   "link": "https://learn.microsoft.com/en-us/entra/identity/users/users-bulk-add"
  },
  {
@@ -324,7 +324,7 @@
   "ans": [
    2
   ],
-  "exp": "User Access Administrator manages access (role assignments) only, not resources.",
+  "exp": "User Access Administrator has full rights over Microsoft.Authorization, so it can create and remove role assignments, but it has no rights to create or change resources. Owner can do both (manage resources and access). Contributor is the opposite: it manages resources but can't grant access. Security Admin is a Defender for Cloud role, not an access-management role.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles"
  },
  {
@@ -342,7 +342,7 @@
   "ans": [
    1
   ],
-  "exp": "RBAC scope inherits downward: management group → subscription → resource group → resource.",
+  "exp": "Azure RBAC is inherited downwards. A role assigned at a subscription applies to the subscription itself and to every resource group and resource inside it, including ones created later. It does not go upwards, so it never covers the parent management group or other subscriptions.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
  },
  {
@@ -360,7 +360,7 @@
   "ans": [
    1
   ],
-  "exp": "A role assignment = security principal (who) + role definition (what) + scope (where).",
+  "exp": "Every role assignment answers three questions: who (the security principal — a user, group, service principal or managed identity), what (the role definition, a list of allowed actions) and where (the scope — management group, subscription, resource group or resource). Policies, licences and passwords are not part of a role assignment.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
  },
  {
@@ -505,7 +505,7 @@
   "ans": [
    0
   ],
-  "exp": "az role assignment create takes --assignee, --role, and a scope parameter such as --resource-group.",
+  "exp": "az role assignment create creates a role assignment: --assignee is who, --role is what, and --resource-group (or --scope) is where. az role definition create creates a custom role rather than assigning one, and az ad role / az rbac grant are not real commands.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli"
  },
  {
@@ -544,7 +544,7 @@
   "ans": [
    1
   ],
-  "exp": "Group membership plus a management-group-scope assignment inherits all the way down to RG5.",
+  "exp": "User2 is a member of Ops, and Ops has Contributor at the Corp management group. Role assignments to a group apply to all its members, and assignments at a management group are inherited by every subscription, resource group and resource beneath it. So User2 has Contributor on RG5 without any direct assignment.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"
  },
  {
@@ -637,7 +637,7 @@
   "ans": [
    2
   ],
-  "exp": "Audit only logs and flags non-compliance; it never changes or blocks resources.",
+  "exp": "The Audit effect only evaluates and reports. A non-compliant resource is listed as non-compliant in the Policy compliance view and an Activity log entry is written, but nothing happens to the resource. Blocking requires Deny; fixing requires Modify or DeployIfNotExists with remediation. Policy never deletes or stops resources.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
  },
  {
@@ -673,7 +673,7 @@
   "ans": [
    1
   ],
-  "exp": "An initiative (policy set) bundles multiple policy definitions into a single assignment.",
+  "exp": "An initiative (also called a policy set) groups several policy definitions so you can assign them, parameterise them and track their compliance as one unit — for example a regulatory standard with dozens of controls. It is still changeable, can be assigned at any scope, and has nothing to do with deny assignments.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure"
  },
  {
@@ -709,7 +709,7 @@
   "ans": [
    1
   ],
-  "exp": "Deny blocks new or updated deployments only; existing resources are just flagged non-compliant.",
+  "exp": "A Deny policy only blocks create and update requests made after the assignment. Resources that already existed are not deleted, stopped or moved; the next compliance scan simply marks them as non-compliant so you can fix them. To change existing resources automatically you'd need a Modify or DeployIfNotExists policy with a remediation task.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
  },
  {
@@ -727,7 +727,7 @@
   "ans": [
    1
   ],
-  "exp": "CanNotDelete allows modification but blocks deletion. ReadOnly blocks modification too.",
+  "exp": "A CanNotDelete lock (shown as Delete in the portal) lets authorised users read and change a resource but blocks deleting it. A ReadOnly lock is stricter: it blocks deletes and all changes. NoDelete and Protect are not Azure lock types.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -853,7 +853,7 @@
   "ans": [
    1
   ],
-  "exp": "Six levels of depth, not counting the root management group and the subscription level.",
+  "exp": "A management group tree can be up to six levels deep. The tenant root management group and the subscription level don't count towards those six. This is a fixed platform limit, so 'unlimited' is wrong.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {

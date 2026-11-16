@@ -14,7 +14,7 @@
   "ans": [
    0
   ],
-  "exp": "Names are 3–24 characters, lowercase letters and numbers only, with no hyphens or underscores.",
+  "exp": "Storage account names must be 3–24 characters long, use only lowercase letters and numbers, and be globally unique because they become part of the URL. contosodata01 fits. 'Contoso-Data' has a capital letter and a hyphen, 'contoso_data' has an underscore, and 'cd' is too short.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -32,7 +32,7 @@
   "ans": [
    0
   ],
-  "exp": "Standard endpoints are https://<account>.<service>.core.windows.net.",
+  "exp": "Each storage service has an endpoint in the form https://<account>.<service>.core.windows.net, so the blob endpoint is https://contosodata.blob.core.windows.net. azurewebsites.net is for App Service.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    0
   ],
-  "exp": "--sku sets performance plus redundancy; --kind StorageV2 is GPv2.",
+  "exp": "az storage account create uses --sku to set performance and redundancy together, so Standard_ZRS means a standard account with zone-redundant storage. --kind StorageV2 makes it general-purpose v2. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/storage/account"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    0
   ],
-  "exp": "Hierarchical namespace enables Data Lake Storage Gen2 features.",
+  "exp": "Enabling hierarchical namespace turns the account into Data Lake Storage Gen2: real directories, atomic renames and moves of whole directories, and POSIX-style access control lists. Large file shares, NFS and versioning don't give you directories or ACLs.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-namespace"
  },
  {
@@ -86,7 +86,7 @@
   "ans": [
    0
   ],
-  "exp": "Upgrading to GPv2 is an in-place, irreversible change that unlocks tiers and lifecycle management.",
+  "exp": "GPv1 accounts don't support access tiers or lifecycle management. You can upgrade a GPv1 account to GPv2 in place, without moving data or downtime, but you can't go back. Recreating as premium would remove tiering, and versioning or moving region don't change the account kind.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-upgrade"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    0
   ],
-  "exp": "Premium block blob accounts are SSD-backed and suit high-transaction, low-latency workloads.",
+  "exp": "Premium BlockBlobStorage accounts use SSDs and are built for high transaction rates and low latency on blobs, especially many small objects. Standard GPv2 hot and cool use HDD-based storage, and FileStorage is for file shares rather than blobs.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    0
   ],
-  "exp": "Static website hosting serves content from the $web container on a web endpoint.",
+  "exp": "Static website hosting on a storage account serves files from a special $web container through a website endpoint, with an index page and an error page. Anonymous container access only exposes blob URLs. Azure Files and a CDN on their own don't host a website.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-static-website"
  },
  {
@@ -158,7 +158,7 @@
   "ans": [
    1
   ],
-  "exp": "ZRS replicates synchronously across three zones in one region.",
+  "exp": "ZRS copies data synchronously to three availability zones in the same region, so it keeps working if one zone fails and the data never leaves the region. LRS stays in one datacenter, while GRS and RA-GRS replicate to another region.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -176,7 +176,7 @@
   "ans": [
    0
   ],
-  "exp": "LRS is cheapest and has the least protection.",
+  "exp": "LRS keeps three copies in one datacenter, so it's the cheapest option but gives the least protection. ZRS (three zones), GRS (a second region) and GZRS (both) each cost more because they store data in more places.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -194,7 +194,7 @@
   "ans": [
    0
   ],
-  "exp": "Last Sync Time shows the point up to which data is guaranteed written to the secondary.",
+  "exp": "Last Sync Time is a property of geo-redundant accounts. Everything written before that time is guaranteed to be in the secondary region; anything written after it may not be yet. Check it before a failover to judge how much data could be lost. Change feed and blob inventory don't report replication progress.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/last-sync-time-get"
  },
  {
@@ -212,7 +212,7 @@
   "ans": [
    0
   ],
-  "exp": "Secondary endpoints add -secondary to the account name.",
+  "exp": "With RA-GRS or RA-GZRS, every service gets a secondary endpoint: the account name plus -secondary, for example https://st1-secondary.blob.core.windows.net. Applications read from it when the primary is unavailable. The other formats don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -230,7 +230,7 @@
   "ans": [
    0
   ],
-  "exp": "RA-GZRS combines zone redundancy, geo-replication, and read access to the secondary.",
+  "exp": "RA-GZRS keeps three copies across zones in the primary region (surviving a zone failure), copies data to the paired region (surviving a region outage), and lets you read the secondary copy at any time. GRS lacks zone redundancy and read access, ZRS stays in one region, and LRS stays in one datacenter.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -248,7 +248,7 @@
   "ans": [
    0
   ],
-  "exp": "Geo-replication is asynchronous; writes after the Last Sync Time can be lost.",
+  "exp": "Geo-replication to the secondary region is asynchronous: writes are acknowledged once they're stored in the primary region, and copied a little later. If you fail over, anything written after the Last Sync Time may be missing from the secondary. Failover doesn't deliberately delete data, and GRS isn't synchronous.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"
  },
  {
@@ -285,7 +285,7 @@
    0,
    2
   ],
-  "exp": "GRS and GZRS (and their RA- variants) replicate to the paired region.",
+  "exp": "GRS and GZRS (and their read-access versions RA-GRS and RA-GZRS) copy data to a secondary paired region. LRS keeps data in one datacenter, and ZRS keeps it across zones in a single region.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -324,7 +324,7 @@
   "ans": [
    0
   ],
-  "exp": "ZRS survives a datacenter or zone failure without copying data outside the region.",
+  "exp": "ZRS stores three synchronous copies in three availability zones (separate datacenters) of the same region. If one datacenter fails, the data is still available, and it never leaves the region. GRS, RA-GRS and GZRS all copy data to another region, which breaks the residency requirement.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -342,7 +342,7 @@
   "ans": [
    0
   ],
-  "exp": "Object replication supports block blobs only.",
+  "exp": "Object replication only supports block blobs. Page blobs (used for disks) and append blobs (used for logs) aren't replicated, so 'all blob types' is wrong.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -360,7 +360,7 @@
   "ans": [
    0
   ],
-  "exp": "Replication rules support prefix filters to scope which blobs replicate.",
+  "exp": "Object replication rules can include a prefix match filter, for example 'invoices/', so only blobs whose names start with that text are replicated. You can also filter by creation time. Tags, tiers and lifecycle rules don't scope replication.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -378,7 +378,7 @@
   "ans": [
    1
   ],
-  "exp": "Archive tier blobs aren't supported for object replication.",
+  "exp": "Blobs in the archive tier aren't replicated by object replication, because archived data is offline. Rehydrate them to an online tier first if they need to be replicated. Redundancy and the 180-day minimum don't change this.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -396,7 +396,7 @@
   "ans": [
    0
   ],
-  "exp": "Destination containers are read-only while a replication policy is in place.",
+  "exp": "While an object replication policy is in place, the destination container is read-only for clients; only the replication process writes to it. This keeps the copy consistent with the source. To write to it again, remove the policy.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -417,7 +417,7 @@
    0,
    3
   ],
-  "exp": "Versioning on both → change feed on the source → create the policy → verify.",
+  "exp": "Object replication needs versioning on both accounts and change feed on the source, so turn those on first. Then create the replication policy and its rules. Finally upload a test blob and check its replication status. Creating the policy before the prerequisites fails.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-configure"
  },
  {
@@ -435,7 +435,7 @@
   "ans": [
    0
   ],
-  "exp": "Data is encrypted with 256-bit AES.",
+  "exp": "Azure Storage encrypts all data at rest with 256-bit AES, one of the strongest block ciphers available, and it's FIPS 140-2 compliant. DES is weak and obsolete, RSA is asymmetric (not used for bulk data), and MD5 is a hash, not encryption.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
  },
  {
@@ -453,7 +453,7 @@
   "ans": [
    0
   ],
-  "exp": "CMK keys live in Key Vault or Managed HSM.",
+  "exp": "Customer-managed keys for Azure Storage must be kept in Azure Key Vault or Azure Key Vault Managed HSM. The storage account reaches the key through a managed identity. Keys can't be stored in a storage account, App Service or Entra ID.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"
  },
  {
@@ -471,7 +471,7 @@
   "ans": [
    0
   ],
-  "exp": "CMK gives you control over key lifecycle and revocation.",
+  "exp": "With customer-managed keys in Key Vault, you own the key: you control when it rotates, and you can disable or delete it to cut off access to all data in the account. With Microsoft-managed keys, Microsoft rotates them and you can't revoke access that way. Infrastructure encryption and secure transfer don't give you key control.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"
  },
  {
@@ -489,7 +489,7 @@
   "ans": [
    0
   ],
-  "exp": "Client-side encryption encrypts data before it reaches Azure.",
+  "exp": "Client-side encryption (available in the Azure Storage client libraries) encrypts data inside your application before it's uploaded, so Azure only ever stores and sees ciphertext. Server-side encryption and infrastructure encryption happen in Azure after the data arrives, and secure transfer only protects data in transit.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/client-side-encryption"
  },
  {
@@ -507,7 +507,7 @@
   "ans": [
    0
   ],
-  "exp": "azcopy copy between two URLs uses server-side copy APIs.",
+  "exp": "When both source and destination are storage URLs, azcopy copy uses server-to-server copy: the data moves directly between the storage accounts, not through your computer. azcopy move and azcopy transfer don't exist, and sync with --local isn't valid.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-blobs-copy"
  },
  {
@@ -525,7 +525,7 @@
   "ans": [
    0
   ],
-  "exp": "--recursive copies directories recursively.",
+  "exp": "--recursive tells AzCopy to include every file in the folder and its subfolders. Without it, AzCopy copies only the top level. The other flags don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-copy"
  },
  {
@@ -543,7 +543,7 @@
   "ans": [
    0
   ],
-  "exp": "AzCopy tracks jobs in plan files; azcopy jobs resume continues them.",
+  "exp": "AzCopy saves a plan file for every job. If a job stops part-way, azcopy jobs resume <job-id> continues from where it stopped instead of starting again. Find the job ID with azcopy jobs list. Copying again with --overwrite would re-transfer files.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-jobs-resume"
  },
  {
@@ -561,7 +561,7 @@
   "ans": [
    0
   ],
-  "exp": "It mirrors deletions so the destination matches the source.",
+  "exp": "With --delete-destination=true, azcopy sync also deletes files at the destination that no longer exist at the source, so the destination becomes an exact mirror. By default sync only copies new and changed files and never deletes. It doesn't touch the source.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"
  },
  {
@@ -579,7 +579,7 @@
   "ans": [
    0
   ],
-  "exp": "azcopy login supports interactive sign-in, managed identity (--identity), and service principals.",
+  "exp": "azcopy login signs AzCopy in with Microsoft Entra ID, either interactively or with --identity for a managed identity or with a service principal. After that, you don't need SAS tokens in your URLs. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-login"
  },
  {
@@ -597,7 +597,7 @@
   "ans": [
    0
   ],
-  "exp": "Entra auth to blob data requires a data-plane role.",
+  "exp": "With Entra ID sign-in, uploading blobs is a data-plane operation, so your identity needs a data role such as Storage Blob Data Contributor or Storage Blob Data Owner. Reader, Contributor and Storage Account Contributor are control-plane roles and don't grant data access on their own.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-authorize-azure-active-directory"
  },
  {
@@ -615,7 +615,7 @@
   "ans": [
    0
   ],
-  "exp": "Storage Explorer supports several connection methods, including the Azurite emulator.",
+  "exp": "Storage Explorer can connect by signing in with Microsoft Entra ID, by account name and key, by a SAS URL, by a connection string, and to the local Azurite emulator. It isn't limited to one method and doesn't need the portal.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-explorer-support-policy-lifecycle"
  },
  {
@@ -633,7 +633,7 @@
   "ans": [
    0
   ],
-  "exp": "Storage Explorer uses AzCopy for transfers.",
+  "exp": "Storage Explorer uses AzCopy behind the scenes for uploads, downloads and copies, which gives it fast, parallel transfers. Robocopy, FTP and rsync aren't used.",
   "link": "https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"
  },
  {
@@ -669,7 +669,7 @@
   "ans": [
    0
   ],
-  "exp": "The WAImportExport tool prepares drives and journal files.",
+  "exp": "For the Azure Import/Export service you prepare drives with the WAImportExport tool. It copies data to the disks, encrypts them with BitLocker, and creates the journal files Azure needs to import the data. AzCopy and Storage Explorer transfer data over the network instead.",
   "link": "https://learn.microsoft.com/en-us/azure/import-export/storage-import-export-service"
  },
  {
@@ -687,7 +687,7 @@
   "ans": [
    0
   ],
-  "exp": "Blob inventory generates scheduled reports of blobs and their properties.",
+  "exp": "Blob inventory runs on a daily or weekly schedule and writes a CSV or Parquet report listing your blobs with properties such as tier, size and last modified time. Change feed records changes rather than listing the current state, and lifecycle management moves data without reporting on it.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/blob-inventory"
  },
  {
@@ -705,7 +705,7 @@
   "ans": [
    0
   ],
-  "exp": "Change feed records blob change events in order.",
+  "exp": "Change feed is an ordered, durable, read-only log of every create, update and delete on the blobs in an account, kept in the account itself. Applications can read it for auditing or to trigger processing. Soft delete, versioning and snapshots keep old data, but they aren't an event log.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-change-feed"
  },
  {
@@ -759,7 +759,7 @@
   "ans": [
    0
   ],
-  "exp": "Accounts can't change region; you recreate them and move the data.",
+  "exp": "A storage account can't change region. To move it, create a new account in North Europe (you can export the original's template to copy its settings), copy the data with AzCopy or similar, point applications to the new account, and then delete the old one. There's no region property or move command.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-move"
  },
  {
@@ -777,7 +777,7 @@
   "ans": [
    0
   ],
-  "exp": "Splitting Transactions by ResponseType shows throttling errors.",
+  "exp": "When an account is throttled, requests fail with errors such as ServerBusyError. Split the Transactions metric by the ResponseType dimension to see how many requests returned throttling errors. Capacity, ingress and blob count don't show throttling.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage"
  },
  {
@@ -795,7 +795,7 @@
   "ans": [
    0
   ],
-  "exp": "Resource logs for storage are routed with diagnostic settings at the service level.",
+  "exp": "Storage resource logs (StorageRead, StorageWrite, StorageDelete) are sent through a diagnostic setting created on the specific service, such as blob, with a Log Analytics workspace as the destination. Soft delete and versioning protect data, and storage accounts don't run an agent.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage"
  },
  {
@@ -813,7 +813,7 @@
   "ans": [
    0
   ],
-  "exp": "Storage and access costs trade off across tiers.",
+  "exp": "Moving from hot to cool, cold and archive lowers the storage price per GB but raises the cost of accessing data. Hot is cheapest to read and most expensive to store; archive is cheapest to store but expensive and slow to read back. Every tier except hot also charges per GB read.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -849,7 +849,7 @@
   "ans": [
    0
   ],
-  "exp": "New-AzStorageAccount -ResourceGroupName ... -Name ... -SkuName ... -Location ... -Kind StorageV2.",
+  "exp": "New-AzStorageAccount creates a storage account (with -ResourceGroupName, -Name, -Location, -SkuName and -Kind). Set-AzStorageAccount changes an existing one. New-AzStorage and Add-AzStorageAccount don't exist.",
   "link": "https://learn.microsoft.com/en-us/powershell/module/az.storage/new-azstorageaccount"
  },
  {
@@ -867,7 +867,7 @@
   "ans": [
    0
   ],
-  "exp": "This setting blocks object replication across tenants.",
+  "exp": "'Allow cross-tenant replication' = false stops object replication policies from using a source or destination account in another Microsoft Entra tenant. It doesn't affect geo-replication (GRS), private endpoints or SAS.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-prevent-cross-tenant-policies"
  },
  {
@@ -886,7 +886,7 @@
   "ans": [
    0
   ],
-  "exp": "Premium block blob gives low latency and high transaction rates; LRS keeps cost lower.",
+  "exp": "Premium BlockBlobStorage uses SSDs for single-digit millisecond latency and very high transaction rates, which suits heavy telemetry ingestion. LRS keeps the cost down, and losing a zone's worth of resilience is acceptable here. Standard GPv2 is slower, archive is offline, and FileStorage is for file shares.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-block-blob-premium"
  },
  {

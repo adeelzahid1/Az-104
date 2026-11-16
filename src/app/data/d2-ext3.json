@@ -1,52 +1,920 @@
 [
-{"id":"D2-151","sub":"Blob storage","type":"mcq","diff":1,"q":"Which blob type is optimized for append-only operations such as logging?","opts":["Append blob","Page blob","Block blob","Archive blob"],"ans":[0],"exp":"Append blobs are built for append operations, which makes them good for logs.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"},
-{"id":"D2-152","sub":"Blob storage","type":"mcq","diff":1,"q":"What is the container hierarchy in Blob storage?","opts":["Storage account → container → blob","Container → storage account → blob","Blob → container → share","Account → share → directory → blob"],"ans":[0],"exp":"Accounts contain containers, which contain blobs.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction"},
-{"id":"D2-153","sub":"Blob storage","type":"mcq","diff":2,"q":"Which CLI command creates a container named 'images'?","opts":["az storage container create --name images --account-name st1 --auth-mode login","az storage blob create images","az container create images","az storage share create images"],"ans":[0],"exp":"az storage container create with --auth-mode login uses Entra ID.","link":"https://learn.microsoft.com/en-us/cli/azure/storage/container"},
-{"id":"D2-154","sub":"Blob storage","type":"mcq","diff":2,"q":"Which CLI command uploads a local file to a container?","opts":["az storage blob upload --container-name images --file photo.jpg --name photo.jpg --account-name st1","az storage file upload","az blob push photo.jpg","az storage container upload"],"ans":[0],"exp":"az storage blob upload uploads a single file.","link":"https://learn.microsoft.com/en-us/cli/azure/storage/blob"},
-{"id":"D2-155","sub":"Blob storage","type":"mcq","diff":3,"q":"Apps must find blobs by key-value attributes like project=alpha across containers. Which feature?","opts":["Blob index tags","Blob metadata only","Resource tags","Lifecycle rules"],"ans":[0],"exp":"Blob index tags are indexed and queryable (Find Blobs by Tags). Metadata isn't indexed.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/storage-manage-find-blobs"},
-{"id":"D2-156","sub":"Access tiers","type":"mcq","diff":1,"q":"Which tier fits data accessed several times a day?","opts":["Hot","Cool","Cold","Archive"],"ans":[0],"exp":"Hot is optimized for frequent access.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-157","sub":"Access tiers","type":"mcq","diff":2,"q":"Backups are accessed rarely, kept at least 90 days, and must be available in milliseconds when needed. Most cost-effective online tier?","opts":["Cold","Hot","Archive","Premium"],"ans":[0],"exp":"Cold is online with millisecond access, cheaper storage than cool, and a 90-day minimum.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-158","sub":"Access tiers","type":"mcq","diff":2,"q":"How can you read an archived blob within an hour if it's smaller than 10 GB?","opts":["Rehydrate with High priority","Rehydrate with Standard priority","Copy it to the archive tier","Enable soft delete"],"ans":[0],"exp":"High priority rehydration usually finishes in under 1 hour for objects under 10 GB.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"},
-{"id":"D2-159","sub":"Access tiers","type":"multi","diff":2,"q":"Which TWO methods rehydrate a blob from archive?","opts":["Change its tier to hot, cool, or cold (Set Blob Tier)","Copy it to a new blob in an online tier (Copy Blob)","Enable versioning","Take a snapshot"],"ans":[0,1],"exp":"You can rehydrate by changing the tier or by copying to an online-tier destination.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"},
-{"id":"D2-160","sub":"Access tiers","type":"mcq","diff":3,"q":"A blob was moved to cool and then deleted after 10 days. What charge applies?","opts":["Early deletion charge for the remaining 20 days","No charge","A 180-day charge","A rehydration charge"],"ans":[0],"exp":"Cool has a 30-day minimum; deleting earlier incurs a prorated charge for the remaining days.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-161","sub":"Access tiers","type":"mcq","diff":2,"q":"Can you set the archive tier on a blob in a Premium block blob account?","opts":["No, premium block blob accounts don't support hot/cool/cold/archive tiering","Yes","Only with RA-GRS","Only via lifecycle"],"ans":[0],"exp":"Access tiers apply to standard GPv2 and Blob Storage accounts, not premium.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-162","sub":"Access tiers","type":"mcq","diff":3,"q":"Which redundancy setting is NOT supported for the archive tier?","opts":["ZRS (and GZRS/RA-GZRS)","LRS","GRS","RA-GRS"],"ans":[0],"exp":"Archive is supported only on LRS, GRS, and RA-GRS accounts.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"},
-{"id":"D2-163","sub":"Lifecycle","type":"mcq","diff":2,"q":"A lifecycle rule should only affect blobs in the 'logs/' folder of container 'app'. What do you set in the filter?","opts":["prefixMatch: app/logs/","blobTypes: appendBlob","A tag on the storage account","A resource lock"],"ans":[0],"exp":"Lifecycle filters support prefixMatch (container/path), blob types, and blob index tags.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-164","sub":"Lifecycle","type":"mcq","diff":3,"q":"A lifecycle rule should move blobs to cool if they haven't been READ for 60 days. What must be enabled?","opts":["Last access time tracking","Versioning","Change feed","Soft delete"],"ans":[0],"exp":"daysAfterLastAccessTimeGreaterThan requires last access time tracking.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-165","sub":"Lifecycle","type":"mcq","diff":2,"q":"Which lifecycle action deletes old blob versions 90 days after they become previous versions?","opts":["A version action: delete with daysAfterCreationGreaterThan 90","baseBlob delete with daysAfterModificationGreaterThan 90","snapshot tierToArchive","Disable versioning"],"ans":[0],"exp":"Rules have separate action blocks for baseBlob, snapshot, and version.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-166","sub":"Lifecycle","type":"mcq","diff":3,"q":"Which blob types can lifecycle management tier between hot, cool, and archive?","opts":["Block blobs only (append blobs support delete only)","Page blobs","All types","Append blobs only"],"ans":[0],"exp":"Tiering applies to block blobs; append blobs support delete actions; page blobs aren't supported.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-167","sub":"Lifecycle","type":"order","diff":2,"q":"Order the tiers a typical lifecycle policy moves aging data through, from first to last:","items":["Archive","Hot","Delete","Cool"],"ans":[1,3,0,2],"exp":"Hot → cool → archive → delete as data ages.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"},
-{"id":"D2-168","sub":"Versioning","type":"mcq","diff":2,"q":"With versioning enabled, a user overwrites a blob by mistake. How do you recover the previous content?","opts":["Promote the previous version to be the current version","Restore from a snapshot only","Undelete the container","It can't be recovered"],"ans":[0],"exp":"Each write creates a version, so you can restore an earlier version.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"},
-{"id":"D2-169","sub":"Versioning","type":"mcq","diff":3,"q":"Versioning is enabled and a blob is deleted. What happens?","opts":["The current version becomes a previous version; the data is kept until the versions are deleted","The blob and all versions are deleted","Versioning doesn't cover deletes","The blob moves to archive"],"ans":[0],"exp":"Deleting a versioned blob preserves it as a previous version.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"},
-{"id":"D2-170","sub":"Versioning","type":"mcq","diff":2,"q":"What's a cost consideration of enabling blob versioning on frequently overwritten data?","opts":["Each version is billed, so storage costs can grow; use lifecycle rules to delete old versions","Versioning is free forever","Versions are stored in a separate account","Versioning disables tiers"],"ans":[0],"exp":"Versions consume billable storage, so clean them up with lifecycle rules.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"},
-{"id":"D2-171","sub":"Soft delete","type":"mcq","diff":2,"q":"Someone deleted a whole container by mistake. Which feature lets you restore it?","opts":["Container soft delete","Blob soft delete only","Versioning only","Lifecycle management"],"ans":[0],"exp":"Container soft delete protects against container-level deletion.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-container-overview"},
-{"id":"D2-172","sub":"Soft delete","type":"mcq","diff":2,"q":"What retention range can you set for blob soft delete?","opts":["1 to 365 days","1 to 30 days","7 days only","90 to 730 days"],"ans":[0],"exp":"Blob and container soft delete retention can be 1–365 days.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview"},
-{"id":"D2-173","sub":"Point-in-time restore","type":"mcq","diff":3,"q":"You need to restore a set of block blobs to their state from 3 days ago after a bad batch job. Which feature?","opts":["Point-in-time restore for block blobs","Share snapshots","Object replication","Rehydration"],"ans":[0],"exp":"Point-in-time restore returns block blobs to an earlier state; it requires versioning, change feed, and soft delete.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/point-in-time-restore-overview"},
-{"id":"D2-174","sub":"Point-in-time restore","type":"multi","diff":3,"q":"Which THREE features must be enabled before you can use point-in-time restore for block blobs?","opts":["Blob soft delete","Blob versioning","Change feed","Static website","Hierarchical namespace"],"ans":[0,1,2],"exp":"Point-in-time restore depends on soft delete, versioning, and change feed.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/point-in-time-restore-overview"},
-{"id":"D2-175","sub":"Immutable storage","type":"mcq","diff":2,"q":"Regulations require that financial records can't be modified or deleted for 7 years (WORM). Which feature?","opts":["Immutable storage with a time-based retention policy","Soft delete","ReadOnly resource lock","Versioning"],"ans":[0],"exp":"Time-based retention policies make blobs non-modifiable and non-deletable for the period.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/immutable-storage-overview"},
-{"id":"D2-176","sub":"Immutable storage","type":"mcq","diff":3,"q":"Data must be preserved indefinitely during an investigation, with no fixed end date. Which immutability policy?","opts":["Legal hold","Time-based retention","Soft delete","Lifecycle"],"ans":[0],"exp":"Legal holds keep data immutable until the hold is explicitly cleared.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/immutable-legal-hold-overview"},
-{"id":"D2-177","sub":"Immutable storage","type":"mcq","diff":3,"q":"What does locking a time-based retention policy do?","opts":["The retention interval can't be shortened and the policy can't be deleted (it can only be extended)","It deletes the data","It makes the container public","It can be undone anytime"],"ans":[0],"exp":"Locked policies meet regulatory requirements like SEC 17a-4; you can only extend them.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/immutable-time-based-retention-policy-overview"},
-{"id":"D2-178","sub":"Azure Files","type":"mcq","diff":1,"q":"Which protocols can Azure Files shares use?","opts":["SMB and NFS (plus REST)","FTP and SFTP only","iSCSI only","HTTP only"],"ans":[0],"exp":"Azure Files supports SMB and NFS shares and REST access.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"},
-{"id":"D2-179","sub":"Azure Files","type":"mcq","diff":2,"q":"Which CLI command creates a 100 GiB file share named 'docs'?","opts":["az storage share-rm create --storage-account st1 --name docs --quota 100","az storage container create docs","az files create docs 100","az storage blob share docs"],"ans":[0],"exp":"az storage share-rm create (control-plane) creates a share with a quota.","link":"https://learn.microsoft.com/en-us/cli/azure/storage/share-rm"},
-{"id":"D2-180","sub":"Azure Files","type":"mcq","diff":2,"q":"Which standard file share tiers exist?","opts":["Transaction optimized, Hot, Cool","Hot, Archive","Premium only","Cold, Archive"],"ans":[0],"exp":"Standard file shares can be transaction optimized, hot, or cool. Premium shares are on FileStorage accounts.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"},
-{"id":"D2-181","sub":"Azure Files","type":"mcq","diff":3,"q":"A standard file share must grow beyond 5 TiB. What do you enable?","opts":["Large file shares (up to 100 TiB)","Premium tier","Versioning","Hierarchical namespace"],"ans":[0],"exp":"Large file shares raise the standard share limit to 100 TiB.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share"},
-{"id":"D2-182","sub":"Azure Files","type":"mcq","diff":2,"q":"How do you mount an Azure file share on a Windows machine?","opts":["net use Z: \\\\st1.file.core.windows.net\\docs (or New-PSDrive), using credentials over SMB 445","Map it as an iSCSI LUN","Use azcopy mount","Use FTP"],"ans":[0],"exp":"Windows mounts shares with SMB using the UNC path; the portal Connect button generates the script.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-how-to-use-files-windows"},
-{"id":"D2-183","sub":"Azure Files","type":"mcq","diff":2,"q":"Which SMB version is required to mount Azure file shares from on-premises or another region?","opts":["SMB 3.x with encryption","SMB 1.0","SMB 2.0","Any version"],"ans":[0],"exp":"Access from outside the region (including on-premises) requires SMB 3.x with encryption.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"},
-{"id":"D2-184","sub":"Azure Files","type":"mcq","diff":2,"q":"How do you protect an Azure file share from accidental deletion of the whole share?","opts":["Enable soft delete for file shares","Blob soft delete","Container soft delete","Versioning"],"ans":[0],"exp":"File share soft delete lets you recover deleted shares within the retention period.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-prevent-file-share-deletion"},
-{"id":"D2-185","sub":"Azure Files","type":"mcq","diff":3,"q":"What's the maximum number of share snapshots per file share?","opts":["200","50","1000","Unlimited"],"ans":[0],"exp":"Azure Files allows up to 200 share snapshots per share.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"},
-{"id":"D2-186","sub":"Azure Files","type":"mcq","diff":2,"q":"A user deleted a single file. Share snapshots exist. How can the user restore it themselves on Windows?","opts":["Use the 'Previous Versions' tab in File Explorer","Rebuild the share","Contact Microsoft","Use AzCopy only"],"ans":[0],"exp":"Share snapshots appear as Previous Versions in Windows.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"},
-{"id":"D2-187","sub":"Azure Files","type":"mcq","diff":3,"q":"Can share snapshots protect you if the whole storage account is deleted?","opts":["No — snapshots live in the same account, so they're deleted with it; use a delete lock and Azure Backup","Yes, always","Only for premium","Only with ZRS"],"ans":[0],"exp":"Snapshots are stored with the share. Protect the account with a CanNotDelete lock.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"},
-{"id":"D2-188","sub":"File Sync","type":"mcq","diff":2,"q":"What must be installed on a Windows Server to sync it with Azure Files?","opts":["The Azure File Sync agent, with the server registered to the Storage Sync Service","The MARS agent","The Azure Monitor Agent","Nothing"],"ans":[0],"exp":"Install the File Sync agent and register the server.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-deployment-guide"},
-{"id":"D2-189","sub":"File Sync","type":"order","diff":2,"q":"Order the steps to deploy Azure File Sync:","items":["Create a sync group with a cloud endpoint","Deploy the Storage Sync Service","Install the agent on the server and register the server","Add a server endpoint to the sync group"],"ans":[1,2,0,3],"exp":"Storage Sync Service → agent and registration → sync group with cloud endpoint → server endpoint.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-deployment-guide"},
-{"id":"D2-190","sub":"File Sync","type":"mcq","diff":3,"q":"How many cloud endpoints can a sync group contain?","opts":["Exactly one","Up to 5","Up to 100","Unlimited"],"ans":[0],"exp":"A sync group has one cloud endpoint and can have multiple server endpoints.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"},
-{"id":"D2-191","sub":"File Sync","type":"mcq","diff":3,"q":"Can a single registered server have server endpoints in multiple sync groups?","opts":["Yes, as long as the paths don't overlap","No, one sync group per server","Only on Linux","Only with premium shares"],"ans":[0],"exp":"A server can participate in multiple sync groups with distinct, non-overlapping paths.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"},
-{"id":"D2-192","sub":"File Sync","type":"mcq","diff":2,"q":"A branch office needs fast local access to a central Azure file share. Which solution?","opts":["Azure File Sync with a server endpoint on a local Windows Server","Object replication","GRS","Storage Explorer"],"ans":[0],"exp":"File Sync caches the share locally on a Windows Server.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-introduction"},
-{"id":"D2-193","sub":"File Sync","type":"mcq","diff":3,"q":"With cloud tiering, which policy ensures that at least 20% of the local volume stays free?","opts":["Volume free space policy","Date policy","Retention policy","Lifecycle policy"],"ans":[0],"exp":"The volume free space policy tiers files to keep the chosen percentage free. A date policy tiers files not accessed in N days.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-policy"},
-{"id":"D2-194","sub":"File Sync","type":"mcq","diff":2,"q":"Which operating systems can run the Azure File Sync agent?","opts":["Supported Windows Server versions","Any Linux distribution","macOS","Windows 10/11 client"],"ans":[0],"exp":"The agent runs on supported Windows Server versions only.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"},
-{"id":"D2-195","sub":"Azure Files","type":"yesno","diff":2,"q":"Answer Yes or No about Azure Files:","stmts":["NFS shares can be accessed from Windows clients with SMB at the same time","Azure file shares can be mounted by Azure VMs and on-premises machines","Share snapshots are read-only","Premium file shares are SSD-backed"],"ans":[false,true,true,true],"exp":"A share uses one protocol; shares can be mounted in Azure and on-premises; snapshots are read-only; premium shares use SSD.","link":"https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"},
-{"id":"D2-196","sub":"Blob storage","type":"mcq","diff":3,"q":"Which upload approach does AzCopy and the SDK use for large block blobs?","opts":["Stage blocks in parallel (Put Block) then commit the block list (Put Block List)","One single PUT of up to 1 TB","Page writes","Append operations"],"ans":[0],"exp":"Large block blobs are uploaded as blocks and then committed.","link":"https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"},
-{"id":"D2-197","sub":"Blob storage","type":"mcq","diff":2,"q":"Which feature gives a blob a read-only, point-in-time copy that you take manually?","opts":["Blob snapshot","Blob version","Soft delete","Legal hold"],"ans":[0],"exp":"Snapshots are read-only copies created on demand.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/snapshots-overview"},
-{"id":"D2-198","sub":"Blob storage","type":"mcq","diff":2,"q":"You need SFTP access to Blob storage for a partner. What must be enabled?","opts":["Hierarchical namespace and SFTP support with local users","Static website","Azure Files NFS","Anonymous access"],"ans":[0],"exp":"Blob SFTP requires hierarchical namespace and uses local users with passwords or SSH keys.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support"},
-{"id":"D2-199","sub":"Storage design","type":"yesno","diff":3,"ctx":"Container 'reports' in GPv2 LRS account st1: versioning on, blob soft delete 14 days, container soft delete 7 days, lifecycle: tierToArchive after 90 days since modification.","q":"Answer Yes or No:","stmts":["A blob deleted 10 days ago can be restored","The 'reports' container deleted 9 days ago can be restored","A 120-day-old unmodified blob can be read immediately","Overwriting a blob keeps the previous content as a version"],"ans":[true,false,false,true],"exp":"Blob soft delete covers 14 days; container retention is 7 days; at 120 days the blob is archived (offline); versioning keeps previous content.","link":"https://learn.microsoft.com/en-us/azure/storage/blobs/data-protection-overview"},
-{"id":"D2-200","sub":"Storage design","type":"mcq","diff":3,"ctx":"On-premises file servers in 3 branch offices need a shared central copy of data in Azure, fast local reads, and small local disks. Users authenticate with on-premises AD.","q":"Which solution fits best?","opts":["Azure File Sync with cloud tiering on each branch server, syncing to one Azure file share","Blob storage with object replication","Three separate storage accounts with GRS","DFS-R between branches only"],"ans":[0],"exp":"File Sync gives multi-site sync to one share, local caching, and tiering for small disks, while NTFS ACLs (AD) are preserved.","link":"https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-introduction"}
+ {
+  "id": "D2-151",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which blob type is optimized for append-only operations such as logging?",
+  "opts": [
+   "Append blob",
+   "Page blob",
+   "Block blob",
+   "Archive blob"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Append blobs only allow adding blocks to the end, never changing existing data, which makes them ideal for logs and audit trails. Page blobs are for random read/write (disks), block blobs are for general files, and 'archive blob' isn't a blob type.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"
+ },
+ {
+  "id": "D2-152",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What is the container hierarchy in Blob storage?",
+  "opts": [
+   "Storage account → container → blob",
+   "Container → storage account → blob",
+   "Blob → container → share",
+   "Account → share → directory → blob"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A storage account holds containers, and containers hold blobs. File shares (with directories) belong to Azure Files, which is a different service in the same account.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction"
+ },
+ {
+  "id": "D2-153",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a container named 'images'?",
+  "opts": [
+   "az storage container create --name images --account-name st1 --auth-mode login",
+   "az storage blob create images",
+   "az container create images",
+   "az storage share create images"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az storage container create --name images creates a blob container. --auth-mode login uses your Entra identity (you need a Storage Blob Data role) instead of the account key. az storage share create makes a file share, and az container create makes a container instance (ACI).",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/storage/container"
+ },
+ {
+  "id": "D2-154",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command uploads a local file to a container?",
+  "opts": [
+   "az storage blob upload --container-name images --file photo.jpg --name photo.jpg --account-name st1",
+   "az storage file upload",
+   "az blob push photo.jpg",
+   "az storage container upload"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az storage blob upload uploads a single local file (--file) to a container (--container-name) under a blob name (--name). az storage file upload is for Azure file shares, and the other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/storage/blob"
+ },
+ {
+  "id": "D2-155",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Apps must find blobs by key-value attributes like project=alpha across containers. Which feature?",
+  "opts": [
+   "Blob index tags",
+   "Blob metadata only",
+   "Resource tags",
+   "Lifecycle rules"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Blob index tags are key-value pairs that Azure Storage indexes, so you can search across all containers with Find Blobs by Tags (for example project = 'alpha'). Blob metadata isn't indexed or searchable, resource tags apply to Azure resources rather than individual blobs, and lifecycle rules don't search.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/storage-manage-find-blobs"
+ },
+ {
+  "id": "D2-156",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which tier fits data accessed several times a day?",
+  "opts": [
+   "Hot",
+   "Cool",
+   "Cold",
+   "Archive"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The hot tier has the lowest cost per access and no minimum storage period, so it's the right choice for data read or written often. Cool, cold and archive charge more for each read and have minimum periods, which makes them expensive for busy data.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-157",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Backups are accessed rarely, kept at least 90 days, and must be available in milliseconds when needed. Most cost-effective online tier?",
+  "opts": [
+   "Cold",
+   "Hot",
+   "Archive",
+   "Premium"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Cold is an online tier, so data is available in milliseconds, but storage is cheaper than hot and cool. Its 90-day minimum fits backups kept at least 90 days. Archive is cheaper still but offline (hours to read), and hot or premium would cost more than needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-158",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How can you read an archived blob within an hour if it's smaller than 10 GB?",
+  "opts": [
+   "Rehydrate with High priority",
+   "Rehydrate with Standard priority",
+   "Copy it to the archive tier",
+   "Enable soft delete"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Rehydrating from archive has two priorities. High priority usually completes in under an hour for blobs under 10 GB, at a higher cost. Standard priority can take up to 15 hours. Copying to archive keeps it offline, and soft delete doesn't rehydrate.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"
+ },
+ {
+  "id": "D2-159",
+  "sub": "Access tiers",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO methods rehydrate a blob from archive?",
+  "opts": [
+   "Change its tier to hot, cool, or cold (Set Blob Tier)",
+   "Copy it to a new blob in an online tier (Copy Blob)",
+   "Enable versioning",
+   "Take a snapshot"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "You can rehydrate an archived blob in two ways: change its tier to hot, cool or cold with Set Blob Tier, or copy it to a new blob in an online tier with Copy Blob, which keeps the archived original. Versioning and snapshots don't bring data back online.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/archive-rehydrate-overview"
+ },
+ {
+  "id": "D2-160",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A blob was moved to cool and then deleted after 10 days. What charge applies?",
+  "opts": [
+   "Early deletion charge for the remaining 20 days",
+   "No charge",
+   "A 180-day charge",
+   "A rehydration charge"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The cool tier has a 30-day minimum. Deleting the blob after 10 days triggers an early-deletion charge for the remaining 20 days of cool storage (prorated). There's no rehydration charge because cool is online, and 180 days is the archive minimum.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-161",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can you set the archive tier on a blob in a Premium block blob account?",
+  "opts": [
+   "No, premium block blob accounts don't support hot/cool/cold/archive tiering",
+   "Yes",
+   "Only with RA-GRS",
+   "Only via lifecycle"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Premium block blob accounts don't support the hot, cool, cold or archive access tiers; all data sits on premium SSD storage. To archive data, copy it to a standard GPv2 account and tier it there.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-162",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which redundancy setting is NOT supported for the archive tier?",
+  "opts": [
+   "ZRS (and GZRS/RA-GZRS)",
+   "LRS",
+   "GRS",
+   "RA-GRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The archive tier is only supported for accounts using LRS, GRS or RA-GRS. Accounts using ZRS, GZRS or RA-GZRS can't move blobs to archive.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-163",
+  "sub": "Lifecycle",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A lifecycle rule should only affect blobs in the 'logs/' folder of container 'app'. What do you set in the filter?",
+  "opts": [
+   "prefixMatch: app/logs/",
+   "blobTypes: appendBlob",
+   "A tag on the storage account",
+   "A resource lock"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A lifecycle rule's prefixMatch filter starts with the container name, so 'app/logs/' limits the rule to blobs in the logs folder of the app container. A blobTypes filter selects block or append blobs, not folders. Account tags and resource locks don't scope lifecycle rules.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-164",
+  "sub": "Lifecycle",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A lifecycle rule should move blobs to cool if they haven't been READ for 60 days. What must be enabled?",
+  "opts": [
+   "Last access time tracking",
+   "Versioning",
+   "Change feed",
+   "Soft delete"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Rules based on when a blob was last read (daysAfterLastAccessTimeGreaterThan) need last access time tracking enabled on the account; otherwise Azure doesn't record reads. Rules based on last modification don't need it. Versioning, change feed and soft delete aren't involved.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-165",
+  "sub": "Lifecycle",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which lifecycle action deletes old blob versions 90 days after they become previous versions?",
+  "opts": [
+   "A version action: delete with daysAfterCreationGreaterThan 90",
+   "baseBlob delete with daysAfterModificationGreaterThan 90",
+   "snapshot tierToArchive",
+   "Disable versioning"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Lifecycle rules have separate action blocks for the current blob (baseBlob), snapshots and versions. To clean up old versions, add a version action: delete with daysAfterCreationGreaterThan 90, which counts from when the version became a previous version. A baseBlob action would delete current blobs instead.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-166",
+  "sub": "Lifecycle",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which blob types can lifecycle management tier between hot, cool, and archive?",
+  "opts": [
+   "Block blobs only (append blobs support delete only)",
+   "Page blobs",
+   "All types",
+   "Append blobs only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Lifecycle management can move block blobs between tiers. Append blobs support only delete actions, and page blobs aren't supported at all.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-167",
+  "sub": "Lifecycle",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the tiers a typical lifecycle policy moves aging data through, from first to last:",
+  "items": [
+   "Archive",
+   "Hot",
+   "Delete",
+   "Cool"
+  ],
+  "ans": [
+   1,
+   3,
+   0,
+   2
+  ],
+  "exp": "As data ages it's accessed less, so it moves to cheaper tiers: it starts hot, moves to cool, then to archive for long-term retention, and is finally deleted when you no longer need to keep it.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
+ },
+ {
+  "id": "D2-168",
+  "sub": "Versioning",
+  "type": "mcq",
+  "diff": 2,
+  "q": "With versioning enabled, a user overwrites a blob by mistake. How do you recover the previous content?",
+  "opts": [
+   "Promote the previous version to be the current version",
+   "Restore from a snapshot only",
+   "Undelete the container",
+   "It can't be recovered"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "With versioning on, every overwrite keeps the previous content as an older version. To recover, promote (restore) that previous version so it becomes the current blob again. You don't need a snapshot, and container undelete is for whole containers.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"
+ },
+ {
+  "id": "D2-169",
+  "sub": "Versioning",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Versioning is enabled and a blob is deleted. What happens?",
+  "opts": [
+   "The current version becomes a previous version; the data is kept until the versions are deleted",
+   "The blob and all versions are deleted",
+   "Versioning doesn't cover deletes",
+   "The blob moves to archive"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "With versioning on, deleting a blob doesn't destroy its data. The current version becomes a previous version, which you can restore later. The data stays until those versions are deleted, for example by a lifecycle rule.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"
+ },
+ {
+  "id": "D2-170",
+  "sub": "Versioning",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's a cost consideration of enabling blob versioning on frequently overwritten data?",
+  "opts": [
+   "Each version is billed, so storage costs can grow; use lifecycle rules to delete old versions",
+   "Versioning is free forever",
+   "Versions are stored in a separate account",
+   "Versioning disables tiers"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Every version is a full blob that you pay to store. If data is overwritten often, versions pile up and storage costs grow. Use a lifecycle rule to delete versions older than a certain age. Versions stay in the same account and work with tiers.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"
+ },
+ {
+  "id": "D2-171",
+  "sub": "Soft delete",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Someone deleted a whole container by mistake. Which feature lets you restore it?",
+  "opts": [
+   "Container soft delete",
+   "Blob soft delete only",
+   "Versioning only",
+   "Lifecycle management"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Container soft delete keeps a deleted container, and all its blobs, for the retention period so you can restore it. Blob soft delete and versioning protect individual blobs, but not the whole container being deleted.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-container-overview"
+ },
+ {
+  "id": "D2-172",
+  "sub": "Soft delete",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What retention range can you set for blob soft delete?",
+  "opts": [
+   "1 to 365 days",
+   "1 to 30 days",
+   "7 days only",
+   "90 to 730 days"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Blob and container soft delete retention can be set anywhere from 1 to 365 days. The other ranges are wrong.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview"
+ },
+ {
+  "id": "D2-173",
+  "sub": "Point-in-time restore",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You need to restore a set of block blobs to their state from 3 days ago after a bad batch job. Which feature?",
+  "opts": [
+   "Point-in-time restore for block blobs",
+   "Share snapshots",
+   "Object replication",
+   "Rehydration"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Point-in-time restore returns block blobs to an earlier state; it requires versioning, change feed, and soft delete.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/point-in-time-restore-overview"
+ },
+ {
+  "id": "D2-174",
+  "sub": "Point-in-time restore",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which THREE features must be enabled before you can use point-in-time restore for block blobs?",
+  "opts": [
+   "Blob soft delete",
+   "Blob versioning",
+   "Change feed",
+   "Static website",
+   "Hierarchical namespace"
+  ],
+  "ans": [
+   0,
+   1,
+   2
+  ],
+  "exp": "Point-in-time restore rolls block blobs back to an earlier time. It needs blob soft delete, blob versioning and change feed all enabled, because it uses the change log and the stored versions to rebuild the earlier state. Static websites and hierarchical namespace aren't required (and hierarchical namespace isn't supported).",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/point-in-time-restore-overview"
+ },
+ {
+  "id": "D2-175",
+  "sub": "Immutable storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Regulations require that financial records can't be modified or deleted for 7 years (WORM). Which feature?",
+  "opts": [
+   "Immutable storage with a time-based retention policy",
+   "Soft delete",
+   "ReadOnly resource lock",
+   "Versioning"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Immutable storage with a time-based retention policy puts blobs into a WORM state (write once, read many): for the retention period, nobody can change or delete them, not even an administrator. Soft delete and versioning still allow deletion, and a ReadOnly resource lock protects the account's settings, not the blob data.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/immutable-storage-overview"
+ },
+ {
+  "id": "D2-176",
+  "sub": "Immutable storage",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Data must be preserved indefinitely during an investigation, with no fixed end date. Which immutability policy?",
+  "opts": [
+   "Legal hold",
+   "Time-based retention",
+   "Soft delete",
+   "Lifecycle"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A legal hold makes data immutable with no end date; it stays in place until someone explicitly clears it, which suits investigations or litigation. A time-based retention policy needs a fixed period. Soft delete and lifecycle rules don't prevent deletion.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/immutable-legal-hold-overview"
+ },
+ {
+  "id": "D2-177",
+  "sub": "Immutable storage",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What does locking a time-based retention policy do?",
+  "opts": [
+   "The retention interval can't be shortened and the policy can't be deleted (it can only be extended)",
+   "It deletes the data",
+   "It makes the container public",
+   "It can be undone anytime"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Once a time-based retention policy is locked, it can't be removed and its retention period can't be shortened; you can only extend it. This meets regulations such as SEC 17a-4. An unlocked policy can still be changed or deleted, which is why you lock it for compliance.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/immutable-time-based-retention-policy-overview"
+ },
+ {
+  "id": "D2-178",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which protocols can Azure Files shares use?",
+  "opts": [
+   "SMB and NFS (plus REST)",
+   "FTP and SFTP only",
+   "iSCSI only",
+   "HTTP only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Files shares are reached over SMB (Windows, macOS, Linux) or NFS (Linux, premium accounts only), and through the REST API. FTP, SFTP and iSCSI aren't Azure Files protocols.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"
+ },
+ {
+  "id": "D2-179",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a 100 GiB file share named 'docs'?",
+  "opts": [
+   "az storage share-rm create --storage-account st1 --name docs --quota 100",
+   "az storage container create docs",
+   "az files create docs 100",
+   "az storage blob share docs"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az storage share-rm create creates a file share through Azure Resource Manager, with --quota setting the size in GiB. az storage container create makes a blob container, not a file share, and the other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/storage/share-rm"
+ },
+ {
+  "id": "D2-180",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which standard file share tiers exist?",
+  "opts": [
+   "Transaction optimized, Hot, Cool",
+   "Hot, Archive",
+   "Premium only",
+   "Cold, Archive"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Standard file shares can be transaction optimized, hot, or cool. Premium shares are on FileStorage accounts.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"
+ },
+ {
+  "id": "D2-181",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A standard file share must grow beyond 5 TiB. What do you enable?",
+  "opts": [
+   "Large file shares (up to 100 TiB)",
+   "Premium tier",
+   "Versioning",
+   "Hierarchical namespace"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Standard file shares are limited to 5 TiB unless you enable large file shares on the storage account, which raises the limit to 100 TiB. Premium shares are a different account kind, and versioning or hierarchical namespace don't change share size.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share"
+ },
+ {
+  "id": "D2-182",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you mount an Azure file share on a Windows machine?",
+  "opts": [
+   "net use Z: \\\\st1.file.core.windows.net\\docs (or New-PSDrive), using credentials over SMB 445",
+   "Map it as an iSCSI LUN",
+   "Use azcopy mount",
+   "Use FTP"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "On Windows you mount an Azure file share over SMB with its UNC path, for example net use Z: \\\\st1.file.core.windows.net\\docs, or with New-PSDrive. The portal's Connect button generates the script. Azure Files isn't an iSCSI target, AzCopy can't mount shares, and FTP isn't supported.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-how-to-use-files-windows"
+ },
+ {
+  "id": "D2-183",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which SMB version is required to mount Azure file shares from on-premises or another region?",
+  "opts": [
+   "SMB 3.x with encryption",
+   "SMB 1.0",
+   "SMB 2.0",
+   "Any version"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Connections from outside the Azure region, including from on-premises, must use SMB 3.x with encryption so data is protected in transit. SMB 1.0 isn't supported, and SMB 2.x only works from inside the same region.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"
+ },
+ {
+  "id": "D2-184",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you protect an Azure file share from accidental deletion of the whole share?",
+  "opts": [
+   "Enable soft delete for file shares",
+   "Blob soft delete",
+   "Container soft delete",
+   "Versioning"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "File share soft delete keeps a deleted file share for the retention period, so you can undelete it. Blob and container soft delete protect Blob storage, not Azure Files.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-prevent-file-share-deletion"
+ },
+ {
+  "id": "D2-185",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What's the maximum number of share snapshots per file share?",
+  "opts": [
+   "200",
+   "50",
+   "1000",
+   "Unlimited"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Each Azure file share can have up to 200 share snapshots. With daily snapshots, that covers more than six months; Azure Backup manages and expires them for you.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"
+ },
+ {
+  "id": "D2-186",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A user deleted a single file. Share snapshots exist. How can the user restore it themselves on Windows?",
+  "opts": [
+   "Use the 'Previous Versions' tab in File Explorer",
+   "Rebuild the share",
+   "Contact Microsoft",
+   "Use AzCopy only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Share snapshots appear in Windows File Explorer under Properties → Previous Versions, so users can open or restore an earlier copy of a file themselves. There's no need to rebuild the share or contact Microsoft.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"
+ },
+ {
+  "id": "D2-187",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can share snapshots protect you if the whole storage account is deleted?",
+  "opts": [
+   "No — snapshots live in the same account, so they're deleted with it; use a delete lock and Azure Backup",
+   "Yes, always",
+   "Only for premium",
+   "Only with ZRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Share snapshots are stored inside the same storage account as the share. If the whole account is deleted, the snapshots go with it. Protect the account with a CanNotDelete lock, and use Azure Backup (whose vault-standard tier can keep copies outside the account).",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"
+ },
+ {
+  "id": "D2-188",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What must be installed on a Windows Server to sync it with Azure Files?",
+  "opts": [
+   "The Azure File Sync agent, with the server registered to the Storage Sync Service",
+   "The MARS agent",
+   "The Azure Monitor Agent",
+   "Nothing"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Each Windows Server that syncs with Azure Files needs the Azure File Sync agent installed and must be registered with a Storage Sync Service. Only then can you add its folders as server endpoints. The MARS agent is for Azure Backup, and the Azure Monitor Agent collects telemetry.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-deployment-guide"
+ },
+ {
+  "id": "D2-189",
+  "sub": "File Sync",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps to deploy Azure File Sync:",
+  "items": [
+   "Create a sync group with a cloud endpoint",
+   "Deploy the Storage Sync Service",
+   "Install the agent on the server and register the server",
+   "Add a server endpoint to the sync group"
+  ],
+  "ans": [
+   1,
+   2,
+   0,
+   3
+  ],
+  "exp": "First deploy the Storage Sync Service. Then install the agent on the server and register it with that service. Next create a sync group with the Azure file share as its cloud endpoint. Finally add the server's folder as a server endpoint. A server endpoint can only be added once the server is registered and the sync group exists.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-deployment-guide"
+ },
+ {
+  "id": "D2-190",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How many cloud endpoints can a sync group contain?",
+  "opts": [
+   "Exactly one",
+   "Up to 5",
+   "Up to 100",
+   "Unlimited"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A sync group syncs exactly one Azure file share (its cloud endpoint) with one or more folders on registered servers (server endpoints). To sync another file share, create another sync group.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"
+ },
+ {
+  "id": "D2-191",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can a single registered server have server endpoints in multiple sync groups?",
+  "opts": [
+   "Yes, as long as the paths don't overlap",
+   "No, one sync group per server",
+   "Only on Linux",
+   "Only with premium shares"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "One registered server can belong to several sync groups, as long as each server endpoint is a different, non-overlapping path (for example D:\\Finance and D:\\HR). The agent only runs on Windows Server, and premium shares aren't required.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"
+ },
+ {
+  "id": "D2-192",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A branch office needs fast local access to a central Azure file share. Which solution?",
+  "opts": [
+   "Azure File Sync with a server endpoint on a local Windows Server",
+   "Object replication",
+   "GRS",
+   "Storage Explorer"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure File Sync installs on a Windows Server in the branch office and caches the central Azure file share locally, so users open files at LAN speed while changes sync to Azure. Object replication is for blobs, GRS copies between Azure regions, and Storage Explorer is a management tool.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-introduction"
+ },
+ {
+  "id": "D2-193",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 3,
+  "q": "With cloud tiering, which policy ensures that at least 20% of the local volume stays free?",
+  "opts": [
+   "Volume free space policy",
+   "Date policy",
+   "Retention policy",
+   "Lifecycle policy"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The volume free space policy tiers files to keep the chosen percentage free. A date policy tiers files not accessed in N days.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-policy"
+ },
+ {
+  "id": "D2-194",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which operating systems can run the Azure File Sync agent?",
+  "opts": [
+   "Supported Windows Server versions",
+   "Any Linux distribution",
+   "macOS",
+   "Windows 10/11 client"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The Azure File Sync agent runs only on supported versions of Windows Server. Linux, macOS and Windows 10/11 desktop versions can't be server endpoints, although they can still mount the Azure file share directly over SMB.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-planning"
+ },
+ {
+  "id": "D2-195",
+  "sub": "Azure Files",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No about Azure Files:",
+  "stmts": [
+   "NFS shares can be accessed from Windows clients with SMB at the same time",
+   "Azure file shares can be mounted by Azure VMs and on-premises machines",
+   "Share snapshots are read-only",
+   "Premium file shares are SSD-backed"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "A share uses one protocol; shares can be mounted in Azure and on-premises; snapshots are read-only; premium shares use SSD.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"
+ },
+ {
+  "id": "D2-196",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which upload approach does AzCopy and the SDK use for large block blobs?",
+  "opts": [
+   "Stage blocks in parallel (Put Block) then commit the block list (Put Block List)",
+   "One single PUT of up to 1 TB",
+   "Page writes",
+   "Append operations"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Large block blobs are uploaded as separate blocks, often in parallel (Put Block), and then committed in order with Put Block List, which creates the blob. This makes uploads faster and lets failed blocks be retried. A single PUT is only for smaller blobs, and page writes are for page blobs.",
+  "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"
+ },
+ {
+  "id": "D2-197",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which feature gives a blob a read-only, point-in-time copy that you take manually?",
+  "opts": [
+   "Blob snapshot",
+   "Blob version",
+   "Soft delete",
+   "Legal hold"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A blob snapshot is a read-only copy of a blob at a moment in time that you create yourself when you need it. Versions are created automatically on every change. Soft delete and legal hold protect data but don't create point-in-time copies.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/snapshots-overview"
+ },
+ {
+  "id": "D2-198",
+  "sub": "Blob storage",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need SFTP access to Blob storage for a partner. What must be enabled?",
+  "opts": [
+   "Hierarchical namespace and SFTP support with local users",
+   "Static website",
+   "Azure Files NFS",
+   "Anonymous access"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "SFTP for Blob storage needs hierarchical namespace (Data Lake Storage Gen2) enabled and SFTP turned on. Partners sign in as local users with a password or SSH key, and their permissions are scoped to containers. Static websites, NFS and anonymous access don't provide SFTP.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/secure-file-transfer-protocol-support"
+ },
+ {
+  "id": "D2-199",
+  "sub": "Storage design",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "Container 'reports' in GPv2 LRS account st1: versioning on, blob soft delete 14 days, container soft delete 7 days, lifecycle: tierToArchive after 90 days since modification.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A blob deleted 10 days ago can be restored",
+   "The 'reports' container deleted 9 days ago can be restored",
+   "A 120-day-old unmodified blob can be read immediately",
+   "Overwriting a blob keeps the previous content as a version"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "Blob soft delete covers 14 days; container retention is 7 days; at 120 days the blob is archived (offline); versioning keeps previous content.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/data-protection-overview"
+ },
+ {
+  "id": "D2-200",
+  "sub": "Storage design",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "On-premises file servers in 3 branch offices need a shared central copy of data in Azure, fast local reads, and small local disks. Users authenticate with on-premises AD.",
+  "q": "Which solution fits best?",
+  "opts": [
+   "Azure File Sync with cloud tiering on each branch server, syncing to one Azure file share",
+   "Blob storage with object replication",
+   "Three separate storage accounts with GRS",
+   "DFS-R between branches only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "File Sync gives multi-site sync to one share, local caching, and tiering for small disks, while NTFS ACLs (AD) are preserved.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-introduction"
+ }
 ]

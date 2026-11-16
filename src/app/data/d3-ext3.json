@@ -1,52 +1,910 @@
 [
-{"id":"D3-151","sub":"ACR","type":"mcq","diff":1,"q":"What is Azure Container Registry used for?","opts":["Storing and managing private container images and artifacts","Running containers","Load balancing containers","Monitoring containers"],"ans":[0],"exp":"ACR is a managed private registry for OCI images and artifacts.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-intro"},
-{"id":"D3-152","sub":"ACR","type":"mcq","diff":2,"q":"Which CLI command creates a Standard container registry?","opts":["az acr create -g RG1 -n myacr --sku Standard","az container registry new myacr","az acr new --standard","az docker registry create"],"ans":[0],"exp":"az acr create with --sku Basic, Standard, or Premium.","link":"https://learn.microsoft.com/en-us/cli/azure/acr"},
-{"id":"D3-153","sub":"ACR","type":"mcq","diff":2,"q":"Before pushing with docker, how do you authenticate to ACR using your Entra identity?","opts":["az acr login --name myacr","docker login with your Entra password","az login only","az acr credential show"],"ans":[0],"exp":"az acr login gets a token and configures Docker.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication"},
-{"id":"D3-154","sub":"ACR","type":"mcq","diff":2,"q":"What is the full image name format for pushing to registry myacr?","opts":["myacr.azurecr.io/app:v1","myacr/app:v1","azurecr.io/myacr/app","docker.io/myacr/app"],"ans":[0],"exp":"Images are tagged with the registry login server, <name>.azurecr.io.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli"},
-{"id":"D3-155","sub":"ACR","type":"mcq","diff":3,"q":"Which ACR SKU is required for private endpoints (Private Link)?","opts":["Premium","Standard","Basic","All"],"ans":[0],"exp":"Private Link, geo-replication, and content trust require Premium.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus"},
-{"id":"D3-156","sub":"ACR","type":"mcq","diff":2,"q":"A CI pipeline needs to push images to ACR. Least-privilege role?","opts":["AcrPush","Owner","AcrPull","Contributor"],"ans":[0],"exp":"AcrPush allows push and pull; AcrPull is pull-only.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-roles"},
-{"id":"D3-157","sub":"ACR","type":"mcq","diff":3,"q":"Images must rebuild automatically when their base image is updated. Which feature?","opts":["ACR Tasks with base image update triggers","Geo-replication","Webhooks only","Content trust"],"ans":[0],"exp":"ACR Tasks can trigger on source commits and base image updates.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-base-images"},
-{"id":"D3-158","sub":"ACR","type":"mcq","diff":2,"q":"How do you copy an image from Docker Hub into ACR without pulling it locally?","opts":["az acr import","docker pull then push","az acr build","az acr replicate"],"ans":[0],"exp":"az acr import copies images server-side.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-import-images"},
-{"id":"D3-159","sub":"ACR","type":"mcq","diff":2,"q":"Why is the ACR admin account discouraged for production?","opts":["It's a single shared username and password with full push/pull rights and no per-user auditing","It's slower","It costs extra","It only works with Premium"],"ans":[0],"exp":"Use Entra identities or tokens with scoped permissions instead.","link":"https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication"},
-{"id":"D3-160","sub":"ACI","type":"mcq","diff":2,"q":"Which CLI command creates a container instance with a public DNS label?","opts":["az container create -g RG1 -n web --image mcr.microsoft.com/azuredocs/aci-helloworld --dns-name-label myweb --ports 80","az aci new web","az container run web","az webapp create --container"],"ans":[0],"exp":"az container create with --dns-name-label and --ports exposes the container.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart"},
-{"id":"D3-161","sub":"ACI","type":"mcq","diff":2,"q":"Which CLI command shows a running container instance's logs?","opts":["az container logs -g RG1 -n web","az container show-log","az monitor logs web","docker logs web"],"ans":[0],"exp":"az container logs retrieves stdout and stderr.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-get-logs"},
-{"id":"D3-162","sub":"ACI","type":"mcq","diff":2,"q":"You need an interactive shell inside a running container in ACI. Use:","opts":["az container exec -g RG1 -n web --exec-command /bin/sh","az container ssh","Bastion","Serial console"],"ans":[0],"exp":"az container exec runs a command inside the container.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-exec"},
-{"id":"D3-163","sub":"ACI","type":"mcq","diff":3,"q":"Container data must persist after the container stops. What do you do?","opts":["Mount an Azure Files share as a volume","Use the container's local disk","Use emptyDir","Use a secret volume"],"ans":[0],"exp":"ACI storage is ephemeral; Azure Files provides persistence.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-azure-files"},
-{"id":"D3-164","sub":"ACI","type":"mcq","diff":2,"q":"How are CPU and memory assigned in ACI?","opts":["You request vCPU and memory per container (for example, --cpu 1 --memory 1.5) and are billed per second","By choosing a VM size","Fixed at 1 vCPU / 1 GB","Through an App Service plan"],"ans":[0],"exp":"ACI resources are requested per container.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview"},
-{"id":"D3-165","sub":"ACI","type":"mcq","diff":3,"q":"A container instance must reach a database on a private IP in VNet1 without a public IP. What do you do?","opts":["Deploy the container group into a delegated subnet in VNet1","Add a public IP","Use VNet peering only","Use a service endpoint"],"ans":[0],"exp":"ACI can be deployed into a VNet subnet delegated to Microsoft.ContainerInstance/containerGroups.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-vnet"},
-{"id":"D3-166","sub":"ACI","type":"mcq","diff":2,"q":"How do you pass a database password to an ACI container so it isn't shown in the portal?","opts":["Secure environment variables (--secure-environment-variables)","Plain environment variables","The image name","Tags"],"ans":[0],"exp":"Secure environment variables aren't exposed in container properties.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-environment-variables"},
-{"id":"D3-167","sub":"ACI","type":"mcq","diff":3,"q":"How do you deploy a multi-container group (app plus sidecar) to ACI?","opts":["With a YAML file or ARM template defining the container group","With one az container create per container in the same group","Through the portal only","With Docker Compose to ACR"],"ans":[0],"exp":"Multi-container groups are defined with YAML or ARM/Bicep.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-multi-container-yaml"},
-{"id":"D3-168","sub":"ACI","type":"mcq","diff":2,"q":"How do you scale an ACI deployment?","opts":["ACI has no built-in autoscale; deploy more container groups or change resource requests (redeploy)","Autoscale rules","Scale sets","Increase the App Service plan"],"ans":[0],"exp":"For autoscale, use Container Apps or AKS.","link":"https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview"},
-{"id":"D3-169","sub":"Container Apps","type":"mcq","diff":2,"q":"In Azure Container Apps, what's the boundary that groups apps sharing a VNet and Log Analytics workspace?","opts":["Container Apps environment","Container group","App Service plan","Resource group"],"ans":[0],"exp":"Apps in the same environment share networking and logging.","link":"https://learn.microsoft.com/en-us/azure/container-apps/environment"},
-{"id":"D3-170","sub":"Container Apps","type":"mcq","diff":2,"q":"In Container Apps, what is a revision?","opts":["An immutable snapshot of a container app version","A backup","A resource lock","A scaling rule"],"ans":[0],"exp":"Changes to revision-scoped settings create new revisions.","link":"https://learn.microsoft.com/en-us/azure/container-apps/revisions"},
-{"id":"D3-171","sub":"Container Apps","type":"mcq","diff":3,"q":"Send 20% of traffic to a new version of a container app and 80% to the old one. What do you configure?","opts":["Multiple revision mode with traffic splitting (weights)","Two separate environments","An Application Gateway","Manual DNS"],"ans":[0],"exp":"Multiple revision mode allows weighted traffic splits for canary releases.","link":"https://learn.microsoft.com/en-us/azure/container-apps/traffic-splitting"},
-{"id":"D3-172","sub":"Container Apps","type":"mcq","diff":2,"q":"Which Container Apps scale rule type scales on concurrent HTTP requests?","opts":["HTTP scale rule","CPU only","Schedule only","Manual"],"ans":[0],"exp":"HTTP rules scale on concurrent requests; KEDA scalers handle events; CPU and memory rules are also available.","link":"https://learn.microsoft.com/en-us/azure/container-apps/scale-app"},
-{"id":"D3-173","sub":"Container Apps","type":"mcq","diff":2,"q":"A container app should be reachable only from other apps in the same environment. Which ingress setting?","opts":["Internal ingress (limited to the environment)","External ingress","No ingress","A public IP"],"ans":[0],"exp":"Internal ingress restricts access to the environment or VNet.","link":"https://learn.microsoft.com/en-us/azure/container-apps/ingress-overview"},
-{"id":"D3-174","sub":"Container Apps","type":"mcq","diff":3,"q":"A scheduled nightly batch task should run in Container Apps and then exit. Which resource?","opts":["Container Apps job (schedule trigger)","Container app with min replicas 1","ACR Task","VMSS"],"ans":[0],"exp":"Jobs run to completion with manual, schedule, or event triggers.","link":"https://learn.microsoft.com/en-us/azure/container-apps/jobs"},
-{"id":"D3-175","sub":"Containers","type":"multi","diff":2,"q":"Which TWO services can scale containers automatically based on load without you managing Kubernetes?","opts":["Azure Container Apps","Azure App Service (Web App for Containers) with autoscale","Azure Container Instances","Azure Container Registry"],"ans":[0,1],"exp":"Container Apps and App Service support autoscaling. ACI doesn't autoscale; ACR stores images.","link":"https://learn.microsoft.com/en-us/azure/container-apps/compare-options"},
-{"id":"D3-176","sub":"Containers","type":"yesno","diff":2,"q":"Answer Yes or No:","stmts":["Container Apps can scale to zero replicas","ACI supports Windows containers","ACR Basic supports geo-replication","Container Apps supports Dapr integration"],"ans":[true,true,false,true],"exp":"Container Apps scales to zero and supports Dapr; ACI runs Windows containers; geo-replication is Premium only.","link":"https://learn.microsoft.com/en-us/azure/container-apps/overview"},
-{"id":"D3-177","sub":"App Service plans","type":"mcq","diff":1,"q":"Which App Service tier is intended for free development and testing, with shared infrastructure and no custom domains?","opts":["Free (F1)","Standard","Premium","Isolated"],"ans":[0],"exp":"Free and Shared are for dev/test with limitations.","link":"https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"},
-{"id":"D3-178","sub":"App Service plans","type":"mcq","diff":2,"q":"Which tier is the lowest that supports custom domains with SSL bindings and dedicated compute?","opts":["Basic","Free","Shared","Standard only"],"ans":[0],"exp":"Basic adds dedicated VMs, custom domains, and TLS, with manual scaling.","link":"https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"},
-{"id":"D3-179","sub":"App Service plans","type":"mcq","diff":3,"q":"An app needs full network isolation in a single-tenant environment inside your VNet with very high scale. Which tier?","opts":["Isolated v2 (App Service Environment v3)","Premium v3","Standard","Basic"],"ans":[0],"exp":"Isolated tiers run in an App Service Environment.","link":"https://learn.microsoft.com/en-us/azure/app-service/environment/overview"},
-{"id":"D3-180","sub":"App Service plans","type":"mcq","diff":2,"q":"Three web apps run in one App Service plan with 2 instances. How many instances does each app run on?","opts":["2 — every app runs on all instances of the plan","1 each","6 total, 2 per app separately billed","It depends on traffic"],"ans":[0],"exp":"Apps share the plan's instances; scaling the plan scales every app in it.","link":"https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"},
-{"id":"D3-181","sub":"App Service plans","type":"mcq","diff":2,"q":"Can you move a web app to an App Service plan in a different region?","opts":["No — the plan must be in the same resource group and region (webspace); create the app in the new region instead","Yes, anytime","Only with Premium","Only Linux apps"],"ans":[0],"exp":"Apps can move between plans only within the same region and resource group combination.","link":"https://learn.microsoft.com/en-us/azure/app-service/app-service-plan-manage"},
-{"id":"D3-182","sub":"App Service scaling","type":"mcq","diff":2,"q":"What's the maximum instance count of a Standard App Service plan?","opts":["10","3","30","100"],"ans":[0],"exp":"Basic up to 3, Standard up to 10, Premium v3 up to 30, Isolated up to 100.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"},
-{"id":"D3-183","sub":"App Service scaling","type":"mcq","diff":3,"q":"An app should scale out instantly based on HTTP traffic, without writing autoscale rules (Premium v2/v3). Which feature?","opts":["Automatic scaling (platform-managed scale out)","Manual scale","Scheduled autoscale","Deployment slots"],"ans":[0],"exp":"Automatic scaling lets the platform scale based on HTTP traffic for Premium v2/v3.","link":"https://learn.microsoft.com/en-us/azure/app-service/manage-automatic-scaling"},
-{"id":"D3-184","sub":"App Service","type":"mcq","diff":1,"q":"Which CLI command creates a web app in an existing plan?","opts":["az webapp create -g RG1 -p plan1 -n myapp123 --runtime \"DOTNETCORE:8.0\"","az appservice create myapp","az web new myapp","az app create --plan plan1"],"ans":[0],"exp":"az webapp create needs a resource group, plan, globally unique name, and runtime.","link":"https://learn.microsoft.com/en-us/cli/azure/webapp"},
-{"id":"D3-185","sub":"App Service","type":"mcq","diff":2,"q":"Which CLI command creates a Linux App Service plan at the S1 tier?","opts":["az appservice plan create -g RG1 -n plan1 --sku S1 --is-linux","az webapp plan create S1","az plan create --linux","az appservice create --tier S1"],"ans":[0],"exp":"az appservice plan create with --sku and --is-linux.","link":"https://learn.microsoft.com/en-us/cli/azure/appservice/plan"},
-{"id":"D3-186","sub":"App Service","type":"mcq","diff":2,"q":"An app stores its database connection string. Where should non-secret settings and secret references go?","opts":["App settings / connection strings (with Key Vault references for secrets)","Hard-coded in the code","In tags","In the plan"],"ans":[0],"exp":"App settings are environment variables; Key Vault references keep secrets out of config.","link":"https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references"},
-{"id":"D3-187","sub":"App Service","type":"mcq","diff":3,"q":"A Key Vault reference in App Service settings fails to resolve. What's the most common missing piece?","opts":["The app's managed identity lacks permission (for example, Key Vault Secrets User) on the vault","The app needs Premium tier","The vault must be in another region","Slots aren't enabled"],"ans":[0],"exp":"The app needs an identity with secret get permission on the vault.","link":"https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references"},
-{"id":"D3-188","sub":"App Service","type":"mcq","diff":2,"q":"Continuous WebJobs stop running when there's no traffic. Which setting fixes this?","opts":["Always On","ARR affinity","HTTP/2","Auto heal"],"ans":[0],"exp":"Always On keeps the app loaded (Basic tier and above).","link":"https://learn.microsoft.com/en-us/azure/app-service/configure-common"},
-{"id":"D3-189","sub":"App Service","type":"mcq","diff":2,"q":"A stateless app behind multiple instances has unbalanced load because users stick to one instance. What do you disable?","opts":["ARR affinity (session affinity cookie)","Always On","HTTPS Only","Health check"],"ans":[0],"exp":"ARR affinity pins clients to instances; disable it for stateless apps.","link":"https://learn.microsoft.com/en-us/azure/app-service/configure-common"},
-{"id":"D3-190","sub":"App Service","type":"mcq","diff":3,"q":"App Service should stop routing traffic to an instance that fails a /health endpoint check. Which feature?","opts":["Health check","Auto heal only","Access restrictions","Diagnostics logging"],"ans":[0],"exp":"Health check removes unhealthy instances from the load balancer rotation.","link":"https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check"},
-{"id":"D3-191","sub":"Deployment slots","type":"mcq","diff":2,"q":"How many deployment slots (including production) does the Standard tier allow?","opts":["5","20","1","10"],"ans":[0],"exp":"Standard allows 5 slots; Premium allows 20.","link":"https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"},
-{"id":"D3-192","sub":"Deployment slots","type":"mcq","diff":2,"q":"Which CLI command swaps the staging slot with production?","opts":["az webapp deployment slot swap -g RG1 -n myapp --slot staging --target-slot production","az webapp swap staging","az slot swap myapp","az webapp deploy --swap"],"ans":[0],"exp":"az webapp deployment slot swap performs the swap.","link":"https://learn.microsoft.com/en-us/cli/azure/webapp/deployment/slot"},
-{"id":"D3-193","sub":"Deployment slots","type":"mcq","diff":3,"q":"You want 10% of production users to hit the staging slot for testing. Which feature?","opts":["Traffic routing percentage (Testing in production)","A swap with preview","Access restrictions","ARR affinity"],"ans":[0],"exp":"Testing in production routes a percentage of traffic to a slot.","link":"https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots#route-traffic"},
-{"id":"D3-194","sub":"Deployment slots","type":"mcq","diff":3,"q":"Every time code is pushed to staging, it must automatically swap to production after warm-up. Which feature?","opts":["Auto swap","Traffic routing","Swap with preview","Clone app"],"ans":[0],"exp":"Auto swap swaps a slot into production after deployment and warm-up.","link":"https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots#configure-auto-swap"},
-{"id":"D3-195","sub":"Custom domains","type":"mcq","diff":2,"q":"To map the apex domain contoso.com (no www) to an App Service app, which DNS records are used?","opts":["An A record with the app's IP, plus a TXT record asuid for verification","A CNAME at the apex","Only an MX record","An NS record"],"ans":[0],"exp":"CNAMEs aren't allowed at the apex, so use an A record plus TXT verification.","link":"https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain"},
-{"id":"D3-196","sub":"TLS","type":"mcq","diff":2,"q":"All HTTP requests to an app must be redirected to HTTPS. Which setting?","opts":["HTTPS Only = On","Minimum TLS version 1.0","Client certificates","Always On"],"ans":[0],"exp":"HTTPS Only redirects HTTP to HTTPS.","link":"https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-bindings"},
-{"id":"D3-197","sub":"TLS","type":"mcq","diff":3,"q":"A wildcard certificate (*.contoso.com) must secure several App Service apps. What should you use?","opts":["Import the certificate (from Key Vault or a PFX upload) — managed certificates don't support wildcards","A free managed certificate","A Let's Encrypt cert via the portal","Client certificates"],"ans":[0],"exp":"Wildcards require an imported or App Service certificate.","link":"https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate"},
-{"id":"D3-198","sub":"App Service networking","type":"mcq","diff":2,"q":"An internal web app must be reachable ONLY from your VNet and on-premises (over VPN), with no public exposure. Which feature?","opts":["A private endpoint for the app (and disabling public access)","VNet integration","Hybrid connections","Access restrictions allowing Any"],"ans":[0],"exp":"Private endpoints provide private inbound access; VNet integration is for outbound traffic.","link":"https://learn.microsoft.com/en-us/azure/app-service/networking/private-endpoint"},
-{"id":"D3-199","sub":"App Service backup","type":"mcq","diff":2,"q":"Where are custom (scheduled) App Service backups stored?","opts":["In a storage account container you choose","In a Recovery Services vault","In the App Service plan","In Key Vault"],"ans":[0],"exp":"Custom backups write to a configured storage account. Automatic backups are platform-managed.","link":"https://learn.microsoft.com/en-us/azure/app-service/manage-backup"},
-{"id":"D3-200","sub":"App Service","type":"yesno","diff":3,"ctx":"App1 runs on a Basic B1 Linux plan. Requirements: staging slot, CPU-based autoscale, a free TLS certificate for www.contoso.com, and outbound access to a VM's private IP.","q":"Answer Yes or No:","stmts":["B1 supports a staging deployment slot","B1 supports rule-based autoscale","A free managed certificate can be used for www.contoso.com on B1","Regional VNet integration is available on B1"],"ans":[false,false,true,true],"exp":"Slots and autoscale need Standard or above; managed certificates work on Basic and above; VNet integration is supported on Basic and above.","link":"https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"}
+ {
+  "id": "D3-151",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What is Azure Container Registry used for?",
+  "opts": [
+   "Storing and managing private container images and artifacts",
+   "Running containers",
+   "Load balancing containers",
+   "Monitoring containers"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Container Registry is a private registry for storing and managing container images, Helm charts and other OCI artifacts, close to where you deploy them. It doesn't run containers — ACI, Container Apps, AKS or App Service do — and it doesn't load-balance or monitor them.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-intro"
+ },
+ {
+  "id": "D3-152",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a Standard container registry?",
+  "opts": [
+   "az acr create -g RG1 -n myacr --sku Standard",
+   "az container registry new myacr",
+   "az acr new --standard",
+   "az docker registry create"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az acr create -n myacr --sku Standard creates a registry. --sku can be Basic, Standard or Premium. The registry name must be globally unique, because it becomes myacr.azurecr.io. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/acr"
+ },
+ {
+  "id": "D3-153",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Before pushing with docker, how do you authenticate to ACR using your Entra identity?",
+  "opts": [
+   "az acr login --name myacr",
+   "docker login with your Entra password",
+   "az login only",
+   "az acr credential show"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az acr login --name myacr uses your current Azure CLI (Entra) sign-in to get a token for the registry and configures Docker with it, so docker push and docker pull work. There's no need for the admin password. az login alone doesn't configure Docker, and az acr credential show reveals the admin credentials.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication"
+ },
+ {
+  "id": "D3-154",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the full image name format for pushing to registry myacr?",
+  "opts": [
+   "myacr.azurecr.io/app:v1",
+   "myacr/app:v1",
+   "azurecr.io/myacr/app",
+   "docker.io/myacr/app"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Images in Azure Container Registry are named after the registry's login server: <registry>.azurecr.io/<repository>:<tag>, for example myacr.azurecr.io/app:v1. Without the login server, Docker assumes Docker Hub.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli"
+ },
+ {
+  "id": "D3-155",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which ACR SKU is required for private endpoints (Private Link)?",
+  "opts": [
+   "Premium",
+   "Standard",
+   "Basic",
+   "All"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Private endpoints (Private Link) for Azure Container Registry need the Premium SKU, as do geo-replication and other advanced network features. Basic and Standard registries are reachable only over their public endpoint.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus"
+ },
+ {
+  "id": "D3-156",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A CI pipeline needs to push images to ACR. Least-privilege role?",
+  "opts": [
+   "AcrPush",
+   "Owner",
+   "AcrPull",
+   "Contributor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "AcrPush lets an identity push images (and also pull them), which is all a CI pipeline needs. AcrPull can only pull, so pushes would fail. Owner and Contributor are far too broad, since they can also delete or reconfigure the registry.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-roles"
+ },
+ {
+  "id": "D3-157",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Images must rebuild automatically when their base image is updated. Which feature?",
+  "opts": [
+   "ACR Tasks with base image update triggers",
+   "Geo-replication",
+   "Webhooks only",
+   "Content trust"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ACR Tasks can build images automatically when their base image changes (a base image update trigger), when source code is committed, or on a schedule. That keeps images patched. Geo-replication copies registries across regions, webhooks only notify, and content trust signs images.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-base-images"
+ },
+ {
+  "id": "D3-158",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you copy an image from Docker Hub into ACR without pulling it locally?",
+  "opts": [
+   "az acr import",
+   "docker pull then push",
+   "az acr build",
+   "az acr replicate"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az acr import copies an image from another registry, such as Docker Hub or another ACR, directly into your registry on the server side, without pulling it to your machine. az acr build builds from source code, and az acr replicate doesn't exist.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-import-images"
+ },
+ {
+  "id": "D3-159",
+  "sub": "ACR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Why is the ACR admin account discouraged for production?",
+  "opts": [
+   "It's a single shared username and password with full push/pull rights and no per-user auditing",
+   "It's slower",
+   "It costs extra",
+   "It only works with Premium"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The admin account is one shared username and password with full push and pull rights to the whole registry. You can't scope it, and you can't tell who used it. Microsoft recommends Entra identities (users, service principals or managed identities with roles such as AcrPull), or repository-scoped tokens, instead.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication"
+ },
+ {
+  "id": "D3-160",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a container instance with a public DNS label?",
+  "opts": [
+   "az container create -g RG1 -n web --image mcr.microsoft.com/azuredocs/aci-helloworld --dns-name-label myweb --ports 80",
+   "az aci new web",
+   "az container run web",
+   "az webapp create --container"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az container create runs a container instance. --dns-name-label myweb gives it a public name (myweb.<region>.azurecontainer.io) and --ports 80 opens port 80. The other commands don't exist, and az webapp create makes an App Service app instead.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-quickstart"
+ },
+ {
+  "id": "D3-161",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command shows a running container instance's logs?",
+  "opts": [
+   "az container logs -g RG1 -n web",
+   "az container show-log",
+   "az monitor logs web",
+   "docker logs web"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az container logs shows what a container in a container instance has written to stdout and stderr. Add --follow to stream it. docker logs only works with your local Docker, and the other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-get-logs"
+ },
+ {
+  "id": "D3-162",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need an interactive shell inside a running container in ACI. Use:",
+  "opts": [
+   "az container exec -g RG1 -n web --exec-command /bin/sh",
+   "az container ssh",
+   "Bastion",
+   "Serial console"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az container exec runs a command inside a running container, for example /bin/sh to open an interactive shell. ACI doesn't offer SSH, Bastion or a serial console.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-exec"
+ },
+ {
+  "id": "D3-163",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Container data must persist after the container stops. What do you do?",
+  "opts": [
+   "Mount an Azure Files share as a volume",
+   "Use the container's local disk",
+   "Use emptyDir",
+   "Use a secret volume"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A container's own file system is lost when the container stops or restarts. To keep data, mount an Azure Files share as a volume; data written there persists. emptyDir and secret volumes are temporary or read-only.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-azure-files"
+ },
+ {
+  "id": "D3-164",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How are CPU and memory assigned in ACI?",
+  "opts": [
+   "You request vCPU and memory per container (for example, --cpu 1 --memory 1.5) and are billed per second",
+   "By choosing a VM size",
+   "Fixed at 1 vCPU / 1 GB",
+   "Through an App Service plan"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "In ACI you request CPU and memory for each container (for example --cpu 1 --memory 1.5), and you're billed per second for what you requested while the container group runs. You don't pick a VM size or use an App Service plan, and the resources aren't fixed at 1 vCPU and 1 GB.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview"
+ },
+ {
+  "id": "D3-165",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A container instance must reach a database on a private IP in VNet1 without a public IP. What do you do?",
+  "opts": [
+   "Deploy the container group into a delegated subnet in VNet1",
+   "Add a public IP",
+   "Use VNet peering only",
+   "Use a service endpoint"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Deploying the container group into a subnet of VNet1 (the subnet is delegated to Microsoft.ContainerInstance/containerGroups) gives it a private IP, so it can reach the database privately without a public IP. Peering alone doesn't put the container in a network, and service endpoints are for PaaS services.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-vnet"
+ },
+ {
+  "id": "D3-166",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you pass a database password to an ACI container so it isn't shown in the portal?",
+  "opts": [
+   "Secure environment variables (--secure-environment-variables)",
+   "Plain environment variables",
+   "The image name",
+   "Tags"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Secure environment variables (--secure-environment-variables) are passed to the container but aren't shown in the container's properties in the portal or CLI. Ordinary environment variables are visible to anyone who can read the container group. Never put secrets in image names or tags.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-environment-variables"
+ },
+ {
+  "id": "D3-167",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How do you deploy a multi-container group (app plus sidecar) to ACI?",
+  "opts": [
+   "With a YAML file or ARM template defining the container group",
+   "With one az container create per container in the same group",
+   "Through the portal only",
+   "With Docker Compose to ACR"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A container group with several containers (for example an app plus a sidecar) is defined in one YAML file or ARM/Bicep template and deployed with az container create --file. Running az container create once per container would create separate groups. The portal can't create multi-container groups.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-multi-container-yaml"
+ },
+ {
+  "id": "D3-168",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How do you scale an ACI deployment?",
+  "opts": [
+   "ACI has no built-in autoscale; deploy more container groups or change resource requests (redeploy)",
+   "Autoscale rules",
+   "Scale sets",
+   "Increase the App Service plan"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ACI has no built-in autoscaling: each container group runs with the CPU and memory you requested. To handle more load, deploy more container groups or redeploy with bigger requests. For automatic scaling, use Azure Container Apps or AKS.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview"
+ },
+ {
+  "id": "D3-169",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 2,
+  "q": "In Azure Container Apps, what's the boundary that groups apps sharing a VNet and Log Analytics workspace?",
+  "opts": [
+   "Container Apps environment",
+   "Container group",
+   "App Service plan",
+   "Resource group"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A Container Apps environment is the shared boundary for a group of container apps: they share a virtual network, ingress and logging (a Log Analytics workspace), and can reach each other. A container group is an ACI concept, an App Service plan is for App Service, and a resource group is only for management.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/environment"
+ },
+ {
+  "id": "D3-170",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 2,
+  "q": "In Container Apps, what is a revision?",
+  "opts": [
+   "An immutable snapshot of a container app version",
+   "A backup",
+   "A resource lock",
+   "A scaling rule"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A revision is an immutable snapshot of a version of a container app. Changing revision-scoped settings, such as the image or environment variables, creates a new revision, and you can run several revisions and split traffic between them. It isn't a backup, lock or scaling rule.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/revisions"
+ },
+ {
+  "id": "D3-171",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Send 20% of traffic to a new version of a container app and 80% to the old one. What do you configure?",
+  "opts": [
+   "Multiple revision mode with traffic splitting (weights)",
+   "Two separate environments",
+   "An Application Gateway",
+   "Manual DNS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "In multiple revision mode, a container app can run several revisions at once, and you set traffic weights between them (for example 80% to the old revision and 20% to the new one) for a canary release. You don't need separate environments, Application Gateway or DNS changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/traffic-splitting"
+ },
+ {
+  "id": "D3-172",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Container Apps scale rule type scales on concurrent HTTP requests?",
+  "opts": [
+   "HTTP scale rule",
+   "CPU only",
+   "Schedule only",
+   "Manual"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "HTTP rules scale on concurrent requests; KEDA scalers handle events; CPU and memory rules are also available.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/scale-app"
+ },
+ {
+  "id": "D3-173",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A container app should be reachable only from other apps in the same environment. Which ingress setting?",
+  "opts": [
+   "Internal ingress (limited to the environment)",
+   "External ingress",
+   "No ingress",
+   "A public IP"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Internal ingress makes a container app reachable only from inside its Container Apps environment (and the VNet it's connected to), not from the internet. External ingress exposes it publicly, and with no ingress at all, no other app can call it over HTTP.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/ingress-overview"
+ },
+ {
+  "id": "D3-174",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A scheduled nightly batch task should run in Container Apps and then exit. Which resource?",
+  "opts": [
+   "Container Apps job (schedule trigger)",
+   "Container app with min replicas 1",
+   "ACR Task",
+   "VMSS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A Container Apps job runs a container to completion and then stops. Jobs can be triggered manually, on a schedule (cron) or by events. A container app with at least one replica would keep running all the time, ACR Tasks build images, and VMSS is far more to manage.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/jobs"
+ },
+ {
+  "id": "D3-175",
+  "sub": "Containers",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO services can scale containers automatically based on load without you managing Kubernetes?",
+  "opts": [
+   "Azure Container Apps",
+   "Azure App Service (Web App for Containers) with autoscale",
+   "Azure Container Instances",
+   "Azure Container Registry"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "Azure Container Apps scales automatically (including to zero) with HTTP and KEDA rules, and App Service (Web App for Containers) scales out with autoscale rules, without you managing Kubernetes. ACI has no autoscaling, and ACR only stores images.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/compare-options"
+ },
+ {
+  "id": "D3-176",
+  "sub": "Containers",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "Container Apps can scale to zero replicas",
+   "ACI supports Windows containers",
+   "ACR Basic supports geo-replication",
+   "Container Apps supports Dapr integration"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "Container Apps scales to zero and supports Dapr; ACI runs Windows containers; geo-replication is Premium only.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/overview"
+ },
+ {
+  "id": "D3-177",
+  "sub": "App Service plans",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which App Service tier is intended for free development and testing, with shared infrastructure and no custom domains?",
+  "opts": [
+   "Free (F1)",
+   "Standard",
+   "Premium",
+   "Isolated"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The Free (F1) tier runs apps on shared infrastructure at no cost, for development and testing. It has quotas and no custom domains, scaling or SLA. Standard, Premium and Isolated are paid production tiers.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ },
+ {
+  "id": "D3-178",
+  "sub": "App Service plans",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which tier is the lowest that supports custom domains with SSL bindings and dedicated compute?",
+  "opts": [
+   "Basic",
+   "Free",
+   "Shared",
+   "Standard only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Basic is the lowest tier with dedicated compute instances, custom domains and TLS/SSL bindings, though scaling is manual only and limited. Free and Shared run on shared infrastructure and can't use custom domains with TLS. Standard adds autoscale and slots, but isn't the minimum.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ },
+ {
+  "id": "D3-179",
+  "sub": "App Service plans",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An app needs full network isolation in a single-tenant environment inside your VNet with very high scale. Which tier?",
+  "opts": [
+   "Isolated v2 (App Service Environment v3)",
+   "Premium v3",
+   "Standard",
+   "Basic"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The Isolated v2 tier runs in an App Service Environment v3, a single-tenant deployment inside your own virtual network. That gives full network isolation and very high scale. Premium v3, Standard and Basic run on shared multi-tenant infrastructure, even though they can integrate with VNets.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/environment/overview"
+ },
+ {
+  "id": "D3-180",
+  "sub": "App Service plans",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Three web apps run in one App Service plan with 2 instances. How many instances does each app run on?",
+  "opts": [
+   "2 — every app runs on all instances of the plan",
+   "1 each",
+   "6 total, 2 per app separately billed",
+   "It depends on traffic"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Every app in an App Service plan runs on all of the plan's instances. With 2 instances, each of the three apps runs on both. You pay for the plan's instances, not per app. Scaling the plan affects every app in it.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ },
+ {
+  "id": "D3-181",
+  "sub": "App Service plans",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can you move a web app to an App Service plan in a different region?",
+  "opts": [
+   "No — the plan must be in the same resource group and region (webspace); create the app in the new region instead",
+   "Yes, anytime",
+   "Only with Premium",
+   "Only Linux apps"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "An app can only move to another App Service plan in the same resource group and region (the same 'webspace'). To run it in another region, create a new app in a plan there and redeploy the code (or clone the app). Tier and operating system don't change this.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/app-service-plan-manage"
+ },
+ {
+  "id": "D3-182",
+  "sub": "App Service scaling",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's the maximum instance count of a Standard App Service plan?",
+  "opts": [
+   "10",
+   "3",
+   "30",
+   "100"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A Standard App Service plan can scale out to at most 10 instances. Basic allows up to 3, Premium v3 up to 30, and Isolated up to 100.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"
+ },
+ {
+  "id": "D3-183",
+  "sub": "App Service scaling",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An app should scale out instantly based on HTTP traffic, without writing autoscale rules (Premium v2/v3). Which feature?",
+  "opts": [
+   "Automatic scaling (platform-managed scale out)",
+   "Manual scale",
+   "Scheduled autoscale",
+   "Deployment slots"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Automatic scaling, available on Premium v2 and v3, lets App Service add and remove instances based on HTTP traffic, with no autoscale rules for you to write. It reacts quickly and keeps instances warm. Manual and scheduled scaling need settings from you, and slots are for deployment.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-automatic-scaling"
+ },
+ {
+  "id": "D3-184",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which CLI command creates a web app in an existing plan?",
+  "opts": [
+   "az webapp create -g RG1 -p plan1 -n myapp123 --runtime \"DOTNETCORE:8.0\"",
+   "az appservice create myapp",
+   "az web new myapp",
+   "az app create --plan plan1"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az webapp create creates a web app in an existing App Service plan (-p) with a globally unique name (-n) and a runtime such as \"DOTNETCORE:8.0\". The name becomes <name>.azurewebsites.net. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/webapp"
+ },
+ {
+  "id": "D3-185",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a Linux App Service plan at the S1 tier?",
+  "opts": [
+   "az appservice plan create -g RG1 -n plan1 --sku S1 --is-linux",
+   "az webapp plan create S1",
+   "az plan create --linux",
+   "az appservice create --tier S1"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az appservice plan create creates an App Service plan. --sku S1 sets the Standard tier and --is-linux makes it a Linux plan. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/appservice/plan"
+ },
+ {
+  "id": "D3-186",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An app stores its database connection string. Where should non-secret settings and secret references go?",
+  "opts": [
+   "App settings / connection strings (with Key Vault references for secrets)",
+   "Hard-coded in the code",
+   "In tags",
+   "In the plan"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "App settings and connection strings are exposed to the app as environment variables, so configuration stays out of the code. For secrets, use a Key Vault reference in the setting (@Microsoft.KeyVault(...)), so the secret stays in Key Vault. Hard-coding settings is insecure, and tags and the plan aren't for configuration.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references"
+ },
+ {
+  "id": "D3-187",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A Key Vault reference in App Service settings fails to resolve. What's the most common missing piece?",
+  "opts": [
+   "The app's managed identity lacks permission (for example, Key Vault Secrets User) on the vault",
+   "The app needs Premium tier",
+   "The vault must be in another region",
+   "Slots aren't enabled"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A Key Vault reference only works if the app's managed identity can read the secret: a role such as Key Vault Secrets User (with the RBAC model) or a Get secret access policy. Without it, the setting fails to resolve. Any tier above Free works, the vault can be in any region, and slots don't matter.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references"
+ },
+ {
+  "id": "D3-188",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Continuous WebJobs stop running when there's no traffic. Which setting fixes this?",
+  "opts": [
+   "Always On",
+   "ARR affinity",
+   "HTTP/2",
+   "Auto heal"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Without Always On, App Service unloads an idle app after about 20 minutes with no requests, which also stops continuous WebJobs. Always On keeps the app loaded (available from Basic). ARR affinity, HTTP/2 and Auto heal don't keep the app running.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/configure-common"
+ },
+ {
+  "id": "D3-189",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A stateless app behind multiple instances has unbalanced load because users stick to one instance. What do you disable?",
+  "opts": [
+   "ARR affinity (session affinity cookie)",
+   "Always On",
+   "HTTPS Only",
+   "Health check"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ARR affinity (on by default) sets a cookie that sends each user back to the same instance. A stateless app doesn't need that, and it can leave some instances overloaded. Turning ARR affinity off lets the load balancer spread requests evenly. The other settings don't affect distribution.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/configure-common"
+ },
+ {
+  "id": "D3-190",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 3,
+  "q": "App Service should stop routing traffic to an instance that fails a /health endpoint check. Which feature?",
+  "opts": [
+   "Health check",
+   "Auto heal only",
+   "Access restrictions",
+   "Diagnostics logging"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Health check pings a path you choose, such as /health, on every instance. An instance that keeps failing is taken out of the load balancer rotation (and replaced if it stays unhealthy). Auto heal restarts on conditions you set, access restrictions filter callers, and logging only records events.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check"
+ },
+ {
+  "id": "D3-191",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How many deployment slots (including production) does the Standard tier allow?",
+  "opts": [
+   "5",
+   "20",
+   "1",
+   "10"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The Standard tier allows 5 deployment slots, counting production; Premium allows 20. Free, Shared and Basic don't support slots.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"
+ },
+ {
+  "id": "D3-192",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command swaps the staging slot with production?",
+  "opts": [
+   "az webapp deployment slot swap -g RG1 -n myapp --slot staging --target-slot production",
+   "az webapp swap staging",
+   "az slot swap myapp",
+   "az webapp deploy --swap"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az webapp deployment slot swap --slot staging --target-slot production swaps the staging slot into production (warming it up first). The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/webapp/deployment/slot"
+ },
+ {
+  "id": "D3-193",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You want 10% of production users to hit the staging slot for testing. Which feature?",
+  "opts": [
+   "Traffic routing percentage (Testing in production)",
+   "A swap with preview",
+   "Access restrictions",
+   "ARR affinity"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Testing in production (traffic routing) sends a percentage of production traffic, such as 10%, to another slot, so real users try the new version while the rest stay on production. Swap with preview pauses a swap rather than splitting traffic, and access restrictions and ARR affinity don't route users between slots.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots#route-traffic"
+ },
+ {
+  "id": "D3-194",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Every time code is pushed to staging, it must automatically swap to production after warm-up. Which feature?",
+  "opts": [
+   "Auto swap",
+   "Traffic routing",
+   "Swap with preview",
+   "Clone app"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "With auto swap enabled on the staging slot, every deployment to staging is warmed up and then automatically swapped into production, with no manual step. Traffic routing splits users between slots, swap with preview needs you to complete it, and clone app copies an app.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots#configure-auto-swap"
+ },
+ {
+  "id": "D3-195",
+  "sub": "Custom domains",
+  "type": "mcq",
+  "diff": 2,
+  "q": "To map the apex domain contoso.com (no www) to an App Service app, which DNS records are used?",
+  "opts": [
+   "An A record with the app's IP, plus a TXT record asuid for verification",
+   "A CNAME at the apex",
+   "Only an MX record",
+   "An NS record"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "CNAME records aren't allowed at a zone's apex (contoso.com), so map it with an A record pointing to the app's inbound IP address, plus a TXT record named asuid with the app's verification ID to prove you own the domain. MX is for email and NS for delegation.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain"
+ },
+ {
+  "id": "D3-196",
+  "sub": "TLS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "All HTTP requests to an app must be redirected to HTTPS. Which setting?",
+  "opts": [
+   "HTTPS Only = On",
+   "Minimum TLS version 1.0",
+   "Client certificates",
+   "Always On"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "HTTPS Only = On makes App Service redirect every HTTP request to HTTPS. The minimum TLS version controls which TLS versions are accepted (and 1.0 would weaken security), client certificates are for mutual TLS, and Always On keeps the app loaded.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-bindings"
+ },
+ {
+  "id": "D3-197",
+  "sub": "TLS",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A wildcard certificate (*.contoso.com) must secure several App Service apps. What should you use?",
+  "opts": [
+   "Import the certificate (from Key Vault or a PFX upload) — managed certificates don't support wildcards",
+   "A free managed certificate",
+   "A Let's Encrypt cert via the portal",
+   "Client certificates"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Free App Service managed certificates don't support wildcard domains. To secure *.contoso.com across several apps, import the wildcard certificate — from Key Vault, a PFX upload or an App Service certificate — and bind it to each app. Client certificates are for authenticating callers, not for the site.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate"
+ },
+ {
+  "id": "D3-198",
+  "sub": "App Service networking",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An internal web app must be reachable ONLY from your VNet and on-premises (over VPN), with no public exposure. Which feature?",
+  "opts": [
+   "A private endpoint for the app (and disabling public access)",
+   "VNet integration",
+   "Hybrid connections",
+   "Access restrictions allowing Any"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A private endpoint gives the app a private IP in your VNet, so it's reachable from the VNet and from on-premises over VPN. Disabling public network access then blocks the internet. VNet integration is only for outbound calls, Hybrid Connections reach on-premises hosts, and allowing Any keeps the app public.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/networking/private-endpoint"
+ },
+ {
+  "id": "D3-199",
+  "sub": "App Service backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Where are custom (scheduled) App Service backups stored?",
+  "opts": [
+   "In a storage account container you choose",
+   "In a Recovery Services vault",
+   "In the App Service plan",
+   "In Key Vault"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Custom (scheduled or on-demand) App Service backups are written as ZIP and XML files to a storage account container that you choose. Automatic backups are stored by the platform itself. App Service backups don't use Recovery Services vaults or Key Vault.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-backup"
+ },
+ {
+  "id": "D3-200",
+  "sub": "App Service",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "App1 runs on a Basic B1 Linux plan. Requirements: staging slot, CPU-based autoscale, a free TLS certificate for www.contoso.com, and outbound access to a VM's private IP.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "B1 supports a staging deployment slot",
+   "B1 supports rule-based autoscale",
+   "A free managed certificate can be used for www.contoso.com on B1",
+   "Regional VNet integration is available on B1"
+  ],
+  "ans": [
+   false,
+   false,
+   true,
+   true
+  ],
+  "exp": "Slots and autoscale need Standard or above; managed certificates work on Basic and above; VNet integration is supported on Basic and above.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ }
 ]

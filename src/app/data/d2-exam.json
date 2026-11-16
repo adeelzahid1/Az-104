@@ -261,7 +261,7 @@
   "ans": [
    2
   ],
-  "exp": "Create (c) and write (w) let partners upload blobs without reading, listing or deleting.",
+  "exp": "In a stored access policy, permissions are letters: r = read, a = add, c = create, w = write, d = delete, l = list. Create (c) and write (w) let partners upload new blobs but not read, list or delete anything, which matches upload-only access. 'rl' is read and list, and 'racwdl' is full access.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/storage/container/policy"
  },
  {
@@ -289,7 +289,7 @@
    1,
    3
   ],
-  "exp": "ZRS copies data across three zones in one region. RA-GRS adds a readable copy in the paired region.",
+  "exp": "ZRS keeps three synchronous copies across availability zones in one region, so it survives a zone outage without data leaving the region. RA-GRS copies data to the paired region and lets applications read that secondary copy at any time, so it survives a region outage. LRS stays in one datacenter, and plain GRS can't be read until failover.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {

@@ -32,7 +32,7 @@
   "ans": [
    0
   ],
-  "exp": "The trusted Microsoft services exception lets selected Azure services through the firewall.",
+  "exp": "'Allow trusted Microsoft services to access this storage account' is an exception in the storage firewall. Services such as Azure Backup, Azure Site Recovery and Azure Monitor can still reach the account even when only selected networks are allowed. Adding 0.0.0.0/0 or disabling the firewall would open the account to the whole internet, and anonymous access is about unauthenticated reads, not network rules.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    1
   ],
-  "exp": "Public IP ranges go in the firewall IP rules. VNet rules are for Azure subnets.",
+  "exp": "The storage firewall has two kinds of rules: IP rules for public internet addresses and ranges, and virtual network rules for Azure subnets. Your office reaches Azure from its public IP, so add 203.0.113.10 as an IP rule. A VNet rule only works for Azure subnets, a private endpoint lives in an Azure VNet, and NSG rules don't control access to a storage account.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    1
   ],
-  "exp": "SAS supports signedIp and signedProtocol (HTTPS only) restrictions.",
+  "exp": "A SAS token can carry sip (signed IP — the allowed address or range) and spr (signed protocol — https, or https,http). With sip and spr=https, the token only works from that range and only over HTTPS. 'Signed services' chooses blob, file, queue or table; the policy name and the access tier don't restrict callers.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    1
   ],
-  "exp": "A container, share, queue, or table can have at most 5 stored access policies.",
+  "exp": "Each container, file share, queue or table can hold at most 5 stored access policies. To revoke SAS tokens linked to a policy you change or delete that policy, so plan the five slots carefully, for example one per partner or purpose.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    2
   ],
-  "exp": "A user delegation SAS is secured with a user delegation key obtained via Entra ID.",
+  "exp": "A user delegation SAS is signed with a user delegation key that you request using Microsoft Entra credentials, not with the account key. That's why Microsoft recommends it: no account key is involved, and access is tied to an identity with RBAC permissions. Account and service SAS are both signed with the account key.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"
  },
  {
@@ -176,7 +176,7 @@
   "ans": [
    1
   ],
-  "exp": "Two keys allow rotation without downtime.",
+  "exp": "Each storage account has two access keys (key1 and key2) so you can rotate them without downtime: move applications to key2, regenerate key1, move them back to the new key1, then regenerate key2. With only one key, regenerating it would immediately break every client.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage"
  },
  {
@@ -212,7 +212,7 @@
   "ans": [
    1
   ],
-  "exp": "Access requires both layers: share-level RBAC and NTFS ACLs.",
+  "exp": "Identity-based access to Azure Files has two layers, and a user needs both. Share-level permission is an Azure RBAC role on the share, such as Storage File Data SMB Share Contributor. File- and folder-level permission is Windows NTFS ACLs, checked when they open files. SAS tokens can't be used to mount SMB shares, and anonymous access isn't supported for Azure Files.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"
  },
  {
@@ -233,7 +233,7 @@
    1,
    2
   ],
-  "exp": "AD DS, Entra Domain Services, and Entra Kerberos are supported.",
+  "exp": "Azure Files supports three identity sources for SMB: on-premises AD DS (the account is joined to your domain), Microsoft Entra Domain Services (a managed domain in Azure), and Microsoft Entra Kerberos (for hybrid identities, without domain controllers being reachable). Google identities and local Windows accounts can't be used.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-active-directory-overview"
  },
  {
@@ -251,7 +251,7 @@
   "ans": [
    1
   ],
-  "exp": "Storage Blob Data Reader is the data-plane read role. Storage Account Contributor is control-plane.",
+  "exp": "Storage Blob Data Reader is a data-plane role: it allows reading containers and blobs with Microsoft Entra authentication, and nothing else. Reader and Storage Account Contributor are control-plane roles: they cover the account's settings, not the data. Contributor manages the account and can read data only by fetching the access keys.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
  },
  {
@@ -269,7 +269,7 @@
   "ans": [
    1
   ],
-  "exp": "Control-plane Reader doesn't grant data access; a Storage Blob Data role is needed.",
+  "exp": "Reader is a control-plane role: it can see the storage account and its settings but grants no permission to read the data. When the portal uses 'Microsoft Entra user account' authentication, reading blobs needs a data role such as Storage Blob Data Reader, so access is denied. (With access-key mode it would also fail, because Reader can't list the keys.)",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
  },
  {
@@ -287,7 +287,7 @@
   "ans": [
    1
   ],
-  "exp": "Blob = anonymous read of blobs only. Container also allows listing.",
+  "exp": "The 'Blob' anonymous access level lets anyone read a blob if they know its URL, but they can't list the container's contents. 'Container' allows reading and listing. 'Private' allows no anonymous access, and 'Public-All' doesn't exist. Anonymous access must also be allowed at the account level.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure"
  },
  {
@@ -326,7 +326,7 @@
   "ans": [
    0
   ],
-  "exp": "GPv2 supports all services, tiers, and redundancy options.",
+  "exp": "General-purpose v2 (GPv2) supports blobs, files, queues and tables, the hot, cool, cold and archive tiers, and every redundancy option (LRS, ZRS, GRS, RA-GRS, GZRS, RA-GZRS). It's Microsoft's recommended default. Premium accounts support only one service each and fewer redundancy options, and BlobStorage is a legacy kind.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -344,7 +344,7 @@
   "ans": [
    1
   ],
-  "exp": "Premium file shares run on FileStorage accounts (SSD-backed).",
+  "exp": "Premium file shares run on FileStorage accounts, which use SSDs for low latency and high IOPS — what database workloads on SMB need. Standard GPv2 shares use HDD-based storage. BlockBlobStorage is premium for blobs, not file shares, and GPv1 is a legacy kind.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {
@@ -362,7 +362,7 @@
   "ans": [
    1
   ],
-  "exp": "LRS keeps 3 synchronous copies in one datacenter.",
+  "exp": "Locally redundant storage (LRS) keeps three synchronous copies inside a single datacenter in one region. It protects against disk or rack failures but not against losing the whole datacenter. ZRS spreads the copies across zones, and GRS and GZRS also copy data to another region.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -380,7 +380,7 @@
   "ans": [
    3
   ],
-  "exp": "RA-GRS adds read access to the secondary. A plain GRS secondary is readable only after failover.",
+  "exp": "GRS and RA-GRS both copy data asynchronously to the paired region, so it survives a region outage. Only the read-access versions (RA-GRS and RA-GZRS) let applications read the secondary copy at any time, through the -secondary endpoint. With plain GRS the secondary can only be read after a failover. LRS and ZRS stay in one region.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -398,7 +398,7 @@
   "ans": [
    2
   ],
-  "exp": "GZRS = ZRS in the primary + geo-replication to the secondary.",
+  "exp": "Geo-zone-redundant storage (GZRS) stores three copies across availability zones in the primary region (like ZRS) and also copies the data asynchronously to the secondary region (like GRS). ZRS stays in one region, GRS uses only one datacenter in the primary region, and RA-LRS doesn't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -434,7 +434,7 @@
   "ans": [
    1
   ],
-  "exp": "Premium accounts support LRS and ZRS (in supported regions), with no geo options.",
+  "exp": "Premium storage accounts (block blob and file shares) support only LRS and, in regions that offer it, ZRS. They have no geo-redundant options such as GRS or RA-GRS, so for protection against a region outage you need another approach, such as object replication or copying data to a standard account.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
  },
  {
@@ -452,7 +452,7 @@
   "ans": [
    1
   ],
-  "exp": "Versioning on both accounts and change feed on the source are required.",
+  "exp": "Object replication works from the blob version history and the change log. The source and destination accounts must both have blob versioning turned on, and the source must have change feed enabled. The accounts can be in different regions or subscriptions, and soft delete isn't required.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -470,7 +470,7 @@
   "ans": [
    1
   ],
-  "exp": "Object replication copies block blobs asynchronously across accounts.",
+  "exp": "Object replication copies block blobs asynchronously from a container in one account to a container in another account. The accounts can be in different regions, subscriptions or even tenants. It isn't synchronous, doesn't support page or append blobs, and archived blobs aren't replicated.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/object-replication-overview"
  },
  {
@@ -488,7 +488,7 @@
   "ans": [
    1
   ],
-  "exp": "SSE with Microsoft-managed keys is always on.",
+  "exp": "Azure Storage always encrypts data at rest with 256-bit AES (server-side encryption). It's on by default for every account and can't be turned off. You can choose who manages the key — Microsoft or you (customer-managed keys) — but not whether data is encrypted.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
  },
  {
@@ -506,7 +506,7 @@
   "ans": [
    1
   ],
-  "exp": "CMK requires soft delete and purge protection on the vault.",
+  "exp": "When a storage account uses a customer-managed key, losing that key would make the data unreadable forever. Azure therefore requires the key vault to have soft delete and purge protection enabled, so a deleted key can be recovered and can't be purged immediately. Firewalls, tags and HSMs are optional.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview"
  },
  {
@@ -524,7 +524,7 @@
   "ans": [
    1
   ],
-  "exp": "Infrastructure encryption is a creation-time setting.",
+  "exp": "Infrastructure encryption adds a second layer of encryption at the infrastructure level with a different key. It can only be chosen when the storage account is created and can't be turned on afterwards; to get it, create a new account and move the data.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/infrastructure-encryption-enable"
  },
  {
@@ -542,7 +542,7 @@
   "ans": [
    1
   ],
-  "exp": "azcopy sync compares source and destination and transfers differences.",
+  "exp": "azcopy sync compares the source and destination (by last-modified time) and copies only new or changed files, so repeated runs transfer just the differences. azcopy copy copies everything you give it, azcopy move isn't for incremental sync, and benchmark only tests performance.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy-sync"
  },
  {
@@ -560,7 +560,7 @@
   "ans": [
    1
   ],
-  "exp": "AzCopy supports Entra ID login and SAS tokens.",
+  "exp": "AzCopy can authenticate with Microsoft Entra ID (azcopy login, which also supports managed identities and service principals — you need a data role such as Storage Blob Data Contributor) or with a SAS token appended to the URL. It doesn't use SSH keys or an account name alone.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10"
  },
  {
@@ -578,7 +578,7 @@
   "ans": [
    1
   ],
-  "exp": "Storage Explorer is a free desktop app for Windows, macOS, and Linux.",
+  "exp": "Azure Storage Explorer is a free desktop app for Windows, macOS and Linux. You can browse and manage blobs, files, queues, tables and Data Lake storage across several accounts and subscriptions, upload and download data, and manage SAS and access policies. It isn't a web dashboard or a PowerShell module.",
   "link": "https://learn.microsoft.com/en-us/azure/vs-azure-tools-storage-manage-with-storage-explorer"
  },
  {
@@ -596,7 +596,7 @@
   "ans": [
    1
   ],
-  "exp": "Offline transfer is designed for large datasets over limited bandwidth.",
+  "exp": "60 TB over a very slow link could take weeks or months. Azure Data Box (or the Import/Export service with your own disks) is an offline transfer: you copy the data to a device on site and ship it to an Azure datacenter, where it's uploaded. AzCopy, Storage Explorer and RDP copies all depend on the network.",
   "link": "https://learn.microsoft.com/en-us/azure/databox/data-box-overview"
  },
  {
@@ -635,7 +635,7 @@
   "ans": [
    2
   ],
-  "exp": "SMB uses TCP 445.",
+  "exp": "SMB uses TCP port 445. Many ISPs and home routers block outbound 445 for security reasons, so mounting an Azure file share directly from home often fails with 'System error 53'. HTTP uses 80, HTTPS uses 443 and RDP uses 3389.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview"
  },
  {
@@ -653,7 +653,7 @@
   "ans": [
    1
   ],
-  "exp": "Tunnel SMB over VPN/ExpressRoute with a private endpoint, or cache locally with Azure File Sync.",
+  "exp": "If the ISP blocks TCP 445, send SMB traffic through a site-to-site VPN or ExpressRoute (usually to a private endpoint), so it never travels directly over the internet. Alternatively, Azure File Sync caches the share on a local Windows Server that users reach on the LAN. Switching to HTTP or port 80 isn't possible for SMB, and redundancy settings don't affect connectivity.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-networking-overview"
  },
  {
@@ -671,7 +671,7 @@
   "ans": [
    1
   ],
-  "exp": "NFS 4.1 shares require premium FileStorage accounts.",
+  "exp": "NFS 4.1 file shares are available only on premium FileStorage accounts and are mainly mounted from Linux clients. SMB 3.1.1 works on both standard and premium accounts. Azure Files doesn't offer FTP or WebDAV.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/files-nfs-protocol"
  },
  {
@@ -725,7 +725,7 @@
   "ans": [
    2
   ],
-  "exp": "Page blobs handle random read/write workloads such as VHDs.",
+  "exp": "Page blobs are made of 512-byte pages and support fast random reads and writes, which is how VM disks (VHDs) work. Block blobs suit files and objects that are uploaded whole, and append blobs suit logs that only grow at the end. There's no 'table blob'.",
   "link": "https://learn.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs"
  },
  {
@@ -743,7 +743,7 @@
   "ans": [
    3
   ],
-  "exp": "Archive is the only offline tier.",
+  "exp": "Archive is the only offline tier. You can't read or change an archived blob until you rehydrate it to hot, cool or cold, which can take up to 15 hours. Hot, cool and cold are online tiers with millisecond access.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -779,7 +779,7 @@
   "ans": [
    0
   ],
-  "exp": "Cool 30, cold 90, archive 180 days.",
+  "exp": "Each cooler tier has a minimum storage period: 30 days for cool, 90 days for cold and 180 days for archive. If you delete, overwrite or move a blob out earlier, you're charged for the rest of the period (prorated). Hot has no minimum.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
  },
  {
@@ -815,7 +815,7 @@
   "ans": [
    0
   ],
-  "exp": "Lifecycle management rules can tier and delete based on age.",
+  "exp": "Blob lifecycle management lets you write rules such as 'tier to cool when last modified more than 30 days ago, to archive after 90 days, delete after 365 days', and Azure applies them automatically every day. Azure Policy governs resource settings, not data, and budgets and object replication don't move blobs between tiers.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
  },
  {
@@ -833,7 +833,7 @@
   "ans": [
    2
   ],
-  "exp": "A new policy can take up to 24 hours to take effect, and a run can take additional time.",
+  "exp": "After you create or change a lifecycle policy, it can take up to 24 hours to take effect, and the daily run itself can take more time to finish. So expect up to about 48 hours before blobs are first tiered or deleted.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/lifecycle-management-overview"
  },
  {
@@ -851,7 +851,7 @@
   "ans": [
    1
   ],
-  "exp": "Versioning is automatic, while snapshots are created explicitly.",
+  "exp": "With versioning on, Azure automatically keeps the previous version every time a blob is overwritten or deleted, with no action from you. A snapshot is a read-only copy that you create yourself at a point in time. Both can restore earlier content, but only versioning does it automatically, and neither needs the archive tier.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/versioning-overview"
  },
  {
@@ -869,7 +869,7 @@
   "ans": [
    1
   ],
-  "exp": "Soft delete keeps deleted data recoverable for the retention period.",
+  "exp": "Blob soft delete keeps a deleted (or overwritten) blob in a soft-deleted state for the retention period, here 14 days. You can undelete it during that time; afterwards it's permanently removed. It doesn't archive blobs, prevent deletion or lock the container.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/soft-delete-blob-overview"
  },
  {
@@ -887,7 +887,7 @@
   "ans": [
    0
   ],
-  "exp": "Share snapshots are read-only and incremental.",
+  "exp": "A share snapshot is a read-only point-in-time copy of the whole file share. Snapshots are incremental: only data changed since the previous snapshot is stored, so they're cheap. You take them manually or on a schedule with Azure Backup, and they work for SMB shares.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-snapshots-files"
  },
  {

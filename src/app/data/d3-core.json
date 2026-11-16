@@ -32,7 +32,7 @@
   "ans": [
    1
   ],
-  "exp": "Parameters are deploy-time input; variables are internal computed values.",
+  "exp": "Parameters are the inputs of a template: you supply their values at deployment time (on the command line or in a parameter file), so the same template works for dev and prod. Variables are values the template calculates for itself, often from parameters, and the person deploying can't set them. Both can have types, and parameters aren't only for passwords.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/syntax"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    1
   ],
-  "exp": "Complete mode deletes resources in the resource group that aren't defined in the template.",
+  "exp": "In Complete mode, Resource Manager makes the resource group match the template exactly, so any resource in the group that the template doesn't define — like this VM — is deleted. In the default Incremental mode, resources not in the template are left untouched. That's why Complete mode is risky and rarely used.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    1
   ],
-  "exp": "Incremental is the default: it adds and updates resources but never deletes.",
+  "exp": "Incremental is the default: resources in the template are created or updated, and everything else in the resource group is left alone. Complete mode deletes resources not in the template. 'Validate' only checks a template without deploying, and 'Overwrite' isn't a mode.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes"
  },
  {
@@ -86,7 +86,7 @@
   "ans": [
    0
   ],
-  "exp": "What-if shows the create, modify, and delete changes per resource without deploying.",
+  "exp": "The what-if operation (az deployment group what-if, or create --confirm-with-what-if) compares the template with what's currently deployed and lists every resource that would be created, modified or deleted — without changing anything. The Activity log shows past operations, Advisor gives recommendations, and az group delete has no dry-run.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-what-if"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    0
   ],
-  "exp": "az deployment group create (PowerShell: New-AzResourceGroupDeployment).",
+  "exp": "az deployment group create deploys a template (JSON or Bicep) into a resource group, with --resource-group and --template-file (plus parameters). The PowerShell equivalent is New-AzResourceGroupDeployment. Use az deployment sub create for subscription scope. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-cli"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    1
   ],
-  "exp": "Export template generates JSON from existing resources (it may need cleanup).",
+  "exp": "Export template (on a resource or resource group in the portal) generates an ARM JSON template from what's deployed, which you can save and redeploy. Expect to clean it up, for example by turning hard-coded values into parameters. Azure Policy doesn't produce templates.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/export-template-portal"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    1
   ],
-  "exp": "Bicep is a transparent abstraction over ARM JSON.",
+  "exp": "Bicep is a simpler language for ARM templates. When you deploy, it's compiled (transpiled) into ARM JSON and Resource Manager deploys it in the usual way. That means every resource type and API version available in ARM is available in Bicep, and the Azure CLI and PowerShell compile Bicep automatically.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview"
  },
  {
@@ -158,7 +158,7 @@
   "ans": [
    0
   ],
-  "exp": "decompile converts JSON to Bicep; build converts Bicep to JSON.",
+  "exp": "az bicep decompile --file azuredeploy.json converts an ARM JSON template into a .bicep file (you may need to tidy it afterwards). az bicep build does the reverse, turning Bicep into ARM JSON. az bicep export isn't a command.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/decompile"
  },
  {
@@ -176,7 +176,7 @@
   "ans": [
    1
   ],
-  "exp": "Bicep uses the symbolic name directly, as in stg.name.",
+  "exp": "In Bicep each resource has a symbolic name (here stg), and you use it directly to read properties: stg.name, stg.id or stg.properties.primaryEndpoints. This also creates the deployment dependency automatically. reference() and the square-bracket syntax are ARM JSON.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/file"
  },
  {
@@ -194,7 +194,7 @@
   "ans": [
    1
   ],
-  "exp": "Square brackets mark an expression; parameters() is a template function.",
+  "exp": "In ARM JSON, a string that starts with [ and ends with ] is a template expression that's evaluated at deployment. Inside it, parameters('location') is a template function that returns the value of the 'location' parameter. Comments use // and variables are declared in the variables section.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions"
  },
  {
@@ -233,7 +233,7 @@
   "ans": [
    2
   ],
-  "exp": "Zones: 99.99%; availability set: 99.95%; single VM with premium disks: 99.9%.",
+  "exp": "Spreading two or more VMs across two or more availability zones gives a 99.99% VM connectivity SLA, because each zone is a separate datacenter with its own power and networking. Two or more VMs in an availability set give 99.95%, and a single VM with Premium SSD or Ultra disks gives 99.9%.",
   "link": "https://www.microsoft.com/licensing/docs/view/Service-Level-Agreements-SLA-for-Online-Services"
  },
  {
@@ -251,7 +251,7 @@
   "ans": [
    1
   ],
-  "exp": "Fault domains separate racks; update domains separate maintenance groups.",
+  "exp": "An availability set spreads VMs across fault domains (separate racks with their own power and network) and update domains (groups rebooted one at a time during planned maintenance). It protects against hardware and maintenance events inside one datacenter, but not a whole zone or region failing, and not someone deleting a VM.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
  },
  {
@@ -269,7 +269,7 @@
   "ans": [
    1
   ],
-  "exp": "Up to 3 fault domains (region-dependent) and 20 update domains.",
+  "exp": "An availability set supports up to 3 fault domains (some regions allow only 2) and up to 20 update domains (5 by default). The other combinations aren't valid limits.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
  },
  {
@@ -287,7 +287,7 @@
   "ans": [
    1
   ],
-  "exp": "Availability set membership is creation-time only.",
+  "exp": "A VM's availability set can only be chosen when the VM is created. To add an existing VM, delete it while keeping its disks and NIC, then create a new VM from those disks with the availability set specified. There's no setting, az vm update option or restart that changes it.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
  },
  {
@@ -305,7 +305,7 @@
   "ans": [
    3
   ],
-  "exp": "Ultra Disk lets you set IOPS and throughput independently and offers the highest performance.",
+  "exp": "Ultra Disk offers the highest performance and lets you set IOPS and throughput independently of disk size, even while the VM is running. Premium SSD is fast but its performance is tied to its size tier. Standard SSD and Standard HDD are cheaper and slower.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types"
  },
  {
@@ -323,7 +323,7 @@
   "ans": [
    1
   ],
-  "exp": "The single-instance 99.9% SLA requires Premium SSD or Ultra disks.",
+  "exp": "A single VM (not in an availability set or zone) gets the 99.9% SLA only if every OS and data disk is Premium SSD, Premium SSD v2 or Ultra Disk. With Standard SSD or HDD, the single-instance SLA is lower. Accelerated networking doesn't affect the SLA.",
   "link": "https://www.microsoft.com/licensing/docs/view/Service-Level-Agreements-SLA-for-Online-Services"
  },
  {
@@ -341,7 +341,7 @@
   "ans": [
    1
   ],
-  "exp": "ADE uses BitLocker on Windows and dm-crypt on Linux.",
+  "exp": "Azure Disk Encryption works inside the VM: on Windows it uses BitLocker and on Linux it uses dm-crypt, with keys stored in Azure Key Vault. SSE is the platform encryption done by the storage service, TDE is for SQL databases, and Always Encrypted is a SQL feature.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {
@@ -359,7 +359,7 @@
   "ans": [
    1
   ],
-  "exp": "The key vault must be in the same region and subscription and enabled for disk encryption.",
+  "exp": "Azure Disk Encryption stores its keys and secrets in Azure Key Vault. The vault must be in the same region and subscription as the VM, and its access policy must have 'Azure Disk Encryption for volume encryption' enabled. Storage accounts, Log Analytics and on-premises HSMs aren't used for this.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {
@@ -377,7 +377,7 @@
   "ans": [
    0
   ],
-  "exp": "Encryption at host is agentless, works at the hypervisor, and covers temp disks and caches.",
+  "exp": "Encryption at host encrypts data on the physical host that runs the VM — including temp disks and OS and data disk caches — before it reaches storage. Nothing runs inside the VM. Azure Disk Encryption, by contrast, runs BitLocker or dm-crypt inside the guest OS. Encryption at host works for Windows and Linux with managed disks.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
  },
  {
@@ -395,7 +395,7 @@
   "ans": [
    1
   ],
-  "exp": "Sizes on a different cluster require deallocating first.",
+  "exp": "Each VM runs on a hardware cluster that supports a set of sizes. If the new size isn't on the current cluster, Azure must move the VM to different hardware, so you have to stop (deallocate) it first and then resize. Deleting the VM or changing subscription isn't needed.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/resize-vm"
  },
  {
@@ -413,7 +413,7 @@
   "ans": [
    1
   ],
-  "exp": "Cross-region moves use Resource Mover or Site Recovery.",
+  "exp": "A VM's region can't be changed. Azure Resource Mover (or Azure Site Recovery) replicates the VM and its dependent resources to the target region and then completes the move. There's no region setting or move command, and exporting a template doesn't copy disks.",
   "link": "https://learn.microsoft.com/en-us/azure/resource-mover/tutorial-move-region-virtual-machines"
  },
  {
@@ -431,7 +431,7 @@
   "ans": [
    1
   ],
-  "exp": "RG and subscription moves are supported; the region never changes.",
+  "exp": "You can move a VM to another resource group or subscription without deleting it, but its dependent resources (disks, NIC, public IP and sometimes the VNet) must move with it. The resource ID changes because it contains the resource group name. The region stays the same.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"
  },
  {
@@ -449,7 +449,7 @@
   "ans": [
    1
   ],
-  "exp": "Scale sets manage groups of VMs with autoscale.",
+  "exp": "A virtual machine scale set deploys and manages a group of VMs created from the same configuration, and adds or removes instances automatically based on demand (autoscale). It isn't a backup, encryption or monitoring service, although it works with all of those.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview"
  },
  {
@@ -467,7 +467,7 @@
   "ans": [
    1
   ],
-  "exp": "Autoscale never exceeds the maximum instance count.",
+  "exp": "Autoscale never goes above the maximum instance count. The rule says add 2, but with 9 running and a maximum of 10 only 1 instance can be added, so the scale set ends up with 10. It doesn't stop or disable itself.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-overview"
  },
  {
@@ -485,7 +485,7 @@
   "ans": [
    1
   ],
-  "exp": "Flexible orchestration supports mixed sizes and manually added VMs.",
+  "exp": "Flexible orchestration lets a scale set contain VMs of different sizes and include standard VMs you created separately, and spreads them across fault domains. Uniform orchestration uses identical instances from one model. Classic and Hybrid aren't orchestration modes.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-orchestration-modes"
  },
  {
@@ -503,7 +503,7 @@
   "ans": [
    0
   ],
-  "exp": "--generate-ssh-keys creates a key pair if none exists.",
+  "exp": "az vm create creates a VM. --image Ubuntu2204 picks Linux, and --generate-ssh-keys creates an SSH key pair in ~/.ssh if none exists and puts the public key on the VM. New-AzVM is PowerShell and has no -Linux switch, and the other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/vm#az-vm-create"
  },
  {
@@ -545,7 +545,7 @@
    3,
    0
   ],
-  "exp": "Vault → KEK → VM → run the encryption extension.",
+  "exp": "First create the key vault with 'enabled for disk encryption', because the encryption extension stores secrets there. Then create the key encryption key (KEK) in that vault. With the target VM ready, run Set-AzVMDiskEncryptionExtension, pointing at the vault and KEK, to turn on BitLocker or dm-crypt.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-windows"
  },
  {
@@ -563,7 +563,7 @@
   "ans": [
    2
   ],
-  "exp": "Geo-replication requires Premium.",
+  "exp": "Geo-replication, which keeps a copy of the registry in several regions behind one name, is available only in the Premium SKU of Azure Container Registry. Premium also adds private endpoints and higher throughput. Basic and Standard are single-region.",
   "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-skus"
  },
  {
@@ -581,7 +581,7 @@
   "ans": [
    1
   ],
-  "exp": "az acr build runs the build in ACR Tasks and pushes the image.",
+  "exp": "az acr build sends your source code and Dockerfile to Azure Container Registry, which builds the image in the cloud (an ACR Task) and pushes it to the registry, so you don't need Docker installed locally. docker push needs a locally built image, az acr import copies an existing image, and az container create runs a container.",
   "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview"
  },
  {
@@ -599,7 +599,7 @@
   "ans": [
    1
   ],
-  "exp": "A managed identity with AcrPull gives credential-free pulls.",
+  "exp": "Give the app a managed identity and assign it the AcrPull role on the registry. The app then authenticates with Microsoft Entra ID, so no password is stored anywhere, and it can pull but not push. The admin account is a shared password, and anonymous pull makes images public.",
   "link": "https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication-managed-identity"
  },
  {
@@ -617,7 +617,7 @@
   "ans": [
    1
   ],
-  "exp": "ACI is serverless containers without orchestration.",
+  "exp": "Azure Container Instances runs a container (or a small group of containers) in seconds without managing VMs or an orchestrator, and bills per second while it runs. That suits short tasks, batch jobs and simple apps. Large fleets of microservices with scaling and service discovery need Container Apps or AKS.",
   "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview"
  },
  {
@@ -635,7 +635,7 @@
   "ans": [
    1
   ],
-  "exp": "A container group works like a Kubernetes pod.",
+  "exp": "Containers in one ACI container group are scheduled on the same host and share a lifecycle, a network (they reach each other on localhost and share one IP) and optionally storage volumes — like a pod in Kubernetes. They can communicate, and mixing operating systems in one group isn't supported.",
   "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-container-groups"
  },
  {
@@ -653,7 +653,7 @@
   "ans": [
    1
   ],
-  "exp": "OnFailure and Never suit run-to-completion tasks.",
+  "exp": "With the Never restart policy, ACI runs the container once and leaves it stopped when it exits; with OnFailure, it restarts it only if it fails. Both suit batch jobs, and you stop paying once it has finished. Always keeps restarting the container, which is meant for long-running services.",
   "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-restart-policy"
  },
  {
@@ -671,7 +671,7 @@
   "ans": [
    1
   ],
-  "exp": "Container Apps adds KEDA scaling, revisions, traffic splitting, and Dapr.",
+  "exp": "Azure Container Apps adds features that ACI doesn't have: automatic scaling (including scaling to zero) driven by KEDA rules on HTTP traffic, queues and events; revisions; and splitting traffic between revisions. Both services can run Linux containers, use public IPs and set environment variables.",
   "link": "https://learn.microsoft.com/en-us/azure/container-apps/overview"
  },
  {
@@ -689,7 +689,7 @@
   "ans": [
    0
   ],
-  "exp": "Scale to zero plus a queue scaler.",
+  "exp": "Set the minimum replica count to 0 and add a KEDA scale rule based on the queue length (for example an Azure Storage Queue or Service Bus rule). When the queue is empty the app runs no replicas and costs nothing; as messages arrive, Container Apps adds replicas. Always-on or manual scaling would keep instances running.",
   "link": "https://learn.microsoft.com/en-us/azure/container-apps/scale-app"
  },
  {
@@ -707,7 +707,7 @@
   "ans": [
    1
   ],
-  "exp": "ACI supports Windows containers with minimal management.",
+  "exp": "Azure Container Instances can run a Windows container on demand without any cluster or VM to manage, and you pay per second until the task finishes. AKS and VMSS need much more setup and management, and the App Service Free tier isn't meant for running containers like this.",
   "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview"
  },
  {
@@ -728,7 +728,7 @@
    true,
    true
   ],
-  "exp": "All four are true.",
+  "exp": "All four are true. Every ACR SKU stores Docker and OCI images (SKUs differ in throughput and features). Multi-container groups in ACI are supported only for Linux. Container Apps runs on Kubernetes that Microsoft manages, so you never use the Kubernetes API yourself. ACI can mount an Azure file share as a volume for persistent data.",
   "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-volume-azure-files"
  },
  {
@@ -746,7 +746,7 @@
   "ans": [
    1
   ],
-  "exp": "The plan defines compute resources shared by its apps.",
+  "exp": "An App Service plan defines the compute your apps run on: the region, the operating system, the pricing tier (which features are available) and the instance size and count. Every app in the plan shares those instances. The app name, DNS zone and storage pricing are set elsewhere.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
  },
  {
@@ -782,7 +782,7 @@
   "ans": [
    1
   ],
-  "exp": "Scale up changes size or tier; scale out adds instances.",
+  "exp": "Scaling up means moving to a bigger instance size or a higher pricing tier (more CPU, memory or features). Scaling out means adding more instances of the same size so load is spread across them. Both apply to App Service plans.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-scale-up"
  },
  {
@@ -800,7 +800,7 @@
   "ans": [
    2
   ],
-  "exp": "Autoscale rules start at Standard. Basic supports manual scaling only.",
+  "exp": "Rule-based autoscale (for example, add an instance when CPU is above 70%) is available from the Standard tier. Basic supports scaling out only manually, and Free and Shared can't scale out at all. Isolated also supports autoscale, but it isn't the minimum.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-get-started"
  },
  {
@@ -818,7 +818,7 @@
   "ans": [
    1
   ],
-  "exp": "Swaps are pre-warmed and reversible.",
+  "exp": "When you swap a staging slot into production, App Service first warms up the new version on the production instances, then switches traffic over, so users see almost no downtime. If something goes wrong, you swap back immediately. Swapping doesn't cut costs, review code or provide certificates.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
  },
  {
@@ -836,7 +836,7 @@
   "ans": [
    1
   ],
-  "exp": "Sticky (slot) settings remain with their slot.",
+  "exp": "App settings and connection strings marked 'Deployment slot setting' are sticky: they stay with their slot when you swap. That's how production keeps its own database connection string while new code moves in. Settings without that mark move with the app. TLS certificates aren't the only slot-specific item.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
  },
  {
@@ -854,7 +854,7 @@
   "ans": [
    0
   ],
-  "exp": "Use CNAME + TXT asuid for subdomains; use A + TXT for the apex.",
+  "exp": "For a subdomain such as www, create a CNAME record that points to the app's default host name (<app>.azurewebsites.net), plus a TXT record named asuid.www containing the app's domain verification ID, which proves you own the domain. MX is for email, SRV for services and NS for delegation. Apex domains use an A record instead.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain"
  },
  {
@@ -890,7 +890,7 @@
   "ans": [
    1
   ],
-  "exp": "VNet integration handles outbound traffic into the VNet; private endpoints handle inbound.",
+  "exp": "Regional VNet integration gives an App Service app outbound access into a virtual network, so it can call a database on a private IP. A private endpoint does the opposite: it gives clients in the VNet private inbound access to the app. Access restrictions filter inbound traffic, and Hybrid Connections reach individual hosts through a relay.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration"
  },
  {
@@ -912,7 +912,7 @@
    true,
    true
   ],
-  "exp": "Standard supports slots, autoscale (up to 10 instances), access restrictions, and backups.",
+  "exp": "All four are true on S1 (Standard). Standard includes deployment slots, so you can deploy to staging and swap with no downtime. It supports rule-based autoscale up to 10 instances, so 5 is fine. Access restrictions limit inbound traffic to the office IP. Standard also supports scheduled custom backups (available from Basic).",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
  }
 ]

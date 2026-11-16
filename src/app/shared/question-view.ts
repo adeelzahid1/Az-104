@@ -77,16 +77,23 @@ export class QuestionView {
   protected readonly expectedYesNo = computed(() => this.question().ans as boolean[]);
   protected readonly isRight = computed(() => isCorrect(this.question(), this.answer()));
 
-  protected readonly answerText = computed(() => {
-    const q = this.question();
-    if (q.type === 'mcq' || q.type === 'multi') {
-      return this.expectedIndices()
-        .map((i) => LETTERS[i])
-        .join(', ');
-    }
-    if (q.type === 'yesno') return this.expectedYesNo().map((v) => (v ? 'Yes' : 'No')).join(' · ');
-    return '';
-  });
+  /** mcq/multi: the correct options as "B. option text". */
+  protected readonly correctOptions = computed(() =>
+    this.expectedIndices().map((i) => `${LETTERS[i]}. ${this.question().opts?.[i] ?? ''}`),
+  );
+
+  /** mcq/multi: what the user picked, shown when the answer was wrong. */
+  protected readonly yourOptions = computed(() =>
+    this.picks().map((i) => `${LETTERS[i]}. ${this.question().opts?.[i] ?? ''}`),
+  );
+
+  /** yesno: each statement with its correct Yes/No. */
+  protected readonly yesNoKey = computed(() =>
+    (this.question().stmts ?? []).map((stmt, i) => ({
+      stmt,
+      answer: this.expectedYesNo()[i] ? 'Yes' : 'No',
+    })),
+  );
 
   protected readonly correctOrder = computed(() =>
     this.expectedIndices().map((i) => this.question().items?.[i] ?? ''),

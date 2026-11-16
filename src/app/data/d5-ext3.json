@@ -1,52 +1,921 @@
 [
-{"id":"D5-151","sub":"Site Recovery","type":"mcq","diff":1,"q":"Which vault type does Azure Site Recovery use?","opts":["Recovery Services vault","Backup vault","Key Vault","Storage account"],"ans":[0],"exp":"ASR replication is configured in a Recovery Services vault.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-enable-replication"},
-{"id":"D5-152","sub":"Site Recovery","type":"mcq","diff":2,"q":"For Azure-to-Azure disaster recovery, where should the Recovery Services vault be?","opts":["In the TARGET (recovery) region, not the source region","In the source region","Any region","On-premises"],"ans":[0],"exp":"The vault should be in the target region so it survives a source-region outage.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-enable-replication"},
-{"id":"D5-153","sub":"Site Recovery","type":"mcq","diff":2,"q":"Compare the vault region rules: Azure Backup vs ASR (Azure-to-Azure).","opts":["Backup: vault in the SAME region as the VM; ASR: vault in the TARGET region","Both in the same region","Both in the target region","No rules"],"ans":[0],"exp":"A classic exam distinction.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-support-matrix"},
-{"id":"D5-154","sub":"Site Recovery","type":"mcq","diff":2,"q":"What does ASR create in the target region when you enable replication?","opts":["A target resource group, VNet (or mapping), cache storage in the source region, and replica managed disks","Only a backup","A new tenant","Nothing until failover"],"ans":[0],"exp":"Replication sets up target resources and a source cache storage account.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"},
-{"id":"D5-155","sub":"Site Recovery","type":"mcq","diff":3,"q":"Where does ASR temporarily store changes from source VMs before sending them to the target region?","opts":["A cache storage account in the SOURCE region","The target vault directly","Key Vault","Log Analytics"],"ans":[0],"exp":"Changes are cached in the source region, then replicated.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"},
-{"id":"D5-156","sub":"Site Recovery","type":"mcq","diff":2,"q":"What's a recovery point in ASR?","opts":["A point-in-time state of the replicated VM that you can fail over to (crash-consistent or app-consistent)","A backup policy","A region pair","A DNS record"],"ans":[0],"exp":"ASR keeps recovery points according to the replication policy.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-how-to-enable-replication"},
-{"id":"D5-157","sub":"Site Recovery","type":"mcq","diff":3,"q":"How often does ASR create crash-consistent recovery points for Azure VMs?","opts":["Every 5 minutes","Every hour","Every day","Every week"],"ans":[0],"exp":"Crash-consistent points every 5 minutes; app-consistent frequency is configurable (in hours).","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"},
-{"id":"D5-158","sub":"Site Recovery","type":"mcq","diff":2,"q":"Which failover type do you use when the primary region is actually down?","opts":["Failover (unplanned)","Test failover","Planned failover only","Cleanup test failover"],"ans":[0],"exp":"Use failover for real disasters; test failover for drills.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failover-failback"},
-{"id":"D5-159","sub":"Site Recovery","type":"order","diff":2,"q":"Order the steps of a complete ASR DR cycle:","items":["Fail over to the secondary region","Enable replication to the target region","Re-protect (reverse replication) to the original region","Fail back to the primary region"],"ans":[1,0,2,3],"exp":"Replicate → fail over → re-protect → fail back.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failback"},
-{"id":"D5-160","sub":"Site Recovery","type":"mcq","diff":2,"q":"After a test failover is validated, what do you do?","opts":["Run 'Cleanup test failover' to delete the test VMs","Commit the failover","Disable replication","Delete the vault"],"ans":[0],"exp":"Cleanup removes test resources.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"},
-{"id":"D5-161","sub":"Site Recovery","type":"mcq","diff":3,"q":"After a real failover, what does 'Commit' do?","opts":["Finalizes the failover; you can no longer change to a different recovery point","Starts replication","Deletes source VMs","Cancels the failover"],"ans":[0],"exp":"Commit locks in the chosen recovery point.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failover-failback"},
-{"id":"D5-162","sub":"Site Recovery","type":"mcq","diff":2,"q":"For a DR drill, which network should test-failover VMs connect to?","opts":["An isolated VNet in the target region, not connected to production","The production VNet","No network","The source VNet"],"ans":[0],"exp":"Isolation prevents conflicts with production.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"},
-{"id":"D5-163","sub":"Site Recovery","type":"mcq","diff":3,"q":"Failover options let you choose which recovery point?","opts":["Latest (lowest RPO), Latest processed (lowest RTO), Latest app-consistent, or a custom point","Only latest","Only app-consistent","Random"],"ans":[0],"exp":"Options trade off RPO against RTO.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failover-failback"},
-{"id":"D5-164","sub":"Site Recovery","type":"mcq","diff":3,"q":"Which option gives the fastest failover (lowest RTO)?","opts":["Latest processed","Latest","Latest app-consistent","Custom"],"ans":[0],"exp":"Latest processed skips processing of pending data.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-failover"},
-{"id":"D5-165","sub":"Site Recovery","type":"mcq","diff":2,"q":"What can a recovery plan include besides machine groups?","opts":["Pre/post scripts, Azure Automation runbooks, and manual actions","Budgets","Policies","Locks"],"ans":[0],"exp":"Recovery plans orchestrate with automation and manual steps.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"},
-{"id":"D5-166","sub":"Site Recovery","type":"mcq","diff":3,"q":"Several VMs must fail over to a shared, consistent recovery point (for example, multi-VM apps). Which setting?","opts":["Multi-VM consistency (replication group)","Separate vaults","Recovery plan only","Backup policy"],"ans":[0],"exp":"Multi-VM consistency creates shared crash- and app-consistent points.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-common-questions"},
-{"id":"D5-167","sub":"Site Recovery","type":"mcq","diff":2,"q":"Can ASR replicate on-premises VMware VMs and physical servers to Azure?","opts":["Yes — ASR supports VMware, Hyper-V, and physical servers to Azure","No, only Azure VMs","Only Hyper-V","Only Linux"],"ans":[0],"exp":"ASR supports multiple source types.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"},
-{"id":"D5-168","sub":"Site Recovery","type":"mcq","diff":3,"q":"Replicated VMs should come up in a specific availability zone in the target region. Is that configurable?","opts":["Yes — you can choose target availability zones or sets in replication settings","No","Only for Windows","Only after failover"],"ans":[0],"exp":"Target settings include zone or availability set.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-how-to-enable-zone-to-zone-disaster-recovery"},
-{"id":"D5-169","sub":"Site Recovery","type":"mcq","diff":3,"q":"Can ASR replicate VMs between availability zones in the SAME region?","opts":["Yes — zone-to-zone disaster recovery is supported in many regions","No, only cross-region","Only with Backup","Only for VMSS"],"ans":[0],"exp":"Zone-to-zone DR is supported.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-how-to-enable-zone-to-zone-disaster-recovery"},
-{"id":"D5-170","sub":"Site Recovery","type":"mcq","diff":2,"q":"How does ASR help keep RTO low for web apps after failover with DNS?","opts":["Use recovery plan scripts or Traffic Manager to redirect users to the failed-over endpoints","Nothing is needed","Change NSGs only","Use Advisor"],"ans":[0],"exp":"Plan for DNS and traffic redirection, for example with a recovery plan script or Traffic Manager priority routing.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"},
-{"id":"D5-171","sub":"Site Recovery","type":"mcq","diff":2,"q":"Which ASR metric shows how current the replicated data is?","opts":["RPO (replication health and RPO values per VM)","CPU","Disk IOPS only","Cost"],"ans":[0],"exp":"Replicated items show RPO and health.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-monitor-and-troubleshoot"},
-{"id":"D5-172","sub":"Site Recovery","type":"multi","diff":3,"q":"Which TWO are prerequisites for Azure-to-Azure replication?","opts":["Outbound connectivity from source VMs to required Azure service endpoints/URLs (or service tags)","The latest Mobility service, installed automatically as an extension","A MARS agent","An ExpressRoute circuit"],"ans":[0,1],"exp":"VMs need outbound access, and the Mobility extension is installed automatically.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-about-networking"},
-{"id":"D5-173","sub":"Site Recovery","type":"yesno","diff":2,"q":"Answer Yes or No about ASR:","stmts":["Test failover affects ongoing replication","Re-protect reverses the replication direction after failover","ASR can be used to migrate VMs between regions","ASR replication costs are charged per protected instance"],"ans":[false,true,true,true],"exp":"Test failover doesn't interrupt replication; re-protect reverses it; migration is supported; ASR is billed per instance plus storage.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"},
-{"id":"D5-174","sub":"Backup vs ASR","type":"mcq","diff":2,"q":"Ransomware encrypted a VM's files 3 days ago and they were replicated. Which service recovers clean data?","opts":["Azure Backup (restore a recovery point from before the infection)","ASR latest recovery point","VNet peering","Advisor"],"ans":[0],"exp":"ASR replicates corruption quickly; backups give older restore points.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-overview"},
-{"id":"D5-175","sub":"Backup vs ASR","type":"mcq","diff":2,"q":"An app must run in another region within minutes of a regional outage, with minimal data loss. Which service?","opts":["Azure Site Recovery","Azure Backup only","Blob versioning","Export template"],"ans":[0],"exp":"ASR provides low RTO and RPO.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"},
-{"id":"D5-176","sub":"Backup vs ASR","type":"multi","diff":2,"q":"Which TWO are typical uses of Azure Backup rather than ASR?","opts":["Long-term retention for compliance (for example, yearly points for 10 years)","Recovering accidentally deleted files","Orchestrated regional failover with recovery plans","Continuous replication with a 5-minute RPO"],"ans":[0,1],"exp":"Backup handles retention and granular restores; ASR handles failover.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-overview"},
-{"id":"D5-177","sub":"Azure Files backup","type":"mcq","diff":2,"q":"Which vault type protects Azure file shares?","opts":["Recovery Services vault","Backup vault","Key Vault","None"],"ans":[0],"exp":"Azure Files backup uses Recovery Services vaults.","link":"https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"},
-{"id":"D5-178","sub":"Azure Files backup","type":"mcq","diff":3,"q":"Can you restore individual files from an Azure file share backup?","opts":["Yes — full share restore or item-level (file/folder) restore to the original or an alternate location","No, only the full share","Only via MARS","Only to on-premises"],"ans":[0],"exp":"Both full and item-level restores are supported.","link":"https://learn.microsoft.com/en-us/azure/backup/restore-afs"},
-{"id":"D5-179","sub":"Azure Files backup","type":"mcq","diff":3,"q":"When Azure Backup protects a file share, which protection does it add to the storage account?","opts":["A resource lock to prevent accidental deletion of the account","Immutable storage","Private endpoint","GRS"],"ans":[0],"exp":"Azure Backup adds a lock to protect the storage account.","link":"https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"},
-{"id":"D5-180","sub":"Monitoring design","type":"mcq","diff":2,"q":"An ops team wants one dashboard showing VM CPU, failed backups, and storage availability. Best tool?","opts":["Azure Monitor Workbooks (or a shared dashboard) combining metrics and log queries","Advisor","Activity log","Cost analysis"],"ans":[0],"exp":"Workbooks combine multiple data sources.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/visualize/workbooks-overview"},
-{"id":"D5-181","sub":"Monitoring design","type":"mcq","diff":3,"q":"An admin must be alerted when anyone creates a role assignment at subscription scope. How?","opts":["An activity log alert on the Microsoft.Authorization/roleAssignments/write operation","A metric alert","Advisor","A budget"],"ans":[0],"exp":"Activity log alerts catch control-plane events like role assignments.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-types"},
-{"id":"D5-182","sub":"Monitoring design","type":"mcq","diff":2,"q":"Which Azure Advisor category flags VMs that lack backup?","opts":["Reliability","Cost","Performance","Security"],"ans":[0],"exp":"Advisor's reliability recommendations include enabling backup.","link":"https://learn.microsoft.com/en-us/azure/advisor/advisor-high-availability-recommendations"},
-{"id":"D5-183","sub":"Monitoring design","type":"mcq","diff":3,"q":"You must check that every VM in a subscription has backup enabled, and enable it automatically. Best approach?","opts":["Azure Policy: 'Configure backup on VMs...' with DeployIfNotExists and remediation","A manual monthly check","An alert rule","Resource locks"],"ans":[0],"exp":"Built-in policies can enforce backup at scale.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-auto-enable-backup"},
-{"id":"D5-184","sub":"Monitoring design","type":"yesno","diff":2,"q":"Answer Yes or No:","stmts":["Alerts can monitor Recovery Services vault backup failures","Service Health alerts are free","Metric alert rules are billed per time series monitored","Log Analytics data can be queried across multiple workspaces in one query"],"ans":[true,true,true,true],"exp":"All four are true.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/logs/cross-workspace-query"},
-{"id":"D5-185","sub":"Monitoring design","type":"mcq","diff":3,"q":"Which KQL query lists failed Azure Backup jobs from the last day (resource-specific tables)?","opts":["AddonAzureBackupJobs | where TimeGenerated > ago(1d) and JobStatus == \"Failed\"","Heartbeat | where Backup == \"Failed\"","Perf | where Job == Failed","AzureActivity | where Backup"],"ans":[0],"exp":"Backup diagnostics populate AddonAzureBackup* tables.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-reports-data-model"},
-{"id":"D5-186","sub":"Alerts","type":"mcq","diff":2,"q":"A disk's free space must trigger an alert when it's below 10%. Which signal source?","opts":["A log search alert on guest perf data (collected by AMA) or a VM insights metric","A platform metric only","Activity log","Service Health"],"ans":[0],"exp":"Disk free space is a guest-level counter.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/vm/monitor-virtual-machine-alerts"},
-{"id":"D5-187","sub":"Alerts","type":"mcq","diff":3,"q":"Which built-in feature gives recommended alert rules for a VM with one click?","opts":["Recommended alert rules (VM 'Alerts' → Enable recommended alert rules)","Advisor","Policy","Workbooks"],"ans":[0],"exp":"Azure suggests common metric alerts for VMs and other resources.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/vm/tutorial-monitor-vm-alert-recommended"},
-{"id":"D5-188","sub":"Alerts","type":"mcq","diff":2,"q":"Which CLI command creates a metric alert for VM CPU > 80%?","opts":["az monitor metrics alert create -g RG1 -n cpu80 --scopes <vmId> --condition \"avg Percentage CPU > 80\" --action ag1","az alert create cpu80","az vm alert add 80","az monitor log alert"],"ans":[0],"exp":"az monitor metrics alert create defines the scope, condition, and actions.","link":"https://learn.microsoft.com/en-us/cli/azure/monitor/metrics/alert"},
-{"id":"D5-189","sub":"Action groups","type":"mcq","diff":2,"q":"Which CLI command creates an action group with an email receiver?","opts":["az monitor action-group create -g RG1 -n ag1 --action email ops ops@contoso.com","az alert group new","az monitor email create","az actiongroup add"],"ans":[0],"exp":"az monitor action-group create with --action defines receivers.","link":"https://learn.microsoft.com/en-us/cli/azure/monitor/action-group"},
-{"id":"D5-190","sub":"Action groups","type":"mcq","diff":3,"q":"What rate limits apply to action group notifications, such as SMS?","opts":["SMS and voice are rate-limited (for example, no more than about 1 SMS every 5 minutes per number); email has higher limits","No limits","Only email is limited","Webhooks are limited to 1 per day"],"ans":[0],"exp":"Notification channels have documented rate limits.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-rate-limiting"},
-{"id":"D5-191","sub":"Autoscale","type":"mcq","diff":2,"q":"Autoscale settings, a feature of Azure Monitor, apply to which resources?","opts":["VM scale sets, App Service plans, Cloud Services, and some others","Storage accounts","VNets","Key Vault"],"ans":[0],"exp":"Autoscale targets compute resources that can add instances.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-overview"},
-{"id":"D5-192","sub":"Autoscale","type":"mcq","diff":3,"q":"How can you be notified whenever autoscale adds or removes instances?","opts":["Configure autoscale notifications (email/webhook) in the autoscale setting, or alert on the Autoscale activity log category","Use Advisor","Not possible","Only via Service Health"],"ans":[0],"exp":"Autoscale supports notifications and logs scale actions.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-webhook-email"},
-{"id":"D5-193","sub":"Monitoring design","type":"mcq","diff":2,"q":"Which feature checks a public website's availability from multiple global locations?","opts":["Application Insights availability tests (standard tests)","IP flow verify","Connection troubleshoot","Activity log"],"ans":[0],"exp":"Availability tests ping endpoints from Azure locations.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/app/availability-overview"},
-{"id":"D5-194","sub":"Insights","type":"mcq","diff":3,"q":"Which insights experience monitors Azure Kubernetes Service and container workloads?","opts":["Container insights","VM insights","Network insights","Storage insights"],"ans":[0],"exp":"Container insights covers AKS and Arc-enabled Kubernetes.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-overview"},
-{"id":"D5-195","sub":"Monitoring design","type":"order","diff":2,"q":"Order the steps to collect Windows event logs from 50 VMs and alert on critical events:","items":["Create a log search alert on the Event table with an action group","Create a Log Analytics workspace","Create a DCR for Windows event logs and associate it with the VMs (AMA installed)","Validate the data with a KQL query"],"ans":[1,2,3,0],"exp":"Workspace → DCR/AMA → validate data → alert.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-windows-events"},
-{"id":"D5-196","sub":"Backup","type":"mcq","diff":2,"q":"Can you back up a VM encrypted with Azure Disk Encryption?","opts":["Yes — Azure Backup supports ADE VMs (with Key Vault permissions for the Backup service)","No","Only Linux","Only with MARS"],"ans":[0],"exp":"ADE VM backup requires access to keys and secrets.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-encryption"},
-{"id":"D5-197","sub":"Backup","type":"mcq","diff":3,"q":"Backup of a VM fails with 'UserErrorGuestAgentStatusUnavailable'. What do you check first?","opts":["That the VM agent is installed, running, and up to date, and the VM can reach Azure endpoints","Storage tier","NSG port 445","DNS zone"],"ans":[0],"exp":"Backup depends on the VM agent and its connectivity.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-troubleshoot-vm-backup-fails-snapshot-timeout"},
-{"id":"D5-198","sub":"Backup","type":"mcq","diff":2,"q":"Which restore type should you use to create a test copy of a VM from last week without touching the original?","opts":["Create new VM (alternate location)","Replace existing","Delete and restore","Test failover"],"ans":[0],"exp":"Alternate-location restores leave the original intact.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-arm-restore-vms"},
-{"id":"D5-199","sub":"Backup and ASR","type":"mcq","diff":3,"ctx":"Requirements for a critical app VM in North Europe: (1) daily backups kept 7 years; (2) failover to West Europe within 30 minutes of a regional outage; (3) quarterly DR drills without impact; (4) restore of a single deleted folder.","q":"Which combination meets ALL requirements?","opts":["Azure Backup (daily policy plus yearly retention, file recovery) and ASR to West Europe (with test failovers)","Azure Backup only with CRR","ASR only","Blob versioning and snapshots"],"ans":[0],"exp":"Backup covers retention and granular restore; ASR covers low-RTO failover and drills.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-overview"},
-{"id":"D5-200","sub":"Monitoring and backup","type":"yesno","diff":3,"ctx":"Ops setup: LAW1 receives VM perf data (AMA/DCR) and vault diagnostics. Alert rules: metric CPU > 90% (AG-Ops), log alert on AddonAzureBackupJobs failures (AG-Backup). An alert processing rule suppresses notifications Saturdays 00:00–04:00.","q":"Answer Yes or No:","stmts":["A CPU spike at 02:00 on Saturday still creates a fired alert in Azure Monitor","AG-Ops sends an email for that 02:00 Saturday spike","Backup job failures can be alerted on through Log Analytics","Removing vault diagnostic settings would break the backup log alert"],"ans":[true,false,true,true],"exp":"Processing rules suppress actions, not the alert itself; the backup alert relies on diagnostics data in LAW1.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"}
+ {
+  "id": "D5-151",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which vault type does Azure Site Recovery use?",
+  "opts": [
+   "Recovery Services vault",
+   "Backup vault",
+   "Key Vault",
+   "Storage account"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Site Recovery is configured in a Recovery Services vault, the same vault type used for VM backup. Backup vaults are for newer workloads such as disks and blobs, and Key Vault and storage accounts aren't vaults for ASR.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-enable-replication"
+ },
+ {
+  "id": "D5-152",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "For Azure-to-Azure disaster recovery, where should the Recovery Services vault be?",
+  "opts": [
+   "In the TARGET (recovery) region, not the source region",
+   "In the source region",
+   "Any region",
+   "On-premises"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "For Azure-to-Azure disaster recovery, put the Recovery Services vault in the target (recovery) region. If the source region fails, the vault and its settings are still available to run the failover. A vault in the source region could go down with it.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-enable-replication"
+ },
+ {
+  "id": "D5-153",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Compare the vault region rules: Azure Backup vs ASR (Azure-to-Azure).",
+  "opts": [
+   "Backup: vault in the SAME region as the VM; ASR: vault in the TARGET region",
+   "Both in the same region",
+   "Both in the target region",
+   "No rules"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "This is a common exam trap. Azure Backup needs the Recovery Services vault in the same region as the VMs it protects. Azure Site Recovery (Azure to Azure) needs the vault in the target region, so it survives an outage in the source region.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-support-matrix"
+ },
+ {
+  "id": "D5-154",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What does ASR create in the target region when you enable replication?",
+  "opts": [
+   "A target resource group, VNet (or mapping), cache storage in the source region, and replica managed disks",
+   "Only a backup",
+   "A new tenant",
+   "Nothing until failover"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When you enable replication, ASR sets up a target resource group, a target VNet (or a mapping to one you choose) and replica managed disks in the target region, plus a cache storage account in the source region. Replication starts immediately; it doesn't wait for a failover.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"
+ },
+ {
+  "id": "D5-155",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Where does ASR temporarily store changes from source VMs before sending them to the target region?",
+  "opts": [
+   "A cache storage account in the SOURCE region",
+   "The target vault directly",
+   "Key Vault",
+   "Log Analytics"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ASR first writes VM disk changes to a cache storage account in the source region, then sends them to the replica disks in the target region. Changes don't go straight into the vault, and Key Vault and Log Analytics aren't involved.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"
+ },
+ {
+  "id": "D5-156",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's a recovery point in ASR?",
+  "opts": [
+   "A point-in-time state of the replicated VM that you can fail over to (crash-consistent or app-consistent)",
+   "A backup policy",
+   "A region pair",
+   "A DNS record"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A recovery point is a copy of a replicated VM's state at a point in time that you can fail over to. It can be crash-consistent (taken every 5 minutes) or app-consistent (taken at the interval you set). The replication policy controls how long they're kept.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-how-to-enable-replication"
+ },
+ {
+  "id": "D5-157",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How often does ASR create crash-consistent recovery points for Azure VMs?",
+  "opts": [
+   "Every 5 minutes",
+   "Every hour",
+   "Every day",
+   "Every week"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "For Azure VMs, ASR creates a crash-consistent recovery point every 5 minutes. App-consistent points are created less often, at an interval you configure in hours. It isn't hourly, daily or weekly.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-architecture"
+ },
+ {
+  "id": "D5-158",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which failover type do you use when the primary region is actually down?",
+  "opts": [
+   "Failover (unplanned)",
+   "Test failover",
+   "Planned failover only",
+   "Cleanup test failover"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When the primary region is really down, run an unplanned failover to bring VMs up in the target region from a recovery point. Test failover is only for drills, cleanup removes test VMs, and planned failover is for orderly moves with no data loss when the source is still healthy.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failover-failback"
+ },
+ {
+  "id": "D5-159",
+  "sub": "Site Recovery",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps of a complete ASR DR cycle:",
+  "items": [
+   "Fail over to the secondary region",
+   "Enable replication to the target region",
+   "Re-protect (reverse replication) to the original region",
+   "Fail back to the primary region"
+  ],
+  "ans": [
+   1,
+   0,
+   2,
+   3
+  ],
+  "exp": "First enable replication to the target region. In a disaster, fail over to the secondary region. Then re-protect, which reverses replication so the secondary replicates back to the original region. Finally fail back to the primary region when it's healthy (and re-protect again).",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failback"
+ },
+ {
+  "id": "D5-160",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "After a test failover is validated, what do you do?",
+  "opts": [
+   "Run 'Cleanup test failover' to delete the test VMs",
+   "Commit the failover",
+   "Disable replication",
+   "Delete the vault"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "After checking the test VMs, run 'Cleanup test failover' to delete the test VMs and related resources. Committing applies to real failovers, disabling replication stops protection, and deleting the vault removes everything.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"
+ },
+ {
+  "id": "D5-161",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After a real failover, what does 'Commit' do?",
+  "opts": [
+   "Finalizes the failover; you can no longer change to a different recovery point",
+   "Starts replication",
+   "Deletes source VMs",
+   "Cancels the failover"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "After a real failover, Commit confirms it: you can no longer change to a different recovery point. It doesn't start replication (that's re-protect), delete the source VMs, or cancel the failover.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failover-failback"
+ },
+ {
+  "id": "D5-162",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "For a DR drill, which network should test-failover VMs connect to?",
+  "opts": [
+   "An isolated VNet in the target region, not connected to production",
+   "The production VNet",
+   "No network",
+   "The source VNet"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Test-failover VMs should connect to an isolated VNet in the target region that isn't connected to production. Otherwise duplicate VMs with the same names and IPs could clash with production. The VMs still need a network, and the source VNet is in the other region.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"
+ },
+ {
+  "id": "D5-163",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Failover options let you choose which recovery point?",
+  "opts": [
+   "Latest (lowest RPO), Latest processed (lowest RTO), Latest app-consistent, or a custom point",
+   "Only latest",
+   "Only app-consistent",
+   "Random"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Failover lets you pick the recovery point: Latest (processes all pending data for the lowest data loss), Latest processed (fastest), Latest app-consistent (apps are consistent), or a custom point. It's a trade-off between RPO and RTO, not a single fixed option.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-failover-failback"
+ },
+ {
+  "id": "D5-164",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which option gives the fastest failover (lowest RTO)?",
+  "opts": [
+   "Latest processed",
+   "Latest",
+   "Latest app-consistent",
+   "Custom"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Latest processed fails over to the newest recovery point that ASR has already processed, so it doesn't wait for pending data to be processed. That gives the fastest failover (lowest RTO). Latest has lower data loss but takes longer, and app-consistent points are older.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-failover"
+ },
+ {
+  "id": "D5-165",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What can a recovery plan include besides machine groups?",
+  "opts": [
+   "Pre/post scripts, Azure Automation runbooks, and manual actions",
+   "Budgets",
+   "Policies",
+   "Locks"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Besides ordered groups of machines, a recovery plan can run pre- and post-scripts, Azure Automation runbooks (for example to update DNS or a load balancer), and manual actions that pause until someone confirms them. Budgets, policies and locks aren't part of a recovery plan.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"
+ },
+ {
+  "id": "D5-166",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Several VMs must fail over to a shared, consistent recovery point (for example, multi-VM apps). Which setting?",
+  "opts": [
+   "Multi-VM consistency (replication group)",
+   "Separate vaults",
+   "Recovery plan only",
+   "Backup policy"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Multi-VM consistency puts VMs into a replication group, so they share crash-consistent and app-consistent recovery points and fail over to the same moment in time — important for multi-tier apps. Recovery plans control order, not consistency, and backup policies are for backup.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-common-questions"
+ },
+ {
+  "id": "D5-167",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can ASR replicate on-premises VMware VMs and physical servers to Azure?",
+  "opts": [
+   "Yes — ASR supports VMware, Hyper-V, and physical servers to Azure",
+   "No, only Azure VMs",
+   "Only Hyper-V",
+   "Only Linux"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ASR can replicate on-premises VMware VMs, Hyper-V VMs and physical Windows or Linux servers to Azure, as well as Azure VMs between regions. It isn't limited to Azure VMs, Hyper-V or Linux.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
+ },
+ {
+  "id": "D5-168",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Replicated VMs should come up in a specific availability zone in the target region. Is that configurable?",
+  "opts": [
+   "Yes — you can choose target availability zones or sets in replication settings",
+   "No",
+   "Only for Windows",
+   "Only after failover"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When you enable replication, you can choose target settings such as the availability zone or availability set the replicated VM uses in the target region. So the VM comes up in the zone you want after failover. This works for Windows and Linux and is set before failover.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-how-to-enable-zone-to-zone-disaster-recovery"
+ },
+ {
+  "id": "D5-169",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can ASR replicate VMs between availability zones in the SAME region?",
+  "opts": [
+   "Yes — zone-to-zone disaster recovery is supported in many regions",
+   "No, only cross-region",
+   "Only with Backup",
+   "Only for VMSS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Yes. ASR supports zone-to-zone disaster recovery, replicating VMs from one availability zone to another in the same region, in many regions. It doesn't need Azure Backup, and it isn't only for VM scale sets.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-how-to-enable-zone-to-zone-disaster-recovery"
+ },
+ {
+  "id": "D5-170",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How does ASR help keep RTO low for web apps after failover with DNS?",
+  "opts": [
+   "Use recovery plan scripts or Traffic Manager to redirect users to the failed-over endpoints",
+   "Nothing is needed",
+   "Change NSGs only",
+   "Use Advisor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Plan for DNS and traffic redirection, for example with a recovery plan script or Traffic Manager priority routing.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"
+ },
+ {
+  "id": "D5-171",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which ASR metric shows how current the replicated data is?",
+  "opts": [
+   "RPO (replication health and RPO values per VM)",
+   "CPU",
+   "Disk IOPS only",
+   "Cost"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Each replicated item shows its replication health and current RPO — how far the replica is behind the source — so you can see how current the data is. CPU and IOPS are performance metrics, and cost isn't a replication measure.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-monitor-and-troubleshoot"
+ },
+ {
+  "id": "D5-172",
+  "sub": "Site Recovery",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO are prerequisites for Azure-to-Azure replication?",
+  "opts": [
+   "Outbound connectivity from source VMs to required Azure service endpoints/URLs (or service tags)",
+   "The latest Mobility service, installed automatically as an extension",
+   "A MARS agent",
+   "An ExpressRoute circuit"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "Source VMs need outbound connectivity to the Azure Site Recovery service URLs or service tags (for example through an NSG or proxy). The Mobility service is installed automatically as a VM extension when you enable replication and is kept updated. MARS and ExpressRoute aren't needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-about-networking"
+ },
+ {
+  "id": "D5-173",
+  "sub": "Site Recovery",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No about ASR:",
+  "stmts": [
+   "Test failover affects ongoing replication",
+   "Re-protect reverses the replication direction after failover",
+   "ASR can be used to migrate VMs between regions",
+   "ASR replication costs are charged per protected instance"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "Test failover doesn't interrupt replication; re-protect reverses it; migration is supported; ASR is billed per instance plus storage.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
+ },
+ {
+  "id": "D5-174",
+  "sub": "Backup vs ASR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Ransomware encrypted a VM's files 3 days ago and they were replicated. Which service recovers clean data?",
+  "opts": [
+   "Azure Backup (restore a recovery point from before the infection)",
+   "ASR latest recovery point",
+   "VNet peering",
+   "Advisor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "ASR replicates changes within minutes, so the encrypted files are already in its recent recovery points (and it doesn't keep points for long). Azure Backup keeps older recovery points, so you can restore one from before the attack. That's why backups are your ransomware protection.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-overview"
+ },
+ {
+  "id": "D5-175",
+  "sub": "Backup vs ASR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An app must run in another region within minutes of a regional outage, with minimal data loss. Which service?",
+  "opts": [
+   "Azure Site Recovery",
+   "Azure Backup only",
+   "Blob versioning",
+   "Export template"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Site Recovery keeps an up-to-date replica in another region, so the app can fail over within minutes (low RTO) with only a few minutes of data loss (low RPO). Restoring from Azure Backup is much slower. Blob versioning and templates don't replicate running VMs.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
+ },
+ {
+  "id": "D5-176",
+  "sub": "Backup vs ASR",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO are typical uses of Azure Backup rather than ASR?",
+  "opts": [
+   "Long-term retention for compliance (for example, yearly points for 10 years)",
+   "Recovering accidentally deleted files",
+   "Orchestrated regional failover with recovery plans",
+   "Continuous replication with a 5-minute RPO"
+  ],
+  "ans": [
+   0,
+   1
+  ],
+  "exp": "Azure Backup is the tool for long-term retention (for example yearly points kept for 10 years) and for restoring a single deleted file or folder. Orchestrated regional failover with recovery plans, and continuous replication with a 5-minute RPO, are ASR features.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-overview"
+ },
+ {
+  "id": "D5-177",
+  "sub": "Azure Files backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which vault type protects Azure file shares?",
+  "opts": [
+   "Recovery Services vault",
+   "Backup vault",
+   "Key Vault",
+   "None"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure file share backup is configured in a Recovery Services vault. Backup vaults handle disks, blobs and PostgreSQL, Key Vault stores secrets, and file shares can be protected, so 'None' is wrong.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"
+ },
+ {
+  "id": "D5-178",
+  "sub": "Azure Files backup",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Can you restore individual files from an Azure file share backup?",
+  "opts": [
+   "Yes — full share restore or item-level (file/folder) restore to the original or an alternate location",
+   "No, only the full share",
+   "Only via MARS",
+   "Only to on-premises"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "From an Azure file share backup you can restore the whole share or just specific files and folders, to the original location or to another one. MARS isn't involved, and restores go to Azure file shares, not on-premises.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/restore-afs"
+ },
+ {
+  "id": "D5-179",
+  "sub": "Azure Files backup",
+  "type": "mcq",
+  "diff": 3,
+  "q": "When Azure Backup protects a file share, which protection does it add to the storage account?",
+  "opts": [
+   "A resource lock to prevent accidental deletion of the account",
+   "Immutable storage",
+   "Private endpoint",
+   "GRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When you protect a file share, Azure Backup adds a delete lock to the storage account so nobody deletes it by accident — which would also delete the backups, since the snapshots live in the account. It doesn't enable immutable storage, private endpoints or GRS.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"
+ },
+ {
+  "id": "D5-180",
+  "sub": "Monitoring design",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An ops team wants one dashboard showing VM CPU, failed backups, and storage availability. Best tool?",
+  "opts": [
+   "Azure Monitor Workbooks (or a shared dashboard) combining metrics and log queries",
+   "Advisor",
+   "Activity log",
+   "Cost analysis"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Monitor Workbooks (or a shared dashboard) can combine metrics such as VM CPU and storage availability with log queries such as failed backup jobs into one view for the team. Advisor gives recommendations, the Activity log shows operations, and Cost analysis shows spend.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/visualize/workbooks-overview"
+ },
+ {
+  "id": "D5-181",
+  "sub": "Monitoring design",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An admin must be alerted when anyone creates a role assignment at subscription scope. How?",
+  "opts": [
+   "An activity log alert on the Microsoft.Authorization/roleAssignments/write operation",
+   "A metric alert",
+   "Advisor",
+   "A budget"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Creating a role assignment is a control-plane operation (Microsoft.Authorization/roleAssignments/write) recorded in the Activity log. An Activity log alert on that operation at subscription scope fires every time it happens. Metric alerts watch numbers, and Advisor and budgets don't track role changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-types"
+ },
+ {
+  "id": "D5-182",
+  "sub": "Monitoring design",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which Azure Advisor category flags VMs that lack backup?",
+  "opts": [
+   "Reliability",
+   "Cost",
+   "Performance",
+   "Security"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Advisor's Reliability category (formerly 'High availability') includes recommendations such as enabling backup on VMs. Cost, Performance and Security cover other areas.",
+  "link": "https://learn.microsoft.com/en-us/azure/advisor/advisor-high-availability-recommendations"
+ },
+ {
+  "id": "D5-183",
+  "sub": "Monitoring design",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You must check that every VM in a subscription has backup enabled, and enable it automatically. Best approach?",
+  "opts": [
+   "Azure Policy: 'Configure backup on VMs...' with DeployIfNotExists and remediation",
+   "A manual monthly check",
+   "An alert rule",
+   "Resource locks"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A built-in Azure Policy definition ('Configure backup on virtual machines…') uses DeployIfNotExists to enable backup on VMs automatically, and a remediation task fixes existing VMs. Manual checks don't scale, alerts only notify, and locks only prevent deletion.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-auto-enable-backup"
+ },
+ {
+  "id": "D5-184",
+  "sub": "Monitoring design",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "Alerts can monitor Recovery Services vault backup failures",
+   "Service Health alerts are free",
+   "Metric alert rules are billed per time series monitored",
+   "Log Analytics data can be queried across multiple workspaces in one query"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "exp": "All four are true. Backup failures raise Azure Monitor alerts. Service Health alerts are Activity log alerts and cost nothing. Metric alert rules are billed per time series they monitor. And KQL can query several workspaces at once with the workspace() function.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/cross-workspace-query"
+ },
+ {
+  "id": "D5-185",
+  "sub": "Monitoring design",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which KQL query lists failed Azure Backup jobs from the last day (resource-specific tables)?",
+  "opts": [
+   "AddonAzureBackupJobs | where TimeGenerated > ago(1d) and JobStatus == \"Failed\"",
+   "Heartbeat | where Backup == \"Failed\"",
+   "Perf | where Job == Failed",
+   "AzureActivity | where Backup"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "With resource-specific diagnostic tables, backup job data goes to AddonAzureBackupJobs, so filter it on the last day and JobStatus == \"Failed\". Heartbeat holds agent heartbeats, Perf holds performance counters, and AzureActivity holds control-plane operations, not backup job results.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-reports-data-model"
+ },
+ {
+  "id": "D5-186",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A disk's free space must trigger an alert when it's below 10%. Which signal source?",
+  "opts": [
+   "A log search alert on guest perf data (collected by AMA) or a VM insights metric",
+   "A platform metric only",
+   "Activity log",
+   "Service Health"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Free disk space is measured inside the guest OS, so platform metrics don't include it. Collect it with the Azure Monitor Agent (for example through VM insights) and alert with a log search alert on that performance data. The Activity log and Service Health don't have disk space data.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/monitor-virtual-machine-alerts"
+ },
+ {
+  "id": "D5-187",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which built-in feature gives recommended alert rules for a VM with one click?",
+  "opts": [
+   "Recommended alert rules (VM 'Alerts' → Enable recommended alert rules)",
+   "Advisor",
+   "Policy",
+   "Workbooks"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "On a VM's Alerts page you can enable recommended alert rules — common metric alerts such as CPU, available memory and network — in one step, with your own thresholds and action group. Advisor gives recommendations, Policy enforces rules, and Workbooks are reports.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/tutorial-monitor-vm-alert-recommended"
+ },
+ {
+  "id": "D5-188",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates a metric alert for VM CPU > 80%?",
+  "opts": [
+   "az monitor metrics alert create -g RG1 -n cpu80 --scopes <vmId> --condition \"avg Percentage CPU > 80\" --action ag1",
+   "az alert create cpu80",
+   "az vm alert add 80",
+   "az monitor log alert"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az monitor metrics alert create sets the scope (--scopes with the VM's ID), the condition (\"avg Percentage CPU > 80\") and the action group (--action). The other commands don't exist, and az monitor log alerts are for log search queries.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/monitor/metrics/alert"
+ },
+ {
+  "id": "D5-189",
+  "sub": "Action groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which CLI command creates an action group with an email receiver?",
+  "opts": [
+   "az monitor action-group create -g RG1 -n ag1 --action email ops ops@contoso.com",
+   "az alert group new",
+   "az monitor email create",
+   "az actiongroup add"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az monitor action-group create creates an action group, and each --action adds a receiver: here type email, name ops, address ops@contoso.com. The other commands don't exist.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/monitor/action-group"
+ },
+ {
+  "id": "D5-190",
+  "sub": "Action groups",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What rate limits apply to action group notifications, such as SMS?",
+  "opts": [
+   "SMS and voice are rate-limited (for example, no more than about 1 SMS every 5 minutes per number); email has higher limits",
+   "No limits",
+   "Only email is limited",
+   "Webhooks are limited to 1 per day"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Action groups have rate limits per destination: no more than 1 SMS and 1 voice call every 5 minutes for each phone number, and up to 100 emails an hour per address. So notifications can be dropped during an alert storm. Webhooks aren't limited to one a day.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-rate-limiting"
+ },
+ {
+  "id": "D5-191",
+  "sub": "Autoscale",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Autoscale settings, a feature of Azure Monitor, apply to which resources?",
+  "opts": [
+   "VM scale sets, App Service plans, Cloud Services, and some others",
+   "Storage accounts",
+   "VNets",
+   "Key Vault"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Autoscale in Azure Monitor works on resources that can add or remove instances, such as VM scale sets, App Service plans and Cloud Services (plus a few others, such as API Management). Storage accounts, VNets and Key Vault don't have instances to scale.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-overview"
+ },
+ {
+  "id": "D5-192",
+  "sub": "Autoscale",
+  "type": "mcq",
+  "diff": 3,
+  "q": "How can you be notified whenever autoscale adds or removes instances?",
+  "opts": [
+   "Configure autoscale notifications (email/webhook) in the autoscale setting, or alert on the Autoscale activity log category",
+   "Use Advisor",
+   "Not possible",
+   "Only via Service Health"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "In the autoscale setting you can send an email or call a webhook every time it scales in or out. Scale actions are also recorded in the Activity log under the Autoscale category, so you can alert on them. Advisor and Service Health don't report scale actions.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-webhook-email"
+ },
+ {
+  "id": "D5-193",
+  "sub": "Monitoring design",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which feature checks a public website's availability from multiple global locations?",
+  "opts": [
+   "Application Insights availability tests (standard tests)",
+   "IP flow verify",
+   "Connection troubleshoot",
+   "Activity log"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Application Insights availability tests (standard tests) send requests to a URL from several Azure locations around the world on a schedule and alert when it fails or is slow. IP flow verify and connection troubleshoot test from inside your network, and the Activity log records operations.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/availability-overview"
+ },
+ {
+  "id": "D5-194",
+  "sub": "Insights",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which insights experience monitors Azure Kubernetes Service and container workloads?",
+  "opts": [
+   "Container insights",
+   "VM insights",
+   "Network insights",
+   "Storage insights"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Container insights monitors AKS clusters (and Arc-enabled Kubernetes): node and pod performance, container logs and cluster health. VM insights monitors VMs, Network insights covers networking, and Storage insights covers storage accounts.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-overview"
+ },
+ {
+  "id": "D5-195",
+  "sub": "Monitoring design",
+  "type": "order",
+  "diff": 2,
+  "q": "Order the steps to collect Windows event logs from 50 VMs and alert on critical events:",
+  "items": [
+   "Create a log search alert on the Event table with an action group",
+   "Create a Log Analytics workspace",
+   "Create a DCR for Windows event logs and associate it with the VMs (AMA installed)",
+   "Validate the data with a KQL query"
+  ],
+  "ans": [
+   1,
+   2,
+   3,
+   0
+  ],
+  "exp": "You need the workspace first, because the data collection rule sends data to it. Then create the DCR for Windows event logs and associate it with the 50 VMs (which installs AMA). Next, run a KQL query to confirm events are arriving, and finally create a log search alert on the Event table with an action group.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/agents/data-collection-windows-events"
+ },
+ {
+  "id": "D5-196",
+  "sub": "Backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Can you back up a VM encrypted with Azure Disk Encryption?",
+  "opts": [
+   "Yes — Azure Backup supports ADE VMs (with Key Vault permissions for the Backup service)",
+   "No",
+   "Only Linux",
+   "Only with MARS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Backup supports VMs encrypted with Azure Disk Encryption on both Windows and Linux. The Backup service needs permissions on the Key Vault so it can back up the keys and secrets along with the encrypted disks. MARS isn't needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-encryption"
+ },
+ {
+  "id": "D5-197",
+  "sub": "Backup",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Backup of a VM fails with 'UserErrorGuestAgentStatusUnavailable'. What do you check first?",
+  "opts": [
+   "That the VM agent is installed, running, and up to date, and the VM can reach Azure endpoints",
+   "Storage tier",
+   "NSG port 445",
+   "DNS zone"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure VM backup works through the VM agent, which runs the backup extension. 'GuestAgentStatusUnavailable' means the agent isn't responding, so check that it's installed, running and up to date, and that the VM can reach Azure endpoints. Storage tier, port 445 and DNS zones aren't the cause.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-troubleshoot-vm-backup-fails-snapshot-timeout"
+ },
+ {
+  "id": "D5-198",
+  "sub": "Backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which restore type should you use to create a test copy of a VM from last week without touching the original?",
+  "opts": [
+   "Create new VM (alternate location)",
+   "Replace existing",
+   "Delete and restore",
+   "Test failover"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "'Create new VM' restores the recovery point as a separate VM, so the original keeps running unchanged. 'Replace existing' would overwrite the original's disks, and test failover is a Site Recovery feature, not a backup restore.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-arm-restore-vms"
+ },
+ {
+  "id": "D5-199",
+  "sub": "Backup and ASR",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "Requirements for a critical app VM in North Europe: (1) daily backups kept 7 years; (2) failover to West Europe within 30 minutes of a regional outage; (3) quarterly DR drills without impact; (4) restore of a single deleted folder.",
+  "q": "Which combination meets ALL requirements?",
+  "opts": [
+   "Azure Backup (daily policy plus yearly retention, file recovery) and ASR to West Europe (with test failovers)",
+   "Azure Backup only with CRR",
+   "ASR only",
+   "Blob versioning and snapshots"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Azure Backup covers daily backups kept 7 years (yearly retention) and restoring a single folder (file-level recovery). Azure Site Recovery to West Europe covers failover within 30 minutes and quarterly drills without impact (test failover). Backup alone fails over too slowly, ASR alone can't keep 7 years or restore files, and blob features don't protect VMs.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-overview"
+ },
+ {
+  "id": "D5-200",
+  "sub": "Monitoring and backup",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "Ops setup: LAW1 receives VM perf data (AMA/DCR) and vault diagnostics. Alert rules: metric CPU > 90% (AG-Ops), log alert on AddonAzureBackupJobs failures (AG-Backup). An alert processing rule suppresses notifications Saturdays 00:00–04:00.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A CPU spike at 02:00 on Saturday still creates a fired alert in Azure Monitor",
+   "AG-Ops sends an email for that 02:00 Saturday spike",
+   "Backup job failures can be alerted on through Log Analytics",
+   "Removing vault diagnostic settings would break the backup log alert"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "Processing rules suppress actions, not the alert itself; the backup alert relies on diagnostics data in LAW1.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ }
 ]

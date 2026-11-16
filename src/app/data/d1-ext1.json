@@ -1,52 +1,912 @@
 [
-{"id":"D1-051","sub":"Entra users","type":"mcq","diff":1,"q":"What is the default domain name format every new Microsoft Entra tenant receives?","opts":["<name>.azurewebsites.net","<name>.onmicrosoft.com","<name>.windows.net","<name>.cloudapp.net"],"ans":[1],"exp":"Every tenant gets an initial <name>.onmicrosoft.com domain, which cannot be removed. Custom domains are added on top.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"},
-{"id":"D1-052","sub":"Entra users","type":"mcq","diff":2,"q":"You add contoso.com as a custom domain. Which DNS record do you create at the registrar to verify ownership?","opts":["A TXT (or MX) record with the value Entra provides","An A record pointing to Entra ID","A CNAME to login.microsoftonline.com","An SRV record"],"ans":[0],"exp":"Verification uses a TXT record (or MX record) with a unique value supplied in the Entra portal.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"},
-{"id":"D1-053","sub":"Entra users","type":"mcq","diff":2,"q":"Which user attribute is the actual sign-in name of a Microsoft Entra user?","opts":["displayName","mailNickname","userPrincipalName","employeeId"],"ans":[2],"exp":"The userPrincipalName (UPN) is the sign-in name in user@domain format.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/how-to-create-delete-users"},
-{"id":"D1-054","sub":"Entra users","type":"mcq","diff":2,"q":"Which PowerShell module is the current Microsoft-recommended way to manage Entra users from scripts?","opts":["AzureAD","MSOnline","Microsoft Graph PowerShell (Microsoft.Graph)","Az.Accounts only"],"ans":[2],"exp":"AzureAD and MSOnline are deprecated. Microsoft Graph PowerShell (New-MgUser, Update-MgUser) is the replacement.","link":"https://learn.microsoft.com/en-us/powershell/microsoftgraph/overview"},
-{"id":"D1-055","sub":"Entra users","type":"mcq","diff":1,"q":"Which Azure CLI command creates a new Entra user?","opts":["az ad user create","az user add","az entra user new","az account user create"],"ans":[0],"exp":"az ad user create --display-name ... --user-principal-name ... --password ... creates a user.","link":"https://learn.microsoft.com/en-us/cli/azure/ad/user"},
-{"id":"D1-056","sub":"Entra users","type":"mcq","diff":3,"q":"A user was permanently deleted 45 days ago. What can you do to recover the account?","opts":["Restore from the Deleted users blade","Nothing — after 30 days the user is permanently deleted; create a new account","Open a support ticket to restore it with the same object ID","Use az ad user restore"],"ans":[1],"exp":"Soft-deleted users are kept 30 days. After that the deletion is permanent and the object cannot be recovered.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"},
-{"id":"D1-057","sub":"Entra users","type":"mcq","diff":2,"q":"Users are synchronized from on-premises Active Directory with Entra Connect. Where must you change a synced user's job title?","opts":["In the Entra admin center","In on-premises Active Directory (the source of authority)","In Azure RBAC","In Microsoft 365 admin center only"],"ans":[1],"exp":"For synced users, on-premises AD is the source of authority; most attributes must be changed there and then sync to Entra ID.","link":"https://learn.microsoft.com/en-us/entra/identity/hybrid/whatis-hybrid-identity"},
-{"id":"D1-058","sub":"Entra users","type":"multi","diff":2,"q":"Which TWO actions can a standard member user perform by default in a new tenant?","opts":["Register applications","Create Azure subscriptions in the tenant without billing","Invite guest users","Assign Entra admin roles"],"ans":[0,2],"exp":"By default, members can register apps and invite guests (both can be turned off). They cannot assign admin roles.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"},
-{"id":"D1-059","sub":"Entra users","type":"mcq","diff":2,"q":"You need to block a user from signing in immediately without deleting the account. What do you do?","opts":["Remove their licenses","Set 'Account enabled' (block sign-in) to No","Remove them from all groups","Change their display name"],"ans":[1],"exp":"Blocking sign-in (accountEnabled = false) stops authentication while keeping the account, memberships, and data.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-user-profile-info"},
-{"id":"D1-060","sub":"Entra users","type":"mcq","diff":3,"q":"Which Entra built-in role is the least-privileged role that can create users, reset passwords for non-admins, and manage groups?","opts":["Global Administrator","User Administrator","Helpdesk Administrator","Security Reader"],"ans":[1],"exp":"User Administrator manages users and groups and can reset non-admin passwords. Helpdesk Administrator can only reset passwords for limited roles; it cannot create users.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"},
-{"id":"D1-061","sub":"Entra users","type":"mcq","diff":2,"q":"A helpdesk team must reset passwords for non-administrator users only. Least-privilege Entra role?","opts":["User Administrator","Password Administrator / Helpdesk Administrator","Global Administrator","Privileged Authentication Administrator"],"ans":[1],"exp":"Helpdesk Administrator (or Password Administrator) can reset passwords for non-admins and limited admin roles, with fewer rights than User Administrator.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"},
-{"id":"D1-062","sub":"External users","type":"mcq","diff":2,"q":"Where do you restrict which external domains your users may invite guests from?","opts":["Conditional Access","External collaboration settings (allow/deny list of domains)","Azure Policy","Named locations"],"ans":[1],"exp":"External collaboration settings include collaboration restrictions: an allow list or deny list of domains.","link":"https://learn.microsoft.com/en-us/entra/external-id/allow-deny-list"},
-{"id":"D1-063","sub":"External users","type":"mcq","diff":2,"q":"You want only admins and users in the Guest Inviter role to be able to invite guests. Where is this configured?","opts":["User settings → App registrations","External collaboration settings → Guest invite settings","Password reset properties","Device settings"],"ans":[1],"exp":"Guest invite settings in External collaboration settings control who can invite (everyone, members, specific admin roles, or no one).","link":"https://learn.microsoft.com/en-us/entra/external-id/external-collaboration-settings-configure"},
-{"id":"D1-064","sub":"External users","type":"mcq","diff":1,"q":"What does a guest receive when invited through B2B collaboration?","opts":["A temporary password by SMS","An invitation email with a redemption link","A new mailbox in your tenant","Nothing — access is instant without any action"],"ans":[1],"exp":"Guests get an invitation email (or a direct link) and redeem it, consenting to the tenant's permissions.","link":"https://learn.microsoft.com/en-us/entra/external-id/redemption-experience"},
-{"id":"D1-065","sub":"External users","type":"mcq","diff":3,"q":"You must invite 300 partner users at once. Which approach takes the least effort in the portal?","opts":["Invite each user individually","Bulk invite using a CSV file in the Users blade","Create them as members with new passwords","Use Azure Policy"],"ans":[1],"exp":"The Users blade supports Bulk invite via a CSV template.","link":"https://learn.microsoft.com/en-us/entra/external-id/tutorial-bulk-invite"},
-{"id":"D1-066","sub":"External users","type":"yesno","diff":2,"q":"Answer Yes or No to each statement about B2B guests:","stmts":["A guest can be added to a security group","A guest can be assigned an Azure RBAC role on a resource group","A guest must have an Entra ID P2 license to be invited","Guest invitation status can be 'Pending acceptance'"],"ans":[true,true,false,true],"exp":"Guests can join security groups and receive RBAC roles. No P2 license is needed to invite. Unredeemed invitations show Pending acceptance.","link":"https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"},
-{"id":"D1-067","sub":"External users","type":"mcq","diff":2,"q":"By default, how much can guests see in your directory compared to members?","opts":["Same as members","Restricted — they can see limited properties of users and groups they belong to","Nothing at all, not even their own profile","Everything including admin roles"],"ans":[1],"exp":"Guest users have limited directory read access by default. The level is configurable in External collaboration settings.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"},
-{"id":"D1-068","sub":"Groups","type":"mcq","diff":1,"q":"Which group type gives members a shared mailbox, calendar, and SharePoint site?","opts":["Security group","Microsoft 365 group","Distribution list only","Dynamic device group"],"ans":[1],"exp":"Microsoft 365 groups provide collaboration resources: mailbox, calendar, SharePoint site, Planner, and Teams integration.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"},
-{"id":"D1-069","sub":"Groups","type":"mcq","diff":2,"q":"You need a group whose members are all Windows 11 devices, to target a device configuration. Which TWO choices together are required?","opts":["Microsoft 365 group + assigned membership","Security group + dynamic device membership","Microsoft 365 group + dynamic device membership","Security group + dynamic user membership"],"ans":[1],"exp":"Devices can only be members of security groups, and automatic membership by OS needs a dynamic device rule.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"},
-{"id":"D1-070","sub":"Groups","type":"mcq","diff":2,"q":"Which rule correctly selects users whose department is Sales AND whose country is Pakistan?","opts":["(user.department -eq \"Sales\") -and (user.country -eq \"Pakistan\")","user.department = Sales AND country = Pakistan","(user.department -contains \"Sales\") -or (user.country -eq \"Pakistan\")","department==Sales && country==Pakistan"],"ans":[0],"exp":"Dynamic rules use -eq, -and, -or operators with property paths like user.department.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"},
-{"id":"D1-071","sub":"Groups","type":"mcq","diff":3,"q":"You change a group with 40 manually added members from Assigned to Dynamic user membership. What happens to those members?","opts":["They stay forever as static members","Membership is recalculated from the rule; members who don't match the rule are removed","The change is blocked while the group has members","They are converted to guests"],"ans":[1],"exp":"Once dynamic, the rule is the only source of membership. Existing members that don't match are removed.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-change-type"},
-{"id":"D1-072","sub":"Groups","type":"mcq","diff":2,"q":"An owner of a dynamic security group tries to manually add a user. What happens?","opts":["The user is added","Manual adds are not allowed — membership comes only from the rule","The user is added for 24 hours","The rule is disabled automatically"],"ans":[1],"exp":"Dynamic groups don't allow manual member adds or removes; edit the rule or the user's attributes instead.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"},
-{"id":"D1-073","sub":"Groups","type":"mcq","diff":2,"q":"Who can be an owner of a Microsoft Entra security group?","opts":["Only Global Administrators","Users and service principals","Other groups","Devices"],"ans":[1],"exp":"Group owners must be users or service principals. Groups and devices cannot be owners.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-groups"},
-{"id":"D1-074","sub":"Groups","type":"mcq","diff":3,"q":"You want users to create Microsoft 365 groups only if they belong to the group 'GroupCreators'. How is this done?","opts":["Azure Policy","A group creation restriction setting (Graph/PowerShell directory setting) allowing only that group","Conditional Access","Assign Groups Administrator role to everyone else"],"ans":[1],"exp":"Microsoft 365 group creation can be restricted to members of a specified security group using the directory setting EnableGroupCreation / GroupCreationAllowedGroupId.","link":"https://learn.microsoft.com/en-us/microsoft-365/solutions/manage-creation-of-groups"},
-{"id":"D1-075","sub":"Groups","type":"mcq","diff":2,"q":"You need Microsoft 365 groups to be deleted automatically if nobody renews them after 180 days. What do you configure?","opts":["Group naming policy","Group expiration policy","Access reviews","Soft delete"],"ans":[1],"exp":"A group expiration policy sets a lifetime; owners get renewal notices and unrenewed groups are deleted (restorable for 30 days).","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-lifecycle"},
-{"id":"D1-076","sub":"Groups","type":"mcq","diff":2,"q":"A deleted Microsoft 365 group can be restored for how long?","opts":["7 days","14 days","30 days","Cannot be restored"],"ans":[2],"exp":"Deleted Microsoft 365 groups are soft-deleted and can be restored within 30 days.","link":"https://learn.microsoft.com/en-us/entra/identity/users/groups-restore-deleted"},
-{"id":"D1-077","sub":"Groups","type":"yesno","diff":2,"q":"Answer Yes or No to each statement:","stmts":["A security group can contain another security group","A Microsoft 365 group can contain a device","Dynamic group processing is instant","A dynamic group requires Entra ID P1 for its members"],"ans":[true,false,false,true],"exp":"Security groups support nesting; M365 groups hold users only; dynamic processing can take minutes or longer; dynamic groups need P1.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"},
-{"id":"D1-078","sub":"Groups","type":"mcq","diff":3,"q":"Which statement about nested groups is correct?","opts":["Group-based licensing applies to all nested members","Nested group members do NOT receive licenses assigned to the parent group","Dynamic groups can include other groups as members via rules by default","Nesting is not supported anywhere"],"ans":[1],"exp":"Group-based licensing only applies to direct members; nested group members are not licensed through the parent.","link":"https://learn.microsoft.com/en-us/entra/identity/users/licensing-group-advanced"},
-{"id":"D1-079","sub":"Groups","type":"mcq","diff":1,"q":"Which Azure CLI command adds a user to a group?","opts":["az ad group member add --group G1 --member-id <objectId>","az group add-member","az ad user join-group","az role assignment create --group"],"ans":[0],"exp":"az ad group member add takes the group and the member's object ID.","link":"https://learn.microsoft.com/en-us/cli/azure/ad/group/member"},
-{"id":"D1-080","sub":"Licenses","type":"mcq","diff":2,"q":"Before you can assign a license to a user, which property must be set?","opts":["jobTitle","usageLocation","department","manager"],"ans":[1],"exp":"usageLocation (a two-letter country code) is required because service availability varies by country.","link":"https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign"},
-{"id":"D1-081","sub":"Licenses","type":"mcq","diff":2,"q":"You have 100 P1 licenses and assign them to a group with 110 members. What happens?","opts":["All 110 get licenses","100 are licensed; 10 show an error for insufficient licenses","Nobody gets licenses","Azure automatically buys 10 more licenses"],"ans":[1],"exp":"Users beyond the available count land in an error state until more licenses are bought or freed.","link":"https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-resolve-problems"},
-{"id":"D1-082","sub":"Licenses","type":"mcq","diff":3,"q":"A user has the same license both directly assigned and inherited from a group. You remove them from the group. What happens?","opts":["The license is removed","The license stays because of the direct assignment","The user is deleted","The user gets two licenses until removed"],"ans":[1],"exp":"Direct and inherited assignments coexist; removing the group membership only removes the inherited path.","link":"https://learn.microsoft.com/en-us/entra/identity/users/licensing-group-advanced"},
-{"id":"D1-083","sub":"Licenses","type":"mcq","diff":2,"q":"You assign Microsoft 365 E3 to a group but need to disable the Exchange Online service plan for that group only. How?","opts":["It is impossible","Edit the group's license assignment and turn off the specific service plan","Create a Conditional Access policy","Remove Exchange from the tenant"],"ans":[1],"exp":"When assigning a license to a group, you can disable individual service plans within that license.","link":"https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign"},
-{"id":"D1-084","sub":"Licenses","type":"mcq","diff":1,"q":"Which edition comes included with any Azure subscription at no extra cost?","opts":["Entra ID Free","Entra ID P1","Entra ID P2","Entra ID Governance"],"ans":[0],"exp":"Entra ID Free is included with Azure, Microsoft 365, and other commercial cloud subscriptions.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/licensing"},
-{"id":"D1-085","sub":"Licenses","type":"mcq","diff":2,"q":"Which feature requires Entra ID P2?","opts":["Access reviews","Self-service password reset for cloud users","Group-based licensing","Conditional Access"],"ans":[0],"exp":"Access reviews (with PIM and Identity Protection) are P2/Governance features. The others are P1 or lower.","link":"https://learn.microsoft.com/en-us/entra/fundamentals/licensing"},
-{"id":"D1-086","sub":"Licenses","type":"mcq","diff":3,"q":"You must require MFA only when Identity Protection detects a risky sign-in. Which license is needed?","opts":["Free","P1","P2","No license — security defaults do it"],"ans":[2],"exp":"Risk-based Conditional Access (sign-in risk / user risk) requires Identity Protection, which is P2.","link":"https://learn.microsoft.com/en-us/entra/id-protection/overview-identity-protection"},
-{"id":"D1-087","sub":"SSPR","type":"mcq","diff":2,"q":"For SSPR, how many authentication methods can an administrator require a user to provide before reset?","opts":["Exactly 3","1 or 2","Any number up to 5","Always 1"],"ans":[1],"exp":"The 'Number of methods required to reset' is 1 or 2.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"},
-{"id":"D1-088","sub":"SSPR","type":"mcq","diff":3,"q":"Which SSPR method is NEVER allowed for administrator accounts?","opts":["Mobile app notification","Email","Security questions","Mobile phone (SMS)"],"ans":[2],"exp":"Administrators always have a strong two-gate policy and can't use security questions.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-policy"},
-{"id":"D1-089","sub":"SSPR","type":"mcq","diff":2,"q":"SSPR is set to 'Selected'. How many groups can you choose?","opts":["One group (which may contain nested groups)","Up to 10 groups","Unlimited groups","Only dynamic groups"],"ans":[0],"exp":"The Selected option lets you target a single group.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr"},
-{"id":"D1-090","sub":"SSPR","type":"mcq","diff":2,"q":"You want users to register SSPR methods the next time they sign in. Which setting?","opts":["Require users to register when signing in = Yes","Notify users on password resets = Yes","Number of methods required = 2","Security questions = Enabled"],"ans":[0],"exp":"The Registration setting 'Require users to register when signing in' prompts users at next sign-in.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-registration-mfa-sspr-combined"},
-{"id":"D1-091","sub":"SSPR","type":"mcq","diff":2,"q":"By default, after how many days are users asked to reconfirm their SSPR authentication information?","opts":["30","90","180","365"],"ans":[2],"exp":"The default reconfirmation period is 180 days (configurable 0–730).","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"},
-{"id":"D1-092","sub":"SSPR","type":"mcq","diff":3,"q":"Hybrid users reset their passwords in the cloud, but the new passwords don't work on domain-joined PCs. Writeback is enabled in Entra Connect. What else must be checked?","opts":["Write back passwords to your on-premises directory is enabled under Password reset → On-premises integration","A P2 license","A Conditional Access policy","Security questions are enabled"],"ans":[0],"exp":"Writeback must be enabled in both Entra Connect and in the Password reset blade's on-premises integration settings.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr-writeback"},
-{"id":"D1-093","sub":"SSPR","type":"mcq","diff":1,"q":"What URL do users visit to reset a forgotten password with SSPR?","opts":["https://aka.ms/sspr (passwordreset.microsoftonline.com)","https://portal.azure.com/reset","https://myapps.microsoft.com/password","https://login.windows.net/reset"],"ans":[0],"exp":"Users go to aka.ms/sspr, which redirects to the password reset portal, or use the 'Forgot my password' link at sign-in.","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr"},
-{"id":"D1-094","sub":"SSPR","type":"yesno","diff":2,"q":"Answer Yes or No to each SSPR statement:","stmts":["SSPR registration can be combined with MFA registration","The number of methods required can exceed the number of methods enabled","You can notify all admins when another admin resets their password","SSPR for cloud-only users requires Entra ID P2"],"ans":[true,false,true,false],"exp":"Combined registration covers MFA and SSPR; required methods can't exceed enabled ones; admin notifications are available; cloud-only SSPR needs Entra ID P1 or a qualifying Microsoft 365 business plan, not P2 (Free only lets users change a known password).","link":"https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"},
-{"id":"D1-095","sub":"Devices","type":"mcq","diff":2,"q":"Corporate Windows laptops that are joined to on-premises AD must also be registered in Entra ID for Conditional Access. Which join type?","opts":["Entra registered","Entra joined","Microsoft Entra hybrid joined","Workgroup"],"ans":[2],"exp":"Hybrid join is for devices joined to on-premises AD and registered in Entra ID.","link":"https://learn.microsoft.com/en-us/entra/identity/devices/concept-hybrid-join"},
-{"id":"D1-096","sub":"Devices","type":"mcq","diff":2,"q":"You want to limit the maximum number of devices each user can join or register. Where is this set?","opts":["Devices → Device settings","Conditional Access","Intune only","Azure Policy"],"ans":[0],"exp":"Device settings include 'Maximum number of devices per user'.","link":"https://learn.microsoft.com/en-us/entra/identity/devices/manage-device-identities"},
-{"id":"D1-097","sub":"Devices","type":"mcq","diff":3,"q":"Only members of the group 'IT-Staff' should be able to join devices to Microsoft Entra ID. Where do you configure this?","opts":["Device settings → Users may join devices to Microsoft Entra = Selected","User settings → App registrations","Conditional Access → Device platforms","RBAC → Virtual Machine Contributor"],"ans":[0],"exp":"Device settings let you set who can join devices: All, Selected, or None.","link":"https://learn.microsoft.com/en-us/entra/identity/devices/manage-device-identities"},
-{"id":"D1-098","sub":"Devices","type":"mcq","diff":2,"q":"Which device join type supports personal iOS and Android phones?","opts":["Entra joined","Entra registered","Hybrid joined","Domain joined"],"ans":[1],"exp":"Entra registered supports Windows, macOS, iOS, and Android personal devices.","link":"https://learn.microsoft.com/en-us/entra/identity/devices/concept-device-registration"},
-{"id":"D1-099","sub":"Administrative units","type":"mcq","diff":3,"q":"Regional helpdesk staff must reset passwords only for users in the Lahore office. What do you use?","opts":["A management group","An administrative unit containing Lahore users, with Helpdesk Administrator scoped to it","A resource group","A dynamic device group"],"ans":[1],"exp":"Administrative units restrict the scope of Entra role assignments to a subset of users, groups, or devices.","link":"https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units"},
-{"id":"D1-100","sub":"Conditional Access","type":"mcq","diff":2,"q":"Which license is required to create Conditional Access policies?","opts":["Free","P1","P2 only","Azure subscription only"],"ans":[1],"exp":"Conditional Access requires Entra ID P1. Risk-based conditions need P2.","link":"https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview"}
+ {
+  "id": "D1-051",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What is the default domain name format every new Microsoft Entra tenant receives?",
+  "opts": [
+   "<name>.azurewebsites.net",
+   "<name>.onmicrosoft.com",
+   "<name>.windows.net",
+   "<name>.cloudapp.net"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Every tenant gets an initial <name>.onmicrosoft.com domain, which cannot be removed. Custom domains are added on top.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"
+ },
+ {
+  "id": "D1-052",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You add contoso.com as a custom domain. Which DNS record do you create at the registrar to verify ownership?",
+  "opts": [
+   "A TXT (or MX) record with the value Entra provides",
+   "An A record pointing to Entra ID",
+   "A CNAME to login.microsoftonline.com",
+   "An SRV record"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "To prove you own contoso.com, Entra ID gives you a unique value to publish in DNS as a TXT record (an MX record also works). Entra ID looks the record up and marks the domain as verified. A, CNAME and SRV records point to services; they don't prove ownership in this process.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain"
+ },
+ {
+  "id": "D1-053",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which user attribute is the actual sign-in name of a Microsoft Entra user?",
+  "opts": [
+   "displayName",
+   "mailNickname",
+   "userPrincipalName",
+   "employeeId"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "The userPrincipalName (UPN), in the form name@domain, is what the user types to sign in. displayName is only the friendly name shown in lists, mailNickname is the email alias, and employeeId is an HR attribute. Changing the display name never changes how the user signs in.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/how-to-create-delete-users"
+ },
+ {
+  "id": "D1-054",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which PowerShell module is the current Microsoft-recommended way to manage Entra users from scripts?",
+  "opts": [
+   "AzureAD",
+   "MSOnline",
+   "Microsoft Graph PowerShell (Microsoft.Graph)",
+   "Az.Accounts only"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "AzureAD and MSOnline are deprecated. Microsoft Graph PowerShell (New-MgUser, Update-MgUser) is the replacement.",
+  "link": "https://learn.microsoft.com/en-us/powershell/microsoftgraph/overview"
+ },
+ {
+  "id": "D1-055",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which Azure CLI command creates a new Entra user?",
+  "opts": [
+   "az ad user create",
+   "az user add",
+   "az entra user new",
+   "az account user create"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Entra ID objects are managed under az ad. az ad user create needs at least --display-name, --user-principal-name and --password. az user, az entra and az account user are not valid command groups for creating users.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/ad/user"
+ },
+ {
+  "id": "D1-056",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A user was permanently deleted 45 days ago. What can you do to recover the account?",
+  "opts": [
+   "Restore from the Deleted users blade",
+   "Nothing — after 30 days the user is permanently deleted; create a new account",
+   "Open a support ticket to restore it with the same object ID",
+   "Use az ad user restore"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Soft-deleted users are kept 30 days. After that the deletion is permanent and the object cannot be recovered.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-restore"
+ },
+ {
+  "id": "D1-057",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Users are synchronized from on-premises Active Directory with Entra Connect. Where must you change a synced user's job title?",
+  "opts": [
+   "In the Entra admin center",
+   "In on-premises Active Directory (the source of authority)",
+   "In Azure RBAC",
+   "In Microsoft 365 admin center only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "For synced users, on-premises AD is the source of authority; most attributes must be changed there and then sync to Entra ID.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/hybrid/whatis-hybrid-identity"
+ },
+ {
+  "id": "D1-058",
+  "sub": "Entra users",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO actions can a standard member user perform by default in a new tenant?",
+  "opts": [
+   "Register applications",
+   "Create Azure subscriptions in the tenant without billing",
+   "Invite guest users",
+   "Assign Entra admin roles"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "By default, members can register apps and invite guests (both can be turned off). They cannot assign admin roles.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
+ },
+ {
+  "id": "D1-059",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need to block a user from signing in immediately without deleting the account. What do you do?",
+  "opts": [
+   "Remove their licenses",
+   "Set 'Account enabled' (block sign-in) to No",
+   "Remove them from all groups",
+   "Change their display name"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Blocking sign-in (accountEnabled = false) stops authentication while keeping the account, memberships, and data.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-user-profile-info"
+ },
+ {
+  "id": "D1-060",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which Entra built-in role is the least-privileged role that can create users, reset passwords for non-admins, and manage groups?",
+  "opts": [
+   "Global Administrator",
+   "User Administrator",
+   "Helpdesk Administrator",
+   "Security Reader"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "User Administrator manages users and groups and can reset non-admin passwords. Helpdesk Administrator can only reset passwords for limited roles; it cannot create users.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"
+ },
+ {
+  "id": "D1-061",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A helpdesk team must reset passwords for non-administrator users only. Least-privilege Entra role?",
+  "opts": [
+   "User Administrator",
+   "Password Administrator / Helpdesk Administrator",
+   "Global Administrator",
+   "Privileged Authentication Administrator"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Helpdesk Administrator (or Password Administrator) can reset passwords for non-admins and limited admin roles, with fewer rights than User Administrator.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference"
+ },
+ {
+  "id": "D1-062",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Where do you restrict which external domains your users may invite guests from?",
+  "opts": [
+   "Conditional Access",
+   "External collaboration settings (allow/deny list of domains)",
+   "Azure Policy",
+   "Named locations"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "External collaboration settings include collaboration restrictions: an allow list or deny list of domains.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/allow-deny-list"
+ },
+ {
+  "id": "D1-063",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You want only admins and users in the Guest Inviter role to be able to invite guests. Where is this configured?",
+  "opts": [
+   "User settings → App registrations",
+   "External collaboration settings → Guest invite settings",
+   "Password reset properties",
+   "Device settings"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Guest invite settings in External collaboration settings control who can invite (everyone, members, specific admin roles, or no one).",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/external-collaboration-settings-configure"
+ },
+ {
+  "id": "D1-064",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What does a guest receive when invited through B2B collaboration?",
+  "opts": [
+   "A temporary password by SMS",
+   "An invitation email with a redemption link",
+   "A new mailbox in your tenant",
+   "Nothing — access is instant without any action"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Guests get an invitation email (or a direct link) and redeem it, consenting to the tenant's permissions.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/redemption-experience"
+ },
+ {
+  "id": "D1-065",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You must invite 300 partner users at once. Which approach takes the least effort in the portal?",
+  "opts": [
+   "Invite each user individually",
+   "Bulk invite using a CSV file in the Users blade",
+   "Create them as members with new passwords",
+   "Use Azure Policy"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Users → Bulk operations → Bulk invite takes a CSV file with each guest's email address and an optional message, and sends all the B2B invitations at once. Creating member accounts with passwords would give external people internal accounts, which defeats B2B, and Azure Policy doesn't manage users.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/tutorial-bulk-invite"
+ },
+ {
+  "id": "D1-066",
+  "sub": "External users",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each statement about B2B guests:",
+  "stmts": [
+   "A guest can be added to a security group",
+   "A guest can be assigned an Azure RBAC role on a resource group",
+   "A guest must have an Entra ID P2 license to be invited",
+   "Guest invitation status can be 'Pending acceptance'"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "Guests can join security groups and receive RBAC roles. No P2 license is needed to invite. Unredeemed invitations show Pending acceptance.",
+  "link": "https://learn.microsoft.com/en-us/entra/external-id/what-is-b2b"
+ },
+ {
+  "id": "D1-067",
+  "sub": "External users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "By default, how much can guests see in your directory compared to members?",
+  "opts": [
+   "Same as members",
+   "Restricted — they can see limited properties of users and groups they belong to",
+   "Nothing at all, not even their own profile",
+   "Everything including admin roles"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Guest users have limited directory read access by default. The level is configurable in External collaboration settings.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/users-default-permissions"
+ },
+ {
+  "id": "D1-068",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which group type gives members a shared mailbox, calendar, and SharePoint site?",
+  "opts": [
+   "Security group",
+   "Microsoft 365 group",
+   "Distribution list only",
+   "Dynamic device group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Microsoft 365 groups provide collaboration resources: mailbox, calendar, SharePoint site, Planner, and Teams integration.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"
+ },
+ {
+  "id": "D1-069",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need a group whose members are all Windows 11 devices, to target a device configuration. Which TWO choices together are required?",
+  "opts": [
+   "Microsoft 365 group + assigned membership",
+   "Security group + dynamic device membership",
+   "Microsoft 365 group + dynamic device membership",
+   "Security group + dynamic user membership"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Devices can only be members of security groups, and automatic membership by OS needs a dynamic device rule.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-070",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which rule correctly selects users whose department is Sales AND whose country is Pakistan?",
+  "opts": [
+   "(user.department -eq \"Sales\") -and (user.country -eq \"Pakistan\")",
+   "user.department = Sales AND country = Pakistan",
+   "(user.department -contains \"Sales\") -or (user.country -eq \"Pakistan\")",
+   "department==Sales && country==Pakistan"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Dynamic membership rules use the syntax (user.property -operator \"value\"), with -eq for an exact match and -and / -or to combine conditions. The rule must match Sales AND Pakistan, so -and is needed; the -or option would also include every user in Pakistan. Operators such as =, == and && aren't valid in rules.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-071",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You change a group with 40 manually added members from Assigned to Dynamic user membership. What happens to those members?",
+  "opts": [
+   "They stay forever as static members",
+   "Membership is recalculated from the rule; members who don't match the rule are removed",
+   "The change is blocked while the group has members",
+   "They are converted to guests"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Once dynamic, the rule is the only source of membership. Existing members that don't match are removed.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-change-type"
+ },
+ {
+  "id": "D1-072",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An owner of a dynamic security group tries to manually add a user. What happens?",
+  "opts": [
+   "The user is added",
+   "Manual adds are not allowed — membership comes only from the rule",
+   "The user is added for 24 hours",
+   "The rule is disabled automatically"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Dynamic groups don't allow manual member adds or removes; edit the rule or the user's attributes instead.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-073",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Who can be an owner of a Microsoft Entra security group?",
+  "opts": [
+   "Only Global Administrators",
+   "Users and service principals",
+   "Other groups",
+   "Devices"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Group owners can be users or service principals (applications). An owner can manage the group's members and settings. Groups and devices can't be owners, and you don't need to be a Global Administrator to own a group.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-groups"
+ },
+ {
+  "id": "D1-074",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You want users to create Microsoft 365 groups only if they belong to the group 'GroupCreators'. How is this done?",
+  "opts": [
+   "Azure Policy",
+   "A group creation restriction setting (Graph/PowerShell directory setting) allowing only that group",
+   "Conditional Access",
+   "Assign Groups Administrator role to everyone else"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Microsoft 365 group creation can be restricted to members of a specified security group using the directory setting EnableGroupCreation / GroupCreationAllowedGroupId.",
+  "link": "https://learn.microsoft.com/en-us/microsoft-365/solutions/manage-creation-of-groups"
+ },
+ {
+  "id": "D1-075",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need Microsoft 365 groups to be deleted automatically if nobody renews them after 180 days. What do you configure?",
+  "opts": [
+   "Group naming policy",
+   "Group expiration policy",
+   "Access reviews",
+   "Soft delete"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A group expiration policy sets a lifetime; owners get renewal notices and unrenewed groups are deleted (restorable for 30 days).",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-lifecycle"
+ },
+ {
+  "id": "D1-076",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A deleted Microsoft 365 group can be restored for how long?",
+  "opts": [
+   "7 days",
+   "14 days",
+   "30 days",
+   "Cannot be restored"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Deleted Microsoft 365 groups are soft-deleted for 30 days, during which you can restore them with their mailbox, files and members. After 30 days they are permanently removed. (Security groups are not soft-deleted — they're deleted immediately.)",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-restore-deleted"
+ },
+ {
+  "id": "D1-077",
+  "sub": "Groups",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each statement:",
+  "stmts": [
+   "A security group can contain another security group",
+   "A Microsoft 365 group can contain a device",
+   "Dynamic group processing is instant",
+   "A dynamic group requires Entra ID P1 for its members"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "Security groups support nesting; M365 groups hold users only; dynamic processing can take minutes or longer; dynamic groups need P1.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/concept-learn-about-groups"
+ },
+ {
+  "id": "D1-078",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which statement about nested groups is correct?",
+  "opts": [
+   "Group-based licensing applies to all nested members",
+   "Nested group members do NOT receive licenses assigned to the parent group",
+   "Dynamic groups can include other groups as members via rules by default",
+   "Nesting is not supported anywhere"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Group-based licensing only applies to direct members; nested group members are not licensed through the parent.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-group-advanced"
+ },
+ {
+  "id": "D1-079",
+  "sub": "Groups",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which Azure CLI command adds a user to a group?",
+  "opts": [
+   "az ad group member add --group G1 --member-id <objectId>",
+   "az group add-member",
+   "az ad user join-group",
+   "az role assignment create --group"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "az ad group member add adds a member to an Entra group, using --group (name or ID) and --member-id (the object ID of the user, group or service principal). az group commands manage Azure resource groups, not Entra groups, and az role assignment create grants Azure roles rather than group membership.",
+  "link": "https://learn.microsoft.com/en-us/cli/azure/ad/group/member"
+ },
+ {
+  "id": "D1-080",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Before you can assign a license to a user, which property must be set?",
+  "opts": [
+   "jobTitle",
+   "usageLocation",
+   "department",
+   "manager"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "usageLocation (a two-letter country code) is required because service availability varies by country.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign"
+ },
+ {
+  "id": "D1-081",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You have 100 P1 licenses and assign them to a group with 110 members. What happens?",
+  "opts": [
+   "All 110 get licenses",
+   "100 are licensed; 10 show an error for insufficient licenses",
+   "Nobody gets licenses",
+   "Azure automatically buys 10 more licenses"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Group-based licensing assigns licences only while they are available. The first 100 members get P1; the other 10 show a licence error ('not enough licences') in the group's licence view. Azure never buys licences automatically, and the shortage doesn't stop the other 100 from being licensed.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-resolve-problems"
+ },
+ {
+  "id": "D1-082",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A user has the same license both directly assigned and inherited from a group. You remove them from the group. What happens?",
+  "opts": [
+   "The license is removed",
+   "The license stays because of the direct assignment",
+   "The user is deleted",
+   "The user gets two licenses until removed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Direct and inherited assignments coexist; removing the group membership only removes the inherited path.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-group-advanced"
+ },
+ {
+  "id": "D1-083",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You assign Microsoft 365 E3 to a group but need to disable the Exchange Online service plan for that group only. How?",
+  "opts": [
+   "It is impossible",
+   "Edit the group's license assignment and turn off the specific service plan",
+   "Create a Conditional Access policy",
+   "Remove Exchange from the tenant"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "When you assign a product such as Microsoft 365 E3 to a group, you can switch off individual service plans inside it (for example Exchange Online) for that group only. Members get the rest of the product. Conditional Access controls sign-in, not licences, and removing Exchange for the whole tenant would affect everyone.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/licensing-groups-assign"
+ },
+ {
+  "id": "D1-084",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which edition comes included with any Azure subscription at no extra cost?",
+  "opts": [
+   "Entra ID Free",
+   "Entra ID P1",
+   "Entra ID P2",
+   "Entra ID Governance"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Every Azure, Microsoft 365 and Dynamics 365 subscription includes Microsoft Entra ID Free: users, groups, basic SSO and security defaults. P1, P2 and Entra ID Governance are paid add-ons with features such as Conditional Access, PIM and access reviews.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+ },
+ {
+  "id": "D1-085",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which feature requires Entra ID P2?",
+  "opts": [
+   "Access reviews",
+   "Self-service password reset for cloud users",
+   "Group-based licensing",
+   "Conditional Access"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Access reviews (with PIM and Identity Protection) are P2/Governance features. The others are P1 or lower.",
+  "link": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+ },
+ {
+  "id": "D1-086",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You must require MFA only when Identity Protection detects a risky sign-in. Which license is needed?",
+  "opts": [
+   "Free",
+   "P1",
+   "P2",
+   "No license — security defaults do it"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Risk-based Conditional Access ('require MFA when sign-in risk is medium or high') relies on Microsoft Entra ID Protection, which is a P2 feature. P1 gives ordinary Conditional Access without risk signals. Security defaults turn on MFA for everyone but can't react to risk, and Free doesn't include Identity Protection.",
+  "link": "https://learn.microsoft.com/en-us/entra/id-protection/overview-identity-protection"
+ },
+ {
+  "id": "D1-087",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "For SSPR, how many authentication methods can an administrator require a user to provide before reset?",
+  "opts": [
+   "Exactly 3",
+   "1 or 2",
+   "Any number up to 5",
+   "Always 1"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "In Password reset → Authentication methods, 'Number of methods required to reset' can be set to 1 or 2. Two methods is more secure. Higher numbers aren't offered, and it isn't fixed at 1.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+ },
+ {
+  "id": "D1-088",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Which SSPR method is NEVER allowed for administrator accounts?",
+  "opts": [
+   "Mobile app notification",
+   "Email",
+   "Security questions",
+   "Mobile phone (SMS)"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Administrators always get a strong reset policy: they must use two methods, and security questions are never allowed for admin accounts because answers are easy to guess or research. App notification, email and phone (SMS) remain available to admins.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-policy"
+ },
+ {
+  "id": "D1-089",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "SSPR is set to 'Selected'. How many groups can you choose?",
+  "opts": [
+   "One group (which may contain nested groups)",
+   "Up to 10 groups",
+   "Unlimited groups",
+   "Only dynamic groups"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "With the Selected option you can choose exactly one group in the portal. To include more people, add them to that group or nest other groups inside it. There's no 10-group option, and the group doesn't have to be dynamic.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr"
+ },
+ {
+  "id": "D1-090",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You want users to register SSPR methods the next time they sign in. Which setting?",
+  "opts": [
+   "Require users to register when signing in = Yes",
+   "Notify users on password resets = Yes",
+   "Number of methods required = 2",
+   "Security questions = Enabled"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Password reset → Registration → 'Require users to register when signing in' = Yes prompts users to register their reset methods the next time they sign in. The notification settings only send emails after resets, and the 'number of methods required' setting controls the reset itself, not registration.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-registration-mfa-sspr-combined"
+ },
+ {
+  "id": "D1-091",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "By default, after how many days are users asked to reconfirm their SSPR authentication information?",
+  "opts": [
+   "30",
+   "90",
+   "180",
+   "365"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Users are asked to reconfirm their registered SSPR methods every 180 days by default, so phone numbers and emails stay up to date. The interval can be changed (0–730 days), but 180 is the default.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+ },
+ {
+  "id": "D1-092",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Hybrid users reset their passwords in the cloud, but the new passwords don't work on domain-joined PCs. Writeback is enabled in Entra Connect. What else must be checked?",
+  "opts": [
+   "Write back passwords to your on-premises directory is enabled under Password reset → On-premises integration",
+   "A P2 license",
+   "A Conditional Access policy",
+   "Security questions are enabled"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Writeback must be enabled in both Entra Connect and in the Password reset blade's on-premises integration settings.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr-writeback"
+ },
+ {
+  "id": "D1-093",
+  "sub": "SSPR",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What URL do users visit to reset a forgotten password with SSPR?",
+  "opts": [
+   "https://aka.ms/sspr (passwordreset.microsoftonline.com)",
+   "https://portal.azure.com/reset",
+   "https://myapps.microsoft.com/password",
+   "https://login.windows.net/reset"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Users go to aka.ms/sspr, which redirects to the password reset portal, or use the 'Forgot my password' link at sign-in.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/tutorial-enable-sspr"
+ },
+ {
+  "id": "D1-094",
+  "sub": "SSPR",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No to each SSPR statement:",
+  "stmts": [
+   "SSPR registration can be combined with MFA registration",
+   "The number of methods required can exceed the number of methods enabled",
+   "You can notify all admins when another admin resets their password",
+   "SSPR for cloud-only users requires Entra ID P2"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Combined registration covers MFA and SSPR; required methods can't exceed enabled ones; admin notifications are available; cloud-only SSPR needs Entra ID P1 or a qualifying Microsoft 365 business plan, not P2 (Free only lets users change a known password).",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+ },
+ {
+  "id": "D1-095",
+  "sub": "Devices",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Corporate Windows laptops that are joined to on-premises AD must also be registered in Entra ID for Conditional Access. Which join type?",
+  "opts": [
+   "Entra registered",
+   "Entra joined",
+   "Microsoft Entra hybrid joined",
+   "Workgroup"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Microsoft Entra hybrid join is for corporate devices that are joined to on-premises Active Directory and also registered in Entra ID. That lets Conditional Access trust them. Entra join is for cloud-only corporate devices, and Entra registered is for personal (BYOD) devices.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/concept-hybrid-join"
+ },
+ {
+  "id": "D1-096",
+  "sub": "Devices",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You want to limit the maximum number of devices each user can join or register. Where is this set?",
+  "opts": [
+   "Devices → Device settings",
+   "Conditional Access",
+   "Intune only",
+   "Azure Policy"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Entra ID → Devices → Device settings has 'Maximum number of devices per user', which limits how many devices one user can join or register. Conditional Access controls sign-in conditions, Azure Policy governs Azure resources, and Intune isn't required for this limit.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/manage-device-identities"
+ },
+ {
+  "id": "D1-097",
+  "sub": "Devices",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Only members of the group 'IT-Staff' should be able to join devices to Microsoft Entra ID. Where do you configure this?",
+  "opts": [
+   "Device settings → Users may join devices to Microsoft Entra = Selected",
+   "User settings → App registrations",
+   "Conditional Access → Device platforms",
+   "RBAC → Virtual Machine Contributor"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Entra ID → Devices → Device settings → 'Users may join devices to Microsoft Entra' can be All, Selected or None. Choosing Selected and adding the IT-Staff group means only those users can join devices. App registrations, Conditional Access platforms and Azure RBAC roles don't control device join.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/manage-device-identities"
+ },
+ {
+  "id": "D1-098",
+  "sub": "Devices",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which device join type supports personal iOS and Android phones?",
+  "opts": [
+   "Entra joined",
+   "Entra registered",
+   "Hybrid joined",
+   "Domain joined"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Microsoft Entra registered is designed for personal devices (BYOD) and supports Windows, macOS, iOS and Android. Entra joined and hybrid joined are for organisation-owned Windows devices (and some macOS), and domain join is an on-premises AD concept.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/devices/concept-device-registration"
+ },
+ {
+  "id": "D1-099",
+  "sub": "Administrative units",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Regional helpdesk staff must reset passwords only for users in the Lahore office. What do you use?",
+  "opts": [
+   "A management group",
+   "An administrative unit containing Lahore users, with Helpdesk Administrator scoped to it",
+   "A resource group",
+   "A dynamic device group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Administrative units restrict the scope of Entra role assignments to a subset of users, groups, or devices.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units"
+ },
+ {
+  "id": "D1-100",
+  "sub": "Conditional Access",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which license is required to create Conditional Access policies?",
+  "opts": [
+   "Free",
+   "P1",
+   "P2 only",
+   "Azure subscription only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Conditional Access is included from Microsoft Entra ID P1. P2 adds risk-based conditions on top (via Identity Protection), but basic Conditional Access doesn't need P2. Free doesn't include Conditional Access; it only offers security defaults.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/overview"
+ }
 ]

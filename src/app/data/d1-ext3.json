@@ -14,7 +14,7 @@
   "ans": [
    1
   ],
-  "exp": "Deny rejects create or update requests that violate the policy.",
+  "exp": "Deny evaluates the request before the resource is created or updated, and rejects it if it breaks the rule, so the non-compliant resource never exists. Audit and AuditIfNotExists only report, and Append adds fields to the request rather than blocking it.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
  },
  {
@@ -32,7 +32,7 @@
   "ans": [
    0
   ],
-  "exp": "'Require a tag on resource groups' uses Deny to block creation without the tag.",
+  "exp": "The built-in 'Require a tag on resource groups' policy uses the Deny effect, so creating a resource group without the costcenter tag fails. 'Inherit a tag' (Modify) copies a tag that already exists rather than enforcing it, Append adds a value instead of failing, and 'Allowed locations' is about regions.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    0
   ],
-  "exp": "Modify changes properties or tags on create/update, and remediation tasks fix existing resources.",
+  "exp": "Modify can add, replace or remove tags (and some other properties) while a resource is being created or updated. For resources that already exist, a remediation task applies the change through the assignment's managed identity. Audit only reports, Deny blocks, and Disabled turns the policy off.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-modify"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    0
   ],
-  "exp": "'Allowed virtual machine size SKUs' restricts which VM sizes can be deployed.",
+  "exp": "The built-in 'Allowed virtual machine size SKUs' policy takes a list of permitted sizes, such as the D-series, and denies deployments of any other size. 'Allowed locations' restricts regions, and the resource-type policies allow or block whole resource types rather than sizes.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies"
  },
  {
@@ -86,7 +86,7 @@
   "ans": [
    0
   ],
-  "exp": "'Not allowed resource types' denies the deployment of listed types.",
+  "exp": "The built-in 'Not allowed resource types' policy denies any deployment of the resource types you list. Listing Microsoft.Network/publicIPAddresses stops anyone creating public IPs in that scope. 'Allowed locations' and 'Require a tag' don't block a resource type.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/samples/built-in-policies"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    0
   ],
-  "exp": "az policy state trigger-scan (PowerShell: Start-AzPolicyComplianceScan) starts an evaluation.",
+  "exp": "az policy state trigger-scan starts an on-demand compliance evaluation for a subscription or, with --resource-group, one resource group (in PowerShell: Start-AzPolicyComplianceScan). Without it you wait for the 24-hour cycle. The other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/get-compliance-data"
  },
  {
@@ -194,7 +194,7 @@
   "ans": [
    0
   ],
-  "exp": "enforcementMode = DoNotEnforce evaluates and reports compliance without enforcing the effect.",
+  "exp": "Setting an assignment's enforcementMode to DoNotEnforce makes Azure Policy evaluate resources and report compliance, but it doesn't block anything. That lets you see what a Deny policy would affect before enforcing it. Deleting the policy gives you no results at all, and locks are unrelated.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure"
  },
  {
@@ -212,7 +212,7 @@
   "ans": [
    0
   ],
-  "exp": "AuditIfNotExists flags resources lacking a related resource; DeployIfNotExists would deploy it.",
+  "exp": "AuditIfNotExists checks whether a related resource exists — such as an extension on a VM or a diagnostic setting on a resource — and marks the resource non-compliant if it doesn't. It only reports. DeployIfNotExists would also deploy the missing resource, and Deny blocks requests.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effects"
  },
  {
@@ -231,7 +231,7 @@
    1,
    2
   ],
-  "exp": "Only DeployIfNotExists and Modify support remediation tasks.",
+  "exp": "Only DeployIfNotExists and Modify can change resources after the fact, so only they support remediation tasks for existing non-compliant resources. Audit only reports, and Deny only blocks new requests; neither has anything to remediate.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
  },
  {
@@ -249,7 +249,7 @@
   "ans": [
    0
   ],
-  "exp": "Initiatives group many policies into one assignment and compliance view.",
+  "exp": "An initiative groups many policy definitions, so assigning one built-in initiative (for example a regulatory compliance standard) applies dozens of controls in one step and gives one compliance score. Assigning each policy separately is far more work, and locks and Advisor don't enforce compliance controls.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/initiative-definition-structure"
  },
  {
@@ -327,7 +327,7 @@
    0,
    3
   ],
-  "exp": "Assign Deny → assign Modify (with identity) → remediate existing resources → review compliance.",
+  "exp": "First assign the Deny policy so new resources outside the allowed locations are blocked. Then assign the Modify tag policy with a managed identity, because remediation acts as that identity. Next run a remediation task to fix existing resources. Finally check the compliance dashboard to confirm the result.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
  },
  {
@@ -345,7 +345,7 @@
   "ans": [
    0
   ],
-  "exp": "CanNotDelete blocks deletion but allows modifications such as scaling.",
+  "exp": "A CanNotDelete lock stops anyone deleting the server but still allows changes such as scaling. A ReadOnly lock would also block scaling. Giving admins only Reader would stop them scaling too, and a Deny policy controls how resources are configured, not whether they can be deleted.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -363,7 +363,7 @@
   "ans": [
    1
   ],
-  "exp": "ReadOnly blocks all write operations, including scaling.",
+  "exp": "A ReadOnly lock allows only read (GET) operations. Scaling out an App Service plan changes its configuration, which is a write, so it fails until the lock is removed. That applies to manual scaling and autoscale alike.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -381,7 +381,7 @@
   "ans": [
    1
   ],
-  "exp": "Locks block deletion for everyone. Remove the lock, then delete.",
+  "exp": "A CanNotDelete lock on a resource group blocks deleting it (and the resources in it) for every user, Owners included. Remove the lock first — Owners have permission to do that — then delete. There's no --force flag that bypasses locks.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -399,7 +399,7 @@
   "ans": [
    0
   ],
-  "exp": "az lock create with --lock-type CanNotDelete or ReadOnly.",
+  "exp": "az lock create --lock-type CanNotDelete --resource-group RG1 creates a delete lock on the resource group (use ReadOnly for a read-only lock). The other commands aren't real; az policy creates policies, not locks.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/lock"
  },
  {
@@ -417,7 +417,7 @@
   "ans": [
    0
   ],
-  "exp": "Starting a VM is a write/action operation, so ReadOnly blocks it.",
+  "exp": "Starting a VM is a POST action (Microsoft.Compute/virtualMachines/start/action). ReadOnly locks allow only GET requests, so the start fails, along with restart and deallocate. Remove the lock or use CanNotDelete if VMs need to keep running normally.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
  },
  {
@@ -456,7 +456,7 @@
   "ans": [
    1
   ],
-  "exp": "Each resource, resource group, and subscription supports up to 50 tags.",
+  "exp": "Each resource, resource group and subscription supports up to 50 tag name/value pairs. That's a platform limit, so 15, 100 and unlimited are wrong. If you need more data, store it in one tag value as JSON.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources"
  },
  {
@@ -474,7 +474,7 @@
   "ans": [
    0
   ],
-  "exp": "Cost analysis can group and filter by tag.",
+  "exp": "Tag resources with a key such as department, then use Cost Management → Cost analysis and group or filter by that tag to get spend per department. Separate subscriptions per resource is impractical, locks don't affect costs, and budgets alert on spend rather than report it by department.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/enable-tag-inheritance"
  },
  {
@@ -492,7 +492,7 @@
   "ans": [
    0
   ],
-  "exp": "Tag Contributor manages tags without granting access to the entities.",
+  "exp": "Tag Contributor can add, change and remove tags on resources without any other access to them. Contributor would give full control of the resources, Reader can't change tags, and User Access Administrator manages role assignments.",
   "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/management-and-governance"
  },
  {
@@ -546,7 +546,7 @@
   "ans": [
    1
   ],
-  "exp": "Deleting a resource group deletes every resource in it.",
+  "exp": "A resource group is a lifecycle container: deleting it deletes every resource inside it — VMs, disks, networks and everything else. Nothing is moved elsewhere or left behind, which is why delete locks on important resource groups are a good idea.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal"
  },
  {
@@ -564,7 +564,7 @@
   "ans": [
    1
   ],
-  "exp": "A resource group's location stores its metadata; resources can be in any region.",
+  "exp": "A resource group's location only says where its metadata is stored. The resources inside can be in any region, so a West Europe resource group can hold a VM in East US. Regions don't have to match, and peering has nothing to do with this.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview"
  },
  {
@@ -582,7 +582,7 @@
   "ans": [
    1
   ],
-  "exp": "Each resource exists in only one resource group.",
+  "exp": "Every resource belongs to exactly one resource group at a time. You can move it to another resource group, but it can't be in two at once. Tags let you group resources across resource groups for reporting, without changing where they live.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview"
  },
  {
@@ -600,7 +600,7 @@
   "ans": [
    0
   ],
-  "exp": "The portal and the validateMoveResources API test a move without executing it.",
+  "exp": "Azure can validate a move without doing it: the portal runs validation when you start a move, and the validateMoveResources API (az resource invoke-action --action validateMoveResources) checks that all resources and dependencies can move. What-if previews template deployments, not moves.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/move-resource-group-and-subscription"
  },
  {
@@ -636,7 +636,7 @@
   "ans": [
    0
   ],
-  "exp": "az resource move takes the resource IDs and a destination group (and optional subscription).",
+  "exp": "az resource move --destination-group RG2 --ids <resource IDs> moves one or more resources to another resource group (add --destination-subscription-id to change subscription). The other commands don't exist. During the move, both resource groups are locked.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/resource"
  },
  {
@@ -654,7 +654,7 @@
   "ans": [
    0
   ],
-  "exp": "vCPU quotas are per region and subscription; you can request increases.",
+  "exp": "vCPU quotas are set per region and per subscription. When a deployment hits the limit, request an increase in Subscription → Usage + quotas (or Help + support). Locks, tenant changes and budgets don't change quotas.",
   "link": "https://learn.microsoft.com/en-us/azure/quotas/per-vm-quota-requests"
  },
  {
@@ -672,7 +672,7 @@
   "ans": [
    0
   ],
-  "exp": "Resource providers must be registered in the subscription before use.",
+  "exp": "Before using a resource type, its resource provider must be registered in the subscription. Running az provider register --namespace Microsoft.ContainerInstance (or Resource providers → Register in the portal) fixes the error. It isn't about licences, management groups or policies.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types"
  },
  {
@@ -690,7 +690,7 @@
   "ans": [
    0
   ],
-  "exp": "Subscriptions act as billing, scale (quota), and management boundaries.",
+  "exp": "Subscriptions are boundaries for billing (one invoice each), for scale (quotas apply per subscription) and for management (RBAC and policies can be assigned per subscription). That makes them good for separating production from development. Subscriptions aren't free, and VMs don't need their own subscription.",
   "link": "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/design-area/resource-org-subscriptions"
  },
  {
@@ -708,7 +708,7 @@
   "ans": [
    0
   ],
-  "exp": "Management groups organize subscriptions so governance can be applied once at scale.",
+  "exp": "Management groups sit above subscriptions. Anything you assign to one — RBAC roles or Azure Policy — is inherited by every subscription under it, so you can govern many subscriptions with one assignment. They don't hold VMs, DNS zones or users.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -726,7 +726,7 @@
   "ans": [
    0
   ],
-  "exp": "Each management group or subscription has exactly one parent.",
+  "exp": "A management group hierarchy is a tree, so every subscription and management group has exactly one parent. A subscription can't belong to two management groups at the same time; you move it from one to another.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -762,7 +762,7 @@
   "ans": [
    0
   ],
-  "exp": "A directory supports up to 10,000 management groups.",
+  "exp": "One Microsoft Entra directory can hold up to 10,000 management groups, within a hierarchy up to six levels deep. That's far more than most organisations need.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -783,7 +783,7 @@
    0,
    3
   ],
-  "exp": "Create the MG → move the subscriptions → assign once at the MG → verify; policy inherits to all 12.",
+  "exp": "Create the management group, move the 12 subscriptions under it, and then assign the policy once at the management group. Inheritance applies it to all 12 subscriptions. Finally check compliance. Assigning first would work too, but moving the subscriptions before assigning keeps the order logical and nothing is missed.",
   "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
  },
  {
@@ -801,7 +801,7 @@
   "ans": [
    0
   ],
-  "exp": "Budget alert conditions can notify email recipients and trigger action groups.",
+  "exp": "A budget in Cost Management can have alert conditions, such as Actual at 90%. Each condition can email recipients and trigger an action group, which can call a webhook, Logic App or runbook. Policy, locks and Advisor don't track spend against a budget.",
   "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"
  },
  {
@@ -837,7 +837,7 @@
   "ans": [
    0
   ],
-  "exp": "Advisor covers five pillars aligned with the Well-Architected Framework.",
+  "exp": "Azure Advisor gives recommendations in five categories: Reliability, Security, Performance, Cost and Operational Excellence — the pillars of the Azure Well-Architected Framework. It isn't limited to cost and security.",
   "link": "https://learn.microsoft.com/en-us/azure/advisor/advisor-overview"
  },
  {
@@ -873,7 +873,7 @@
   "ans": [
    0
   ],
-  "exp": "Azure Hybrid Benefit lets you use eligible on-premises licenses to reduce VM costs.",
+  "exp": "Azure Hybrid Benefit lets you use existing Windows Server (or SQL Server) licences that have Software Assurance on Azure VMs, so you pay only for the base compute rate. Reserved instances discount compute for a 1- or 3-year commitment, and Spot and Dev/Test are different pricing options.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/hybrid-use-benefit-licensing"
  },
  {

@@ -1,52 +1,915 @@
 [
-{"id":"D5-001","sub":"Metrics","type":"mcq","diff":1,"q":"Azure Monitor platform metrics are:","opts":["Collected only after you install an agent","Collected automatically for Azure resources with no extra setup, and kept about 93 days","Stored forever","Available only with P2 licenses"],"ans":[1],"exp":"Platform metrics are automatic and retained for about 93 days.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-platform-metrics"},
-{"id":"D5-002","sub":"Metrics","type":"mcq","diff":2,"q":"You need to keep VM CPU metrics for 2 years for trend analysis. What do you do?","opts":["Nothing; metrics are kept forever","Route metrics through diagnostic settings to a Log Analytics workspace (or storage) with suitable retention","Take monthly screenshots","Enable boot diagnostics"],"ans":[1],"exp":"For long-term retention, route data out with diagnostic settings.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-platform-metrics"},
-{"id":"D5-003","sub":"Logs","type":"mcq","diff":1,"q":"Which query language analyzes data in Log Analytics?","opts":["SQL","KQL (Kusto Query Language)","GraphQL","XPath"],"ans":[1],"exp":"Log Analytics uses KQL.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-query-overview"},
-{"id":"D5-004","sub":"KQL","type":"mcq","diff":2,"q":"Which KQL query returns the number of heartbeat records per computer in the last hour?","opts":["Heartbeat | where TimeGenerated > ago(1h) | summarize count() by Computer","SELECT * FROM Heartbeat","Heartbeat | order by Computer","count Heartbeat GROUP Computer"],"ans":[0],"exp":"Use where, then summarize count() by Computer.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"},
-{"id":"D5-005","sub":"Log Analytics","type":"mcq","diff":2,"q":"What's the default interactive retention for most Log Analytics tables, and the maximum you can configure?","opts":["7 days; 30 max","30 days; up to 730 days (2 years) interactive","1 year; 5 years","Unlimited by default"],"ans":[1],"exp":"The default is 30 days; interactive retention goes up to 730 days, with longer long-term retention available.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"},
-{"id":"D5-006","sub":"Diagnostic settings","type":"mcq","diff":2,"q":"Which destinations can a resource's diagnostic settings send to?","opts":["Log Analytics workspace, storage account, event hub, partner solutions","Only Log Analytics","Email and SMS","Another subscription's activity log"],"ans":[0],"exp":"Those four destination types are supported.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings"},
-{"id":"D5-007","sub":"Activity log","type":"mcq","diff":1,"q":"Which question does the Activity log answer?","opts":["A VM's CPU usage","WHO performed WHAT management (control-plane) operation on WHICH resource, and WHEN","Application exceptions","Network latency"],"ans":[1],"exp":"The Activity log is the control-plane audit trail.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log"},
-{"id":"D5-008","sub":"Activity log","type":"mcq","diff":2,"q":"How long are Activity log events kept in the portal, and how do you keep them longer?","opts":["7 days; it can't be extended","90 days; send them to a Log Analytics workspace or storage with a diagnostic setting","1 year by default","30 days; upgrade the subscription"],"ans":[1],"exp":"90 days by default; export for longer retention.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log"},
-{"id":"D5-009","sub":"Alerts","type":"mcq","diff":1,"q":"What are the main components of an Azure Monitor alert rule?","opts":["Scope (target resource), condition (signal logic), and action group, plus alert details","User, password, email","Metric, log, trace","Budget, threshold, invoice"],"ans":[0],"exp":"Alert rules combine scope, condition, actions, and details.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"},
-{"id":"D5-010","sub":"Action groups","type":"mcq","diff":2,"q":"What can an action group do?","opts":["Send email, SMS, push, or voice notifications, and run actions like webhooks, Azure Functions, Logic Apps, runbooks, or ITSM","Send email only","Show a portal popup only","Send Teams messages only"],"ans":[0],"exp":"Action groups combine notifications and automated actions.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/action-groups"},
-{"id":"D5-011","sub":"Alerts","type":"mcq","diff":2,"q":"One alert rule must fire on CPU > 90% for 5 minutes across 30 VMs, and must cover future VMs in the subscription too. Use:","opts":["30 separate rules","A metric alert rule scoped to the subscription or resource group, targeting multiple resources","A budget","A Service Health alert"],"ans":[1],"exp":"Multi-resource metric alerts cover all resources of a type in a scope, including new ones.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-multiple-time-series-single-rule"},
-{"id":"D5-012","sub":"Alerts","type":"mcq","diff":3,"q":"During a planned maintenance window, alert NOTIFICATIONS must stop without editing or disabling dozens of rules. Use:","opts":["Delete the action groups","An alert processing rule that suppresses notifications for that scope and time window","Turn off Azure Monitor","Remove role assignments"],"ans":[1],"exp":"Alert processing rules suppress or redirect actions at scale.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"},
-{"id":"D5-013","sub":"Alerts","type":"mcq","diff":2,"q":"What do dynamic thresholds in metric alerts do?","opts":["They're set manually each week","They use machine learning on the metric's history to learn normal patterns and alert on deviations","They only work for CPU","They're free-text rules"],"ans":[1],"exp":"Dynamic thresholds learn seasonality and patterns.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-dynamic-thresholds"},
-{"id":"D5-014","sub":"Alerts","type":"mcq","diff":1,"q":"What's the user-response state progression of a fired alert?","opts":["New → Acknowledged → Closed","Open → Done","Red → Green","Fired → Deleted"],"ans":[0],"exp":"Admins move alerts through New, Acknowledged, and Closed.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"},
-{"id":"D5-015","sub":"Agents","type":"mcq","diff":2,"q":"Which agent is the current way to collect guest OS logs and performance data from VMs into Azure Monitor, and what does it pair with?","opts":["The Log Analytics (MMA) agent alone","The Azure Monitor Agent (AMA) with Data Collection Rules (DCRs)","Telegraf only","No agent is needed for guest data"],"ans":[1],"exp":"AMA with DCRs replaced the legacy Log Analytics agent.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/agents/agents-overview"},
-{"id":"D5-016","sub":"VM insights","type":"mcq","diff":2,"q":"VM insights provides:","opts":["Billing data","Performance charts and a dependency map of processes and connections for monitored VMs","RBAC reports","Patching"],"ans":[1],"exp":"VM insights includes Performance and Map views.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/vm/vminsights-overview"},
-{"id":"D5-017","sub":"KQL","type":"mcq","diff":3,"q":"In Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1h), what does bin() do?","opts":["Deletes old rows","Groups records into fixed 1-hour time buckets for aggregation","Rounds the CPU values","Limits output to one hour"],"ans":[1],"exp":"bin() creates time buckets.","link":"https://learn.microsoft.com/en-us/kusto/query/bin-function"},
-{"id":"D5-018","sub":"Insights","type":"mcq","diff":2,"q":"Where do you get ready-made storage account latency, availability, and capacity views with no extra setup?","opts":["Storage insights (Azure Monitor Insights)","Network Watcher","Service Health","Azure Advisor only"],"ans":[0],"exp":"Storage insights provides curated monitoring views.","link":"https://learn.microsoft.com/en-us/azure/storage/common/storage-insights-overview"},
-{"id":"D5-019","sub":"Azure Monitor","type":"yesno","diff":2,"q":"Answer Yes or No:","stmts":["One alert rule can trigger multiple action groups","Log search alerts run a KQL query on a schedule","Metrics suit near-real-time alerting better than logs","Deleting a VM also deletes its past data in the Log Analytics workspace"],"ans":[true,true,true,false],"exp":"Multiple action groups per rule are allowed; log alerts are scheduled; metrics are faster; workspace data stays for its retention period.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"},
-{"id":"D5-020","sub":"Log Analytics","type":"mcq","diff":2,"q":"What's usually the biggest cost driver of a Log Analytics workspace?","opts":["Number of users","Data ingestion volume (GB per day)","Number of dashboards","Number of alert rules"],"ans":[1],"exp":"Ingestion volume drives cost; control it with DCRs, filtering, and commitment tiers.","link":"https://learn.microsoft.com/en-us/azure/azure-monitor/logs/cost-logs"},
-{"id":"D5-021","sub":"Network Watcher","type":"mcq","diff":1,"q":"Network Watcher is enabled:","opts":["Per VM","Per region (automatically when you create a VNet, in most cases)","Globally per subscription with one click only","Per NSG"],"ans":[1],"exp":"There's one Network Watcher instance per region.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"},
-{"id":"D5-022","sub":"Network Watcher","type":"mcq","diff":2,"q":"Which tool answers: 'Do NSGs allow traffic from 10.0.0.4:5000 to 8.8.8.8:443?'","opts":["Next hop","IP flow verify","Topology","VPN troubleshoot"],"ans":[1],"exp":"IP flow verify tests NSG decisions for a specific flow.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/ip-flow-verify-overview"},
-{"id":"D5-023","sub":"Network Watcher","type":"mcq","diff":2,"q":"Which tool answers: 'Which route does traffic from VM1 to 10.2.0.10 take — gateway, NVA, or internet?'","opts":["Next hop","Connection troubleshoot","NSG diagnostics","Packet capture"],"ans":[0],"exp":"Next hop shows the routing decision.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/next-hop-overview"},
-{"id":"D5-024","sub":"Network Watcher","type":"mcq","diff":2,"q":"You must capture packets to and from a VM for deep analysis in Wireshark. Use:","opts":["Activity log","Network Watcher packet capture (saves a .cap file to storage or locally)","IP flow verify","Effective routes"],"ans":[1],"exp":"Packet capture records traffic for analysis.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/packet-capture-overview"},
-{"id":"D5-025","sub":"Connection Monitor","type":"mcq","diff":2,"q":"What is Connection Monitor used for?","opts":["Monitoring billing connections","Continuously testing connectivity and latency between sources (VMs, on-prem agents) and destinations (VMs, FQDNs, IPs) over time","Replacing NSGs","Capturing packets"],"ans":[1],"exp":"Connection Monitor gives ongoing connectivity monitoring.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/connection-monitor-overview"},
-{"id":"D5-026","sub":"Flow logs","type":"mcq","diff":3,"q":"Where are flow logs stored, and what visualizes them?","opts":["Log Analytics; Azure Advisor","A storage account; Traffic Analytics (which needs a Log Analytics workspace)","Event Hub; Power BI only","The NSG itself; portal charts"],"ans":[1],"exp":"Flow logs go to storage; Traffic Analytics analyzes them.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics"},
-{"id":"D5-027","sub":"Network Watcher","type":"mcq","diff":2,"q":"A site-to-site VPN tunnel is down. Which Network Watcher capability diagnoses the gateway and connection?","opts":["VPN troubleshoot","IP flow verify","Topology","Security group view"],"ans":[0],"exp":"VPN troubleshoot produces a diagnostic report.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/vpn-troubleshoot-overview"},
-{"id":"D5-028","sub":"Network Watcher","type":"yesno","diff":2,"q":"Answer Yes or No:","stmts":["Connection troubleshoot can test from a VM to any FQDN at a point in time","Topology shows resources and their network relationships","Packet capture needs the Network Watcher VM extension","Next hop shows which NSG rule blocked traffic"],"ans":[true,true,true,false],"exp":"Next hop shows routing, not NSG rules; the other three are true.","link":"https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"},
-{"id":"D5-029","sub":"Backup vaults","type":"mcq","diff":1,"q":"Which workloads does a RECOVERY SERVICES vault protect?","opts":["Azure VMs, SQL/SAP HANA in VMs, Azure Files, and on-premises via MARS/MABS","Azure Blobs, Azure Disks, Azure Database for PostgreSQL","Only VMs","Only on-premises servers"],"ans":[0],"exp":"Recovery Services vaults cover the classic workloads; Backup vaults cover the newer ones.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-recovery-services-vault-overview"},
-{"id":"D5-030","sub":"Backup vaults","type":"mcq","diff":2,"q":"Backups of Azure Blobs, Azure Disks, and Azure Database for PostgreSQL go into a:","opts":["Recovery Services vault","Backup vault","Storage account","Key Vault"],"ans":[1],"exp":"These workloads use a Backup vault.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-vault-overview"},
-{"id":"D5-031","sub":"Backup vaults","type":"mcq","diff":2,"q":"A Recovery Services vault protecting VMs in West Europe must be:","opts":["In any region","In the SAME region as the VMs","In the paired region","Global"],"ans":[1],"exp":"The vault and the VMs must share a region.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-backup-faq"},
-{"id":"D5-032","sub":"Backup vaults","type":"mcq","diff":3,"q":"When can you change a vault's storage redundancy (LRS/ZRS/GRS) for backups?","opts":["Any time","Only BEFORE the first item is protected","Once per year","Never; it's always GRS"],"ans":[1],"exp":"Redundancy locks once items are protected.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-create-recovery-services-vault"},
-{"id":"D5-033","sub":"VM backup","type":"mcq","diff":1,"q":"How often can a Standard Azure VM backup policy back up?","opts":["Every 5 minutes","Once per day (the Enhanced policy allows multiple backups per day)","Hourly","Weekly at minimum"],"ans":[1],"exp":"Standard is daily; Enhanced supports hourly schedules.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-enhanced-policy"},
-{"id":"D5-034","sub":"VM backup","type":"mcq","diff":2,"q":"How long are instant restore snapshots kept locally in Azure VM backup (Standard policy)?","opts":["1–5 days (default 2), for fast restores without transferring from the vault","30 days","1 year","12 hours"],"ans":[0],"exp":"Snapshot retention is configurable; Enhanced policy allows longer.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-instant-restore-capability"},
-{"id":"D5-035","sub":"Backup security","type":"mcq","diff":2,"q":"With soft delete for Azure Backup, deleted backup data is kept for:","opts":["14 more days at no cost, so it can be recovered","90 days, with charges","24 hours","It prevents deleting the VM itself"],"ans":[0],"exp":"Soft delete keeps deleted backup data for 14 days by default.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-security-feature-cloud"},
-{"id":"D5-036","sub":"Restore","type":"mcq","diff":2,"q":"A user deleted one file inside a backed-up Azure VM. Fastest recovery?","opts":["Restore the whole VM","File-level recovery: mount the recovery point as a local drive with the provided script and copy the file","Rebuild the VM from a template","Site Recovery failover"],"ans":[1],"exp":"File recovery mounts a recovery point for selective restore.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-restore-files-from-vm"},
-{"id":"D5-037","sub":"Restore","type":"mcq","diff":2,"q":"Which restore options exist for an Azure VM backup?","opts":["Create a new VM, restore disks only, replace existing disks, cross-region restore (if enabled)","Only in-place overwrite","Only file recovery","Only export to on-premises"],"ans":[0],"exp":"Several restore types are available.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-arm-restore-vms"},
-{"id":"D5-038","sub":"MARS","type":"mcq","diff":3,"q":"What does the MARS (Microsoft Azure Recovery Services) agent do?","opts":["Backs up entire Hyper-V hosts","Backs up files, folders, and system state from on-premises Windows machines directly to Azure, up to 3 times a day","Runs on Linux","Backs up Azure SQL databases"],"ans":[1],"exp":"MARS is Windows-only and handles file-level backup.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-about-mars"},
-{"id":"D5-039","sub":"Backup center","type":"mcq","diff":2,"q":"To manage and monitor backups across many vaults and subscriptions from one place, use:","opts":["Each vault separately","Backup center (Business Continuity Center)","Azure Advisor","Cost Management"],"ans":[1],"exp":"Backup center (now part of Azure Business Continuity Center) gives a single view.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-center-overview"},
-{"id":"D5-040","sub":"Backup vaults","type":"mcq","diff":3,"q":"Deleting a Recovery Services vault fails. What must you do?","opts":["Open a support ticket","Stop backup for all protected items (and delete their data, including soft-deleted items), unregister servers and infrastructure, then delete","Wait 30 days","Delete the resource group instead to bypass checks"],"ans":[1],"exp":"A vault must be empty before deletion.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-delete-vault"},
-{"id":"D5-041","sub":"Site Recovery","type":"mcq","diff":1,"q":"How does Azure Site Recovery's purpose differ from Azure Backup's?","opts":["They're the same product","ASR is disaster recovery (replicate and fail over whole workloads with low RTO); Backup restores point-in-time data","ASR only backs up files","Backup is for regions; ASR is for files"],"ans":[1],"exp":"They complement each other.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"},
-{"id":"D5-042","sub":"Site Recovery","type":"mcq","diff":2,"q":"Azure-to-Azure VM replication with ASR replicates VMs:","opts":["Only within one region","Continuously to another target region (typically for cross-region DR)","Weekly","Only to on-premises"],"ans":[1],"exp":"ASR replicates continuously to the target region.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart"},
-{"id":"D5-043","sub":"Site Recovery","type":"mcq","diff":2,"q":"What does a TEST failover in ASR do?","opts":["Causes production downtime","Starts replica VMs in an isolated network, with no impact on production or ongoing replication","Deletes replication","It isn't supported"],"ans":[1],"exp":"Test failover is how you run DR drills.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"},
-{"id":"D5-044","sub":"Site Recovery","type":"mcq","diff":3,"q":"A multi-tier app must fail over in order (database, then app, then web). Use:","opts":["Manual notes","A recovery plan with ordered groups (and optional scripts or runbooks)","Alphabetical failover","Separate vaults per tier"],"ans":[1],"exp":"Recovery plans orchestrate failover order.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"},
-{"id":"D5-045","sub":"Site Recovery","type":"mcq","diff":2,"q":"What do RPO and RTO mean?","opts":["RPO = maximum acceptable data loss (time between recovery points); RTO = maximum acceptable downtime before you're running again","The reverse","Both mean backup frequency","They're marketing terms"],"ans":[0],"exp":"RPO measures data loss; RTO measures downtime.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"},
-{"id":"D5-046","sub":"Azure Files backup","type":"mcq","diff":2,"q":"How does Azure Backup protect Azure file shares (standard snapshot tier)?","opts":["Full-copy backups into the vault only","Share snapshots managed by the backup policy, stored in the storage account and orchestrated by the vault","The MARS agent on a VM","AzCopy scripts"],"ans":[1],"exp":"The snapshot tier uses share snapshots; a vault-standard tier also exists.","link":"https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"},
-{"id":"D5-047","sub":"Cross-region restore","type":"mcq","diff":3,"q":"What does cross-region restore (CRR) for VM backups let you do?","opts":["Restore only after Microsoft declares a disaster","Restore VMs in the secondary (paired) region yourself at any time — the vault needs GRS with CRR enabled","Restore to any region worldwide","Restore from LRS vaults"],"ans":[1],"exp":"CRR is customer-initiated and needs a GRS vault with CRR enabled.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-create-rs-vault#set-cross-region-restore"},
-{"id":"D5-048","sub":"Backup policy","type":"mcq","diff":2,"q":"What does a VM backup policy define?","opts":["Schedule (frequency and time) and retention (daily, weekly, monthly, yearly points)","The VM size","NSG rules","Encryption keys only"],"ans":[0],"exp":"Policies define schedule and retention.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"},
-{"id":"D5-049","sub":"Backup and ASR","type":"yesno","diff":3,"q":"Answer Yes or No:","stmts":["You can back up a VM in region A directly to a vault in region B","Stopping backup with 'retain backup data' keeps existing recovery points usable","ASR can migrate VMs between regions as well as provide DR","A VM can be protected by Azure Backup and replicated by ASR at the same time"],"ans":[false,true,true,true],"exp":"The vault must be in the VM's region; retained data stays usable; ASR supports migration; Backup and ASR can be combined.","link":"https://learn.microsoft.com/en-us/azure/backup/backup-azure-backup-faq"},
-{"id":"D5-050","sub":"Backup and ASR","type":"yesno","diff":3,"ctx":"Contoso runs 20 production VMs in North Europe. Requirements: daily backups kept 30 days plus monthly backups kept 12 months; a quarterly DR drill with zero production impact; workloads running in West Europe within 1 hour of a regional disaster; an admin accidentally deleted backup data and it must be recoverable for 2 weeks.","q":"Answer Yes or No:","stmts":["A Recovery Services vault backup policy can meet the daily and monthly retention","An ASR test failover meets the DR drill requirement","Azure Backup alone (without ASR) is the best fit for the 1-hour regional failover","Backup soft delete covers recovering the deleted backup data within 14 days"],"ans":[true,true,false,true],"exp":"Policies support daily and monthly retention; test failovers are isolated; low-RTO regional DR is ASR's job; soft delete keeps data 14 days.","link":"https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"}
+ {
+  "id": "D5-001",
+  "sub": "Metrics",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Azure Monitor platform metrics are:",
+  "opts": [
+   "Collected only after you install an agent",
+   "Collected automatically for Azure resources with no extra setup, and kept about 93 days",
+   "Stored forever",
+   "Available only with P2 licenses"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Platform metrics, such as a VM's CPU percentage or a storage account's transactions, are collected automatically for Azure resources at no extra cost and without an agent, and kept for about 93 days. For longer retention, send them elsewhere with a diagnostic setting. No licence is needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-platform-metrics"
+ },
+ {
+  "id": "D5-002",
+  "sub": "Metrics",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need to keep VM CPU metrics for 2 years for trend analysis. What do you do?",
+  "opts": [
+   "Nothing; metrics are kept forever",
+   "Route metrics through diagnostic settings to a Log Analytics workspace (or storage) with suitable retention",
+   "Take monthly screenshots",
+   "Enable boot diagnostics"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Platform metrics are only kept for about 93 days. To keep 2 years of history, create a diagnostic setting that sends the metrics to a Log Analytics workspace (with retention set long enough) or to a storage account. Screenshots aren't data you can analyse, and boot diagnostics captures console output, not metrics.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-platform-metrics"
+ },
+ {
+  "id": "D5-003",
+  "sub": "Logs",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which query language analyzes data in Log Analytics?",
+  "opts": [
+   "SQL",
+   "KQL (Kusto Query Language)",
+   "GraphQL",
+   "XPath"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Log Analytics queries are written in KQL (Kusto Query Language), a pipeline language where you start from a table and pipe it through operators such as where, summarize and render. SQL, GraphQL and XPath aren't used to query Log Analytics (XPath only appears in data collection rules for Windows events).",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-query-overview"
+ },
+ {
+  "id": "D5-004",
+  "sub": "KQL",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which KQL query returns the number of heartbeat records per computer in the last hour?",
+  "opts": [
+   "Heartbeat | where TimeGenerated > ago(1h) | summarize count() by Computer",
+   "SELECT * FROM Heartbeat",
+   "Heartbeat | order by Computer",
+   "count Heartbeat GROUP Computer"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "KQL starts with a table (Heartbeat), filters it with where TimeGenerated > ago(1h), then summarize count() by Computer counts the rows for each computer. SELECT is SQL, and order by sorts without counting.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
+ },
+ {
+  "id": "D5-005",
+  "sub": "Log Analytics",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's the default interactive retention for most Log Analytics tables, and the maximum you can configure?",
+  "opts": [
+   "7 days; 30 max",
+   "30 days; up to 730 days (2 years) interactive",
+   "1 year; 5 years",
+   "Unlimited by default"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The default is 30 days; interactive retention goes up to 730 days, with longer long-term retention available.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/data-retention-configure"
+ },
+ {
+  "id": "D5-006",
+  "sub": "Diagnostic settings",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which destinations can a resource's diagnostic settings send to?",
+  "opts": [
+   "Log Analytics workspace, storage account, event hub, partner solutions",
+   "Only Log Analytics",
+   "Email and SMS",
+   "Another subscription's activity log"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A diagnostic setting can send a resource's logs and metrics to up to four kinds of destination: a Log Analytics workspace (for querying), a storage account (cheap archive), an Event Hub (streaming to other tools) and partner solutions. Email and SMS are notifications sent by alerts, not diagnostic destinations.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings"
+ },
+ {
+  "id": "D5-007",
+  "sub": "Activity log",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which question does the Activity log answer?",
+  "opts": [
+   "A VM's CPU usage",
+   "WHO performed WHAT management (control-plane) operation on WHICH resource, and WHEN",
+   "Application exceptions",
+   "Network latency"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The Activity log records control-plane (management) operations: who did what — create, update, delete, start, stop — to which resource, when, and whether it succeeded. It doesn't hold performance data such as CPU, application exceptions or network latency.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log"
+ },
+ {
+  "id": "D5-008",
+  "sub": "Activity log",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How long are Activity log events kept in the portal, and how do you keep them longer?",
+  "opts": [
+   "7 days; it can't be extended",
+   "90 days; send them to a Log Analytics workspace or storage with a diagnostic setting",
+   "1 year by default",
+   "30 days; upgrade the subscription"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Activity log events are kept for 90 days. To keep them longer or query them with KQL, create a diagnostic setting at the subscription that sends them to a Log Analytics workspace, a storage account or an Event Hub. Upgrading the subscription doesn't change this.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log"
+ },
+ {
+  "id": "D5-009",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What are the main components of an Azure Monitor alert rule?",
+  "opts": [
+   "Scope (target resource), condition (signal logic), and action group, plus alert details",
+   "User, password, email",
+   "Metric, log, trace",
+   "Budget, threshold, invoice"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "An alert rule defines the scope (which resources to watch), the condition (the signal, such as a metric, log query or Activity log event, and its logic), the actions (action groups to notify or automate) and details such as severity and name. Users and passwords, telemetry types and budgets aren't parts of an alert rule.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
+ },
+ {
+  "id": "D5-010",
+  "sub": "Action groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What can an action group do?",
+  "opts": [
+   "Send email, SMS, push, or voice notifications, and run actions like webhooks, Azure Functions, Logic Apps, runbooks, or ITSM",
+   "Send email only",
+   "Show a portal popup only",
+   "Send Teams messages only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "An action group is a reusable list of notifications (email, SMS, push to the Azure app, voice call) and automated actions (webhook, Azure Function, Logic App, Automation runbook, ITSM, Event Hub) that alerts trigger. It isn't limited to email or Teams.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/action-groups"
+ },
+ {
+  "id": "D5-011",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "One alert rule must fire on CPU > 90% for 5 minutes across 30 VMs, and must cover future VMs in the subscription too. Use:",
+  "opts": [
+   "30 separate rules",
+   "A metric alert rule scoped to the subscription or resource group, targeting multiple resources",
+   "A budget",
+   "A Service Health alert"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A metric alert rule can be scoped to a whole subscription or resource group with a resource type (such as virtual machines). It then monitors each VM separately and automatically includes VMs added later. Thirty separate rules would be hard to maintain, budgets track spend, and Service Health covers Azure incidents.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-multiple-time-series-single-rule"
+ },
+ {
+  "id": "D5-012",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 3,
+  "q": "During a planned maintenance window, alert NOTIFICATIONS must stop without editing or disabling dozens of rules. Use:",
+  "opts": [
+   "Delete the action groups",
+   "An alert processing rule that suppresses notifications for that scope and time window",
+   "Turn off Azure Monitor",
+   "Remove role assignments"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "An alert processing rule can suppress action group notifications for a scope (a subscription, resource group or specific resources) during a time window or recurring schedule. Alerts still fire and are recorded, but nobody is paged. Deleting action groups or disabling Azure Monitor would lose alerting entirely.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ },
+ {
+  "id": "D5-013",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What do dynamic thresholds in metric alerts do?",
+  "opts": [
+   "They're set manually each week",
+   "They use machine learning on the metric's history to learn normal patterns and alert on deviations",
+   "They only work for CPU",
+   "They're free-text rules"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Dynamic thresholds use machine learning on the metric's history to learn its normal pattern, including daily and weekly cycles, and alert when the value moves outside the expected range. You don't need to guess a fixed number. They work for most metrics, not just CPU.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-dynamic-thresholds"
+ },
+ {
+  "id": "D5-014",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 1,
+  "q": "What's the user-response state progression of a fired alert?",
+  "opts": [
+   "New → Acknowledged → Closed",
+   "Open → Done",
+   "Red → Green",
+   "Fired → Deleted"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Each fired alert has a user response state that you set while handling it: New (just fired), Acknowledged (someone is working on it) and Closed (handled). That's separate from the monitor condition (Fired or Resolved). The other sequences don't exist.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
+ },
+ {
+  "id": "D5-015",
+  "sub": "Agents",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which agent is the current way to collect guest OS logs and performance data from VMs into Azure Monitor, and what does it pair with?",
+  "opts": [
+   "The Log Analytics (MMA) agent alone",
+   "The Azure Monitor Agent (AMA) with Data Collection Rules (DCRs)",
+   "Telegraf only",
+   "No agent is needed for guest data"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The Azure Monitor Agent (AMA) is the current agent for collecting guest OS data such as Windows events, Syslog and performance counters. What it collects and where it sends it are defined by data collection rules (DCRs). The legacy Log Analytics (MMA) agent was retired in August 2024. Guest OS data always needs an agent.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/agents/agents-overview"
+ },
+ {
+  "id": "D5-016",
+  "sub": "VM insights",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VM insights provides:",
+  "opts": [
+   "Billing data",
+   "Performance charts and a dependency map of processes and connections for monitored VMs",
+   "RBAC reports",
+   "Patching"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "VM insights gives ready-made performance charts (CPU, memory, disk, network) for your VMs and a Map that shows the processes on each VM and its network connections to other machines. It doesn't handle billing, RBAC reports or patching.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/vminsights-overview"
+ },
+ {
+  "id": "D5-017",
+  "sub": "KQL",
+  "type": "mcq",
+  "diff": 3,
+  "q": "In Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1h), what does bin() do?",
+  "opts": [
+   "Deletes old rows",
+   "Groups records into fixed 1-hour time buckets for aggregation",
+   "Rounds the CPU values",
+   "Limits output to one hour"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "bin(TimeGenerated, 1h) rounds each record's timestamp down to the hour, so summarize can average CPU per computer per hour. The result is a time series you can chart. It doesn't delete rows, round values or limit the query to one hour.",
+  "link": "https://learn.microsoft.com/en-us/kusto/query/bin-function"
+ },
+ {
+  "id": "D5-018",
+  "sub": "Insights",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Where do you get ready-made storage account latency, availability, and capacity views with no extra setup?",
+  "opts": [
+   "Storage insights (Azure Monitor Insights)",
+   "Network Watcher",
+   "Service Health",
+   "Azure Advisor only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Storage insights in Azure Monitor gives ready-made workbooks for your storage accounts — availability, latency, transactions and capacity — across subscriptions, with no setup because it uses platform metrics. Network Watcher is for networking, Service Health shows Azure incidents, and Advisor gives recommendations.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-insights-overview"
+ },
+ {
+  "id": "D5-019",
+  "sub": "Azure Monitor",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "One alert rule can trigger multiple action groups",
+   "Log search alerts run a KQL query on a schedule",
+   "Metrics suit near-real-time alerting better than logs",
+   "Deleting a VM also deletes its past data in the Log Analytics workspace"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "Multiple action groups per rule are allowed; log alerts are scheduled; metrics are faster; workspace data stays for its retention period.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-overview"
+ },
+ {
+  "id": "D5-020",
+  "sub": "Log Analytics",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What's usually the biggest cost driver of a Log Analytics workspace?",
+  "opts": [
+   "Number of users",
+   "Data ingestion volume (GB per day)",
+   "Number of dashboards",
+   "Number of alert rules"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Log Analytics charges mainly for the volume of data ingested (GB per day), and then for retention beyond the included period. Users, dashboards and alert rules aren't the main cost. Reduce ingestion by filtering in data collection rules, and use a commitment tier for steady volumes.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/cost-logs"
+ },
+ {
+  "id": "D5-021",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Network Watcher is enabled:",
+  "opts": [
+   "Per VM",
+   "Per region (automatically when you create a VNet, in most cases)",
+   "Globally per subscription with one click only",
+   "Per NSG"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Network Watcher is a regional service: there's one instance per region per subscription, and Azure usually creates it automatically (in NetworkWatcherRG) when you create or update a VNet in that region. It isn't enabled per VM or per NSG.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"
+ },
+ {
+  "id": "D5-022",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which tool answers: 'Do NSGs allow traffic from 10.0.0.4:5000 to 8.8.8.8:443?'",
+  "opts": [
+   "Next hop",
+   "IP flow verify",
+   "Topology",
+   "VPN troubleshoot"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "IP flow verify takes a specific 5-tuple — source IP and port, destination IP and port, and protocol — for a VM's NIC and tells you whether NSG rules allow or deny it, and which rule decided. Next hop shows routing, topology draws a diagram, and VPN troubleshoot checks gateways.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/ip-flow-verify-overview"
+ },
+ {
+  "id": "D5-023",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which tool answers: 'Which route does traffic from VM1 to 10.2.0.10 take — gateway, NVA, or internet?'",
+  "opts": [
+   "Next hop",
+   "Connection troubleshoot",
+   "NSG diagnostics",
+   "Packet capture"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Next hop shows where Azure would send traffic from a VM to a destination address: the next hop type (such as Internet, VirtualAppliance or VirtualNetworkGateway), its IP and the route table responsible. Connection troubleshoot tests reachability, NSG diagnostics checks rules, and packet capture records traffic.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/next-hop-overview"
+ },
+ {
+  "id": "D5-024",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You must capture packets to and from a VM for deep analysis in Wireshark. Use:",
+  "opts": [
+   "Activity log",
+   "Network Watcher packet capture (saves a .cap file to storage or locally)",
+   "IP flow verify",
+   "Effective routes"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Network Watcher packet capture records packets to and from a VM (it uses the Network Watcher VM extension) and saves a .cap file to a storage account or the VM's disk, which you can open in Wireshark. The Activity log, IP flow verify and effective routes don't capture packet contents.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/packet-capture-overview"
+ },
+ {
+  "id": "D5-025",
+  "sub": "Connection Monitor",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is Connection Monitor used for?",
+  "opts": [
+   "Monitoring billing connections",
+   "Continuously testing connectivity and latency between sources (VMs, on-prem agents) and destinations (VMs, FQDNs, IPs) over time",
+   "Replacing NSGs",
+   "Capturing packets"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Connection Monitor continuously tests connectivity from sources (Azure VMs or on-premises machines with the agent) to destinations (VMs, FQDNs, URLs or IPs), tracks latency and failures over time, and can trigger alerts. It doesn't replace NSGs, capture packets or monitor billing.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/connection-monitor-overview"
+ },
+ {
+  "id": "D5-026",
+  "sub": "Flow logs",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Where are flow logs stored, and what visualizes them?",
+  "opts": [
+   "Log Analytics; Azure Advisor",
+   "A storage account; Traffic Analytics (which needs a Log Analytics workspace)",
+   "Event Hub; Power BI only",
+   "The NSG itself; portal charts"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "NSG and VNet flow logs are written as JSON files to a storage account. Traffic Analytics processes them into a Log Analytics workspace and shows maps, top talkers and suspicious traffic. Advisor and Power BI aren't the built-in tools, and logs aren't stored in the NSG itself.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics"
+ },
+ {
+  "id": "D5-027",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A site-to-site VPN tunnel is down. Which Network Watcher capability diagnoses the gateway and connection?",
+  "opts": [
+   "VPN troubleshoot",
+   "IP flow verify",
+   "Topology",
+   "Security group view"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "VPN troubleshoot checks a virtual network gateway or a connection and produces a diagnostic report — for example IKE negotiation errors or a mismatched shared key — saved to a storage account. IP flow verify and security group view are about NSGs, and topology draws a diagram.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/vpn-troubleshoot-overview"
+ },
+ {
+  "id": "D5-028",
+  "sub": "Network Watcher",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "Connection troubleshoot can test from a VM to any FQDN at a point in time",
+   "Topology shows resources and their network relationships",
+   "Packet capture needs the Network Watcher VM extension",
+   "Next hop shows which NSG rule blocked traffic"
+  ],
+  "ans": [
+   true,
+   true,
+   true,
+   false
+  ],
+  "exp": "Connection troubleshoot can test from a VM to any FQDN, URI or IP at that moment. Topology shows network resources and how they're connected. Packet capture needs the Network Watcher agent VM extension. But next hop shows only routing (the next hop type and route table), not NSG rules — use IP flow verify for those.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-overview"
+ },
+ {
+  "id": "D5-029",
+  "sub": "Backup vaults",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Which workloads does a RECOVERY SERVICES vault protect?",
+  "opts": [
+   "Azure VMs, SQL/SAP HANA in VMs, Azure Files, and on-premises via MARS/MABS",
+   "Azure Blobs, Azure Disks, Azure Database for PostgreSQL",
+   "Only VMs",
+   "Only on-premises servers"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Recovery Services vaults protect Azure VMs, SQL Server and SAP HANA running in Azure VMs, Azure file shares, and on-premises machines through the MARS agent or MABS/DPM. Azure Blobs, managed disks and Azure Database for PostgreSQL use Backup vaults instead.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-recovery-services-vault-overview"
+ },
+ {
+  "id": "D5-030",
+  "sub": "Backup vaults",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Backups of Azure Blobs, Azure Disks, and Azure Database for PostgreSQL go into a:",
+  "opts": [
+   "Recovery Services vault",
+   "Backup vault",
+   "Storage account",
+   "Key Vault"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Backup vaults are the newer vault type, used for Azure Blobs, Azure managed disks and Azure Database for PostgreSQL (among others). Recovery Services vaults handle VMs, workloads in VMs and file shares. Storage accounts and Key Vault aren't backup vaults.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-vault-overview"
+ },
+ {
+  "id": "D5-031",
+  "sub": "Backup vaults",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A Recovery Services vault protecting VMs in West Europe must be:",
+  "opts": [
+   "In any region",
+   "In the SAME region as the VMs",
+   "In the paired region",
+   "Global"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A Recovery Services vault can only protect VMs in its own region, so West Europe VMs need a vault in West Europe. To protect against a regional outage, use GRS with cross-region restore, or Site Recovery — not a vault in another region.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-backup-faq"
+ },
+ {
+  "id": "D5-032",
+  "sub": "Backup vaults",
+  "type": "mcq",
+  "diff": 3,
+  "q": "When can you change a vault's storage redundancy (LRS/ZRS/GRS) for backups?",
+  "opts": [
+   "Any time",
+   "Only BEFORE the first item is protected",
+   "Once per year",
+   "Never; it's always GRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A vault's backup storage redundancy (LRS, ZRS or GRS) can only be changed before you protect the first item. Once anything is protected, it's locked. To change it later, stop protection, delete the backup data, and reconfigure (or create a new vault).",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-create-recovery-services-vault"
+ },
+ {
+  "id": "D5-033",
+  "sub": "VM backup",
+  "type": "mcq",
+  "diff": 1,
+  "q": "How often can a Standard Azure VM backup policy back up?",
+  "opts": [
+   "Every 5 minutes",
+   "Once per day (the Enhanced policy allows multiple backups per day)",
+   "Hourly",
+   "Weekly at minimum"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The Standard VM backup policy takes one backup a day. The Enhanced policy supports several backups a day (as often as every 4 hours) and is required for some VM types, such as Trusted launch. Every 5 minutes is far too frequent for VM backup.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-enhanced-policy"
+ },
+ {
+  "id": "D5-034",
+  "sub": "VM backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How long are instant restore snapshots kept locally in Azure VM backup (Standard policy)?",
+  "opts": [
+   "1–5 days (default 2), for fast restores without transferring from the vault",
+   "30 days",
+   "1 year",
+   "12 hours"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Instant restore keeps the backup snapshots locally, next to the VM's disks, for 1 to 5 days with the Standard policy (2 by default; the Enhanced policy allows longer). Restores from these snapshots are much faster than restores from the vault.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-instant-restore-capability"
+ },
+ {
+  "id": "D5-035",
+  "sub": "Backup security",
+  "type": "mcq",
+  "diff": 2,
+  "q": "With soft delete for Azure Backup, deleted backup data is kept for:",
+  "opts": [
+   "14 more days at no cost, so it can be recovered",
+   "90 days, with charges",
+   "24 hours",
+   "It prevents deleting the VM itself"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Soft delete for Azure Backup keeps backup data for 14 more days after someone deletes it, at no extra cost, so you can undelete it — for example after an accident or an attack. It doesn't stop anyone deleting the VM itself.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-security-feature-cloud"
+ },
+ {
+  "id": "D5-036",
+  "sub": "Restore",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A user deleted one file inside a backed-up Azure VM. Fastest recovery?",
+  "opts": [
+   "Restore the whole VM",
+   "File-level recovery: mount the recovery point as a local drive with the provided script and copy the file",
+   "Rebuild the VM from a template",
+   "Site Recovery failover"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "File-level recovery mounts a recovery point as a drive on a machine using a script that Azure generates, so you can copy just the deleted file back. Restoring the whole VM takes much longer and overwrites or duplicates it. Templates and Site Recovery don't recover files.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-restore-files-from-vm"
+ },
+ {
+  "id": "D5-037",
+  "sub": "Restore",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which restore options exist for an Azure VM backup?",
+  "opts": [
+   "Create a new VM, restore disks only, replace existing disks, cross-region restore (if enabled)",
+   "Only in-place overwrite",
+   "Only file recovery",
+   "Only export to on-premises"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "When you restore an Azure VM backup you can create a new VM, restore only the disks (and attach or customise them yourself, for example with a template), replace the existing VM's disks, or — if cross-region restore is on — restore in the paired region. There's also file-level recovery. It isn't limited to one method.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-arm-restore-vms"
+ },
+ {
+  "id": "D5-038",
+  "sub": "MARS",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What does the MARS (Microsoft Azure Recovery Services) agent do?",
+  "opts": [
+   "Backs up entire Hyper-V hosts",
+   "Backs up files, folders, and system state from on-premises Windows machines directly to Azure, up to 3 times a day",
+   "Runs on Linux",
+   "Backs up Azure SQL databases"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The MARS agent runs on Windows machines (on-premises or in Azure) and backs up files, folders and system state directly to a Recovery Services vault, up to three times a day. It can't back up whole Hyper-V hosts or Azure SQL Database, and it doesn't run on Linux.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-about-mars"
+ },
+ {
+  "id": "D5-039",
+  "sub": "Backup center",
+  "type": "mcq",
+  "diff": 2,
+  "q": "To manage and monitor backups across many vaults and subscriptions from one place, use:",
+  "opts": [
+   "Each vault separately",
+   "Backup center (Business Continuity Center)",
+   "Azure Advisor",
+   "Cost Management"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Backup center — now part of Azure Business Continuity Center — gives one place to monitor, manage and report on backups across many vaults, subscriptions and regions. Opening each vault separately doesn't scale, and Advisor and Cost Management don't manage backups.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-center-overview"
+ },
+ {
+  "id": "D5-040",
+  "sub": "Backup vaults",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Deleting a Recovery Services vault fails. What must you do?",
+  "opts": [
+   "Open a support ticket",
+   "Stop backup for all protected items (and delete their data, including soft-deleted items), unregister servers and infrastructure, then delete",
+   "Wait 30 days",
+   "Delete the resource group instead to bypass checks"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure won't delete a Recovery Services vault that still has protected items or registered servers. Stop backup for every item and delete its data (including soft-deleted items), unregister servers and storage accounts, and then delete the vault. Deleting the resource group fails for the same reason.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-delete-vault"
+ },
+ {
+  "id": "D5-041",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 1,
+  "q": "How does Azure Site Recovery's purpose differ from Azure Backup's?",
+  "opts": [
+   "They're the same product",
+   "ASR is disaster recovery (replicate and fail over whole workloads with low RTO); Backup restores point-in-time data",
+   "ASR only backs up files",
+   "Backup is for regions; ASR is for files"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure Site Recovery is disaster recovery: it continuously replicates whole VMs to another region so you can fail over within minutes (low RTO). Azure Backup keeps point-in-time copies for restoring data, for example after deletion, corruption or ransomware. Most organisations use both.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
+ },
+ {
+  "id": "D5-042",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Azure-to-Azure VM replication with ASR replicates VMs:",
+  "opts": [
+   "Only within one region",
+   "Continuously to another target region (typically for cross-region DR)",
+   "Weekly",
+   "Only to on-premises"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "For Azure-to-Azure disaster recovery, Site Recovery continuously replicates VM disk changes to a target region, creating recovery points every few minutes, so you can fail over if the source region goes down. It isn't limited to one region, isn't weekly, and replicates to Azure rather than on-premises.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-quickstart"
+ },
+ {
+  "id": "D5-043",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What does a TEST failover in ASR do?",
+  "opts": [
+   "Causes production downtime",
+   "Starts replica VMs in an isolated network, with no impact on production or ongoing replication",
+   "Deletes replication",
+   "It isn't supported"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A test failover creates the replica VMs in an isolated network you choose, from a recovery point, while production keeps running and replication continues. That's how you prove disaster recovery works without any outage. Clean it up afterwards.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-tutorial-dr-drill"
+ },
+ {
+  "id": "D5-044",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A multi-tier app must fail over in order (database, then app, then web). Use:",
+  "opts": [
+   "Manual notes",
+   "A recovery plan with ordered groups (and optional scripts or runbooks)",
+   "Alphabetical failover",
+   "Separate vaults per tier"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A Site Recovery recovery plan puts VMs into ordered groups (for example databases, then app servers, then web servers) that fail over in sequence. It can also run scripts, runbooks or manual steps between groups. Notes and alphabetical order aren't automated, and separate vaults don't control order.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/recovery-plan-overview"
+ },
+ {
+  "id": "D5-045",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What do RPO and RTO mean?",
+  "opts": [
+   "RPO = maximum acceptable data loss (time between recovery points); RTO = maximum acceptable downtime before you're running again",
+   "The reverse",
+   "Both mean backup frequency",
+   "They're marketing terms"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "RPO (recovery point objective) is how much data you can afford to lose, measured as time — for example 15 minutes — which sets how often you need recovery points. RTO (recovery time objective) is how long the service can be down before it must be running again. They're different measures.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
+ },
+ {
+  "id": "D5-046",
+  "sub": "Azure Files backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How does Azure Backup protect Azure file shares (standard snapshot tier)?",
+  "opts": [
+   "Full-copy backups into the vault only",
+   "Share snapshots managed by the backup policy, stored in the storage account and orchestrated by the vault",
+   "The MARS agent on a VM",
+   "AzCopy scripts"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure Backup for Azure file shares (snapshot tier) works by taking share snapshots on the schedule in the backup policy and managing their retention from the vault. The snapshots stay in the storage account, so backups are fast. A vault-standard tier also copies data into the vault. MARS and AzCopy aren't used.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"
+ },
+ {
+  "id": "D5-047",
+  "sub": "Cross-region restore",
+  "type": "mcq",
+  "diff": 3,
+  "q": "What does cross-region restore (CRR) for VM backups let you do?",
+  "opts": [
+   "Restore only after Microsoft declares a disaster",
+   "Restore VMs in the secondary (paired) region yourself at any time — the vault needs GRS with CRR enabled",
+   "Restore to any region worldwide",
+   "Restore from LRS vaults"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Cross-region restore (CRR) lets you restore VM backups in the paired secondary region whenever you choose, without waiting for Microsoft to declare a disaster. The vault must use GRS with CRR enabled. It only targets the paired region and doesn't work with LRS vaults.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-create-rs-vault#set-cross-region-restore"
+ },
+ {
+  "id": "D5-048",
+  "sub": "Backup policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What does a VM backup policy define?",
+  "opts": [
+   "Schedule (frequency and time) and retention (daily, weekly, monthly, yearly points)",
+   "The VM size",
+   "NSG rules",
+   "Encryption keys only"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A VM backup policy sets the schedule (how often and when backups run) and the retention (how long daily, weekly, monthly and yearly recovery points are kept), plus instant-restore snapshot retention. It doesn't control VM size, network rules or encryption keys.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"
+ },
+ {
+  "id": "D5-049",
+  "sub": "Backup and ASR",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "You can back up a VM in region A directly to a vault in region B",
+   "Stopping backup with 'retain backup data' keeps existing recovery points usable",
+   "ASR can migrate VMs between regions as well as provide DR",
+   "A VM can be protected by Azure Backup and replicated by ASR at the same time"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "The vault must be in the VM's region; retained data stays usable; ASR supports migration; Backup and ASR can be combined.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-backup-faq"
+ },
+ {
+  "id": "D5-050",
+  "sub": "Backup and ASR",
+  "type": "yesno",
+  "diff": 3,
+  "ctx": "Contoso runs 20 production VMs in North Europe. Requirements: daily backups kept 30 days plus monthly backups kept 12 months; a quarterly DR drill with zero production impact; workloads running in West Europe within 1 hour of a regional disaster; an admin accidentally deleted backup data and it must be recoverable for 2 weeks.",
+  "q": "Answer Yes or No:",
+  "stmts": [
+   "A Recovery Services vault backup policy can meet the daily and monthly retention",
+   "An ASR test failover meets the DR drill requirement",
+   "Azure Backup alone (without ASR) is the best fit for the 1-hour regional failover",
+   "Backup soft delete covers recovering the deleted backup data within 14 days"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "Policies support daily and monthly retention; test failovers are isolated; low-RTO regional DR is ASR's job; soft delete keeps data 14 days.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/site-recovery-overview"
+ }
 ]

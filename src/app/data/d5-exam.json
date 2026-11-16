@@ -123,7 +123,7 @@
   "ans": [
    0
   ],
-  "exp": "Azure VM backups go to a Recovery Services vault in the same region as the VMs.",
+  "exp": "Azure VM backups must go to a Recovery Services vault in the same region as the VMs, so the North Europe VMs need a vault in North Europe. A Backup vault doesn't protect Azure VMs, and a storage account isn't a backup vault.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"
  },
  {
@@ -241,7 +241,7 @@
    1,
    0
   ],
-  "exp": "ago(1h) means one hour before now. summarize aggregates rows.",
+  "exp": "ago(1h) returns the time one hour before now, so the where clause keeps the last hour of data. summarize avg(CounterValue) by Computer then calculates the average CPU for each computer. project only selects columns, and extend adds them.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
  },
  {
@@ -270,7 +270,7 @@
    0,
    1
   ],
-  "exp": "KQL timespans use forms like 15m. render draws the results as a chart.",
+  "exp": "KQL time spans are written like 15m (minutes), 1h or 1d, so bin(TimeGenerated, 15m) groups events into 15-minute buckets. render timechart then draws the result as a time chart. plot, chart and draw aren't KQL operators.",
   "link": "https://learn.microsoft.com/en-us/kusto/query/render-operator"
  },
  {
@@ -487,7 +487,7 @@
    1,
    1
   ],
-  "exp": "MARS protects Windows files, folders and system state, up to three times a day.",
+  "exp": "The MARS agent backs up Windows files, folders and system state directly to a Recovery Services vault, up to three times a day. It doesn't back up whole Hyper-V hosts (MABS or DPM does that), Linux file systems or Azure SQL databases.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-about-mars"
  },
  {
@@ -676,7 +676,7 @@
    2,
    1
   ],
-  "exp": "extend adds columns; where filters; project selects columns; summarize aggregates.",
+  "exp": "extend adds a calculated column, where filters rows, project picks which columns to show, and summarize aggregates rows (counts, averages and so on, optionally by group). render draws charts.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
  },
  {
@@ -720,7 +720,7 @@
   "ans": [
    0
   ],
-  "exp": "It filters error events, counts them per computer, and keeps the top five by count.",
+  "exp": "The query keeps only error events, counts them for each computer (summarize count() by Computer), then keeps the five computers with the highest counts (top 5 by Errors desc). It doesn't return the first five events, filter for exactly five, or sort alphabetically.",
   "link": "https://learn.microsoft.com/en-us/kusto/query/top-operator"
  },
  {
@@ -881,7 +881,7 @@
   "ans": [
    0
   ],
-  "exp": "The operation is a VM delete, the caller is Ali, and the status is Succeeded.",
+  "exp": "The operation is Microsoft.Compute/virtualMachines/delete, the caller is ali@contoso.com and the status is Succeeded, so Ali successfully deleted vm-old. A lock would have produced a Failed status, and a move or crash would show different operations.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log-schema"
  },
  {
@@ -922,7 +922,7 @@
   "ans": [
    1
   ],
-  "exp": "The next hop type is VirtualAppliance, and the route table ID shows which route table sets it.",
+  "exp": "The next hop type is VirtualAppliance with IP 10.0.1.4, and the result names the route table rt-spoke-app. So a user-defined route in that table sends the traffic to the network virtual appliance. It isn't going straight to the internet or using peering only, and next hop doesn't evaluate NSGs.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/next-hop-overview"
  },
  {

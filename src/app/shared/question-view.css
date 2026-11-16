@@ -196,18 +196,8 @@
   border-color: var(--bad);
 }
 
-.correct-label {
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-
 .filled {
   margin-top: 0;
-}
-
-.correct-matches {
-  margin: 0 0 8px;
-  padding-left: 1.2em;
 }
 
 .verdict {
@@ -232,10 +222,6 @@
   margin-top: 0;
 }
 
-.correct-order {
-  margin: 0 0 8px;
-}
-
 @media (max-width: 600px) {
   .yn-row {
     flex-direction: column;
@@ -245,4 +231,27 @@
   .match-row {
     grid-template-columns: 1fr;
   }
+}
+
+.section-label {
+  margin: 14px 0 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.answer-list {
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.answer-list li + li {
+  margin-top: 4px;
+}
+
+.why {
+  margin: 0 0 10px;
+  line-height: 1.6;
 }

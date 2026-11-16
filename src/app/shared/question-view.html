@@ -157,30 +157,55 @@
 @if (reveal()) {
   <div class="verdict" [class.ok]="isRight()" [class.bad]="!isRight()" role="status">
     <p class="verdict-title">
-      <strong>{{ isRight() ? 'Correct' : 'Incorrect' }}</strong>
-      @if (answerText()) {
-        <span> — answer: {{ answerText() }}</span>
-      }
+      <strong>{{ isRight() ? '✓ Correct' : '✗ Incorrect' }}</strong>
     </p>
-    @if (q.type === 'dropdown') {
-      <p class="correct-label">Correct answer:</p>
-      <p class="filled" [class.mono]="q.mono">{{ filledTemplate() }}</p>
+
+    <p class="section-label">Correct answer</p>
+    @switch (q.type) {
+      @case ('dropdown') {
+        <p class="filled" [class.mono]="q.mono">{{ filledTemplate() }}</p>
+      }
+      @case ('match') {
+        <ul class="answer-list">
+          @for (m of correctMatches(); track $index) {
+            <li>{{ m.item }} → <strong>{{ m.target }}</strong></li>
+          }
+        </ul>
+      }
+      @case ('order') {
+        <ol class="answer-list">
+          @for (step of correctOrder(); track $index) {
+            <li>{{ step }}</li>
+          }
+        </ol>
+      }
+      @case ('yesno') {
+        <ul class="answer-list">
+          @for (row of yesNoKey(); track $index) {
+            <li>{{ row.stmt }} — <strong>{{ row.answer }}</strong></li>
+          }
+        </ul>
+      }
+      @default {
+        <ul class="answer-list">
+          @for (opt of correctOptions(); track $index) {
+            <li><strong>{{ opt }}</strong></li>
+          }
+        </ul>
+      }
     }
-    @if (q.type === 'match') {
-      <ul class="correct-matches">
-        @for (m of correctMatches(); track $index) {
-          <li>{{ m.item }} → <strong>{{ m.target }}</strong></li>
+
+    @if (!isRight() && (q.type === 'mcq' || q.type === 'multi') && yourOptions().length) {
+      <p class="section-label">Your answer</p>
+      <ul class="answer-list">
+        @for (opt of yourOptions(); track $index) {
+          <li>{{ opt }}</li>
         }
       </ul>
     }
-    @if (q.type === 'order') {
-      <ol class="correct-order">
-        @for (step of correctOrder(); track $index) {
-          <li>{{ step }}</li>
-        }
-      </ol>
-    }
-    <p>{{ q.exp }}</p>
-    <a [href]="q.link" target="_blank" rel="noopener">Microsoft Learn reference ↗</a>
+
+    <p class="section-label">Why this is the answer</p>
+    <p class="why">{{ q.exp }}</p>
+    <a [href]="q.link" target="_blank" rel="noopener">Read more on Microsoft Learn ↗</a>
   </div>
 }

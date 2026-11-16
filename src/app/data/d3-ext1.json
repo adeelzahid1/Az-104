@@ -14,7 +14,7 @@
   "ans": [
    0
   ],
-  "exp": "ARM templates are JSON. Bicep is a separate DSL that compiles to JSON.",
+  "exp": "ARM templates are written in JSON, with a $schema, parameters, variables, resources and outputs. Bicep is a separate language that compiles to that JSON. YAML, XML and HCL (used by Terraform) aren't ARM template formats.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/overview"
  },
  {
@@ -32,7 +32,7 @@
   "ans": [
    0
   ],
-  "exp": "resourceGroup().location is commonly used as the default location parameter.",
+  "exp": "resourceGroup().location returns the region of the resource group you're deploying to. It's commonly used as the default value of a location parameter, so resources land in the same region as their resource group. subscription() has no location, and deployment() and location() don't return it.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-scope"
  },
  {
@@ -50,7 +50,7 @@
   "ans": [
    0
   ],
-  "exp": "uniqueString creates a deterministic hash; it's often combined with a prefix via concat.",
+  "exp": "uniqueString(resourceGroup().id) returns a 13-character hash based on the resource group ID. It's the same every time for the same resource group but different across resource groups, which makes names unique and repeatable. Combine it with a prefix, such as concat('st', uniqueString(...)). guid() and random() aren't suitable, and newName() doesn't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-string"
  },
  {
@@ -68,7 +68,7 @@
   "ans": [
    0
   ],
-  "exp": "dependsOn sets the deployment order. (Bicep infers dependencies automatically from references.)",
+  "exp": "dependsOn lists resources that must be deployed first. Adding the NIC's resource ID to the VM's dependsOn makes Resource Manager create the NIC before the VM. condition decides whether to deploy at all, copy creates multiple instances, and apiVersion picks the API version.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/resource-dependency"
  },
  {
@@ -86,7 +86,7 @@
   "ans": [
    0
   ],
-  "exp": "The copy element iterates resource creation; copyIndex() gives the index.",
+  "exp": "The copy element repeats a resource definition: copy: { name: 'storageLoop', count: 5 } deploys five instances, and copyIndex() gives each one a different name. dependsOn sets order, outputs return values, and condition deploys or skips a resource.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/copy-resources"
  },
  {
@@ -104,7 +104,7 @@
   "ans": [
    0
   ],
-  "exp": "allowedValues restricts input to a set list.",
+  "exp": "allowedValues lists the only values a parameter accepts. Deployment fails with any other value. defaultValue sets the value when none is given, metadata adds a description, and minLength checks string length.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/parameters"
  },
  {
@@ -122,7 +122,7 @@
   "ans": [
    0
   ],
-  "exp": "Parameter files can reference Key Vault secrets (the vault must allow template deployment).",
+  "exp": "A parameter file can reference a Key Vault secret (by the vault's resource ID and the secret name) instead of containing the password. At deployment, Resource Manager reads the secret from the vault, so the password never appears in plain text. Hard-coding it, outputting it or putting it in tags exposes it.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/key-vault-parameter"
  },
  {
@@ -140,7 +140,7 @@
   "ans": [
    0
   ],
-  "exp": "The vault must allow Resource Manager to retrieve secrets during deployment.",
+  "exp": "For a template to read a secret during deployment, the key vault must have 'Azure Resource Manager for template deployment' enabled (enabledForTemplateDeployment), and the person deploying needs permission on the vault. Soft delete, purge protection and private endpoints don't control this.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/key-vault-parameter"
  },
  {
@@ -158,7 +158,7 @@
   "ans": [
    0
   ],
-  "exp": "Parameter files hold values for different environments, such as dev and prod.",
+  "exp": "A parameter file holds the values for a template's parameters, so the same template can be deployed to dev, test and prod by passing different parameter files, without editing the template. It doesn't define resources or store logs, and it can't replace the template.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/parameter-files"
  },
  {
@@ -176,7 +176,7 @@
   "ans": [
    0
   ],
-  "exp": "Subscription-scope deployments use az deployment sub create and require a location for metadata.",
+  "exp": "az deployment sub create deploys a template at subscription scope — for example to create resource groups or assign policies. It needs --location because the deployment's metadata is stored in a region. az deployment group create targets an existing resource group, and az deployment tenant create targets the tenant root.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-to-subscription"
  },
  {
@@ -194,7 +194,7 @@
   "ans": [
    0
   ],
-  "exp": "ARM deployments are idempotent; existing resources are updated in place if needed.",
+  "exp": "ARM deployments are idempotent. Redeploying the same template with the same parameters leaves matching resources as they are, updates any settings that differ, and creates nothing extra. Resources aren't deleted and recreated, the deployment doesn't fail, and no duplicates appear.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-modes"
  },
  {
@@ -212,7 +212,7 @@
   "ans": [
    0
   ],
-  "exp": "The Deployments blade shows history, inputs, outputs, and the template.",
+  "exp": "Resource group → Deployments lists every deployment to that resource group, with its status, inputs, outputs and the template used, which you can download or redeploy. The Activity log shows individual operations but not the full template.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-history"
  },
  {
@@ -230,7 +230,7 @@
   "ans": [
    0
   ],
-  "exp": "The condition element conditionally deploys a resource.",
+  "exp": "The condition property deploys a resource only when its value is true, for example \"condition\": \"[parameters('deployDiagnostics')]\". When it's false, the resource is skipped and the rest of the deployment continues. dependsOn, copy and outputs don't do this.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/conditional-resource-deployment"
  },
  {
@@ -248,7 +248,7 @@
   "ans": [
    0
   ],
-  "exp": "Outputs return values from a deployment.",
+  "exp": "The outputs section returns values after deployment, for example the public IP address via reference(...).ipAddress. Variables are internal values, parameters are inputs, and functions define user-defined functions.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/outputs"
  },
  {
@@ -266,7 +266,7 @@
   "ans": [
    0
   ],
-  "exp": "type, apiVersion, and name are required (location is required for most resource types).",
+  "exp": "Every resource in an ARM template needs type (such as Microsoft.Storage/storageAccounts), apiVersion and name. Most resource types also need location. dependsOn, tags and copy are optional.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/resource-declaration"
  },
  {
@@ -284,7 +284,7 @@
   "ans": [
    0
   ],
-  "exp": "Linked and nested deployments enable modular templates.",
+  "exp": "A Microsoft.Resources/deployments resource deploys another template inside the main one: nested (inline) or linked (referenced by URI or template spec). This lets you keep the networking template separate and reuse it. Copying JSON creates duplicate code, and tags or Azure Policy can't include templates.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/linked-templates"
  },
  {
@@ -302,7 +302,7 @@
   "ans": [
    0
   ],
-  "exp": "Linked templates need an accessible URI; template specs and relativePath are alternatives.",
+  "exp": "A linked template must be reachable by Resource Manager during deployment, so it needs a URI such as a storage account URL with a SAS token. Alternatively store it as a template spec, or use relativePath with a template spec or Bicep module. Files on your own disk can't be reached by ARM.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/linked-templates"
  },
  {
@@ -320,7 +320,7 @@
   "ans": [
    0
   ],
-  "exp": "Template specs store templates in Azure with versions and RBAC.",
+  "exp": "A template spec stores an ARM template (or Bicep, compiled) as an Azure resource, with version numbers. You control who can deploy it with Azure RBAC, which makes it easy to share approved templates across teams. Export template only generates a template, and policy initiatives group policies.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-specs"
  },
  {
@@ -362,7 +362,7 @@
    1,
    0
   ],
-  "exp": "Edit → validate → what-if → deploy.",
+  "exp": "Edit the template and parameter file first. Validate them (az deployment group validate) to catch errors. Run what-if to see exactly what will change. Only then deploy with az deployment group create. Validation and what-if before deploying catch mistakes before they reach production.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/deploy-what-if"
  },
  {
@@ -380,7 +380,7 @@
   "ans": [
    0
   ],
-  "exp": "Bicep uses param for parameters, var for variables, resource for resources, and output for outputs.",
+  "exp": "param declares an input parameter in Bicep, for example param location string = resourceGroup().location. var declares a variable, resource declares a resource, and output returns a value. input and arg aren't Bicep keywords.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/parameters"
  },
  {
@@ -398,7 +398,7 @@
   "ans": [
    0
   ],
-  "exp": "@allowed defines permitted values.",
+  "exp": "The @allowed decorator lists the values a parameter may take, for example @allowed(['Standard_LRS', 'Standard_GRS']); any other value fails validation. @values, @enum and @restrict aren't Bicep decorators.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/parameters"
  },
  {
@@ -416,7 +416,7 @@
   "ans": [
    0
   ],
-  "exp": "@secure() makes the parameter secureString or secureObject.",
+  "exp": "@secure() on a string or object parameter makes it a secure value: it isn't logged in deployment history or returned in outputs. Use it for passwords and keys. The other decorators don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/parameters"
  },
  {
@@ -434,7 +434,7 @@
   "ans": [
    0
   ],
-  "exp": "The CLI compiles Bicep automatically during deployment.",
+  "exp": "az deployment group create --template-file main.bicep deploys a Bicep file directly; the CLI compiles it to ARM JSON automatically before sending it to Resource Manager. az bicep and bicep commands build and decompile but don't deploy.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deploy-cli"
  },
  {
@@ -452,7 +452,7 @@
   "ans": [
    0
   ],
-  "exp": "Implicit dependencies are created from references; explicit dependsOn is rarely needed.",
+  "exp": "In Bicep, when one resource uses another's symbolic name or properties (for example nic.id), Bicep adds the dependency automatically. You only write dependsOn for dependencies that can't be inferred. copy is ARM JSON syntax.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/resource-dependencies"
  },
  {
@@ -470,7 +470,7 @@
   "ans": [
    0
   ],
-  "exp": "Bicep loops use the [for ... in ...: {...}] syntax.",
+  "exp": "Bicep loops use [for item in collection: {...}]. range(0, 3) gives 0, 1 and 2, so this deploys three storage accounts, and you use i to make each name unique. copy: { count: 3 } is ARM JSON syntax, and the other forms aren't valid Bicep.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/loops"
  },
  {
@@ -488,7 +488,7 @@
   "ans": [
    0
   ],
-  "exp": "Bicep uses an if expression in the resource declaration.",
+  "exp": "In Bicep you add if (condition) after the = in a resource declaration, for example resource diag '...' = if (deployIt) { ... }. The resource is deployed only when the condition is true. condition: is ARM JSON, and @if and when don't exist.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/conditional-resource-deployment"
  },
  {
@@ -506,7 +506,7 @@
   "ans": [
    0
   ],
-  "exp": "module deploys another Bicep file with its own parameters.",
+  "exp": "module deploys another Bicep file as part of your deployment: you pass it parameters and can read its outputs. It's how you split Bicep into reusable building blocks. import, include and template aren't the keyword for this.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules"
  },
  {
@@ -524,7 +524,7 @@
   "ans": [
    0
   ],
-  "exp": "The existing keyword references deployed resources.",
+  "exp": "Adding the existing keyword (resource stg '...' existing = { name: 'st1' }) references a resource that's already deployed, so you can read its properties such as stg.properties.primaryEndpoints without deploying or changing it. reference() is ARM JSON, and import and module don't do this.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/existing-resource"
  },
  {
@@ -542,7 +542,7 @@
   "ans": [
    0
   ],
-  "exp": "Decompile converts JSON to Bicep (manual cleanup may be needed).",
+  "exp": "az bicep decompile turns an ARM JSON template, such as one from Export template, into a .bicep file. Review it afterwards, because exported templates often contain hard-coded values. Renaming the file doesn't change its syntax, and az bicep build converts Bicep to JSON, not the other way.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/decompile"
  },
  {
@@ -560,7 +560,7 @@
   "ans": [
    0
   ],
-  "exp": "Bicep parameter files (.bicepparam) use Bicep syntax with a using statement.",
+  "exp": "A .bicepparam file is a Bicep-native parameter file. It starts with using 'main.bicep' and sets values with param name = value, so the tooling checks types against the template. JSON parameter files still work. YAML, .tfvars (Terraform) and .env aren't Bicep parameter files.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/parameter-files"
  },
  {
@@ -599,7 +599,7 @@
   "ans": [
    0
   ],
-  "exp": "The VM size (SKU) defines CPU, memory, and other limits.",
+  "exp": "The VM size (for example Standard_D4s_v5) sets the number of vCPUs, the amount of memory, temp storage, how many data disks and NICs you can attach, and the network bandwidth. The disk type sets storage performance, the image sets the operating system, and the region doesn't change CPU or memory.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes"
  },
  {
@@ -617,7 +617,7 @@
   "ans": [
    0
   ],
-  "exp": "E and M are memory-optimized; F is compute-optimized; B is burstable; N is GPU.",
+  "exp": "E-series and M-series VMs have a high ratio of memory to CPU, which suits databases and in-memory analytics (M-series offers the most memory). F-series is compute-optimised, B-series is burstable for light workloads, and N-series has GPUs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes"
  },
  {
@@ -635,7 +635,7 @@
   "ans": [
    0
   ],
-  "exp": "B-series accumulates CPU credits and bursts when needed.",
+  "exp": "B-series (burstable) VMs run at a low baseline cost and build up CPU credits while idle, which they spend on short spikes. That's cheap for low-traffic dev servers. M-series is large and memory-heavy, N-series has GPUs, and H-series is for high-performance computing — all far too expensive here.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-b-series-burstable"
  },
  {
@@ -653,7 +653,7 @@
   "ans": [
    0
   ],
-  "exp": "N-series VMs include NVIDIA or AMD GPUs.",
+  "exp": "N-series VMs include NVIDIA or AMD GPUs for machine learning training, rendering and visualisation. D-series is general-purpose, A-series is entry-level, and B-series is burstable; none of them have GPUs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-gpu"
  },
  {
@@ -689,7 +689,7 @@
   "ans": [
    0
   ],
-  "exp": "New-AzVM creates a VM; there's a simplified parameter set for quick creation.",
+  "exp": "New-AzVM creates a virtual machine in Azure PowerShell, either with a simple parameter set (name, image, credentials) or from a full VM configuration object. The other cmdlet names don't exist.",
   "link": "https://learn.microsoft.com/en-us/powershell/module/az.compute/new-azvm"
  },
  {
@@ -707,7 +707,7 @@
   "ans": [
    0
   ],
-  "exp": "Compute Gallery stores image definitions and versions, with replication and sharing.",
+  "exp": "Azure Compute Gallery stores image definitions with numbered versions, replicates them to the regions you choose, and can be shared with other subscriptions or tenants through RBAC. That's ideal for building many VMs from one customised image. Loose VHDs in a storage account have no versioning or sharing, and a template doesn't capture an OS image.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/azure-compute-gallery"
  },
  {
@@ -743,7 +743,7 @@
   "ans": [
    0
   ],
-  "exp": "Standard HDD has the lowest cost and performance.",
+  "exp": "Standard HDD is the cheapest managed disk type and suits dev/test, backups and rarely used data, where low performance doesn't matter. Premium SSD, Premium SSD v2 and Ultra Disk cost more and are meant for production workloads that need fast, consistent IOPS.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types"
  },
  {
@@ -761,7 +761,7 @@
   "ans": [
    0
   ],
-  "exp": "The temp disk is local, non-persistent storage; never keep important data there.",
+  "exp": "The temporary disk (D: on Windows, /dev/sdb on many Linux images) is local storage on the physical host. When the VM is deallocated, redeployed or moved to another host, that data can be lost. Use it only for scratch data such as the page file, and keep anything important on managed data disks.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview"
  },
  {
@@ -779,7 +779,7 @@
   "ans": [
    0
   ],
-  "exp": "az vm disk attach with --new creates and attaches a managed disk.",
+  "exp": "az vm disk attach attaches a data disk to a VM; with --new and --size-gb 128 it creates a new 128 GB managed disk and attaches it in one step. The other commands don't exist. After attaching, initialise and format the disk inside the OS.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/add-disk"
  },
  {
@@ -797,7 +797,7 @@
   "ans": [
    0
   ],
-  "exp": "Shrinking managed disks isn't supported.",
+  "exp": "Managed disks can only grow, never shrink. To use a smaller disk, create a new one, copy the data across inside the VM, and swap it in. That applies to every disk type, whether or not the VM is running.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-os-disk"
  },
  {
@@ -815,7 +815,7 @@
   "ans": [
    0
   ],
-  "exp": "Expanding the disk doesn't resize the file system; extend it in the OS.",
+  "exp": "Expanding a disk in Azure only makes the virtual disk bigger. The operating system still sees the old partition size until you extend the partition and file system — for example with Disk Management or diskpart on Windows, or growpart and resize2fs on Linux. You don't need to reinstall or recreate anything.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/expand-os-disk"
  },
  {
@@ -833,7 +833,7 @@
   "ans": [
    0
   ],
-  "exp": "Shared managed disks support clustered applications.",
+  "exp": "Shared disks are managed disks with maxShares set above 1, so several VMs can attach the same disk at the same time. Clustered applications such as Windows Server Failover Clustering use them, managing who writes with SCSI reservations. Snapshots are copies, and Azure Files is a network share rather than a block disk.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-shared"
  },
  {
@@ -851,7 +851,7 @@
   "ans": [
    0
   ],
-  "exp": "Snapshots are quick point-in-time copies of managed disks.",
+  "exp": "A disk snapshot is a full, read-only point-in-time copy of a managed disk that takes seconds to start. If patching goes wrong, create a new disk from the snapshot and swap it in. Capturing an image with Sysprep generalises (and changes) the VM, and exporting a template doesn't copy disk contents.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/snapshot-copy-managed-disk"
  },
  {
@@ -869,7 +869,7 @@
   "ans": [
    0
   ],
-  "exp": "Log disks use None; data disks typically use ReadOnly; the OS disk uses ReadWrite.",
+  "exp": "SQL Server log files are written sequentially and must be safely on disk immediately, so log disks should use caching None. Data disks usually use ReadOnly caching to speed up reads, and the OS disk uses ReadWrite. ReadWrite on a log disk risks losing data if the host fails.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-sql/virtual-machines/windows/performance-guidelines-best-practices-storage"
  },
  {

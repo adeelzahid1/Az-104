@@ -316,7 +316,7 @@
    1,
    1
   ],
-  "exp": "Bastion requires a dedicated subnet named AzureBastionSubnet, /26 or larger.",
+  "exp": "Azure Bastion (Basic, Standard and Premium) must be deployed into a dedicated subnet named exactly AzureBastionSubnet, and the subnet must be /26 or larger so Bastion can scale. A smaller prefix such as /27 or a different name makes the deployment fail.",
   "link": "https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"
  },
  {
@@ -551,7 +551,7 @@
    0,
    1
   ],
-  "exp": "These services require dedicated subnets with exactly these names.",
+  "exp": "These services require dedicated subnets with exact names: Azure Firewall uses AzureFirewallSubnet, VPN and ExpressRoute gateways use GatewaySubnet, and Azure Bastion uses AzureBastionSubnet. Deployments fail if the subnet has any other name.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-for-azure-services"
  },
  {
@@ -634,7 +634,7 @@
    2,
    1
   ],
-  "exp": "TXT verifies ownership; alias records serve the apex; NS delegates; CNAME maps names.",
+  "exp": "A TXT record holds verification text that proves you own a domain. An alias record lets the apex (contoso.com) point at an Azure public IP, where CNAMEs aren't allowed. An NS record delegates a subdomain to other name servers. A CNAME maps one host name to another.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-zones-records"
  },
  {
@@ -790,7 +790,7 @@
   "ans": [
    0
   ],
-  "exp": "The rule allows inbound TCP 80 and 443 from the Internet tag to every NIC that belongs to asg-web.",
+  "exp": "The rule allows inbound TCP on ports 80 and 443 from the Internet service tag to every network interface in the asg-web application security group. ASGs can be used as sources or destinations, which is the point of them. It doesn't allow outbound traffic or limit the source to the VNet.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
  },
  {
@@ -907,7 +907,7 @@
   "ans": [
    1
   ],
-  "exp": "The name is correct, but a /27 is too small. Bastion needs /26 or larger.",
+  "exp": "The subnet is named correctly (AzureBastionSubnet), but Bastion needs a /26 or larger and this one is only /27, so the deployment fails. Bastion doesn't need a /16, and it can share a VNet with other subnets.",
   "link": "https://learn.microsoft.com/en-us/azure/bastion/configuration-settings"
  },
  {
