@@ -14,5 +14,19 @@
    {"heading": "Teams", "body": "WebOps web servers manage karti hai. DBA team databases manage karti hai aur junior DBAs ko onboard karti hai. Finance cloud ka kharcha track karta hai. Northwind Traders (northwind.com) ka ek bahar ka auditor har teen mahine environment review karta hai."},
    {"heading": "Requirements", "body": "1. WebOps ko RG-Web mein VMs manage karni hain lekin virtual networks nahi badalne.\n2. DBA team ko RG-Data ka poora control chahiye, junior DBAs ko access dena samet.\n3. Finance ko costs dekhne aur budgets banane hain, lekin resources manage nahi karne.\n4. Auditor apne mojooda Northwind credentials se Sub1 mein sab kuch parh sake.\n5. Jab monthly kharcha 2,000 USD ke 80% tak pohanche to Finance ko email jaye.\n6. Har naye resource group par costcenter tag hona chahiye; is ke baghair banana fail ho.\n7. Least privilege ke usool par amal karein."}
   ]
+ },
+ "C3": {
+  "title": "Litware Media",
+  "sections": [
+   {"heading": "Overview", "body": "Litware Media video content banata hai. Is ke Azure resources West Europe mein hain. Lahore mein ek on-premises Windows file server par 20 TB shared documents hain. Users on-premises Active Directory accounts se sign in karte hain jo Microsoft Entra ID mein synced hain."},
+   {"heading": "Requirements", "body": "1. Raw video uploads 30 din tak bohat use hote hain, us ke baad kam, aur unhein 5 saal tak kam se kam cost par rakhna hai.\n2. West Europe region available na ho tab bhi video data parhne ke qabil rehna chahiye, failover kiye baghair.\n3. Partner studios ko Microsoft Entra accounts ke baghair 7 din tak ek container mein files upload karni hain. Access kisi bhi waqt revoke ho sake aur doosre access tokens par asar na pare.\n4. Lahore office ko shared documents ka tez local access chahiye, Azure mein central copy ke sath, aur mojooda NTFS permissions kaam karti rehni chahiye.\n5. Blob storage internet se pohanch mein na ho. VNet-Prod ki VMs aur VPN se jure on-premises clients phir bhi us tak pohanch sakein."}
+  ]
+ },
+ "C4": {
+  "title": "Northwind Health",
+  "sections": [
+   {"heading": "Overview", "body": "Northwind Health patient reports ko West Europe mein GPv2 storage account stnwhealth (LRS) ke container \"reports\" mein block blobs ke taur par store karta hai."},
+   {"heading": "Requirements", "body": "1. Reports likhe jane ke baad 7 saal tak badli ya delete na ho sakein (regulatory WORM requirement).\n2. Agar koi report ghalti se overwrite ho jaye to pichla content wapas mil sake.\n3. Agar koi container ghalti se delete ho jaye to woh 14 din tak wapas mil sake.\n4. Reports North Europe mein ek alag analytics storage account mein asynchronously copy hon.\n5. Reporting app Azure VM par chalti hai aur use koi secret store kiye baghair reports parhni hain.\n6. Data aisi keys se encrypt ho jo Northwind control kare aur revoke kar sake."}
+  ]
  }
 }
