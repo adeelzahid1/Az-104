@@ -1,1 +1,2392 @@
-{}
+{
+ "D3-001": {
+  "q": "ARM template mein sab se zyada use hone wale chaar top-level sections kaun se hain?",
+  "opts": [
+   "parameters, variables, resources, outputs",
+   "inputs, logic, actions, results",
+   "header, body, footer, schema",
+   "users, roles, scopes, locks"
+  ],
+  "exp": "ARM template ke main sections parameters (jo values aap dete hain), variables (template ke andar nikali gayi values), resources (kya deploy karna hai) aur outputs (baad mein wapas milne wali values) hain. Sath mein $schema, contentVersion aur optional functions bhi hote hain. Baqi naamon ke sets template sections nahi."
+ },
+ "D3-002": {
+  "q": "ARM template mein parameter aur variable mein kya farq hai?",
+  "opts": [
+   "Koi nahi",
+   "Parameters deployment ke waqt values lete hain; variables template ke andar calculate hote hain aur deploy karne wala unhein set nahi kar sakta",
+   "Variables typed hain; parameters nahi",
+   "Parameters sirf passwords ke liye hain"
+  ],
+  "exp": "Parameters template ke inputs hain: aap deployment ke waqt un ki values dete hain (command line ya parameter file mein), is liye wahi template dev aur prod dono ke liye chalta hai. Variables woh values hain jo template khud calculate karta hai, aksar parameters se, aur deploy karne wala unhein set nahi kar sakta. Dono ke types ho sakte hain, aur parameters sirf passwords ke liye nahi."
+ },
+ "D3-003": {
+  "q": "Aap Complete mode mein resource group par template deploy karte hain. RG mein ek VM hai jo template mein nahi. Kya hota hai?",
+  "opts": [
+   "VM ko nahi chhua jata",
+   "VM delete ho jati hai",
+   "Deployment fail hota hai",
+   "VM stop ho jati hai"
+  ],
+  "exp": "Complete mode mein Resource Manager resource group ko bilkul template jaisa banata hai, is liye group ka har woh resource jo template mein define nahi — jaise yeh VM — delete ho jata hai. Default Incremental mode mein template se bahar ke resources ko nahi chhua jata. Isi liye Complete mode khatarnak hai aur kam use hota hai."
+ },
+ "D3-004": {
+  "q": "Default ARM deployment mode kaun sa hai?",
+  "opts": [
+   "Complete",
+   "Incremental",
+   "Validate",
+   "Overwrite"
+  ],
+  "exp": "Incremental default hai: template ke resources bante ya update hote hain, aur resource group mein baqi sab waisa hi rehta hai. Complete mode template se bahar ke resources delete karta hai. 'Validate' sirf template check karta hai deploy kiye baghair, aur 'Overwrite' koi mode nahi."
+ },
+ "D3-005": {
+  "q": "Badla hua template production par deploy karne se pehle aap bilkul dekhna chahte hain ke kaun se resources badlenge. Kya use karenge?",
+  "opts": [
+   "What-if operation (az deployment group what-if / --confirm-with-what-if)",
+   "az group delete --dry-run",
+   "Azure Advisor",
+   "Activity log"
+  ],
+  "exp": "What-if operation (az deployment group what-if, ya create --confirm-with-what-if) template ka mojooda deployment se muqabla karta hai aur har woh resource list karta hai jo banega, badlega ya delete hoga — kuch badle baghair. Activity log pichle operations dikhata hai, Advisor recommendations deta hai, aur az group delete ka koi dry-run nahi."
+ },
+ "D3-006": {
+  "q": "Kaun si CLI command template file ko resource group par deploy karti hai?",
+  "opts": [
+   "az deployment group create --resource-group RG1 --template-file azuredeploy.json",
+   "az group deploy start azuredeploy.json",
+   "az arm push azuredeploy.json",
+   "az template deploy RG1"
+  ],
+  "exp": "az deployment group create template (JSON ya Bicep) ko resource group mein deploy karti hai, --resource-group aur --template-file (sath mein parameters) ke sath. PowerShell mein is ka barabar New-AzResourceGroupDeployment hai. Subscription scope ke liye az deployment sub create use karein. Baqi commands mojood nahi."
+ },
+ "D3-007": {
+  "q": "Aap ne portal mein VM configure ki aur baad mein dobara deploy karne ke liye us ka template chahte hain. Sab se tez built-in option?",
+  "opts": [
+   "Template shuru se likhein",
+   "Resource ya resource group par Export template use karein",
+   "Configuration ka screenshot lein",
+   "Azure Policy"
+  ],
+  "exp": "Export template (portal mein resource ya resource group par) deploy ki hui cheez se ARM JSON template banata hai, jise aap save aur dobara deploy kar sakte hain. Isay saaf karne ki zaroorat paregi, maslan hard-coded values ko parameters banana. Azure Policy templates nahi banati."
+ },
+ "D3-008": {
+  "q": "Bicep ke bare mein kaun si baat SAHI hai?",
+  "opts": [
+   "Bicep ARM se alag engine se deploy hota hai",
+   "Bicep ARM JSON mein transpile hota hai, is liye jo kuch ARM templates deploy kar sakte hain Bicep bhi kar sakta hai",
+   "Bicep sirf VMs support karta hai",
+   "Har deployment se pehle Bicep files manually convert karni hoti hain"
+  ],
+  "exp": "Bicep ARM templates ke liye ek aasan zaban hai. Deploy karte waqt yeh ARM JSON mein compile (transpile) hota hai aur Resource Manager isay aam tareeqe se deploy karta hai. Is ka matlab ARM mein available har resource type aur API version Bicep mein bhi available hai, aur Azure CLI aur PowerShell Bicep ko khud compile karte hain."
+ },
+ "D3-009": {
+  "q": "Kaun si command mojooda ARM JSON template ko Bicep file mein convert karti hai?",
+  "opts": [
+   "az bicep decompile --file azuredeploy.json",
+   "az bicep build",
+   "az bicep export",
+   "bicep deploy azuredeploy.json"
+  ],
+  "exp": "az bicep decompile --file azuredeploy.json ARM JSON template ko .bicep file mein convert karti hai (baad mein saaf karna par sakta hai). az bicep build ulta kaam karti hai, Bicep ko ARM JSON banati hai. az bicep export command nahi."
+ },
+ "D3-010": {
+  "q": "Bicep mein resource stg 'Microsoft.Storage/storageAccounts@2023-01-01' = {...} ke taur par declare kiye gaye resource ka naam kaise reference karte hain?",
+  "opts": [
+   "[reference(stg).name]",
+   "stg.name",
+   "${stg}.name",
+   "resources('stg').name"
+  ],
+  "exp": "Bicep mein har resource ka symbolic naam hota hai (yahan stg), aur aap properties parhne ke liye usay seedha use karte hain: stg.name, stg.id ya stg.properties.primaryEndpoints. Is se deployment dependency bhi khud ban jati hai. reference() aur square-bracket syntax ARM JSON ke hain."
+ },
+ "D3-011": {
+  "q": "ARM JSON mein \"[parameters('location')]\" kis cheez ki misaal hai?",
+  "opts": [
+   "Comment",
+   "Template function call karne wala template expression",
+   "Variable declaration",
+   "Ghalat syntax"
+  ],
+  "exp": "ARM JSON mein jo string [ se shuru aur ] par khatam ho woh template expression hai jo deployment par evaluate hota hai. Us ke andar parameters('location') ek template function hai jo 'location' parameter ki value deta hai. Comments // use karte hain aur variables variables section mein declare hote hain."
+ },
+ "D3-012": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Complete mode sirf resource group deployments ke liye supported hai",
+   "Nested/linked deployments se template ek se zyada resource groups mein deploy kar sakta hai",
+   "secureString parameter values deployment history mein log hoti hain",
+   "Bicep code dobara use karne ke liye modules support karta hai"
+  ],
+  "exp": "Complete mode sirf resource group deployments ke liye kaam karta hai. Template nested ya linked deployments se doosre resource groups mein deploy kar sakta hai. secureString parameters ki values kabhi deployment history mein log nahi hoti. Bicep code dobara use karne ke liye modules support karta hai."
+ },
+ "D3-013": {
+  "q": "Ek hi region ke do ya zyada availability zones mein deploy ki gayi do ya zyada VMs par kaun sa SLA lagta hai?",
+  "opts": [
+   "99.9%",
+   "99.95%",
+   "99.99%",
+   "100%"
+  ],
+  "exp": "Do ya zyada VMs ko do ya zyada availability zones mein phailane se 99.99% VM connectivity SLA milta hai, kyun ke har zone alag datacenter hai jis ki apni power aur networking hai. Availability set mein do ya zyada VMs 99.95% deti hain, aur Premium SSD ya Ultra disks wali single VM 99.9% deti hai."
+ },
+ "D3-014": {
+  "q": "Availability set kis se bachata hai?",
+  "opts": [
+   "Poore region ke outages",
+   "Datacenter ke andar hardware rack failures (fault domains) aur planned maintenance reboots (update domains)",
+   "Zone failures",
+   "Ghalti se deletion"
+  ],
+  "exp": "Availability set VMs ko fault domains (apni power aur network wale alag racks) aur update domains (planned maintenance mein baari baari reboot hone wale groups) mein phailata hai. Yeh ek datacenter ke andar hardware aur maintenance events se bachata hai, lekin poore zone ya region ke fail hone se nahi, aur kisi ke VM delete karne se bhi nahi."
+ },
+ "D3-015": {
+  "q": "Availability set mein zyada se zyada kitne fault domains aur update domains configure ho sakte hain?",
+  "opts": [
+   "2 FD / 5 UD",
+   "3 FD / 20 UD",
+   "5 FD / 10 UD",
+   "10 FD / 10 UD"
+  ],
+  "exp": "Availability set 3 tak fault domains (kuch regions mein sirf 2) aur 20 tak update domains (default 5) support karta hai. Baqi combinations valid limits nahi."
+ },
+ "D3-016": {
+  "q": "VM1 availability set ke baghair deploy hui thi. Ab aap usay AVSet1 mein chahte hain. Kya karna hoga?",
+  "opts": [
+   "VM ki availability settings edit karein",
+   "VM delete kar ke dobara banayen (disks aur NIC rakh kar) — VM sirf banate waqt availability set join kar sakti hai",
+   "az vm update se move karein",
+   "Stop kar ke restart karein"
+  ],
+  "exp": "VM ka availability set sirf banate waqt chuna ja sakta hai. Mojooda VM ko add karne ke liye usay delete karein jab ke disks aur NIC rakhein, phir un disks se availability set specify kar ke nayi VM banayen. Koi setting, az vm update option ya restart isay nahi badalta."
+ },
+ "D3-017": {
+  "q": "Kaun sa managed disk type configurable IOPS aur throughput ke sath sab se zyada performance deta hai?",
+  "opts": [
+   "Standard HDD",
+   "Standard SSD",
+   "Premium SSD",
+   "Ultra Disk"
+  ],
+  "exp": "Ultra Disk sab se zyada performance deta hai aur aap ko IOPS aur throughput disk size se alag set karne deta hai, VM chalte hue bhi. Premium SSD tez hai lekin us ki performance size tier se bandhi hai. Standard SSD aur Standard HDD saste aur slow hain."
+ },
+ "D3-018": {
+  "q": "Ek single VM (availability set ya zone ke baghair) ko 99.9% SLA ke qabil hona hai. Kya zaroori hai?",
+  "opts": [
+   "Koi bhi disk type",
+   "Tamam OS aur data disks ke liye Premium SSD (ya Ultra)",
+   "Standard SSD",
+   "Accelerated networking"
+  ],
+  "exp": "Single VM (availability set ya zone mein nahi) ko 99.9% SLA sirf tab milta hai jab har OS aur data disk Premium SSD, Premium SSD v2 ya Ultra Disk ho. Standard SSD ya HDD ke sath single-instance SLA kam hai. Accelerated networking SLA par asar nahi dalta."
+ },
+ "D3-019": {
+  "q": "Azure Disk Encryption Windows aur Linux par kaun si technologies use karta hai?",
+  "opts": [
+   "SSE aur TDE",
+   "BitLocker aur dm-crypt",
+   "Sirf EFS aur LUKS2",
+   "Always Encrypted"
+  ],
+  "exp": "Azure Disk Encryption VM ke andar kaam karta hai: Windows par BitLocker aur Linux par dm-crypt use karta hai, keys Azure Key Vault mein hoti hain. SSE storage service ki platform encryption hai, TDE SQL databases ke liye hai, aur Always Encrypted SQL feature hai."
+ },
+ "D3-020": {
+  "q": "Azure Disk Encryption ko kaun sa supporting resource chahiye, aur kis shart ke sath?",
+  "opts": [
+   "Kisi bhi region mein storage account",
+   "VM wale region aur subscription mein key vault",
+   "Log Analytics workspace",
+   "On-premises HSM"
+  ],
+  "exp": "Azure Disk Encryption apni keys aur secrets Azure Key Vault mein rakhta hai. Vault VM wale region aur subscription mein hona chahiye, aur us ki access policy mein 'Azure Disk Encryption for volume encryption' enabled hona chahiye. Storage accounts, Log Analytics aur on-premises HSMs is ke liye use nahi hote."
+ },
+ "D3-021": {
+  "q": "Encryption at host Azure Disk Encryption se kaise mukhtalif hai?",
+  "opts": [
+   "Yeh khud VM host par data encrypt karti hai (temp disks, caches, data flows), VM ke andar koi agent ya extension nahi",
+   "Yeh sirf Linux ke liye hai",
+   "Is ke liye BitLocker chahiye",
+   "Yeh sirf unmanaged disks ke sath chalti hai"
+  ],
+  "exp": "Encryption at host VM chalane wale physical host par data encrypt karti hai — temp disks aur OS aur data disk caches samet — storage tak pohanchne se pehle. VM ke andar kuch nahi chalta. Is ke muqable Azure Disk Encryption guest OS ke andar BitLocker ya dm-crypt chalata hai. Encryption at host managed disks ke sath Windows aur Linux dono ke liye chalti hai."
+ },
+ "D3-022": {
+  "q": "Aap VM ko aise size par resize karte hain jo us ke mojooda hardware cluster par available nahi. Kya zaroori hai?",
+  "opts": [
+   "Kuch nahi; live resize hoti hai",
+   "Pehle VM deallocate karein, phir resize",
+   "VM delete karein",
+   "Doosri subscription mein move karein"
+  ],
+  "exp": "Har VM aise hardware cluster par chalti hai jo kuch sizes support karta hai. Agar naya size mojooda cluster par nahi to Azure ko VM doosre hardware par le jani parti hai, is liye pehle usay stop (deallocate) karein aur phir resize karein. VM delete karne ya subscription badalne ki zaroorat nahi."
+ },
+ "D3-023": {
+  "q": "Aap ko VM doosre region mein move karni hai. Supported tareeqa?",
+  "opts": [
+   "VM properties mein region badlein",
+   "Azure Resource Mover (ya Site Recovery) se replicate kar ke move karein",
+   "az vm move --region",
+   "Template export kar ke sirf location badlein; disks khud move hoti hain"
+  ],
+  "exp": "VM ka region nahi badal sakta. Azure Resource Mover (ya Azure Site Recovery) VM aur us ke dependent resources ko target region mein replicate karta hai aur phir move mukammal karta hai. Koi region setting ya move command nahi, aur template export karne se disks copy nahi hoti."
+ },
+ "D3-024": {
+  "q": "VM ko doosre resource group ya subscription mein move karne ke bare mein kaun si baat sahi hai?",
+  "opts": [
+   "Pehle VM delete karni hogi",
+   "Supported hai; dependent resources sath move hone chahiye aur resource IDs badal jate hain",
+   "Sirf stopped VMs, support ticket se",
+   "Is se VM ka region badal jata hai"
+  ],
+  "exp": "Aap VM ko delete kiye baghair doosre resource group ya subscription mein move kar sakte hain, lekin us ke dependent resources (disks, NIC, public IP aur kabhi VNet) bhi sath move hone chahiye. Resource ID badal jati hai kyun ke us mein resource group ka naam hota hai. Region wahi rehta hai."
+ },
+ "D3-025": {
+  "q": "Azure Virtual Machine Scale Sets asal mein kis liye use hote hain?",
+  "opts": [
+   "VMs ka backup",
+   "Demand ke hisaab se VMs ka set deploy aur khud scale karna",
+   "VMs encrypt karna",
+   "VMs monitor karna"
+  ],
+  "exp": "Virtual machine scale set ek hi configuration se bani VMs ka group deploy aur manage karta hai, aur demand ke hisaab se instances khud add ya remove karta hai (autoscale). Yeh backup, encryption ya monitoring service nahi, halan ke in sab ke sath kaam karta hai."
+ },
+ "D3-026": {
+  "q": "Autoscale rule kehta hai: agar average CPU 10 minute tak 75% se zyada ho to 2 instances add karo; maximum 10. Abhi 9 instances hain, aur CPU 15 minute se 80% hai. Kya hota hai?",
+  "opts": [
+   "2 instances add hote hain (kul 11)",
+   "1 instance add hota hai; 10 ka maximum maana jata hai",
+   "Kuch nahi",
+   "Autoscale khud disable ho jata hai"
+  ],
+  "exp": "Autoscale kabhi maximum instance count se upar nahi jata. Rule 2 add karne ko kehta hai, lekin 9 chal rahe hain aur maximum 10 hai, is liye sirf 1 instance add ho sakta hai aur scale set 10 par khatam hota hai. Yeh ruk ya disable nahi hota."
+ },
+ "D3-027": {
+  "q": "Kaun sa scale set orchestration mode manually banai gayi VMs ko alag VM types ke scale-set instances ke sath milane deta hai?",
+  "opts": [
+   "Uniform",
+   "Flexible",
+   "Classic",
+   "Hybrid"
+  ],
+  "exp": "Flexible orchestration scale set mein alag sizes ki VMs aur aap ki alag se banai gayi standard VMs rakhne deta hai, aur unhein fault domains mein phailata hai. Uniform orchestration ek model se bane ek jaise instances use karta hai. Classic aur Hybrid orchestration modes nahi."
+ },
+ "D3-028": {
+  "q": "Kaun si CLI command Linux VM banati hai aur SSH keys khud generate karti hai?",
+  "opts": [
+   "az vm create -g RG1 -n VM1 --image Ubuntu2204 --generate-ssh-keys",
+   "az vm new -n VM1 --os linux",
+   "az compute vm create VM1",
+   "New-AzVM -Linux"
+  ],
+  "exp": "az vm create VM banati hai. --image Ubuntu2204 Linux chunta hai, aur --generate-ssh-keys agar ~/.ssh mein koi na ho to SSH key pair banata hai aur public key VM par rakhta hai. New-AzVM PowerShell hai aur us mein -Linux switch nahi, aur baqi commands mojood nahi."
+ },
+ "D3-029": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Standard SKU public IP apni VM deallocate aur dobara start hone par wahi address rakhta hai",
+   "VM banne ke baad dobara banaye baghair availability zone mein add ho sakti hai",
+   "Spot VMs tab evict ho sakti hain jab Azure ko capacity wapas chahiye",
+   "Availability set mein VM resize karne ke liye set ki TAMAM VMs deallocate karni par sakti hain"
+  ],
+  "exp": "Standard public IPs hamesha static hote hain, is liye address deallocation ke baad bhi rehta hai (Basic SKU dynamic IPs September 2025 mein retire ho gaye). Zone placement banate waqt set hoti hai; Spot VMs evict ho sakti hain; availability set mein naye hardware par resize karne ke liye set ki tamam VMs stop karni par sakti hain."
+ },
+ "D3-030": {
+  "q": "Key encryption key (KEK) ke sath ADE se VM ki disks encrypt karne ke steps tarteeb mein lagayen:",
+  "items": [
+   "Vault aur KEK ko reference karte hue Set-AzVMDiskEncryptionExtension chalayen",
+   "enabled-for-disk-encryption ke sath key vault banayen",
+   "Vault mein KEK banayen",
+   "Target VM banayen ya pehchanein"
+  ],
+  "exp": "Pehle 'enabled for disk encryption' ke sath key vault banayen, kyun ke encryption extension secrets wahan rakhta hai. Phir us vault mein key encryption key (KEK) banayen. Target VM tayyar hone par vault aur KEK ki taraf point karte hue Set-AzVMDiskEncryptionExtension chalayen taa ke BitLocker ya dm-crypt on ho."
+ },
+ "D3-031": {
+  "q": "Azure Container Registry ki kaun si SKU geo-replication support karti hai?",
+  "opts": [
+   "Basic",
+   "Standard",
+   "Premium",
+   "Tamam SKUs"
+  ],
+  "exp": "Geo-replication, jo registry ki copy ek naam ke peeche kai regions mein rakhti hai, Azure Container Registry ki sirf Premium SKU mein available hai. Premium private endpoints aur zyada throughput bhi deti hai. Basic aur Standard single-region hain."
+ },
+ "D3-032": {
+  "q": "Kaun si command cloud mein image build karti hai (local Docker ke baghair) aur ek hi step mein registry mein push karti hai?",
+  "opts": [
+   "docker push",
+   "az acr build --registry myacr --image app:v1 .",
+   "az acr import",
+   "az container create"
+  ],
+  "exp": "az acr build aap ka source code aur Dockerfile Azure Container Registry ko bhejti hai, jo cloud mein image build karta hai (ACR Task) aur registry mein push karta hai, is liye local Docker install karne ki zaroorat nahi. docker push ko locally bani image chahiye, az acr import mojooda image copy karti hai, aur az container create container chalati hai."
+ },
+ "D3-033": {
+  "q": "Ek app ko credentials store kiye baghair ACR se images pull karni hain. Best practice:",
+  "opts": [
+   "Admin account enable kar ke password code mein rakhein",
+   "Registry par AcrPull role wali managed identity use karein",
+   "Har cheez ke liye anonymous pull allow karein",
+   "SSH keys"
+  ],
+  "exp": "App ko managed identity dein aur usay registry par AcrPull role assign karein. Phir app Microsoft Entra ID se authenticate karti hai, is liye kahin password store nahi hota, aur woh pull kar sakti hai lekin push nahi. Admin account ek shared password hai, aur anonymous pull images ko public bana deta hai."
+ },
+ "D3-034": {
+  "q": "Azure Container Instances kis cheez ke liye behtareen hai?",
+  "opts": [
+   "Lambe chalne wale orchestrated microservice fleets",
+   "Tez, serverless, per-second bill hone wale single containers ya chhote container groups",
+   "Tamam VMs ki jagah lena",
+   "Hyper-V chalana"
+  ],
+  "exp": "Azure Container Instances VMs ya orchestrator manage kiye baghair seconds mein container (ya containers ka chhota group) chalata hai, aur chalne ke dauran per second bill karta hai. Yeh chhote tasks, batch jobs aur saadi apps ke liye munasib hai. Scaling aur service discovery wale microservices ke bare fleets ko Container Apps ya AKS chahiye."
+ },
+ "D3-035": {
+  "q": "ACI container group mein containers:",
+  "opts": [
+   "Alag hosts par chalte hain",
+   "Host, lifecycle aur local network (localhost) share karte hain, aur volumes share kar sakte hain",
+   "Baat nahi kar sakte",
+   "Alag OS types use karne hote hain"
+  ],
+  "exp": "Ek ACI container group ke containers ek hi host par schedule hote hain aur lifecycle, network (woh localhost par ek doosre tak pohanchte hain aur ek IP share karte hain) aur optionally storage volumes share karte hain — Kubernetes ke pod ki tarah. Woh baat kar sakte hain, aur ek group mein operating systems milana supported nahi."
+ },
+ "D3-036": {
+  "q": "Kaun si restart policy ACI container ko batch job ki tarah ek baar chalati hai?",
+  "opts": [
+   "Always",
+   "OnFailure ya Never",
+   "Continuous",
+   "Scheduled"
+  ],
+  "exp": "Never restart policy ke sath ACI container ek baar chalata hai aur khatam hone par usay stopped chhor deta hai; OnFailure ke sath sirf fail hone par restart karta hai. Dono batch jobs ke liye munasib hain, aur khatam hone ke baad paise lagna band ho jate hain. Always container ko baar baar restart karta hai, jo lambe chalne wali services ke liye hai."
+ },
+ "D3-037": {
+  "q": "Azure Container Apps mein kaun si salahiyat hai jo ACI mein nahi?",
+  "opts": [
+   "Linux containers chalana",
+   "KEDA ke sath built-in autoscaling (zero tak samet), revisions aur traffic splitting",
+   "Public IP addresses",
+   "Environment variables"
+  ],
+  "exp": "Azure Container Apps woh features deta hai jo ACI mein nahi: HTTP traffic, queues aur events par KEDA rules se chalne wali automatic scaling (zero tak samet); revisions; aur revisions ke darmiyan traffic split karna. Dono services Linux containers chala sakti hain, public IPs use kar sakti hain aur environment variables set kar sakti hain."
+ },
+ "D3-038": {
+  "q": "Event-driven container app ko queue khali hone par zero instances chalane chahiye aur messages aane par scale out hona chahiye. Kya configure karein?",
+  "opts": [
+   "Minimum replicas = 0 ke sath KEDA queue-based scale rule",
+   "Cron wali VM",
+   "Always-on = true",
+   "Manual scaling"
+  ],
+  "exp": "Minimum replica count 0 set karein aur queue length par based KEDA scale rule add karein (maslan Azure Storage Queue ya Service Bus rule). Queue khali ho to app koi replica nahi chalati aur koi cost nahi; messages aane par Container Apps replicas add karta hai. Always-on ya manual scaling instances chalte rakhegi."
+ },
+ "D3-039": {
+  "q": "Aap ko sab se kam management ke sath ek chhote task ke liye Windows container chalana hai. Kya chunenge?",
+  "opts": [
+   "AKS cluster",
+   "Azure Container Instances",
+   "App Service Free tier",
+   "VMSS"
+  ],
+  "exp": "Azure Container Instances baghair kisi cluster ya VM ko manage kiye zaroorat par Windows container chala sakta hai, aur task khatam hone tak per second paise lagte hain. AKS aur VMSS ko kahin zyada setup aur management chahiye, aur App Service Free tier is tarah containers chalane ke liye nahi."
+ },
+ "D3-040": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Tamam ACR SKUs Docker/OCI images store karti hain",
+   "Multi-container ACI group sirf Linux ke liye hai",
+   "Container Apps Kubernetes par chalta hai lekin Kubernetes API expose nahi karta",
+   "ACI containers Azure file shares ko volumes ke taur par mount kar sakte hain"
+  ],
+  "exp": "Charon sahi hain. Har ACR SKU Docker aur OCI images store karti hai (SKUs throughput aur features mein mukhtalif hain). ACI mein multi-container groups sirf Linux ke liye supported hain. Container Apps Microsoft ke manage kiye Kubernetes par chalta hai, is liye aap kabhi khud Kubernetes API use nahi karte. ACI persistent data ke liye Azure file share ko volume ke taur par mount kar sakta hai."
+ },
+ "D3-041": {
+  "q": "App Service plan kya tay karta hai?",
+  "opts": [
+   "Sirf app ka naam",
+   "Plan ki tamam apps ke liye region, instance size aur available features",
+   "DNS zone",
+   "Sirf storage pricing"
+  ],
+  "exp": "App Service plan woh compute define karta hai jis par aap ki apps chalti hain: region, operating system, pricing tier (kaun se features available hain) aur instance size aur tadaad. Plan ki har app yeh instances share karti hai. App ka naam, DNS zone aur storage pricing kahin aur set hote hain."
+ },
+ "D3-042": {
+  "q": "Deployment slots aur scheduled backups support karne wala sab se neecha tier kaun sa hai?",
+  "opts": [
+   "Free (F1)",
+   "Basic (B1)",
+   "Standard (S1)",
+   "Shared (D1)"
+  ],
+  "exp": "Deployment slots Standard (5 slots) se shuru hote hain, is liye dono wala sab se neecha tier Standard hai. Akele backups Basic se available hain: automatic hourly backups plus storage account mein custom scheduled backups (Basic sirf production slot ka backup le sakta hai)."
+ },
+ "D3-043": {
+  "q": "App Service plan ko scale up aur scale out karne mein kya farq hai?",
+  "opts": [
+   "Up = zyada instances; Out = bare instances",
+   "Up = zyada taqatwar tier ya size; Out = usi size ke zyada instances",
+   "Dono ka matlab ek hai",
+   "Out sirf VMs ke liye hai"
+  ],
+  "exp": "Scale up ka matlab bare instance size ya ooncha pricing tier lena hai (zyada CPU, memory ya features). Scale out ka matlab usi size ke zyada instances add karna hai taa ke load un mein bat jaye. Dono App Service plans par apply hote hain."
+ },
+ "D3-044": {
+  "q": "App Service ke rule-based autoscale ke liye kam az kam kaun sa tier chahiye?",
+  "opts": [
+   "Free",
+   "Basic",
+   "Standard",
+   "Sirf Isolated"
+  ],
+  "exp": "Rule-based autoscale (maslan CPU 70% se upar ho to instance add karo) Standard tier se available hai. Basic sirf manually scale out karta hai, aur Free aur Shared bilkul scale out nahi kar sakte. Isolated bhi autoscale support karta hai, lekin woh minimum nahi."
+ },
+ "D3-045": {
+  "q": "Dobara deploy karne ke bajaye staging slot ko production mein swap karne ka asal faida kya hai?",
+  "opts": [
+   "Sasta compute",
+   "Pehle se warm instances ke sath taqreeban zero downtime, aur kuch toote to foran wapas swap",
+   "Automatic code review",
+   "Muft SSL"
+  ],
+  "exp": "Jab aap staging slot ko production mein swap karte hain to App Service pehle production instances par naya version warm up karta hai, phir traffic switch karta hai, is liye users ko taqreeban koi downtime nazar nahi aata. Agar kuch ghalat ho to aap foran wapas swap kar sakte hain. Swapping cost kam nahi karti, code review nahi karti ya certificates nahi deti."
+ },
+ "D3-046": {
+  "q": "Swap ke dauran kaun si settings app content ke sath jane ke bajaye apne slot mein rehti hain?",
+  "opts": [
+   "Tamam settings hamesha swap hoti hain",
+   "Deployment slot settings ke taur par mark ki gayi app settings aur connection strings",
+   "Sirf TLS certificates",
+   "Code rehta hai; settings hamesha swap hoti hain"
+  ],
+  "exp": "'Deployment slot setting' mark ki gayi app settings aur connection strings sticky hoti hain: swap par apne slot mein rehti hain. Isi tarah production apni database connection string rakhta hai jab ke naya code aata hai. Is mark ke baghair settings app ke sath move hoti hain. TLS certificates wahid slot-specific cheez nahi."
+ },
+ "D3-047": {
+  "q": "www.contoso.com ko App Service app se map karne ke liye kaun se DNS records banayenge?",
+  "opts": [
+   "App ke azurewebsites.net hostname ka CNAME, sath mein TXT asuid verification record",
+   "MX record",
+   "SRV record",
+   "NS delegation"
+  ],
+  "exp": "www jaise subdomain ke liye CNAME record banayen jo app ke default host name (<app>.azurewebsites.net) ki taraf point kare, sath mein asuid.www naam ka TXT record jis mein app ki domain verification ID ho, jo sabit karti hai ke domain aap ka hai. MX email ke liye, SRV services ke liye aur NS delegation ke liye hai. Apex domains is ke bajaye A record use karte hain."
+ },
+ "D3-048": {
+  "q": "Free App Service managed certificates ke bare mein kaun si baat SAHI hai?",
+  "opts": [
+   "Yeh wildcard domains support karte hain",
+   "Yeh auto-renewal ke sath custom domains cover karte hain, lekin wildcards support nahi karte aur export nahi ho sakte",
+   "Inhein CA se khareedna hota hai",
+   "Yeh Free tier par chalte hain"
+  ],
+  "exp": "Free App Service managed certificates www.contoso.com jaise custom domains mehfooz karte hain aur khud renew hote hain. Yeh wildcard domains (*.contoso.com) support nahi karte, export nahi ho sakte, aur Basic tier ya upar chahiye — Free nahi. Aap inhein certificate authority se nahi khareedte."
+ },
+ "D3-049": {
+  "q": "App Service app ko aap ke VNet ke private IP par database call karna hai. Kaun sa feature?",
+  "opts": [
+   "Access restrictions",
+   "Regional VNet integration (outbound)",
+   "App par private endpoint (inbound)",
+   "Sirf Hybrid connections"
+  ],
+  "exp": "Regional VNet integration App Service app ko virtual network mein outbound access deti hai, is liye woh private IP par database call kar sakti hai. Private endpoint is ka ulat karta hai: VNet ke clients ko app tak private inbound access deta hai. Access restrictions inbound traffic filter karti hain, aur Hybrid Connections relay ke zariye individual hosts tak pohanchte hain."
+ },
+ "D3-050": {
+  "ctx": "Ek production web app 1 instance ke sath plan S1 par chalti hai. Requirements: baghair downtime deploy karna, CPU par 5 instances tak scale karna, sirf office IP se browsing allow karna, raat ko backup lena.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "S1 par deployment slots no-downtime requirement poori karte hain",
+   "S1 CPU-based autoscale 5 instances tak support karta hai",
+   "Office-only access Access restrictions se configure hota hai",
+   "S1 scheduled backups support karta hai"
+  ],
+  "exp": "S1 (Standard) par charon sahi hain. Standard mein deployment slots hain, is liye aap staging par deploy kar ke baghair downtime swap kar sakte hain. Yeh 10 instances tak rule-based autoscale support karta hai, is liye 5 theek hai. Access restrictions inbound traffic ko office IP tak mehdood karti hain. Standard scheduled custom backups bhi support karta hai (Basic se available)."
+ },
+ "D3-201": {
+  "q": "Requirements 1–4 poori karne wala sab se neecha App Service plan tier kaun sa hai?",
+  "opts": [
+   "Free (F1)",
+   "Basic (B1)",
+   "Standard (S1)",
+   "Premium v3 (P1v3)"
+  ],
+  "exp": "Deployment slots, rule-based autoscale (Standard 10 instances tak deta hai), free managed certificates aur VNet integration sab Standard mein available hain. Basic mein slots ya autoscale nahi."
+ },
+ "D3-202": {
+  "q": "Requirement 1 ke liye plan mukammal karein.",
+  "tpl": "Naya version [[0]] mein deploy karein, phir swap karne se pehle [[1]] se 10% users ko us par bhejein.",
+  "exp": "Staging deployment slot naya version production ke sath rakhta hai. 'Testing in production' (traffic routing) users ka kuch percentage staging slot par bhejta hai, aur sabit hone par swap usay baghair downtime production mein le aata hai."
+ },
+ "D3-203": {
+  "q": "Kaun si service requirement 5 behtareen poori karti hai?",
+  "opts": [
+   "Restart policy Always wala Azure Container Instances",
+   "Schedule trigger wala Azure Container Apps job",
+   "CronJob wala AKS cluster",
+   "Task Scheduler se container chalane wali VM"
+  ],
+  "exp": "Cron schedule wala Container Apps job container ko mukammal hone tak chalata hai aur sirf chalne ke dauran bill karta hai, koi infrastructure manage nahi karna parta. Restart policy Always ACI ko chalta rakhegi. AKS aur VMs ko zyada management chahiye."
+ },
+ "D3-204": {
+  "q": "Kaun sa registry option requirement 6 poora karta hai?",
+  "opts": [
+   "Azure Container Registry Basic",
+   "Azure Container Registry Standard",
+   "Geo-replication ke sath Azure Container Registry Premium",
+   "Docker Hub public repository"
+  ],
+  "exp": "Geo-replication Azure Container Registry ka sirf-Premium feature hai. Yeh registry ki images kai regions mein rakhta hai, is liye North Europe ko local replica milti hai. Basic aur Standard replicate nahi kar sakte, aur public Docker Hub repository images ko private nahi rakhegi."
+ },
+ "D3-205": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Free App Service managed certificate www.adatum.com ko mehfooz kar sakta hai",
+   "Free managed certificate *.adatum.com ko mehfooz kar sakta hai",
+   "Regional VNet integration app ko SQL Server VM ke private IP tak pohanchne deti hai",
+   "Deployment slot settings mark ki gayi app settings swap ke dauran code ke sath move hoti hain"
+  ],
+  "exp": "Free managed certificate www.adatum.com ko mehfooz kar sakta hai lekin *.adatum.com ko nahi, kyun ke wildcards supported nahi. Regional VNet integration app ko SQL Server VM ke private IP tak pohanchne deti hai. Deployment slot settings mark ki gayi app settings swap ke dauran apne slot mein rehti hain — code ke sath move nahi hoti."
+ },
+ "D3-206": {
+  "q": "Requirement 1 ke liye web tier kaise deploy karna chahiye?",
+  "opts": [
+   "Ek availability set mein chaar VMs",
+   "Availability zones mein phaili chaar VMs, Standard load balancer ke peeche",
+   "Premium SSD disks wali ek bari VM",
+   "Proximity placement group mein chaar VMs"
+  ],
+  "exp": "Do ya zyada VMs availability zones mein phailane se 99.99% SLA milta hai, kyun ke har zone ki alag power, cooling aur networking hai, aur Standard load balancer traffic un mein baant deta hai. Availability set 99.95% deta hai, Premium SSD wali single VM 99.9%, aur proximity placement group latency ke bare mein hai, availability ke nahi."
+ },
+ "D3-207": {
+  "q": "Requirement 2 ke liye key vault ke bare mein kya sahi hona chahiye?",
+  "opts": [
+   "Kisi bhi region mein ho sakta hai",
+   "VMs wale region aur subscription mein ho aur disk encryption ke liye enabled ho",
+   "Customer-managed keys wala storage account ho",
+   "Paired region mein ho"
+  ],
+  "exp": "Azure Disk Encryption Windows ke andar BitLocker use karta hai. Key vault VM wale region aur subscription mein hona chahiye, disk encryption access policy enabled ke sath."
+ },
+ "D3-208": {
+  "q": "Requirement 3 ke liye aap ko kya use karna chahiye?",
+  "opts": [
+   "Portal mein VM ki location property badlein",
+   "Azure Resource Mover",
+   "--destination-group ke sath az resource move",
+   "Template export kar ke redeploy karein, disks khud copy hoti hain"
+  ],
+  "exp": "Azure Resource Mover VMs aur un ki dependencies (disks, NICs, VNets) ko doosre region mein move karta hai. VM ki location edit nahi ho sakti, az resource move sirf resource group ya subscription badalta hai (region kabhi nahi), aur export kiya template aap ke liye disks copy nahi karta."
+ },
+ "D3-209": {
+  "q": "Requirements 4 aur 5 ke liye plan mukammal karein.",
+  "tpl": "Development VMs ke liye [[0]] use karein, aur web tier ke liye [[1]].",
+  "exp": "Auto-shutdown dev VMs ko schedule par band karta hai, is liye raat ko compute ke paise nahi lagte. CPU-based autoscale rules wala VM scale set CPU zyada hone par instances add karta hai aur kam hone par hata deta hai."
+ },
+ "D3-210": {
+  "q": "Requirement 6 ke liye Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "OS disk ko 256 GB tak barhaya ja sakta hai",
+   "Disk ko baad mein wapas 128 GB tak chhota kiya ja sakta hai",
+   "Resize ke baad operating system ke andar partition extend karna hoga",
+   "Disk resize karne ke liye nayi VM banani hoti hai"
+  ],
+  "exp": "Managed disk bari ki ja sakti hai, maslan 128 GB se 256 GB, lekin kabhi chhoti nahi ho sakti. Resize ke baad nayi jagah use karne ke liye operating system ke andar partition extend karein. VM wahi rehti hai — nayi banane ki zaroorat nahi."
+ },
+ "D3-211": {
+  "q": "Availability zone 1 mein SSH keys ke sath Linux VM banane wali command mukammal karein.",
+  "tpl": "az vm create -g RG1 -n vm1 --image Ubuntu2204 \\\n  --size Standard_B2s --zone [[0]] \\\n  --admin-username azureuser --[[1]]",
+  "exp": "--zone availability zone ka number (1, 2 ya 3) leta hai, region ya availability set ka naam nahi. --generate-ssh-keys agar aap ke paas na ho to SSH key pair banata hai aur public key VM mein add karta hai, jo Linux ke liye mehfooz default hai."
+ },
+ "D3-212": {
+  "q": "Template mukammal karein taa ke storage account ka naam globally unique ho aur account resource group ke region mein ho.",
+  "tpl": "\"resources\": [ {\n  \"type\": \"Microsoft.Storage/storageAccounts\",\n  \"apiVersion\": \"2023-01-01\",\n  \"name\": \"[[0]]\",\n  \"location\": \"[[1]]\",\n  \"sku\": { \"name\": \"Standard_LRS\" },\n  \"kind\": \"StorageV2\"\n} ]",
+  "exp": "uniqueString() unique naam ke liye ek tay-shuda lowercase hash banata hai. Storage names mein capitals ya hyphens nahi ho sakte, aur newGuid() sirf parameter default ke taur par use ho sakta hai. resourceGroup().location group ka region deta hai."
+ },
+ "D3-213": {
+  "q": "Command mukammal karein taa ke RG1 ke woh resources delete hon jo template mein nahi.",
+  "tpl": "az deployment group create -g RG1 --template-file main.bicep --mode [[0]]",
+  "exp": "Complete mode resource group ke woh tamam resources delete karta hai jo template define nahi karta. Incremental mode, jo default hai, resources add ya update karta hai aur kabhi kuch delete nahi karta."
+ },
+ "D3-214": {
+  "q": "Bicep parameter declarations mukammal karein.",
+  "tpl": "@[[0]](['Standard_LRS', 'Standard_GRS'])\nparam skuName string = 'Standard_LRS'\n\n@[[1]]()\nparam adminPassword string",
+  "exp": "@allowed parameter ko aap ki list ki values tak mehdood karta hai, is liye kisi aur value wale deployments fail hote hain. @secure() parameter ko sensitive mark karta hai, is liye us ki value log ya deployment history mein nazar nahi aati."
+ },
+ "D3-215": {
+  "q": "Command ko us sab se sasti SKU se mukammal karein jo baad wali slot command support kare.",
+  "tpl": "az appservice plan create -g RG1 -n plan1 --sku [[0]] --is-linux\naz webapp deployment slot create -g RG1 -n app1 --slot staging",
+  "exp": "Deployment slots Standard tier se shuru hote hain, is liye S1 sab se sasti SKU hai jahan az webapp deployment slot create kamyab hoti hai. Free (F1), Shared (D1) aur Basic (B1) slots support nahi karte, is liye un par doosri command fail hogi."
+ },
+ "D3-216": {
+  "q": "Command mukammal karein taa ke container ek baar chale aur phir ruk jaye (aur billing band ho).",
+  "tpl": "az container create -g RG1 -n job1 \\\n  --image myacr.azurecr.io/batch:1 \\\n  --restart-policy [[0]] --cpu 1 --memory 1.5",
+  "exp": "Never (ya OnFailure) restart policy mukammal hone tak chalne wale task ke liye munasib hai: container ek baar chalta hai, rukta hai, aur bill hona band ho jata hai. Always — jo default hai — har baar khatam hone par container restart karta hai, is liye woh chalta aur bill hota rehta hai."
+ },
+ "D3-217": {
+  "q": "Is autoscale setting ke bare mein statement mukammal karein.",
+  "tpl": "Minimum 2, maximum 10, default 2. 10 instances hain aur CPU 90% par hai. Agli scale-out evaluation ke baad [[0]] instances honge.",
+  "exp": "Autoscale hamesha maximum instance count ka khayal rakhta hai. Scale set pehle se 10 ke maximum par hai, is liye CPU 90% hone par bhi woh mazeed add nahi kar sakta aur 10 par rehta hai. Aage scale karne ke liye maximum barhayen."
+ },
+ "D3-218": {
+  "q": "Statement mukammal karein.",
+  "tpl": "App ki managed identity ko registry se images pull karne dene ke liye usay registry par [[0]] role assign karein.",
+  "exp": "AcrPull identity ko registry se images pull karne deta hai aur kuch nahi, is liye containers chalane ke liye yeh least-privileged role hai. AcrPush push bhi allow karta hai, Reader sirf registry resource dikhata hai, aur Owner poora control deta hai."
+ },
+ "D3-219": {
+  "q": "Custom domain www.adatum.com ke DNS records mukammal karein.",
+  "tpl": "www ke liye adatum-web.azurewebsites.net ki taraf point karta [[0]] record banayen, aur app ki verification ID ke sath [[1]] naam ka TXT record.",
+  "exp": "www jaise subdomain ke liye app ke default hostname (app.azurewebsites.net) ki taraf point karta CNAME record banayen. App Service aap ki domain ownership asuid.www naam ke TXT record se check karta hai jis mein verification ID hoti hai."
+ },
+ "D3-220": {
+  "q": "Availability sets ke bare mein statement mukammal karein.",
+  "tpl": "Availability set [[0]] tak fault domains aur [[1]] tak update domains support karta hai.",
+  "exp": "Availability set 3 tak fault domains (zyada tar regions mein; kuch mein 2) aur 20 tak update domains support karta hai. Fault domains VMs ko racks mein phailate hain, aur update domains maintenance groups mein."
+ },
+ "D3-221": {
+  "q": "Har zaroorat ko Azure service se match karein.",
+  "items": [
+   "Private container images store karna",
+   "Chhote task ke liye ek container jaldi chalana",
+   "Kubernetes ka poora control",
+   "Zero tak scale hone wale microservices"
+  ],
+  "targets": [
+   "Azure Container Instances",
+   "Azure Container Apps",
+   "Azure Kubernetes Service",
+   "Azure Container Registry",
+   "App Service"
+  ],
+  "exp": "Azure Container Registry private container images store karta hai. Azure Container Instances servers manage kiye baghair ek container jaldi chalata hai. Azure Kubernetes Service Kubernetes ka poora control deta hai. Azure Container Apps zero tak scale hone wale microservices chalata hai."
+ },
+ "D3-222": {
+  "q": "Har workload ko sab se munasib disk type se match karein.",
+  "items": [
+   "Sab se kam cost par dev/test",
+   "Bohat zyada IOPS aur adjustable throughput wala production SQL",
+   "SSD reliability wale aam production workloads",
+   "Kam use hone wala web server"
+  ],
+  "targets": [
+   "Standard HDD",
+   "Standard SSD",
+   "Premium SSD",
+   "Ultra Disk"
+  ],
+  "exp": "Standard HDD sab se sasta hai, dev/test ke liye theek. Ultra Disk sab se zyada IOPS deta hai aur baghair downtime performance adjust karne deta hai, mushkil SQL ke liye. Premium SSD zyada tar production workloads ke liye munasib hai. Standard SSD kam use hone wale servers, jaise chhota web server, ke liye theek hai."
+ },
+ "D3-223": {
+  "q": "Har description ko deployment feature se match karein.",
+  "items": [
+   "Default mode; kabhi resources delete nahi karta",
+   "Mojooda resources se template banana",
+   "Deploy karne se pehle changes ka preview",
+   "Template mein missing resources delete karna"
+  ],
+  "targets": [
+   "What-if",
+   "Complete mode",
+   "Incremental mode",
+   "Export template"
+  ],
+  "exp": "Incremental default mode hai aur kabhi resources delete nahi karta. Export template mojooda resources se template banata hai. What-if un changes ka preview deta hai jo deployment karega. Complete mode woh resources delete karta hai jo template mein nahi."
+ },
+ "D3-224": {
+  "q": "Har deployment ko us ke VM SLA se match karein.",
+  "items": [
+   "Availability zones mein do ya zyada VMs",
+   "Tamam Premium SSD disks wali single VM",
+   "Availability set mein do ya zyada VMs"
+  ],
+  "targets": [
+   "99.9%",
+   "99.95%",
+   "99.99%"
+  ],
+  "exp": "Aap ki VMs jitni zyada khudmukhtar hon, SLA utna ooncha. Availability zones (alag datacenters) mein phaili VMs ko 99.99% milta hai. Availability set (ek datacenter ke alag racks) mein VMs ko 99.95%. Tamam Premium SSD ya Ultra disks wali single VM ko 99.9%."
+ },
+ "D3-225": {
+  "q": "Har salahiyat ko us sab se neeche App Service tier se match karein jo usay deta ho.",
+  "items": [
+   "Deployment slots aur autoscale",
+   "Muft development aur testing",
+   "TLS ke sath custom domain, sirf manual scaling",
+   "Aap ke apne VNet mein isolated environment (App Service Environment)"
+  ],
+  "targets": [
+   "Free",
+   "Basic",
+   "Standard",
+   "Isolated"
+  ],
+  "exp": "Free development aur testing ke liye hai. Basic TLS ke sath custom domains add karta hai lekin sirf manual scaling. Standard deployment slots aur autoscale add karta hai. Isolated aap ke apne VNet ke andar App Service Environment mein chalta hai."
+ },
+ "D3-226": {
+  "q": "Har description ko encryption option se match karein.",
+  "items": [
+   "Managed disks ki hamesha on rehne wali platform encryption",
+   "Guest OS ke andar BitLocker ya dm-crypt",
+   "Hypervisor-level encryption jo temp disks bhi cover kare, baghair agent ke"
+  ],
+  "targets": [
+   "Azure Disk Encryption",
+   "Encryption at host",
+   "Server-side encryption (SSE)",
+   "Transparent Data Encryption"
+  ],
+  "exp": "Server-side encryption (SSE) Azure storage mein managed disks ko hamesha encrypt karti hai. Azure Disk Encryption guest OS ke andar BitLocker ya dm-crypt se encrypt karti hai. Encryption at host hypervisor par encrypt karti hai, temp disks aur caches bhi cover karti hai, VM mein koi agent nahi."
+ },
+ "D3-227": {
+  "q": "Har maqsad ko Bicep keyword se match karein.",
+  "items": [
+   "Deployment se value wapas karna",
+   "Input declare karna",
+   "Doosri Bicep file dobara use karna",
+   "Pehle se deployed resource ko reference karna"
+  ],
+  "targets": [
+   "param",
+   "existing",
+   "module",
+   "output",
+   "var"
+  ],
+  "exp": "output deployment se value wapas karta hai, param input declare karta hai, module doosri Bicep file deploy karta hai, aur existing pehle se deployed resource ko dobara deploy kiye baghair reference karta hai."
+ },
+ "D3-228": {
+  "q": "Har zaroorat ko VM operation se match karein.",
+  "items": [
+   "RDP ke baghair VM ke andar script chalana",
+   "Bhoola hua local administrator password reset karna",
+   "Disks rakhte hue VM ko naye host par le jana",
+   "Failed state mein phansi VM ko us ki configuration dobara apply kar ke theek karna"
+  ],
+  "targets": [
+   "Redeploy",
+   "Reapply",
+   "Run Command",
+   "Reset password"
+  ],
+  "exp": "Run Command VM agent ke zariye scripts chalata hai; Reset password VMAccess extension use karta hai; Redeploy VM ko naye node par le jata hai; Reapply aakhri configuration dobara chalata hai."
+ },
+ "D3-229": {
+  "q": "Is template mein dependsOn element kya karta hai?",
+  "opts": [
+   "Yeh yaqeeni banata hai ke network interface VM se pehle deploy ho",
+   "VM delete hone par network interface delete karta hai",
+   "VM aur NIC ko parallel mein deploy karta hai",
+   "VM ko NIC wale resource group mein rakhta hai"
+  ],
+  "exp": "dependsOn Resource Manager ko deploy karne ki tarteeb batata hai: VM us network interface ke banne tak intezar karti hai jise woh reference karti hai. Is ke baghair ARM NIC banne se pehle VM banane ki koshish kar sakta hai. Yeh deletion ya resource group placement control nahi karta, aur dependencies wale resources parallel mein deploy nahi hote."
+ },
+ "D3-230": {
+  "q": "Bicep file dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Default mein yeh teen storage accounts deploy karti hai",
+   "count=5 dene par paanch storage accounts deploy hote hain",
+   "Accounts hamesha West Europe mein bante hain",
+   "Tamam accounts ka naam ek hi hota hai"
+  ],
+  "exp": "Loop count tak har value ke liye ek baar chalta hai, jo default mein 3 hai, is liye teen accounts deploy hote hain — ya count=5 dene par paanch. Location resource group se aati hai, fixed West Europe nahi. Naam mein ${i} har account ko alag naam deta hai."
+ },
+ "D3-231": {
+  "q": "What-if run yeh output dikhata hai. vm-old kyun delete hogi?",
+  "opts": [
+   "Template vm-old ko delete hone ke liye set karta hai",
+   "Deployment Complete mode use karta hai, aur vm-old template mein define nahi",
+   "What-if hamesha stopped VMs delete karta hai",
+   "Resource group par CanNotDelete lock hai"
+  ],
+  "exp": "Sirf Complete mode woh resources delete karta hai jo resource group mein hain lekin template mein nahi, aur vm-old template mein nahi. Template resources ko delete hone ke liye 'set' nahi karta, what-if kabhi kuch delete nahi karta, aur CanNotDelete lock deletion ki wajah banne ke bajaye usay fail kar deta."
+ },
+ "D3-232": {
+  "q": "Yeh file default parameter values ke sath deploy hoti hai. Kya diagnostic setting banti hai?",
+  "opts": [
+   "Haan, hamesha",
+   "Nahi, kyun ke deployDiag ka default false hai",
+   "Sirf agar resource group mein pehle se diagnostics hon",
+   "Condition ki wajah se deployment fail hota hai"
+  ],
+  "exp": "if (condition) ke sath likha Bicep resource sirf tab deploy hota hai jab condition true ho. Parameter deployDiag ka default false hai, is liye default values ke sath diagnostic setting skip hoti hai aur deployment phir bhi kamyab hota hai. Banane ke liye deployDiag=true dein."
+ },
+ "D3-233": {
+  "q": "Yeh staging slot ki app settings hain. Aap staging ko production mein swap karte hain. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Swap ke baad production ko FEATURE_X=on milta hai",
+   "Production ka DB_CONN staging database ki value ban jata hai",
+   "DB_CONN staging slot mein rehta hai",
+   "Production instances baghair warm-up ke cold requests serve karte hain"
+  ],
+  "exp": "Aam app settings code ke sath jati hain, is liye swap ke baad production ko FEATURE_X=on milta hai. DB_CONN deployment slot setting (slotSetting: true) hai, is liye staging slot mein rehta hai aur production apna database rakhta hai. Swaps switch karne se pehle instances warm up karte hain, is liye requests cold serve nahi hoti."
+ },
+ "D3-234": {
+  "q": "Is container group ke bare mein kaun si baat sahi hai?",
+  "opts": [
+   "Dono containers alag hosts par chalte hain",
+   "Logger container web container tak localhost:80 par pohanch sakta hai",
+   "Har container ko apna public IP milta hai",
+   "Group Windows containers bhi chala sakta hai"
+  ],
+  "exp": "Group ke containers host, lifecycle aur network namespace share karte hain, is liye localhost par baat karte hain. Group ka ek IP hota hai. Multi-container groups sirf Linux ke liye hain."
+ },
+ "D3-235": {
+  "q": "Scale set mein 5 instances hain aur average CPU 15 minute se 85% hai. Yeh rule chalne ke baad kitne instances honge?",
+  "opts": [
+   "5",
+   "6",
+   "7",
+   "2"
+  ],
+  "exp": "Rule 2 instances add karta (5 → 7), lekin autoscale count ko maximum, jo 6 hai, par rok deta hai. Is liye scale set 6 instances par khatam hota hai. Yeh kabhi maximum se upar ya minimum se neeche nahi jata."
+ },
+ "D3-236": {
+  "q": "Chalti VM resize karte waqt aap ko yeh error milta hai. Aap ko kya karna chahiye?",
+  "opts": [
+   "Cluster mein size add karwane ke liye support ticket kholein",
+   "VM stop (deallocate) karein, phir resize karein",
+   "VM ko doosre resource group mein move karein",
+   "VM delete kar ke usi naam se dobara banayen"
+  ],
+  "exp": "Agar chahiye wala size chalti VM ke hardware cluster par available nahi to pehle VM stop (deallocate) karein. Phir Azure usay aise hardware par start kar sakta hai jo naya size support kare. Support ticket, move ya dobara banane ki zaroorat nahi."
+ },
+ "D3-237": {
+  "q": "Is template ka output kya return karta hai?",
+  "opts": [
+   "Web app ki resource ID",
+   "Web app ka default host name, maslan app1.azurewebsites.net",
+   "App Service plan ka naam",
+   "Publishing password"
+  ],
+  "exp": "reference() deploy hui web app ki runtime properties deta hai, aur defaultHostName us ka azurewebsites.net host name hai, maslan app1.azurewebsites.net. Resource ID resourceId() se aati, aur publishing password aisi property nahi jo aap output kar sakein."
+ },
+ "D3-238": {
+  "q": "Registry dekhein. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "SKU badle baghair North Europe mein geo-replica add ki ja sakti hai",
+   "Images push karne ke liye shared user name aur password use ho sakta hai",
+   "az acr build se cloud mein images build ho sakti hain",
+   "SKU badle baghair private endpoint add ho sakta hai"
+  ],
+  "exp": "Registry Premium nahi, is liye geo-replication aur private endpoints ke liye SKU badalna hoga. Admin user enabled hai, jo shared user name aur password deta hai jis se images push ho sakti hain. az acr build kisi bhi SKU par Azure mein images build karti hai."
+ },
+ "D3-239": {
+  "q": "app2 ko rule-based autoscale chahiye. Kya badalna hoga?",
+  "opts": [
+   "app2 ke liye Always On enable karein",
+   "app2 chalane wala plan Standard ya upar hona chahiye, maslan plan1 ko S1 tak scale up karein ya app2 ko S1 plan par move karein",
+   "plan1 mein doosra worker add karein",
+   "app2 ke liye deployment slot banayen"
+  ],
+  "exp": "Rule-based autoscale ko Standard tier ya upar ka App Service plan chahiye. Ya to plan1 ko S1 tak scale up karein (jo app1 par bhi asar dalega, kyun ke dono plan share karti hain) ya app2 ko S1 plan par move karein. Always On, extra worker ya slot autoscale enable nahi karte."
+ },
+ "D3-240": {
+  "q": "Yeh Bicep code kya karta hai?",
+  "opts": [
+   "network.bicep ko nested deployment ke taur par deploy karta hai aur module ki di hui subnet ID output karta hai",
+   "network.bicep ke resources deploy kiye baghair import karta hai",
+   "Network pehle se ho to delete karta hai",
+   "network.bicep ko alag subscription mein chalata hai"
+  ],
+  "exp": "Module doosri Bicep file (network.bicep) ko aap ke diye parameters ke sath nested deployment ke taur par deploy karta hai. Us ke outputs, jaise subnet ID, parent file mein use ho sakte hain. Yeh sirf resources import nahi karta, kuch delete nahi karta, aur jab tak aap scope set na karein subscription nahi badalta."
+ },
+ "D3-051": {
+  "q": "ARM templates kis file format mein likhe jate hain?",
+  "opts": [
+   "JSON",
+   "YAML",
+   "XML",
+   "HCL"
+  ],
+  "exp": "ARM templates JSON mein likhe jate hain, $schema, parameters, variables, resources aur outputs ke sath. Bicep alag zaban hai jo isi JSON mein compile hoti hai. YAML, XML aur HCL (Terraform wala) ARM template formats nahi."
+ },
+ "D3-052": {
+  "q": "Kaun sa template function us resource group ki location deta hai jis par deploy ho raha hai?",
+  "opts": [
+   "resourceGroup().location",
+   "subscription().location",
+   "deployment().location",
+   "location()"
+  ],
+  "exp": "resourceGroup().location us resource group ka region deta hai jis par aap deploy kar rahe hain. Yeh aam tor par location parameter ki default value ke taur par use hota hai, taa ke resources apne resource group wale region mein banen. subscription() ki koi location nahi, aur deployment() aur location() yeh nahi dete."
+ },
+ "D3-053": {
+  "q": "Kaun sa template function resource group ID se globally unique storage account naam banata hai?",
+  "opts": [
+   "uniqueString(resourceGroup().id)",
+   "guid()",
+   "random()",
+   "newName()"
+  ],
+  "exp": "uniqueString(resourceGroup().id) resource group ID par based 13-character hash deta hai. Yeh ek hi resource group ke liye har baar same hota hai lekin alag resource groups mein alag, jis se naam unique aur dobara banne ke qabil rehte hain. Isay prefix ke sath milayen, jaise concat('st', uniqueString(...)). guid() aur random() munasib nahi, aur newName() mojood nahi."
+ },
+ "D3-054": {
+  "q": "VM resource sirf us ke NIC banne ke baad deploy hona chahiye. ARM JSON mein kaun si property yeh yaqeeni banati hai?",
+  "opts": [
+   "dependsOn",
+   "condition",
+   "copy",
+   "apiVersion"
+  ],
+  "exp": "dependsOn un resources ki list hai jo pehle deploy hone chahiye. VM ke dependsOn mein NIC ki resource ID add karne se Resource Manager VM se pehle NIC banata hai. condition tay karta hai ke deploy karna hai ya nahi, copy kai instances banata hai, aur apiVersion API version chunta hai."
+ },
+ "D3-055": {
+  "q": "Aap ko ek resource definition se 5 ek jaise storage accounts deploy karne hain. Kaun sa ARM element?",
+  "opts": [
+   "copy loop (copy: { name, count: 5 })",
+   "dependsOn",
+   "outputs",
+   "condition"
+  ],
+  "exp": "copy element resource definition ko dohrata hai: copy: { name: 'storageLoop', count: 5 } paanch instances deploy karta hai, aur copyIndex() har ek ko alag naam deta hai. dependsOn tarteeb set karta hai, outputs values wapas karte hain, aur condition resource deploy ya skip karta hai."
+ },
+ "D3-056": {
+  "q": "Ek parameter sirf 'Standard_LRS' ya 'Standard_GRS' accept kare. Kaun si parameter property yeh enforce karti hai?",
+  "opts": [
+   "allowedValues",
+   "defaultValue",
+   "metadata",
+   "minLength"
+  ],
+  "exp": "allowedValues woh wahid values list karta hai jo parameter accept karta hai. Kisi aur value se deployment fail hota hai. defaultValue koi value na di jaye to value set karta hai, metadata description add karta hai, aur minLength string ki lambai check karta hai."
+ },
+ "D3-057": {
+  "q": "Parameter file mein password plain text mein rakhe baghair template deployment ko admin password kaise dena chahiye?",
+  "opts": [
+   "Parameter file se Key Vault secret reference karein",
+   "Variables mein hard-code karein",
+   "Outputs use karein",
+   "Tags mein rakhein"
+  ],
+  "exp": "Parameter file password rakhne ke bajaye Key Vault secret ko (vault ki resource ID aur secret ke naam se) reference kar sakti hai. Deployment par Resource Manager vault se secret parhta hai, is liye password kabhi plain text mein nazar nahi aata. Hard-code karna, output karna ya tags mein rakhna usay zahir kar deta hai."
+ },
+ "D3-058": {
+  "q": "Key Vault secret reference karne wala deployment access error ke sath fail hota hai. Vault ki kaun si setting shayad missing hai?",
+  "opts": [
+   "Azure Resource Manager for template deployment (enabledForTemplateDeployment)",
+   "Soft delete",
+   "Purge protection",
+   "Private endpoint"
+  ],
+  "exp": "Template ko deployment ke dauran secret parhne ke liye key vault par 'Azure Resource Manager for template deployment' (enabledForTemplateDeployment) enabled hona chahiye, aur deploy karne wale ke paas vault par permission honi chahiye. Soft delete, purge protection aur private endpoints yeh control nahi karte."
+ },
+ "D3-059": {
+  "q": "Parameter file (azuredeploy.parameters.json) ka maqsad kya hai?",
+  "opts": [
+   "Template edit kiye baghair us ko environment ke hisaab se values dena",
+   "Resources define karna",
+   "Deployment logs store karna",
+   "Template ki jagah lena"
+  ],
+  "exp": "Parameter file template ke parameters ki values rakhti hai, is liye ek hi template alag parameter files de kar dev, test aur prod par deploy ho sakta hai, template edit kiye baghair. Yeh resources define nahi karti, logs store nahi karti, aur template ki jagah nahi le sakti."
+ },
+ "D3-060": {
+  "q": "Kaun si CLI command subscription scope par template deploy karti hai (maslan resource groups banane ke liye)?",
+  "opts": [
+   "az deployment sub create --location westeurope --template-file main.json",
+   "az deployment group create",
+   "az group create --template",
+   "az deployment tenant create"
+  ],
+  "exp": "az deployment sub create subscription scope par template deploy karti hai — maslan resource groups banane ya policies assign karne ke liye. Is ko --location chahiye kyun ke deployment ka metadata kisi region mein store hota hai. az deployment group create mojooda resource group ko target karti hai, aur az deployment tenant create tenant root ko."
+ },
+ "D3-061": {
+  "q": "Aap wahi template ek jaise parameters ke sath Incremental mode mein dobara deploy karte hain. Mojooda resources ka kya hota hai?",
+  "opts": [
+   "Waise hi rehte hain ya template ke mutabiq update hote hain (idempotent)",
+   "Delete ho kar dobara bante hain",
+   "Resources mojood hone ki wajah se deployment fail hota hai",
+   "Duplicates bante hain"
+  ],
+  "exp": "ARM deployments idempotent hain. Wahi template wahi parameters ke sath dobara deploy karne se match karne wale resources waise hi rehte hain, jo settings mukhtalif hon woh update hoti hain, aur kuch extra nahi banta. Resources delete ho kar dobara nahi bante, deployment fail nahi hota, aur duplicates nahi bante."
+ },
+ "D3-062": {
+  "q": "Portal mein resource group ke pichle deployments aur un ke templates kahan dekh sakte hain?",
+  "opts": [
+   "Resource group → Deployments",
+   "Sirf Activity log",
+   "Azure Advisor",
+   "Policy"
+  ],
+  "exp": "Resource group → Deployments us resource group ke har deployment ki list deta hai, us ke status, inputs, outputs aur use hue template ke sath, jise aap download ya dobara deploy kar sakte hain. Activity log individual operations dikhata hai lekin poora template nahi."
+ },
+ "D3-063": {
+  "q": "Ek resource sirf tab deploy hona chahiye jab parameter deployDiagnostics true ho. Kaun si ARM property?",
+  "opts": [
+   "\"condition\": \"[parameters('deployDiagnostics')]\"",
+   "dependsOn",
+   "copy",
+   "outputs"
+  ],
+  "exp": "condition property resource ko sirf tab deploy karti hai jab us ki value true ho, maslan \"condition\": \"[parameters('deployDiagnostics')]\". False hone par resource skip hota hai aur baqi deployment jari rehta hai. dependsOn, copy aur outputs yeh nahi karte."
+ },
+ "D3-064": {
+  "q": "Template mein ek output deployment ke baad public IP address return karta hai. Kaun sa section?",
+  "opts": [
+   "outputs",
+   "variables",
+   "parameters",
+   "functions"
+  ],
+  "exp": "outputs section deployment ke baad values return karta hai, maslan reference(...).ipAddress ke zariye public IP address. Variables andar ki values hain, parameters inputs hain, aur functions user-defined functions define karte hain."
+ },
+ "D3-065": {
+  "q": "ARM template mein har resource definition mein kaun si property honi zaroori hai?",
+  "opts": [
+   "type, apiVersion aur name",
+   "dependsOn",
+   "tags",
+   "copy"
+  ],
+  "exp": "ARM template ke har resource ko type (jaise Microsoft.Storage/storageAccounts), apiVersion aur name chahiye. Zyada tar resource types ko location bhi chahiye. dependsOn, tags aur copy optional hain."
+ },
+ "D3-066": {
+  "q": "Aap ek shared networking template ko main template ke andar dobara use karna chahte hain. Kaun si technique?",
+  "opts": [
+   "Linked ya nested templates (Microsoft.Resources/deployments)",
+   "JSON har template mein copy karein",
+   "Tags use karein",
+   "Azure Policy use karein"
+  ],
+  "exp": "Microsoft.Resources/deployments resource main template ke andar doosra template deploy karta hai: nested (inline) ya linked (URI ya template spec se referenced). Is se networking template alag aur dobara use ke qabil rehta hai. JSON copy karne se duplicate code banta hai, aur tags ya Azure Policy templates shamil nahi kar sakte."
+ },
+ "D3-067": {
+  "q": "ARM ko deployment ke dauran linked template file tak pohanchne ke liye usay kahan store karna chahiye?",
+  "opts": [
+   "Resource Manager ke liye accessible URI (maslan SAS token wala storage account) ya template spec use karein",
+   "Sirf aap ki local disk par",
+   "Entra ID mein",
+   "Log Analytics workspace mein"
+  ],
+  "exp": "Linked template deployment ke dauran Resource Manager ki pohanch mein hona chahiye, is liye usay URI chahiye jaise SAS token wala storage account URL. Ya usay template spec ke taur par store karein, ya template spec ya Bicep module ke sath relativePath use karein. Aap ki apni disk ki files tak ARM nahi pohanch sakta."
+ },
+ "D3-068": {
+  "q": "Kaun sa feature versioned ARM template ko Azure resource ke taur par store karta hai taa ke teams usay RBAC control ke sath deploy kar sakein?",
+  "opts": [
+   "Template specs",
+   "Sirf Blueprints",
+   "Export template",
+   "Policy initiatives"
+  ],
+  "exp": "Template spec ARM template (ya compiled Bicep) ko version numbers ke sath Azure resource ke taur par store karta hai. Aap Azure RBAC se control karte hain ke kaun usay deploy kar sakta hai, jis se approved templates teams mein share karna aasan hota hai. Export template sirf template banata hai, aur policy initiatives policies group karte hain."
+ },
+ "D3-069": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Template mein default values wale parameters ho sakte hain",
+   "Variables parameters ko reference kar sakte hain",
+   "Outputs secureString values ko history mein mehfooz tareeqe se return kar sakte hain",
+   "$schema property template language ka version batati hai"
+  ],
+  "exp": "Parameters ki default values ho sakti hain, aur variables parameters ko reference kar sakte hain. Secrets output na karein, kyun ke outputs deployment history mein plain text mein store hote hain. $schema property Azure ko batati hai ke file template language ka kaun sa version use karti hai."
+ },
+ "D3-070": {
+  "q": "Production par updated template mehfooz tareeqe se deploy karne ke steps tarteeb mein lagayen:",
+  "items": [
+   "az deployment group create chalayen",
+   "What-if operation chala kar changes review karein",
+   "Template aur parameter file edit karein",
+   "Template validate karein (az deployment group validate)"
+  ],
+  "exp": "Pehle template aur parameter file edit karein. Errors pakarne ke liye unhein validate karein (az deployment group validate). What-if chala kar bilkul dekhein ke kya badlega. Sirf phir az deployment group create se deploy karein. Deploy se pehle validation aur what-if production tak pohanchne se pehle ghaltiyan pakar lete hain."
+ },
+ "D3-071": {
+  "q": "Bicep mein kaun sa keyword input parameter declare karta hai?",
+  "opts": [
+   "param",
+   "input",
+   "var",
+   "arg"
+  ],
+  "exp": "param Bicep mein input parameter declare karta hai, maslan param location string = resourceGroup().location. var variable declare karta hai, resource resource declare karta hai, aur output value wapas karta hai. input aur arg Bicep keywords nahi."
+ },
+ "D3-072": {
+  "q": "Kaun sa decorator Bicep parameter ko values ki list tak mehdood karta hai?",
+  "opts": [
+   "@allowed([ 'Standard_LRS', 'Standard_GRS' ])",
+   "@values",
+   "@enum",
+   "@restrict"
+  ],
+  "exp": "@allowed decorator woh values list karta hai jo parameter le sakta hai, maslan @allowed(['Standard_LRS', 'Standard_GRS']); koi aur value validation mein fail hoti hai. @values, @enum aur @restrict Bicep decorators nahi."
+ },
+ "D3-073": {
+  "q": "Bicep parameter ko kaise mark karein taa ke us ki value log na ho?",
+  "opts": [
+   "@secure()",
+   "@hidden()",
+   "@password",
+   "@encrypt"
+  ],
+  "exp": "String ya object parameter par @secure() usay secure value banata hai: yeh deployment history mein log nahi hota aur outputs mein return nahi hota. Passwords aur keys ke liye isay use karein. Baqi decorators mojood nahi."
+ },
+ "D3-074": {
+  "q": "Kaun si command Bicep file ko resource group par deploy karti hai?",
+  "opts": [
+   "az deployment group create -g RG1 --template-file main.bicep",
+   "az bicep deploy main.bicep",
+   "az group create --bicep main.bicep",
+   "bicep run main.bicep"
+  ],
+  "exp": "az deployment group create --template-file main.bicep Bicep file seedha deploy karti hai; CLI usay Resource Manager ko bhejne se pehle khud ARM JSON mein compile karti hai. az bicep aur bicep commands build aur decompile karti hain lekin deploy nahi karti."
+ },
+ "D3-075": {
+  "q": "Bicep mein resources ke darmiyan dependencies aam tor par kaise handle hoti hain?",
+  "opts": [
+   "Khud ba khud, jab ek resource doosre ka symbolic naam ya properties reference kare",
+   "Hamesha manually dependsOn se",
+   "copy element se",
+   "Supported nahi"
+  ],
+  "exp": "Bicep mein jab ek resource doosre ka symbolic naam ya properties use kare (maslan nic.id), Bicep dependency khud add kar deta hai. Aap dependsOn sirf un dependencies ke liye likhte hain jo khud samajh na aayen. copy ARM JSON syntax hai."
+ },
+ "D3-076": {
+  "q": "Kaun sa Bicep syntax loop mein 3 storage accounts banata hai?",
+  "opts": [
+   "resource st 'Microsoft.Storage/storageAccounts@2023-01-01' = [for i in range(0, 3): {...}]",
+   "copy: { count: 3 }",
+   "foreach (i in 3) { resource ... }",
+   "resource[3] st = {...}"
+  ],
+  "exp": "Bicep loops [for item in collection: {...}] use karte hain. range(0, 3) 0, 1 aur 2 deta hai, is liye yeh teen storage accounts deploy karta hai, aur aap har naam unique banane ke liye i use karte hain. copy: { count: 3 } ARM JSON syntax hai, aur baqi forms valid Bicep nahi."
+ },
+ "D3-077": {
+  "q": "Bicep mein resource conditionally kaise deploy karte hain?",
+  "opts": [
+   "resource x '...' = if (deployIt) { ... }",
+   "condition: true",
+   "@if decorator",
+   "when keyword"
+  ],
+  "exp": "Bicep mein aap resource declaration mein = ke baad if (condition) lagate hain, maslan resource diag '...' = if (deployIt) { ... }. Resource sirf condition true hone par deploy hota hai. condition: ARM JSON hai, aur @if aur when mojood nahi."
+ },
+ "D3-078": {
+  "q": "Kaun sa keyword doosri Bicep file ko dobara use hone wale component ke taur par reference karta hai?",
+  "opts": [
+   "module",
+   "import",
+   "include",
+   "template"
+  ],
+  "exp": "module doosri Bicep file ko aap ke deployment ke hisse ke taur par deploy karta hai: aap usay parameters dete hain aur us ke outputs parh sakte hain. Isi tarah Bicep ko dobara use hone wale building blocks mein baanta jata hai. import, include aur template is ka keyword nahi."
+ },
+ "D3-079": {
+  "q": "Bicep mein MOJOODA storage account ki properties parhne ke liye usay (deploy kiye baghair) kaise reference karte hain?",
+  "opts": [
+   "resource stg 'Microsoft.Storage/storageAccounts@2023-01-01' existing = { name: 'st1' }",
+   "reference('st1')",
+   "import stg",
+   "module stg existing"
+  ],
+  "exp": "existing keyword add karne se (resource stg '...' existing = { name: 'st1' }) pehle se deployed resource reference hota hai, is liye aap stg.properties.primaryEndpoints jaisi properties usay deploy ya badle baghair parh sakte hain. reference() ARM JSON hai, aur import aur module yeh nahi karte."
+ },
+ "D3-080": {
+  "q": "Aap ne resource group ko ARM JSON template ke taur par export kiya. Is ka Bicep version kaise milega?",
+  "opts": [
+   "Export kiye JSON par az bicep decompile chalayen",
+   "Naam badal kar .bicep kar dein",
+   "Mumkin nahi",
+   "az bicep build use karein"
+  ],
+  "exp": "az bicep decompile ARM JSON template, jaise Export template wala, ko .bicep file mein badal deti hai. Baad mein isay review karein, kyun ke export kiye templates mein aksar hard-coded values hoti hain. File ka naam badalne se us ka syntax nahi badalta, aur az bicep build Bicep ko JSON mein badalti hai, ulta nahi."
+ },
+ "D3-081": {
+  "q": "JSON parameter files ka naya Bicep-native alternative kya hai?",
+  "opts": [
+   ".bicepparam files",
+   "parameters.yaml",
+   ".tfvars",
+   ".env"
+  ],
+  "exp": ".bicepparam file Bicep-native parameter file hai. Yeh using 'main.bicep' se shuru hoti hai aur param name = value se values set karti hai, is liye tooling template ke khilaf types check karti hai. JSON parameter files ab bhi chalti hain. YAML, .tfvars (Terraform) aur .env Bicep parameter files nahi."
+ },
+ "D3-082": {
+  "q": "Bicep ke bare mein Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Bicep ko Terraform ki tarah state files chahiye",
+   "Bicep ARM jaise resource types aur API versions support karta hai",
+   "Bicep deployments ke sath what-if use ho sakta hai",
+   "Bicep output ARM ki tarah deployment history mein nazar aata hai"
+  ],
+  "exp": "Bicep ko Terraform ki tarah state file nahi chahiye — Azure khud mojooda halat rakhta hai. Yeh pehle din se har woh resource type aur API version support karta hai jo ARM karta hai. What-if Bicep ke sath chalta hai, aur us ke outputs ARM ki tarah deployment history mein nazar aate hain."
+ },
+ "D3-083": {
+  "q": "VM ki vCPU count aur memory kya tay karta hai?",
+  "opts": [
+   "VM size",
+   "Disk type",
+   "Image",
+   "Region"
+  ],
+  "exp": "VM size (maslan Standard_D4s_v5) vCPUs ki tadaad, memory ki miqdaar, temp storage, kitni data disks aur NICs attach ho sakti hain, aur network bandwidth set karta hai. Disk type storage performance set karta hai, image operating system, aur region CPU ya memory nahi badalta."
+ },
+ "D3-084": {
+  "q": "Kaun si VM size family bare databases jaise memory-intensive workloads ke liye optimized hai?",
+  "opts": [
+   "E-series / M-series",
+   "F-series",
+   "B-series",
+   "N-series"
+  ],
+  "exp": "E-series aur M-series VMs mein CPU ke muqable memory ka tanasub zyada hai, jo databases aur in-memory analytics ke liye munasib hai (M-series sab se zyada memory deti hai). F-series compute-optimised hai, B-series halke workloads ke liye burstable, aur N-series mein GPUs hain."
+ },
+ "D3-085": {
+  "q": "Kam traffic wale dev web server mein kabhi kabhi CPU spikes aate hain. Kaun si size family sab se sasti aur munasib hai?",
+  "opts": [
+   "B-series (burstable)",
+   "M-series",
+   "N-series",
+   "H-series"
+  ],
+  "exp": "B-series (burstable) VMs kam baseline cost par chalti hain aur idle hone par CPU credits jama karti hain, jo chhote spikes par kharch hote hain. Yeh kam traffic wale dev servers ke liye sasta hai. M-series bari aur memory-heavy hai, N-series mein GPUs hain, aur H-series high-performance computing ke liye — sab yahan bohat mehngi hain."
+ },
+ "D3-086": {
+  "q": "Ek VM ko machine learning training ke liye GPU chahiye. Kaun si family?",
+  "opts": [
+   "N-series",
+   "D-series",
+   "A-series",
+   "B-series"
+  ],
+  "exp": "N-series VMs mein machine learning training, rendering aur visualisation ke liye NVIDIA ya AMD GPUs hote hain. D-series general-purpose hai, A-series entry-level, aur B-series burstable; in mein se kisi mein GPU nahi."
+ },
+ "D3-087": {
+  "q": "VMs ko pehle boot par khud IIS install karne wala startup script chalana hai. Kaun se features yeh kar sakte hain?",
+  "opts": [
+   "Custom Script Extension ya cloud-init/custom data",
+   "Boot diagnostics",
+   "Azure Advisor",
+   "Sirf Serial console"
+  ],
+  "exp": "Custom Script Extension VM deploy hone ke baad Windows ya Linux par script chalata hai — maslan IIS install karne ke liye. Linux par custom data ke zariye cloud-init pehle boot par VM configure kar sakta hai. Boot diagnostics, Advisor aur serial console setup automate nahi karte."
+ },
+ "D3-088": {
+  "q": "Kaun sa PowerShell cmdlet VM banata hai?",
+  "opts": [
+   "New-AzVM",
+   "New-AzVirtualMachine",
+   "Create-AzVM",
+   "Add-AzVM"
+  ],
+  "exp": "New-AzVM Azure PowerShell mein virtual machine banata hai, ya to saade parameter set (naam, image, credentials) se ya poore VM configuration object se. Baqi cmdlet naam mojood nahi."
+ },
+ "D3-089": {
+  "q": "Aap ko customized Windows image se bohat si VMs banani hain aur image ko versioning ke sath subscriptions mein share karna hai. Kaun si service?",
+  "opts": [
+   "Azure Compute Gallery",
+   "Sirf storage account VHDs",
+   "Export template",
+   "Azure Marketplace private offer"
+  ],
+  "exp": "Azure Compute Gallery image definitions ko numbered versions ke sath store karti hai, unhein aap ke chune regions mein replicate karti hai, aur RBAC ke zariye doosri subscriptions ya tenants ke sath share ho sakti hai. Ek customised image se bohat si VMs banane ke liye behtareen hai. Storage account mein khule VHDs mein versioning ya sharing nahi, aur template OS image capture nahi karta."
+ },
+ "D3-090": {
+  "q": "Dobara use hone wali generalized Windows image capture karne se pehle VM ke andar kya chalana zaroori hai?",
+  "opts": [
+   "Sysprep (generalize)",
+   "chkdsk",
+   "ipconfig /release",
+   "gpupdate"
+  ],
+  "exp": "Generalized Windows image capture karne se pehle generalize option ke sath Sysprep chalayen taa ke computer SID jaisi machine-specific details hat jayen. Phir image se bani har VM ko apni identity milti hai. Linux par waagent -deprovision use karein. chkdsk, ipconfig aur gpupdate images tayyar nahi karte."
+ },
+ "D3-091": {
+  "q": "Kaun sa disk type sab se sasta hai aur dev/test ya kam access ke liye munasib hai?",
+  "opts": [
+   "Standard HDD",
+   "Premium SSD",
+   "Ultra Disk",
+   "Premium SSD v2"
+  ],
+  "exp": "Standard HDD sab se sasta managed disk type hai aur dev/test, backups aur kam use hone wale data ke liye munasib hai, jahan kam performance se farq nahi parta. Premium SSD, Premium SSD v2 aur Ultra Disk mehnge hain aur un production workloads ke liye hain jinhein tez, mustaqil IOPS chahiye."
+ },
+ "D3-092": {
+  "q": "VM deallocate hone par temporary disk (Windows par D:) ke data ka kya hota hai?",
+  "opts": [
+   "Kho sakta hai",
+   "Mehfooz rehta hai",
+   "Khud backup hota hai",
+   "OS disk par move hota hai"
+  ],
+  "exp": "Temporary disk (Windows par D:, bohat si Linux images par /dev/sdb) physical host ki local storage hai. Jab VM deallocate, redeploy ya doosre host par move hoti hai, woh data kho sakta hai. Isay sirf page file jaise scratch data ke liye use karein, aur ahem cheezein managed data disks par rakhein."
+ },
+ "D3-093": {
+  "q": "Kaun si CLI command VM1 se nayi 128 GB data disk attach karti hai?",
+  "opts": [
+   "az vm disk attach -g RG1 --vm-name VM1 --name data1 --new --size-gb 128",
+   "az disk add VM1 128",
+   "az vm update --add-disk 128",
+   "az storage disk attach"
+  ],
+  "exp": "az vm disk attach VM se data disk attach karti hai; --new aur --size-gb 128 ke sath ek hi step mein nayi 128 GB managed disk bana kar attach karti hai. Baqi commands mojood nahi. Attach karne ke baad OS ke andar disk initialise aur format karein."
+ },
+ "D3-094": {
+  "q": "Kya managed disk ko 256 GB se 128 GB tak chhota kar sakte hain?",
+  "opts": [
+   "Nahi — managed disks sirf bari ki ja sakti hain",
+   "Haan, live",
+   "Haan, deallocation ke baad",
+   "Sirf HDD ke liye"
+  ],
+  "exp": "Managed disks sirf barh sakti hain, kabhi chhoti nahi. Chhoti disk use karne ke liye nayi disk banayen, VM ke andar data copy karein, aur usay badal dein. Yeh har disk type par apply hota hai, VM chal rahi ho ya nahi."
+ },
+ "D3-095": {
+  "q": "Azure mein data disk barhane ke baad aur kya karna hoga?",
+  "opts": [
+   "Guest OS ke andar partition/volume extend karein",
+   "Kuch nahi",
+   "OS dobara install karein",
+   "VM dobara banayen"
+  ],
+  "exp": "Azure mein disk barhane se sirf virtual disk bari hoti hai. Operating system purana partition size hi dekhta hai jab tak aap partition aur file system extend na karein — maslan Windows par Disk Management ya diskpart se, ya Linux par growpart aur resize2fs se. Kuch dobara install ya dobara banane ki zaroorat nahi."
+ },
+ "D3-096": {
+  "q": "Failover cluster ki do VMs ko ek hi waqt mein wahi managed disk attach karni hai. Kaun sa feature?",
+  "opts": [
+   "Shared disks (maxShares > 1)",
+   "Disk snapshots",
+   "Sirf Ultra disk, sharing nahi",
+   "Azure Files"
+  ],
+  "exp": "Shared disks woh managed disks hain jin ka maxShares 1 se zyada set ho, is liye kai VMs ek hi waqt mein wahi disk attach kar sakti hain. Windows Server Failover Clustering jaisi clustered applications inhein use karti hain, SCSI reservations se tay karti hain ke kaun likhe. Snapshots copies hain, aur Azure Files block disk ke bajaye network share hai."
+ },
+ "D3-097": {
+  "q": "Patching se pehle aap ko VM ki OS disk ki point-in-time copy chahiye. Sab se tez option kya hai?",
+  "opts": [
+   "Disk snapshot banayen",
+   "Template export karein",
+   "Sysprep se image capture karein",
+   "AzCopy use karein"
+  ],
+  "exp": "Disk snapshot managed disk ki poori, read-only point-in-time copy hai jo shuru hone mein seconds leti hai. Agar patching ghalat ho jaye to snapshot se nayi disk bana kar badal dein. Sysprep se image capture karna VM ko generalise karta (aur badal deta) hai, aur template export karne se disk ka content copy nahi hota."
+ },
+ "D3-098": {
+  "q": "SQL Server log disks ke liye kaun si disk caching setting recommended hai?",
+  "opts": [
+   "None",
+   "ReadOnly",
+   "ReadWrite",
+   "Sirf Write-through"
+  ],
+  "exp": "SQL Server log files tarteeb se likhi jati hain aur foran disk par mehfooz honi chahiye, is liye log disks par caching None honi chahiye. Data disks aam tor par reads tez karne ke liye ReadOnly caching use karti hain, aur OS disk ReadWrite. Log disk par ReadWrite host fail hone par data khone ka khatra hai."
+ },
+ "D3-099": {
+  "q": "Kaun sa feature VM ki OS disk ko tez, stateless reimaging ke liye local host ke cache ya temp disk par rakhne deta hai?",
+  "opts": [
+   "Ephemeral OS disks",
+   "Ultra disks",
+   "Shared disks",
+   "Snapshots"
+  ],
+  "exp": "Ephemeral OS disks host ke local cache ya temp disk par rakhi jati hain, is liye muft aur bohat tez hain, aur reimaging jaldi hoti hai. Badle mein reimage par data kho jata hai, aur VM stop aur deallocate nahi ho sakti. Ultra disks aur shared disks remote managed disks hain, aur snapshots backups hain."
+ },
+ "D3-100": {
+  "q": "Managed disks ke bare mein Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Managed disks hamesha SSE se at rest encrypted hoti hain",
+   "Disk ko Standard SSD se Premium SSD mein badla ja sakta hai",
+   "Disk type changes har haal mein VM chalte hue ho sakti hain",
+   "Snapshot se nayi managed disk banai ja sakti hai"
+  ],
+  "exp": "Managed disks hamesha server-side encryption se at rest encrypted hoti hain. Aap disk ko Standard SSD se Premium SSD mein badal sakte hain, lekin zyada tar cases mein pehle VM deallocate karni hoti hai. Snapshot se nayi managed disk banai ja sakti hai."
+ },
+ "D3-101": {
+  "q": "Availability zone kya hai?",
+  "opts": [
+   "Region ke andar physically alag datacenter location, apni khudmukhtar power, cooling aur networking ke sath",
+   "Paired region",
+   "Datacenter ke andar rack",
+   "Resource group"
+  ],
+  "exp": "Availability zone ek Azure region ke andar physically alag jagah hai — ek ya zyada datacenters apni khudmukhtar power, cooling aur networking ke sath. VMs ko zones mein phailane se woh poore datacenter ke fail hone se bachti hain. Paired region alag region hai, rack fault domain hai, aur resource group sirf management container hai."
+ },
+ "D3-102": {
+  "q": "Kya ek availability set kai availability zones mein phail sakta hai?",
+  "opts": [
+   "Nahi — availability sets aur zones alag options hain; har VM ke liye ek chunein",
+   "Haan",
+   "Sirf Premium SSD ke sath",
+   "Sirf Linux ke liye"
+  ],
+  "exp": "VM ya to availability set (ek datacenter ke racks mein phaili) mein rakhi jati hai ya availability zone (alag datacenters) mein, dono mein nahi. Availability set zones mein nahi phailta. Zone-level resilience ke liye VMs alag zones mein deploy karein ya zone-spanning scale set use karein."
+ },
+ "D3-103": {
+  "q": "Planned maintenance ke dauran ek hi update domain ki VMs ka kya hota hai?",
+  "opts": [
+   "Ek sath reboot ho sakti hain",
+   "Kabhi reboot nahi hoti",
+   "Delete ho jati hain",
+   "Doosre region mein move hoti hain"
+  ],
+  "exp": "Planned maintenance ke dauran Azure ek waqt mein ek update domain reboot karta hai, is liye ek update domain ki VMs ek sath reboot ho sakti hain jab ke baqi chalti rehti hain. Woh delete ya doosre region mein move nahi hoti, aur reboot ho sakti hain."
+ },
+ "D3-104": {
+  "q": "Availability set mein 2 fault domains aur 5 update domains hain. Aap 6 VMs deploy karte hain. Sab se bhare update domain mein kitni VMs hain?",
+  "opts": [
+   "2",
+   "1",
+   "3",
+   "6"
+  ],
+  "exp": "Azure VMs ko update domains mein baari baari phailata hai: VMs 1–5 update domains 0–4 mein jati hain, aur VM 6 wapas update domain 0 mein. Is liye ek update domain mein 2 VMs hain aur baqi mein 1."
+ },
+ "D3-105": {
+  "q": "Kaun sa PowerShell cmdlet availability set banata hai?",
+  "opts": [
+   "New-AzAvailabilitySet",
+   "New-AzAvSet",
+   "Add-AzAvailabilitySet",
+   "New-AzVMSet"
+  ],
+  "exp": "New-AzAvailabilitySet availability set banata hai. -PlatformFaultDomainCount aur -PlatformUpdateDomainCount set karein, aur managed disks wali VMs ke liye -Sku Aligned use karein. Baqi cmdlets mojood nahi."
+ },
+ "D3-106": {
+  "q": "Managed disks wali VMs ke liye availability set ko kaun si SKU use karni chahiye?",
+  "opts": [
+   "Aligned",
+   "Classic",
+   "Premium",
+   "Zonal"
+  ],
+  "exp": "Managed disks wali VMs ke availability sets ko Aligned SKU use karni hoti hai, jo disks ke storage fault domains ko VMs ke fault domains se mila deti hai taa ke ek storage failure kai VMs ko band na kare. Classic unmanaged disks ke liye hai, aur Premium aur Zonal availability set SKUs nahi."
+ },
+ "D3-107": {
+  "q": "Three-tier app ko high availability chahiye. Web tier ke liye recommended pattern kya hai?",
+  "opts": [
+   "Web VMs ko zones mein (ya un ke apne availability set mein) load balancer ke peeche rakhein",
+   "Tamam tiers ek availability set mein rakhein",
+   "Ek bari VM",
+   "Ek zone use karein"
+  ],
+  "exp": "Har tier khud highly available hona chahiye: web VMs ko availability zones mein phailayen (ya un ke apne availability set mein rakhein) load balancer ke peeche. Tamam tiers ka ek availability set, ek bari VM ya ek zone, har ek single point of failure chhorta hai."
+ },
+ "D3-108": {
+  "q": "Kaun sa feature sab se kam network latency ke liye VMs ko ek hi datacenter mein pas pas rakhta hai?",
+  "opts": [
+   "Proximity placement groups",
+   "Availability zones",
+   "Availability sets",
+   "Dedicated hosts"
+  ],
+  "exp": "Proximity placement group VMs ko physically pas pas (ek hi datacenter mein) rakhta hai taa ke un ke darmiyan sab se kam network latency ho, maslan tightly coupled apps ke liye. Availability zones aur sets ulta karte hain: resilience ke liye VMs ko door phailate hain. Dedicated hosts hardware isolation dete hain, kam latency nahi."
+ },
+ "D3-109": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Availability set mein do VMs ko 99.95% SLA milta hai",
+   "Availability zones har Azure region mein available hain",
+   "Zone 1 aur zone 2 ki VMs alag datacenters mein hain",
+   "Availability set mein alag sizes ki VMs ho sakti hain"
+  ],
+  "exp": "Availability set mein do ya zyada VMs ko 99.95% SLA milta hai. Har region mein availability zones nahi. Zones alag datacenters hain, is liye zone 1 aur zone 2 ki VMs physically door hain. Availability set mein alag sizes ki VMs ho sakti hain, jab tak hardware cluster unhein support kare."
+ },
+ "D3-110": {
+  "q": "Kaun si CLI command woh sizes list karti hai jin par VM1 apne mojooda hardware par resize ho sakti hai?",
+  "opts": [
+   "az vm list-vm-resize-options -g RG1 -n VM1",
+   "az vm list-sizes",
+   "az vm show --sizes",
+   "az compute sizes"
+  ],
+  "exp": "az vm list-vm-resize-options sirf woh sizes list karti hai jo VM ke hardware cluster par available hain, is liye aap baghair deallocate kiye resize kar sakte hain. az vm list-sizes region ka har size list karti hai. Baqi commands mojood nahi."
+ },
+ "D3-111": {
+  "q": "Kaun si CLI command VM1 ko Standard_D4s_v5 par resize karti hai?",
+  "opts": [
+   "az vm resize -g RG1 -n VM1 --size Standard_D4s_v5",
+   "az vm update --sku D4s",
+   "az vm scale VM1 D4s",
+   "az vm size set"
+  ],
+  "exp": "az vm resize --size Standard_D4s_v5 VM ka size badalti hai, jis se VM restart hoti hai. Agar naya size mojooda hardware cluster par nahi to pehle VM deallocate karein. Kaun se sizes available hain dekhne ke liye az vm list-vm-resize-options use karein. Baqi commands mojood nahi."
+ },
+ "D3-112": {
+  "q": "Kya chalti VM resize karne se restart hota hai?",
+  "opts": [
+   "Haan, resize VM restart karta hai",
+   "Nahi, hamesha live hota hai",
+   "Sirf Linux ke liye",
+   "Sirf 24 ghante baad"
+  ],
+  "exp": "Resize karne se chalti VM hamesha restart hoti hai, kyun ke usay host se alag resources chahiye. Agar naya size mojooda hardware cluster par available nahi to VM ko pehle deallocate bhi karna hota hai taa ke woh naye hardware par ja sake. Windows aur Linux dono ke liye yahi hai."
+ },
+ "D3-113": {
+  "q": "OS ke andar se Stop aur portal mein Stop (deallocate) mein kya farq hai?",
+  "opts": [
+   "OS shutdown VM ko allocated rakhta hai aur compute ka bill aata rehta hai; deallocate compute chhor deta hai aur compute billing band hoti hai",
+   "Koi farq nahi",
+   "Deallocate disks delete karta hai",
+   "OS shutdown VM delete karta hai"
+  ],
+  "exp": "Operating system ke andar se shutdown karne se OS rukta hai, lekin VM apne host par allocated rehti hai, is liye compute ke paise lagte rehte hain. Portal ya CLI se stop (deallocate) karne se host chhoot jata hai, jis se compute charges band hote hain, halan ke disks ke paise lagte rehte hain. Koi option disks ya VM delete nahi karta."
+ },
+ "D3-114": {
+  "q": "VM tak RDP se nahi pohancha ja sakta aur aap ko host ke masle ka shak hai. Kaun sa action disks rakhte hue usay naye host par le jata hai?",
+  "opts": [
+   "Redeploy",
+   "Reapply",
+   "Reset password",
+   "Resize"
+  ],
+  "exp": "Redeploy VM ko band karta hai, Azure mein naye host par le jata hai aur dobara start karta hai, disks aur configuration rakhte hue. Neeche ke host se paida hone wale maslon ka yahi hal hai. Temp disk ka data kho jata hai. Reapply sirf usi host par configuration dobara lagata hai, aur password reset ya resize host nahi badalte."
+ },
+ "D3-115": {
+  "q": "Aap Windows VM ka local admin password bhool gaye. Sab se tez hal?",
+  "opts": [
+   "Portal mein 'Reset password' use karein (VMAccess extension)",
+   "VM delete kar ke dobara banayen",
+   "Password bypass karne ke liye Bastion use karein",
+   "Support ticket kholein"
+  ],
+  "exp": "Portal mein 'Reset password' (Help → Reset password) VM agent ke zariye VMAccess extension use karta hai taa ke log in kiye baghair local administrator account ka naya password set ho. VM dobara banana zaroori nahi, Bastion ko phir bhi valid password chahiye, aur support ki zaroorat nahi."
+ },
+ "D3-116": {
+  "q": "Aap ko portal se VM ke andar PowerShell script chalana hai, baghair RDP aur baghair us tak network access ke. Kya use karenge?",
+  "opts": [
+   "Run Command",
+   "Bastion",
+   "Network Watcher",
+   "Sirf Serial console"
+  ],
+  "exp": "Run Command VM agent ke zariye VM ke andar PowerShell ya shell script chalata hai, seedha portal ya CLI se, VM tak RDP, SSH ya network access ke baghair. Bastion ko phir bhi RDP ya SSH chahiye, Network Watcher networking diagnose karta hai, aur serial console script runner ke bajaye text console hai."
+ },
+ "D3-117": {
+  "q": "Ek VM boot nahi hoti aur blue screen dikhati hai. Kaun se features us ka console output aur screenshot dekhne mein madad karte hain?",
+  "opts": [
+   "Boot diagnostics (screenshot aur serial log) aur Serial Console",
+   "Activity log",
+   "Azure Advisor",
+   "IP flow verify"
+  ],
+  "exp": "Boot diagnostics VM ke console ka screenshot aur us ka serial log capture karta hai, is liye aap blue screen ya boot error dekh sakte hain. Serial Console networking toot jane par bhi VM ke console ka interactive access deta hai. Activity log, Advisor aur IP flow verify VM ki screen par kya hai nahi dikhate."
+ },
+ "D3-118": {
+  "q": "Dev subscription ki VMs ko cost bachane ke liye har shaam 7 baje band hona chahiye. Sab se aasan option?",
+  "opts": [
+   "Har VM par Auto-shutdown setting",
+   "Azure Policy Deny",
+   "Resource lock",
+   "Budget"
+  ],
+  "exp": "Har VM mein Auto-shutdown setting hai jo usay rozana ek waqt par stop (deallocate) karti hai, maslan 19:00, aur pehle email bhi kar sakti hai. Dev VMs par cost bachane ka yeh sab se aasan tareeqa hai. Policies, locks aur budgets VMs band nahi karte."
+ },
+ "D3-119": {
+  "q": "Kaun si service Azure VMs ke OS patching assessment aur installation ko bare paimane par automate karti hai?",
+  "opts": [
+   "Azure Update Manager",
+   "Azure Advisor",
+   "Network Watcher",
+   "Sirf Azure Policy"
+  ],
+  "exp": "Azure Update Manager Windows aur Linux machines (Azure mein aur Azure Arc ke zariye doosri jagah) mein missing updates check karta hai, aur unhein zaroorat par ya maintenance configurations kehlane wale schedules par install karta hai. Advisor recommendations deta hai, Network Watcher networks diagnose karta hai, aur akeli Azure Policy patches install nahi karti."
+ },
+ "D3-120": {
+  "q": "Azure VM agent kya karta hai?",
+  "opts": [
+   "VM extensions enable karta hai aur provisioning aur Azure fabric se communication handle karta hai",
+   "Disks encrypt karta hai",
+   "VMs ka backup leta hai",
+   "Antivirus ka kaam karta hai"
+  ],
+  "exp": "Azure VM agent VM ke andar chalta hai aur Azure platform se baat karta hai. Yeh provisioning (maslan admin account set karna) handle karta hai aur Custom Script, VMAccess (password reset), Run Command aur monitoring agents jaise VM extensions chalata hai. Yeh disks encrypt nahi karta, VM ka backup nahi leta ya antivirus nahi."
+ },
+ "D3-121": {
+  "q": "Workloads ko compliance ke liye physical server isolation chahiye (host par koi doosra tenant nahi). Kaun sa option?",
+  "opts": [
+   "Azure Dedicated Host",
+   "Availability set",
+   "Proximity placement group",
+   "Spot VMs"
+  ],
+  "exp": "Azure Dedicated Host aap ko poora physical server deta hai jis par sirf aap ki VMs chalti hain, jo doosre customers ke sath hardware share karne par pabandi wale compliance rules poore karta hai. Availability sets aur proximity placement groups phir bhi shared hosts use karte hain, aur Spot VMs khali shared capacity use karti hain."
+ },
+ "D3-122": {
+  "q": "Batch jobs rukawat bardasht kar sakte hain aur jitne saste ho sakein hone chahiye. Kaun sa VM option?",
+  "opts": [
+   "Spot VMs",
+   "Reserved instances",
+   "Dedicated host",
+   "Premium SSD"
+  ],
+  "exp": "Spot VMs Azure ki khali capacity par bari discount mein chalti hain, lekin jab Azure ko capacity wapas chahiye ho woh unhein evict kar sakta hai. Dobara shuru ho sakne wale batch jobs ke liye yeh theek hai. Reserved instances ko 1 ya 3 saal ka commitment chahiye, dedicated hosts mehnge hain, aur Premium SSD disk type hai."
+ },
+ "D3-123": {
+  "q": "Spot VMs ki kaun si eviction policies ho sakti hain?",
+  "opts": [
+   "Deallocate ya Delete",
+   "Stop ya Restart",
+   "Pause ya Snapshot",
+   "Sirf Hibernate"
+  ],
+  "exp": "Jab Azure Spot VM evict karta hai to aap ki chuni eviction policy ke mutabiq ya to usay deallocate karta hai (disks rakhta hai, taa ke aap baad mein start kar sakein) ya delete karta hai. Stop ya Restart, Pause ya Snapshot aur Hibernate Spot eviction policies nahi."
+ },
+ "D3-124": {
+  "q": "Ek VM ko SR-IOV use kar ke kam network latency aur zyada throughput chahiye. Kaun sa NIC feature?",
+  "opts": [
+   "Accelerated networking",
+   "IP forwarding",
+   "Static IP",
+   "Kai NICs"
+  ],
+  "exp": "Accelerated networking SR-IOV use karta hai taa ke network traffic host ke virtual switch ko bypass kar ke seedha VM aur network card ke darmiyan jaye. Is se supported VM sizes par kam latency, kam jitter aur zyada throughput milta hai. IP forwarding, static IPs aur kai NICs performance behtar nahi karte."
+ },
+ "D3-125": {
+  "q": "Aap mojooda VM mein doosra NIC add karna chahte hain. Kya zaroori hai?",
+  "opts": [
+   "VM deallocate karein, NIC attach karein, aur yaqeeni banayen ke VM size kai NICs support karta hai",
+   "Kuch nahi, live attach karein",
+   "VM dobara banayen",
+   "Load balancer use karein"
+  ],
+  "exp": "Network interfaces sirf VM stopped (deallocated) hone par add ya remove ho sakte hain, aur VM size itne NICs support karta ho. NIC add karein, phir VM start karein. VM dobara banane ya load balancer add karne ki zaroorat nahi."
+ },
+ "D3-126": {
+  "q": "Ek VM firewall appliance ka kaam karti hai aur use woh traffic forward karna hai jo us ke liye nahi. Us ke NIC par kya enable karenge?",
+  "opts": [
+   "IP forwarding",
+   "Accelerated networking",
+   "DNS servers",
+   "Sirf static private IP"
+  ],
+  "exp": "Default mein Azure NIC par aane wala woh traffic drop kar deta hai jo us NIC ke IP ke liye na ho. NIC par IP forwarding enable karne se firewall ya router VM doosre addresses ka traffic le kar aage bhej sakti hai (OS ko bhi forward karne ke liye set karna hota hai). Accelerated networking, DNS aur static IPs yeh nahi badalte."
+ },
+ "D3-127": {
+  "q": "Managed disks ki server-side encryption (SSE) ke bare mein kaun si baat sahi hai?",
+  "opts": [
+   "Yeh default mein platform-managed keys ke sath enabled hai, aur disk encryption set ke zariye customer-managed keys use ho sakti hain",
+   "Har disk par manually enable karni hoti hai",
+   "Is ke liye BitLocker chahiye",
+   "Yeh sirf data disks ke liye hai"
+  ],
+  "exp": "Server-side encryption (SSE) managed disks par hamesha on hoti hai, default mein platform-managed keys ke sath. Apni key use karne ke liye disk encryption set banayen jo Key Vault ki key ki taraf point kare aur usay disks ko assign karein. Yeh OS aur data disks dono cover karti hai, manually enable nahi karni parti, aur BitLocker use nahi karti."
+ },
+ "D3-128": {
+  "q": "Kaun sa resource managed disks ko Key Vault ki customer-managed key se jorta hai?",
+  "opts": [
+   "Disk encryption set",
+   "Recovery Services vault",
+   "Encryption scope",
+   "Sirf Key Vault access policy"
+  ],
+  "exp": "Disk encryption set woh resource hai jo managed disks ko Key Vault ki customer-managed key se jorta hai. Aap isay disks ko assign karte hain, aur yeh key tak pohanchne ke liye managed identity use karta hai. Encryption scopes Blob storage ke liye hain, aur Recovery Services vault backup ke liye."
+ },
+ "D3-129": {
+  "q": "VMs par encryption at host use karne se pehle har subscription mein ek baar kya karna hota hai?",
+  "opts": [
+   "Microsoft.Compute ke liye EncryptionAtHost feature register karein",
+   "Recovery Services vault banayen",
+   "Defender enable karein",
+   "Disk encryption set banayen"
+  ],
+  "exp": "Encryption at host ko pehle subscription ke liye on karna hota hai, Microsoft.Compute provider ke liye EncryptionAtHost feature register kar ke. Us ke baad aap har VM par isay enable kar sakte hain. Disk encryption set sirf tab chahiye jab aap customer-managed keys chahte hon."
+ },
+ "D3-130": {
+  "q": "Azure Disk Encryption ke liye kaun si Key Vault access setting enable honi chahiye?",
+  "opts": [
+   "Azure Disk Encryption for volume encryption (enabledForDiskEncryption)",
+   "Sirf template deployment",
+   "Sirf purge protection",
+   "Public network access disabled"
+  ],
+  "exp": "Azure Disk Encryption ko key vault ki 'Azure Disk Encryption for volume encryption' access setting (enabledForDiskEncryption) on chahiye, taa ke Azure platform BitLocker ya dm-crypt secrets store aur parh sake. Template deployment, purge protection aur network settings alag options hain."
+ },
+ "D3-131": {
+  "q": "Kaun si CLI command VM par Azure Disk Encryption enable karti hai?",
+  "opts": [
+   "az vm encryption enable -g RG1 -n VM1 --disk-encryption-keyvault kv1",
+   "az disk encrypt VM1",
+   "az vm update --encrypt",
+   "az keyvault encrypt-vm"
+  ],
+  "exp": "az vm encryption enable VM ke liye Azure Disk Encryption on karti hai, --disk-encryption-keyvault vault ki taraf point karta hai (aur KEK ke liye optionally --key-encryption-key). Yeh encryption extension install karti hai, jo BitLocker ya dm-crypt chalata hai. Baqi commands mojood nahi."
+ },
+ "D3-132": {
+  "q": "Kaun se DO options VM ki temp disk encrypt karte hain?",
+  "opts": [
+   "Encryption at host",
+   "Azure Disk Encryption (volume type All par set)",
+   "Akeli platform-managed keys wali SSE",
+   "Storage account encryption scopes"
+  ],
+  "exp": "Encryption at host VM ke host par temp disk aur caches encrypt karti hai. Volume type All ke sath Azure Disk Encryption guest OS ke andar temp disk encrypt karti hai. Server-side encryption sirf Azure storage mein rakhi disks cover karti hai, aur encryption scopes blobs ke liye hain."
+ },
+ "D3-133": {
+  "q": "Kaun si CLI command 2 instances wala scale set banati hai?",
+  "opts": [
+   "az vmss create -g RG1 -n vmss1 --image Ubuntu2204 --instance-count 2",
+   "az vm create --count 2",
+   "az vmss new 2",
+   "az group create --vmss"
+  ],
+  "exp": "az vmss create aap ki di hui image aur shuruati instance count, yahan 2, ke sath virtual machine scale set banati hai (yeh network aur default mein load balancer bhi banati hai). az vm create single VMs banati hai, aur baqi commands mojood nahi."
+ },
+ "D3-134": {
+  "q": "Kaun si CLI command scale set ko manually 5 instances par set karti hai?",
+  "opts": [
+   "az vmss scale -g RG1 -n vmss1 --new-capacity 5",
+   "az vmss update --count 5",
+   "az vmss resize 5",
+   "az autoscale set 5"
+  ],
+  "exp": "az vmss scale --new-capacity 5 scale set ko manually 5 instances par set karti hai. Agar autoscale configured hai to woh apni agli evaluation par count dobara badal sakta hai. Baqi commands mojood nahi."
+ },
+ "D3-135": {
+  "q": "Autoscale ka scale-out rule CPU > 70% par aur scale-in rule CPU < 65% par hai. Instances baar baar upar neeche hote hain (flapping). Behtareen hal?",
+  "opts": [
+   "Thresholds ke darmiyan farq barhayen (maslan 30% se neeche scale in) aur cooldown periods use karein",
+   "Maximum hata dein",
+   "Manual schedule use karein",
+   "Minimum 0 kar dein"
+  ],
+  "exp": "Flapping tab hoti hai jab scale out CPU ko scale-in threshold se zara neeche le aata hai, jis se ek instance hatta hai, jo CPU ko wapas scale-out threshold se upar le jata hai, aur yahi chalta rehta hai. Thresholds ke darmiyan bara farq rakhein (maslan 70% se upar out, 30% se neeche in) aur cooldown periods use karein. Maximum hatana ya minimum kam karna isay nahi rokta."
+ },
+ "D3-136": {
+  "q": "Traffic har weekday subah 8 se shaam 6 tak peak par hota hai. VMSS ko pehle se andaze ke mutabiq kaise scale karein?",
+  "opts": [
+   "Schedule-based (recurrence) autoscale profile",
+   "Sirf CPU rules",
+   "Budget",
+   "Har subah manual scaling"
+  ],
+  "exp": "Recurrence schedule wala autoscale profile tay waqton ke liye instance count set karta hai, maslan weekdays par 8:00 se 18:00 zyada instances aur baqi waqt kam. Yeh load aane se pehle scale karta hai. Metric rules sirf CPU barhne ke baad react karte hain, budgets scale nahi karte, aur manual scaling ke liye har subah kisi ko chahiye."
+ },
+ "D3-137": {
+  "q": "Model badalne par scale set ki Rolling upgrade policy kya karti hai?",
+  "opts": [
+   "Instances ko batches mein, optional pauses aur health checks ke sath update karti hai",
+   "Tamam instances ek sath update karti hai",
+   "Kabhi instances update nahi karti",
+   "Scale set delete kar ke dobara banati hai"
+  ],
+  "exp": "Rolling upgrade policy scale set instances ko batches mein, optional pauses aur health checks ke sath update karti hai, is liye app available rehti hai. Automatic tamam instances ek sath update karta hai, aur Manual har instance update karne ke liye aap ka intezar karta hai. Scale set delete nahi hota."
+ },
+ "D3-138": {
+  "q": "Platform images (Uniform) use karne wale scale set ki zyada se zyada instance count kya hai?",
+  "opts": [
+   "1,000",
+   "100",
+   "10",
+   "Unlimited"
+  ],
+  "exp": "Platform images use karne wale Uniform scale set mein 1,000 tak VM instances ho sakte hain (kuch configurations mein custom images zyada mehdood ho sakti hain). Yeh 10, 100 ya unlimited nahi."
+ },
+ "D3-139": {
+  "q": "Kaun sa scale set feature kharab instances khud badal deta hai?",
+  "opts": [
+   "Automatic instance repairs (application health extension ya LB probe ke sath)",
+   "Rolling upgrade",
+   "Overprovisioning",
+   "Spot priority"
+  ],
+  "exp": "Automatic instance repairs har instance ki sehat dekhte hain, Application Health extension ya load balancer health probe se. Jo instances kharab rehte hain woh khud delete ho kar dobara bante hain. Rolling upgrades instances ko batches mein badalte hain, overprovisioning scale-out ke dauran extra VMs banata hai, aur Spot pricing option hai."
+ },
+ "D3-140": {
+  "q": "Kaun si scale set setting instances ko availability zones mein phailati hai?",
+  "opts": [
+   "Banate waqt Zones = 1, 2, 3",
+   "Fault domain count = 5",
+   "Proximity placement",
+   "Overprovisioning"
+  ],
+  "exp": "Scale set banate waqt aap zones 1, 2 aur 3 specify kar sakte hain, aur Azure instances ko un zones mein phailata hai taa ke set zone failure se bach jaye. Zones baad mein scale set mein add nahi ho sakte. Fault domain count instances ko racks mein phailata hai, zones mein nahi."
+ },
+ "D3-141": {
+  "q": "Scale set ke autoscale evaluation logic ko tarteeb mein lagayen:",
+  "items": [
+   "Instance count ka change apply karein, min/max ke andar",
+   "Time window mein metric collect karein",
+   "Jama ki gayi value ka rule threshold se muqabla karein",
+   "Dobara evaluate karne se pehle cooldown ka intezar karein"
+  ],
+  "exp": "Autoscale pehle time window mein metric (maslan average CPU) collect karta hai. Phir us value ka rule ke threshold se muqabla karta hai. Rule fire ho to instance count badalta hai lekin minimum aur maximum ke andar rehta hai. Phir dobara evaluate karne se pehle cooldown ka intezar karta hai taa ke instances sambhal sakein."
+ },
+ "D3-142": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Scale sets Azure Load Balancer ke peeche rakhe ja sakte hain",
+   "Autoscale Application Insights ke custom metrics use kar sakta hai",
+   "Jab scale-out aur scale-in rules dono trigger hon to scale-in ko tarjeeh milti hai",
+   "Autoscale storage queue ke messages ki tadaad par scale kar sakta hai"
+  ],
+  "exp": "Scale sets Azure Load Balancer ke peeche ho sakte hain. Autoscale custom metrics, jaise Application Insights wale, aur storage queue length use kar sakta hai. Jab scale-out aur scale-in rule dono trigger hon to performance bachane ke liye scale-out jeetta hai."
+ },
+ "D3-143": {
+  "q": "Kaun si service dependency analysis ke sath VMs, NSGs, VNets aur load balancers ko ek sath regions ke aar paar move karna support karti hai?",
+  "opts": [
+   "Azure Resource Mover",
+   "Sirf Azure Migrate",
+   "AzCopy",
+   "Export template"
+  ],
+  "exp": "Azure Resource Mover VMs, NICs, NSGs, VNets, public IPs aur load balancers jaise resources ko ek sath doosre region mein move karta hai. Yeh dependencies check karta hai taa ke jure resources group ki surat mein move hon. Azure Migrate zyada tar on-premises workloads ke liye hai, AzCopy data copy karta hai, aur Export template kuch move nahi karta."
+ },
+ "D3-144": {
+  "q": "Aap VM1 ko doosri subscription mein move karte hain. Kaun se dependent resources us ke sath move hone chahiye?",
+  "opts": [
+   "Us ki managed disks aur network interface (aur VNet agar NIC us par depend kare)",
+   "Sirf VM resource",
+   "Sirf OS disk",
+   "Kuch nahi — dependencies khud dobara banti hain"
+  ],
+  "exp": "VM ko us ke dependent resources ke sath move karna hota hai: us ki managed disks aur network interface, aur virtual network agar NIC us par depend kare. Destination subscription usi tenant mein honi chahiye. Dependencies khud dobara nahi banti."
+ },
+ "D3-145": {
+  "q": "VM1 RG1 se RG2 mein move hoti hai. Us ki resource ID ka kya hota hai?",
+  "opts": [
+   "Badal jati hai, is liye purani ID use karne wale scripts update karne honge",
+   "Wahi rehti hai",
+   "GUID ban jati hai",
+   "VM ko naya naam milta hai"
+  ],
+  "exp": "Resource ID mein subscription aur resource group shamil hote hain, maslan /subscriptions/…/resourceGroups/RG1/providers/Microsoft.Compute/virtualMachines/VM1. RG2 mein move hone ke baad ID badal jati hai, is liye purani ID use karne wale scripts, templates ya alerts update karein. VM ka naam aur region wahi rehte hain."
+ },
+ "D3-146": {
+  "q": "Doosre region mein move hone wali VM par Azure Disk Encryption enabled hai. Aap ko kya dhyan rakhna chahiye?",
+  "opts": [
+   "Target region mein Key Vault chahiye aur move ke hisse ke taur par encryption keys aur secrets handle karne honge",
+   "ADE VMs move nahi ho saktin",
+   "Encryption khud hat jati hai",
+   "Kuch khaas nahi"
+  ],
+  "exp": "Azure Disk Encryption use karne wali VM ko apni keys aur secrets VM wale region ke key vault mein chahiye. Doosre region mein move karne ke liye target region mein key vault chahiye aur move ke hisse ke taur par encryption keys aur secrets wahan copy karne honge. Encrypted VMs move ho sakti hain, lekin encryption khud nahi hatti."
+ },
+ "D3-147": {
+  "q": "Windows VM ka koi public IP nahi hona chahiye lekin internet se RDP par mehfooz tareeqe se manage ho sake. Behtareen option?",
+  "opts": [
+   "Azure Bastion",
+   "Port 3389 Any ke liye kholein",
+   "Dynamic address wala public IP add karein",
+   "FTP use karein"
+  ],
+  "exp": "Azure Bastion aap ko Azure portal se TLS (port 443) par VMs mein RDP ya SSH karne deta hai, VMs par public IPs ke baghair aur port 3389 internet ke liye khole baghair. 3389 Any ke liye kholna brute-force attacks ko dawat deta hai, aur public IP VM ko zahir kar deta hai. FTP ka is se taluq nahi."
+ },
+ "D3-148": {
+  "q": "Kaun sa security feature Secure Boot aur vTPM ke sath VMs ko boot-level malware se bachata hai?",
+  "opts": [
+   "Trusted launch",
+   "Encryption at host",
+   "Accelerated networking",
+   "Just-in-time access"
+  ],
+  "exp": "Trusted launch Generation 2 VMs par Secure Boot (sirf signed boot components load ho sakte hain), virtual TPM aur boot integrity monitoring on karta hai, jo unhein rootkits aur boot-level malware se bachata hai. Encryption at host data at rest bachati hai, accelerated networking networking tez karta hai, aur just-in-time access management ports mehdood karta hai."
+ },
+ "D3-149": {
+  "q": "Kaun si VM generation UEFI boot aur bari OS disks support karti hai?",
+  "opts": [
+   "Generation 2",
+   "Generation 1",
+   "Classic",
+   "Dono barabar"
+  ],
+  "exp": "Generation 2 VMs BIOS ke bajaye UEFI se boot hoti hain, 2 TB se bari OS disks support karti hain, aur Trusted launch jaise features ke liye zaroori hain. Generation 1 BIOS use karti hai. Classic purana deployment model hai, VM generation nahi."
+ },
+ "D3-150": {
+  "ctx": "VM1: Standard_D2s_v5, availability set AS1 mein (3 FDs, 5 UDs), Premium SSD OS disk, Standard SKU public IP, usi region ke KV1 ke sath ADE enabled.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "VM1 ki properties edit kar ke usay availability zone 2 mein move kiya ja sakta hai",
+   "VM1 deallocate karne se dobara start hone par us ka public IP address badal jata hai",
+   "VM1 ko alag hardware wale size par resize karne ke liye AS1 ki tamam VMs stop karni par sakti hain",
+   "KV1 VM1 se alag region mein ho sakta hai"
+  ],
+  "exp": "Zone placement ke liye dobara banana hota hai; Standard public IP static hai, is liye deallocation ke baad address rakhta hai; availability set ke andar resize ke liye tamam VMs stop karni par sakti hain; ADE vault usi region mein hona chahiye."
+ },
+ "D3-151": {
+  "q": "Azure Container Registry kis liye use hota hai?",
+  "opts": [
+   "Private container images aur artifacts store aur manage karne ke liye",
+   "Containers chalane ke liye",
+   "Containers ko load balance karne ke liye",
+   "Containers monitor karne ke liye"
+  ],
+  "exp": "Azure Container Registry container images, Helm charts aur doosre OCI artifacts store aur manage karne ki private registry hai, jahan aap deploy karte hain us ke qareeb. Yeh containers nahi chalata — ACI, Container Apps, AKS ya App Service chalate hain — aur unhein load-balance ya monitor nahi karta."
+ },
+ "D3-152": {
+  "q": "Kaun si CLI command Standard container registry banati hai?",
+  "opts": [
+   "az acr create -g RG1 -n myacr --sku Standard",
+   "az container registry new myacr",
+   "az acr new --standard",
+   "az docker registry create"
+  ],
+  "exp": "az acr create -n myacr --sku Standard registry banati hai. --sku Basic, Standard ya Premium ho sakta hai. Registry ka naam globally unique hona chahiye, kyun ke woh myacr.azurecr.io banta hai. Baqi commands mojood nahi."
+ },
+ "D3-153": {
+  "q": "docker se push karne se pehle apni Entra identity se ACR mein authenticate kaise karein?",
+  "opts": [
+   "az acr login --name myacr",
+   "Apne Entra password ke sath docker login",
+   "Sirf az login",
+   "az acr credential show"
+  ],
+  "exp": "az acr login --name myacr aap ke mojooda Azure CLI (Entra) sign-in se registry ka token leti hai aur Docker ko us ke sath configure karti hai, is liye docker push aur docker pull chalte hain. Admin password ki zaroorat nahi. Akela az login Docker configure nahi karta, aur az acr credential show admin credentials zahir karti hai."
+ },
+ "D3-154": {
+  "q": "Registry myacr mein push karne ke liye image ka poora naam format kya hai?",
+  "opts": [
+   "myacr.azurecr.io/app:v1",
+   "myacr/app:v1",
+   "azurecr.io/myacr/app",
+   "docker.io/myacr/app"
+  ],
+  "exp": "Azure Container Registry mein images registry ke login server ke naam par hoti hain: <registry>.azurecr.io/<repository>:<tag>, maslan myacr.azurecr.io/app:v1. Login server ke baghair Docker Docker Hub samajhta hai."
+ },
+ "D3-155": {
+  "q": "Private endpoints (Private Link) ke liye kaun si ACR SKU zaroori hai?",
+  "opts": [
+   "Premium",
+   "Standard",
+   "Basic",
+   "Tamam"
+  ],
+  "exp": "Azure Container Registry ke private endpoints (Private Link) ko Premium SKU chahiye, geo-replication aur doosre advanced network features ki tarah. Basic aur Standard registries tak sirf un ke public endpoint se pohancha ja sakta hai."
+ },
+ "D3-156": {
+  "q": "CI pipeline ko ACR mein images push karni hain. Least-privilege role?",
+  "opts": [
+   "AcrPush",
+   "Owner",
+   "AcrPull",
+   "Contributor"
+  ],
+  "exp": "AcrPush identity ko images push (aur pull bhi) karne deta hai, jo CI pipeline ko bas chahiye. AcrPull sirf pull kar sakta hai, is liye push fail honge. Owner aur Contributor bohat wide hain, kyun ke registry delete ya reconfigure bhi kar sakte hain."
+ },
+ "D3-157": {
+  "q": "Base image update hone par images khud dobara build honi chahiye. Kaun sa feature?",
+  "opts": [
+   "Base image update triggers ke sath ACR Tasks",
+   "Geo-replication",
+   "Sirf webhooks",
+   "Content trust"
+  ],
+  "exp": "ACR Tasks images khud build kar sakte hain jab un ki base image badle (base image update trigger), jab source code commit ho, ya schedule par. Is se images patched rehti hain. Geo-replication registries ko regions mein copy karta hai, webhooks sirf notify karte hain, aur content trust images sign karta hai."
+ },
+ "D3-158": {
+  "q": "Docker Hub se image ko locally pull kiye baghair ACR mein kaise copy karein?",
+  "opts": [
+   "az acr import",
+   "docker pull phir push",
+   "az acr build",
+   "az acr replicate"
+  ],
+  "exp": "az acr import kisi doosri registry, jaise Docker Hub ya doosri ACR, se image ko server side par seedha aap ki registry mein copy karti hai, aap ki machine par pull kiye baghair. az acr build source code se build karti hai, aur az acr replicate mojood nahi."
+ },
+ "D3-159": {
+  "q": "Production ke liye ACR admin account se kyun mana kiya jata hai?",
+  "opts": [
+   "Yeh ek shared username aur password hai jis ke paas poore push/pull rights hain aur har user ki auditing nahi",
+   "Yeh slow hai",
+   "Is ki extra cost hai",
+   "Yeh sirf Premium ke sath chalta hai"
+  ],
+  "exp": "Admin account ek shared username aur password hai jis ke paas poori registry ke poore push aur pull rights hain. Aap isay scope nahi kar sakte, aur pata nahi chal sakta ke kis ne use kiya. Microsoft is ke bajaye Entra identities (AcrPull jaise roles wale users, service principals ya managed identities), ya repository-scoped tokens recommend karta hai."
+ },
+ "D3-160": {
+  "q": "Kaun si CLI command public DNS label wala container instance banati hai?",
+  "opts": [
+   "az container create -g RG1 -n web --image mcr.microsoft.com/azuredocs/aci-helloworld --dns-name-label myweb --ports 80",
+   "az aci new web",
+   "az container run web",
+   "az webapp create --container"
+  ],
+  "exp": "az container create container instance chalati hai. --dns-name-label myweb usay public naam (myweb.<region>.azurecontainer.io) deta hai aur --ports 80 port 80 kholta hai. Baqi commands mojood nahi, aur az webapp create is ke bajaye App Service app banati hai."
+ },
+ "D3-161": {
+  "q": "Kaun si CLI command chalte container instance ke logs dikhati hai?",
+  "opts": [
+   "az container logs -g RG1 -n web",
+   "az container show-log",
+   "az monitor logs web",
+   "docker logs web"
+  ],
+  "exp": "az container logs dikhati hai ke container instance ke container ne stdout aur stderr par kya likha. Stream karne ke liye --follow add karein. docker logs sirf aap ke local Docker ke sath chalta hai, aur baqi commands mojood nahi."
+ },
+ "D3-162": {
+  "q": "Aap ko ACI mein chalte container ke andar interactive shell chahiye. Kya use karenge?",
+  "opts": [
+   "az container exec -g RG1 -n web --exec-command /bin/sh",
+   "az container ssh",
+   "Bastion",
+   "Serial console"
+  ],
+  "exp": "az container exec chalte container ke andar command chalati hai, maslan interactive shell kholne ke liye /bin/sh. ACI SSH, Bastion ya serial console offer nahi karta."
+ },
+ "D3-163": {
+  "q": "Container ruk jane ke baad bhi container data baqi rehna chahiye. Aap kya karenge?",
+  "opts": [
+   "Azure Files share ko volume ke taur par mount karein",
+   "Container ki local disk use karein",
+   "emptyDir use karein",
+   "Secret volume use karein"
+  ],
+  "exp": "Container ruk ya restart hone par us ka apna file system kho jata hai. Data rakhne ke liye Azure Files share ko volume ke taur par mount karein; wahan likha data baqi rehta hai. emptyDir aur secret volumes waqti ya read-only hain."
+ },
+ "D3-164": {
+  "q": "ACI mein CPU aur memory kaise assign hoti hai?",
+  "opts": [
+   "Aap har container ke liye vCPU aur memory request karte hain (maslan --cpu 1 --memory 1.5) aur per second bill hota hai",
+   "VM size chun kar",
+   "1 vCPU / 1 GB par fixed",
+   "App Service plan ke zariye"
+  ],
+  "exp": "ACI mein aap har container ke liye CPU aur memory request karte hain (maslan --cpu 1 --memory 1.5), aur container group chalne ke dauran jo request kiya us ka per second bill hota hai. Aap VM size nahi chunte ya App Service plan use nahi karte, aur resources 1 vCPU aur 1 GB par fixed nahi."
+ },
+ "D3-165": {
+  "q": "Container instance ko public IP ke baghair VNet1 ke private IP par database tak pohanchna hai. Aap kya karenge?",
+  "opts": [
+   "Container group ko VNet1 ke delegated subnet mein deploy karein",
+   "Public IP add karein",
+   "Sirf VNet peering use karein",
+   "Service endpoint use karein"
+  ],
+  "exp": "Container group ko VNet1 ke subnet mein deploy karne se (subnet Microsoft.ContainerInstance/containerGroups ko delegated hota hai) usay private IP milta hai, is liye woh baghair public IP ke database tak privately pohanch sakta hai. Akeli peering container ko network mein nahi dalti, aur service endpoints PaaS services ke liye hain."
+ },
+ "D3-166": {
+  "q": "ACI container ko database password kaise dein taa ke woh portal mein na dikhe?",
+  "opts": [
+   "Secure environment variables (--secure-environment-variables)",
+   "Saade environment variables",
+   "Image ka naam",
+   "Tags"
+  ],
+  "exp": "Secure environment variables (--secure-environment-variables) container ko diye jate hain lekin portal ya CLI mein container ki properties mein nazar nahi aate. Aam environment variables har us shakhs ko nazar aate hain jo container group parh sake. Secrets kabhi image names ya tags mein na rakhein."
+ },
+ "D3-167": {
+  "q": "ACI par multi-container group (app plus sidecar) kaise deploy karte hain?",
+  "opts": [
+   "Container group define karne wali YAML file ya ARM template se",
+   "Usi group mein har container ke liye ek az container create se",
+   "Sirf portal se",
+   "ACR par Docker Compose se"
+  ],
+  "exp": "Kai containers wala container group (maslan app plus sidecar) ek YAML file ya ARM/Bicep template mein define hota hai aur az container create --file se deploy hota hai. Har container ke liye ek baar az container create chalane se alag groups banenge. Portal multi-container groups nahi bana sakta."
+ },
+ "D3-168": {
+  "q": "ACI deployment ko kaise scale karte hain?",
+  "opts": [
+   "ACI mein built-in autoscale nahi; zyada container groups deploy karein ya resource requests badlein (redeploy)",
+   "Autoscale rules",
+   "Scale sets",
+   "App Service plan barhayen"
+  ],
+  "exp": "ACI mein built-in autoscaling nahi: har container group aap ki request ki gayi CPU aur memory par chalta hai. Zyada load ke liye zyada container groups deploy karein ya bari requests ke sath redeploy karein. Automatic scaling ke liye Azure Container Apps ya AKS use karein."
+ },
+ "D3-169": {
+  "q": "Azure Container Apps mein woh boundary kya hai jo VNet aur Log Analytics workspace share karne wali apps ko group karti hai?",
+  "opts": [
+   "Container Apps environment",
+   "Container group",
+   "App Service plan",
+   "Resource group"
+  ],
+  "exp": "Container Apps environment container apps ke group ki shared boundary hai: woh virtual network, ingress aur logging (Log Analytics workspace) share karti hain, aur ek doosre tak pohanch sakti hain. Container group ACI ka concept hai, App Service plan App Service ke liye hai, aur resource group sirf management ke liye."
+ },
+ "D3-170": {
+  "q": "Container Apps mein revision kya hai?",
+  "opts": [
+   "Container app version ka immutable snapshot",
+   "Backup",
+   "Resource lock",
+   "Scaling rule"
+  ],
+  "exp": "Revision container app ke kisi version ka immutable snapshot hai. Revision-scoped settings, jaise image ya environment variables, badalne se nayi revision banti hai, aur aap kai revisions chala kar un ke darmiyan traffic baant sakte hain. Yeh backup, lock ya scaling rule nahi."
+ },
+ "D3-171": {
+  "q": "Container app ke naye version par 20% traffic aur purane par 80% bhejna hai. Aap kya configure karenge?",
+  "opts": [
+   "Traffic splitting (weights) ke sath multiple revision mode",
+   "Do alag environments",
+   "Application Gateway",
+   "Manual DNS"
+  ],
+  "exp": "Multiple revision mode mein container app ek sath kai revisions chala sakti hai, aur aap un ke darmiyan traffic weights set karte hain (maslan purani revision ko 80% aur nayi ko 20%) canary release ke liye. Alag environments, Application Gateway ya DNS changes ki zaroorat nahi."
+ },
+ "D3-172": {
+  "q": "Kaun sa Container Apps scale rule type concurrent HTTP requests par scale karta hai?",
+  "opts": [
+   "HTTP scale rule",
+   "Sirf CPU",
+   "Sirf Schedule",
+   "Manual"
+  ],
+  "exp": "HTTP scale rule concurrent HTTP requests ki tadaad ki buniyad par Container Apps replicas add ya remove karta hai. Doosre rule types events (jaise queues) ke liye KEDA scalers, ya CPU aur memory use karte hain. Schedule aur manual settings request load par react nahi karti."
+ },
+ "D3-173": {
+  "q": "Container app sirf usi environment ki doosri apps se pohanch mein honi chahiye. Kaun si ingress setting?",
+  "opts": [
+   "Internal ingress (environment tak mehdood)",
+   "External ingress",
+   "Koi ingress nahi",
+   "Public IP"
+  ],
+  "exp": "Internal ingress container app ko sirf us ke Container Apps environment ke andar se (aur jis VNet se jura ho) pohanch mein rakhta hai, internet se nahi. External ingress usay public karta hai, aur bilkul ingress na ho to koi doosri app usay HTTP par call nahi kar sakti."
+ },
+ "D3-174": {
+  "q": "Raat ka scheduled batch task Container Apps mein chal kar khatam hona chahiye. Kaun sa resource?",
+  "opts": [
+   "Container Apps job (schedule trigger)",
+   "Min replicas 1 wali container app",
+   "ACR Task",
+   "VMSS"
+  ],
+  "exp": "Container Apps job container ko mukammal hone tak chalata hai aur phir ruk jata hai. Jobs manually, schedule (cron) par ya events se trigger ho sakti hain. Kam az kam ek replica wali container app hamesha chalti rahegi, ACR Tasks images build karte hain, aur VMSS manage karna kahin zyada hai."
+ },
+ "D3-175": {
+  "q": "Kaun si DO services aap ke Kubernetes manage kiye baghair load ke hisaab se containers khud scale kar sakti hain?",
+  "opts": [
+   "Azure Container Apps",
+   "Autoscale ke sath Azure App Service (Web App for Containers)",
+   "Azure Container Instances",
+   "Azure Container Registry"
+  ],
+  "exp": "Azure Container Apps HTTP aur KEDA rules se khud scale hoti hai (zero tak samet), aur App Service (Web App for Containers) autoscale rules se scale out hoti hai, aap ke Kubernetes manage kiye baghair. ACI mein autoscaling nahi, aur ACR sirf images store karta hai."
+ },
+ "D3-176": {
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Container Apps zero replicas tak scale ho sakti hai",
+   "ACI Windows containers support karta hai",
+   "ACR Basic geo-replication support karta hai",
+   "Container Apps Dapr integration support karti hai"
+  ],
+  "exp": "Container Apps zero replicas tak scale down ho sakti hai aur microservices ke liye Dapr support karti hai. ACI Windows containers chala sakta hai. Azure Container Registry mein geo-replication sirf Premium tier mein hai, Basic mein nahi."
+ },
+ "D3-177": {
+  "q": "Kaun sa App Service tier shared infrastructure aur custom domains ke baghair muft development aur testing ke liye hai?",
+  "opts": [
+   "Free (F1)",
+   "Standard",
+   "Premium",
+   "Isolated"
+  ],
+  "exp": "Free (F1) tier apps ko shared infrastructure par muft chalata hai, development aur testing ke liye. Is ke quotas hain aur custom domains, scaling ya SLA nahi. Standard, Premium aur Isolated paid production tiers hain."
+ },
+ "D3-178": {
+  "q": "SSL bindings ke sath custom domains aur dedicated compute support karne wala sab se neecha tier kaun sa hai?",
+  "opts": [
+   "Basic",
+   "Free",
+   "Shared",
+   "Sirf Standard"
+  ],
+  "exp": "Basic sab se neecha tier hai jis mein dedicated compute instances, custom domains aur TLS/SSL bindings hain, halan ke scaling sirf manual aur mehdood hai. Free aur Shared shared infrastructure par chalte hain aur TLS ke sath custom domains use nahi kar sakte. Standard autoscale aur slots add karta hai, lekin minimum nahi."
+ },
+ "D3-179": {
+  "q": "Ek app ko aap ke VNet ke andar single-tenant environment mein poori network isolation aur bohat zyada scale chahiye. Kaun sa tier?",
+  "opts": [
+   "Isolated v2 (App Service Environment v3)",
+   "Premium v3",
+   "Standard",
+   "Basic"
+  ],
+  "exp": "Isolated v2 tier App Service Environment v3 mein chalta hai, jo aap ke apne virtual network ke andar single-tenant deployment hai. Is se poori network isolation aur bohat zyada scale milta hai. Premium v3, Standard aur Basic shared multi-tenant infrastructure par chalte hain, chahe VNets se integrate ho sakein."
+ },
+ "D3-180": {
+  "q": "Teen web apps 2 instances wale ek App Service plan mein chalti hain. Har app kitne instances par chalti hai?",
+  "opts": [
+   "2 — har app plan ke tamam instances par chalti hai",
+   "Har ek 1",
+   "Kul 6, har app ke 2 alag bill",
+   "Traffic par depend karta hai"
+  ],
+  "exp": "App Service plan ki har app plan ke tamam instances par chalti hai. 2 instances ke sath teeno apps dono par chalti hain. Aap plan ke instances ke paise dete hain, har app ke nahi. Plan scale karna us ki har app par asar dalta hai."
+ },
+ "D3-181": {
+  "q": "Kya web app ko doosre region ke App Service plan mein move kar sakte hain?",
+  "opts": [
+   "Nahi — plan usi resource group aur region (webspace) mein hona chahiye; is ke bajaye naye region mein app banayen",
+   "Haan, kisi bhi waqt",
+   "Sirf Premium ke sath",
+   "Sirf Linux apps"
+  ],
+  "exp": "App sirf usi resource group aur region (wahi 'webspace') ke doosre App Service plan mein move ho sakti hai. Doosre region mein chalane ke liye wahan ke plan mein nayi app banayen aur code dobara deploy karein (ya app clone karein). Tier aur operating system is ko nahi badalte."
+ },
+ "D3-182": {
+  "q": "Standard App Service plan ki zyada se zyada instance count kya hai?",
+  "opts": [
+   "10",
+   "3",
+   "30",
+   "100"
+  ],
+  "exp": "Standard App Service plan zyada se zyada 10 instances tak scale out ho sakta hai. Basic 3 tak, Premium v3 30 tak, aur Isolated 100 tak — is liye agar 10 se zyada chahiye to ooncha tier lein."
+ },
+ "D3-183": {
+  "q": "Ek app ko autoscale rules likhe baghair HTTP traffic par foran scale out hona chahiye (Premium v2/v3). Kaun sa feature?",
+  "opts": [
+   "Automatic scaling (platform-managed scale out)",
+   "Manual scale",
+   "Scheduled autoscale",
+   "Deployment slots"
+  ],
+  "exp": "Automatic scaling, jo Premium v2 aur v3 par available hai, App Service ko HTTP traffic ki buniyad par instances add aur remove karne deta hai, aap ko autoscale rules likhne ki zaroorat nahi. Yeh jaldi react karta hai aur instances warm rakhta hai. Manual aur scheduled scaling ko aap ki settings chahiye, aur slots deployment ke liye hain."
+ },
+ "D3-184": {
+  "q": "Kaun si CLI command mojooda plan mein web app banati hai?",
+  "opts": [
+   "az webapp create -g RG1 -p plan1 -n myapp123 --runtime \"DOTNETCORE:8.0\"",
+   "az appservice create myapp",
+   "az web new myapp",
+   "az app create --plan plan1"
+  ],
+  "exp": "az webapp create mojooda App Service plan (-p) mein globally unique naam (-n) aur \"DOTNETCORE:8.0\" jaise runtime ke sath web app banati hai. Naam <name>.azurewebsites.net ban jata hai. Baqi commands mojood nahi."
+ },
+ "D3-185": {
+  "q": "Kaun si CLI command S1 tier par Linux App Service plan banati hai?",
+  "opts": [
+   "az appservice plan create -g RG1 -n plan1 --sku S1 --is-linux",
+   "az webapp plan create S1",
+   "az plan create --linux",
+   "az appservice create --tier S1"
+  ],
+  "exp": "az appservice plan create App Service plan banati hai. --sku S1 Standard tier set karta hai aur --is-linux isay Linux plan banata hai, jo Linux web apps ko chahiye. Baqi commands mojood nahi."
+ },
+ "D3-186": {
+  "q": "Ek app apni database connection string rakhti hai. Non-secret settings aur secret references kahan jane chahiye?",
+  "opts": [
+   "App settings / connection strings (secrets ke liye Key Vault references ke sath)",
+   "Code mein hard-coded",
+   "Tags mein",
+   "Plan mein"
+  ],
+  "exp": "App settings aur connection strings app ko environment variables ke taur par milti hain, is liye configuration code se bahar rehti hai. Secrets ke liye setting mein Key Vault reference (@Microsoft.KeyVault(...)) use karein, taa ke secret Key Vault mein rahe. Settings hard-code karna ghair-mehfooz hai, aur tags aur plan configuration ke liye nahi."
+ },
+ "D3-187": {
+  "q": "App Service settings mein Key Vault reference resolve nahi hota. Sab se aam missing cheez kya hai?",
+  "opts": [
+   "App ki managed identity ke paas vault par permission nahi (maslan Key Vault Secrets User)",
+   "App ko Premium tier chahiye",
+   "Vault doosre region mein hona chahiye",
+   "Slots enabled nahi"
+  ],
+  "exp": "Key Vault reference sirf tab chalta hai jab app ki managed identity secret parh sake: Key Vault Secrets User jaisa role (RBAC model ke sath) ya Get secret access policy. Is ke baghair setting resolve nahi hoti. Free se upar koi bhi tier chalta hai, vault kisi bhi region mein ho sakta hai, aur slots se farq nahi parta."
+ },
+ "D3-188": {
+  "q": "Traffic na hone par continuous WebJobs chalna band ho jate hain. Kaun si setting yeh theek karti hai?",
+  "opts": [
+   "Always On",
+   "ARR affinity",
+   "HTTP/2",
+   "Auto heal"
+  ],
+  "exp": "Always On ke baghair App Service taqreeban 20 minute baghair requests ke idle app ko unload kar deta hai, jis se continuous WebJobs bhi ruk jate hain. Always On app ko loaded rakhta hai (Basic se available). ARR affinity, HTTP/2 aur Auto heal app ko chalta nahi rakhte."
+ },
+ "D3-189": {
+  "q": "Kai instances ke peeche stateless app ka load ghair-mutawazin hai kyun ke users ek instance se chipke rehte hain. Aap kya disable karenge?",
+  "opts": [
+   "ARR affinity (session affinity cookie)",
+   "Always On",
+   "HTTPS Only",
+   "Health check"
+  ],
+  "exp": "ARR affinity (default mein on) cookie set karta hai jo har user ko wapas usi instance par bhejti hai. Stateless app ko is ki zaroorat nahi, aur is se kuch instances overloaded reh sakte hain. ARR affinity band karne se load balancer requests barabar baant sakta hai. Baqi settings distribution par asar nahi dalti."
+ },
+ "D3-190": {
+  "q": "App Service ko /health endpoint check mein fail hone wale instance ko traffic bhejna band karna chahiye. Kaun sa feature?",
+  "opts": [
+   "Health check",
+   "Sirf Auto heal",
+   "Access restrictions",
+   "Diagnostics logging"
+  ],
+  "exp": "Health check har instance par aap ka chuna path, jaise /health, ping karta hai. Jo instance baar baar fail ho woh load balancer rotation se nikal jata hai (aur kharab rehne par badal diya jata hai). Auto heal aap ki shartein poori hone par restart karta hai, access restrictions callers filter karti hain, aur logging sirf events record karti hai."
+ },
+ "D3-191": {
+  "q": "Standard tier kitne deployment slots (production samet) deta hai?",
+  "opts": [
+   "5",
+   "20",
+   "1",
+   "10"
+  ],
+  "exp": "Standard tier production samet 5 deployment slots deta hai, aur Premium 20. Free, Shared aur Basic slots support nahi karte, is liye agar staging slot chahiye to kam az kam Standard chahiye."
+ },
+ "D3-192": {
+  "q": "Kaun si CLI command staging slot ko production se swap karti hai?",
+  "opts": [
+   "az webapp deployment slot swap -g RG1 -n myapp --slot staging --target-slot production",
+   "az webapp swap staging",
+   "az slot swap myapp",
+   "az webapp deploy --swap"
+  ],
+  "exp": "az webapp deployment slot swap --slot staging --target-slot production staging slot ko production mein swap karti hai (pehle usay warm up karti hai). Baqi commands mojood nahi."
+ },
+ "D3-193": {
+  "q": "Aap chahte hain ke production ke 10% users testing ke liye staging slot par jayen. Kaun sa feature?",
+  "opts": [
+   "Traffic routing percentage (Testing in production)",
+   "Preview ke sath swap",
+   "Access restrictions",
+   "ARR affinity"
+  ],
+  "exp": "Testing in production (traffic routing) production traffic ka kuch percentage, jaise 10%, doosre slot par bhejta hai, is liye asli users naya version try karte hain jab ke baqi production par rehte hain. Swap with preview traffic baantne ke bajaye swap ko rokta hai, aur access restrictions aur ARR affinity users ko slots ke darmiyan route nahi karte."
+ },
+ "D3-194": {
+  "q": "Har baar staging par code push hone par warm-up ke baad woh khud production mein swap hona chahiye. Kaun sa feature?",
+  "opts": [
+   "Auto swap",
+   "Traffic routing",
+   "Preview ke sath swap",
+   "Clone app"
+  ],
+  "exp": "Staging slot par auto swap enable hone se staging par har deployment warm up ho kar khud production mein swap hota hai, koi manual step nahi. Traffic routing users ko slots mein baantta hai, swap with preview ko aap ko mukammal karna hota hai, aur clone app app copy karta hai."
+ },
+ "D3-195": {
+  "q": "Apex domain contoso.com (www ke baghair) ko App Service app se map karne ke liye kaun se DNS records use hote hain?",
+  "opts": [
+   "App ke IP wala A record, sath mein verification ke liye TXT record asuid",
+   "Apex par CNAME",
+   "Sirf MX record",
+   "NS record"
+  ],
+  "exp": "Zone ke apex (contoso.com) par CNAME records allowed nahi, is liye isay app ke inbound IP address ki taraf A record se map karein, sath mein asuid naam ka TXT record app ki verification ID ke sath taa ke sabit ho domain aap ka hai. MX email ke liye aur NS delegation ke liye hai."
+ },
+ "D3-196": {
+  "q": "App ki tamam HTTP requests HTTPS par redirect honi chahiye. Kaun si setting?",
+  "opts": [
+   "HTTPS Only = On",
+   "Minimum TLS version 1.0",
+   "Client certificates",
+   "Always On"
+  ],
+  "exp": "HTTPS Only = On App Service ko har HTTP request HTTPS par redirect karwata hai. Minimum TLS version control karta hai ke kaun se TLS versions accept hon (aur 1.0 security kamzor karega), client certificates mutual TLS ke liye hain, aur Always On app ko loaded rakhta hai."
+ },
+ "D3-197": {
+  "q": "Wildcard certificate (*.contoso.com) ko kai App Service apps mehfooz karni hain. Aap ko kya use karna chahiye?",
+  "opts": [
+   "Certificate import karein (Key Vault ya PFX upload se) — managed certificates wildcards support nahi karte",
+   "Free managed certificate",
+   "Portal ke zariye Let's Encrypt cert",
+   "Client certificates"
+  ],
+  "exp": "Free App Service managed certificates wildcard domains support nahi karte. Kai apps par *.contoso.com mehfooz karne ke liye wildcard certificate import karein — Key Vault, PFX upload ya App Service certificate se — aur usay har app se bind karein. Client certificates callers authenticate karne ke liye hain, site ke liye nahi."
+ },
+ "D3-198": {
+  "q": "Ek internal web app SIRF aap ke VNet aur on-premises (VPN par) se pohanch mein honi chahiye, koi public exposure nahi. Kaun sa feature?",
+  "opts": [
+   "App ke liye private endpoint (aur public access disable karna)",
+   "VNet integration",
+   "Hybrid connections",
+   "Any allow karne wali access restrictions"
+  ],
+  "exp": "Private endpoint app ko aap ke VNet mein private IP deta hai, is liye woh VNet se aur VPN par on-premises se pohanch mein hoti hai. Phir public network access disable karne se internet block hota hai. VNet integration sirf outbound calls ke liye hai, Hybrid Connections on-premises hosts tak pohanchte hain, aur Any allow karna app ko public rakhta hai."
+ },
+ "D3-199": {
+  "q": "Custom (scheduled) App Service backups kahan store hote hain?",
+  "opts": [
+   "Aap ke chune storage account container mein",
+   "Recovery Services vault mein",
+   "App Service plan mein",
+   "Key Vault mein"
+  ],
+  "exp": "Custom (scheduled ya on-demand) App Service backups ZIP aur XML files ki surat mein aap ke chune storage account container mein likhe jate hain. Automatic backups platform khud store karta hai. App Service backups Recovery Services vaults ya Key Vault use nahi karte."
+ },
+ "D3-200": {
+  "ctx": "App1 Basic B1 Linux plan par chalti hai. Requirements: staging slot, CPU-based autoscale, www.contoso.com ke liye free TLS certificate, aur VM ke private IP tak outbound access.",
+  "q": "Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "B1 staging deployment slot support karta hai",
+   "B1 rule-based autoscale support karta hai",
+   "B1 par www.contoso.com ke liye free managed certificate use ho sakta hai",
+   "B1 par regional VNet integration available hai"
+  ],
+  "exp": "Basic B1 deployment slots ya rule-based autoscale support nahi karta — dono ko Standard ya upar chahiye. B1 par www.contoso.com ke liye free managed certificate chalta hai, aur Basic par regional VNet integration available hai. Is liye B1 TLS aur network requirements poori karta hai, lekin staging ya autoscale nahi."
+ }
+}

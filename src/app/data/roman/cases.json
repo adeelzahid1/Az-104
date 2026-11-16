@@ -28,5 +28,19 @@
    {"heading": "Overview", "body": "Northwind Health patient reports ko West Europe mein GPv2 storage account stnwhealth (LRS) ke container \"reports\" mein block blobs ke taur par store karta hai."},
    {"heading": "Requirements", "body": "1. Reports likhe jane ke baad 7 saal tak badli ya delete na ho sakein (regulatory WORM requirement).\n2. Agar koi report ghalti se overwrite ho jaye to pichla content wapas mil sake.\n3. Agar koi container ghalti se delete ho jaye to woh 14 din tak wapas mil sake.\n4. Reports North Europe mein ek alag analytics storage account mein asynchronously copy hon.\n5. Reporting app Azure VM par chalti hai aur use koi secret store kiye baghair reports parhni hain.\n6. Data aisi keys se encrypt ho jo Northwind control kare aur revoke kar sake."}
   ]
+ },
+ "C5": {
+  "title": "Adatum Software",
+  "sections": [
+   {"heading": "Overview", "body": "Adatum Software customers ke liye ek .NET web app aur container mein packaged raat ka data-processing job chalata hai. Tamam resources West Europe mein hain. VNet-Prod ki ek SQL Server VM app ka database rakhti hai."},
+   {"heading": "Requirements", "body": "1. Web app ke naye versions baghair downtime deploy hon, aur naya version pehle 10% asli users ke sath test ho.\n2. Web app CPU load par khud scale out ho, 8 instances tak.\n3. App custom domain www.adatum.com ko free TLS certificate ke sath use kare.\n4. App SQL Server VM tak us ke private IP address par pohanche.\n5. Raat ka job taqreeban 30 minute chalta hai; Adatum sirf chalne ke dauran paise dena aur kam se kam infrastructure manage karna chahta hai.\n6. Container images private tareeqe se store hon aur North Europe mein replicate hon.\n7. Costs kam se kam hon."}
+  ]
+ },
+ "C6": {
+  "title": "Tailspin Toys",
+  "sections": [
+   {"heading": "Overview", "body": "Tailspin Toys West Europe mein, jo availability zones support karta hai, resource group RG-Shop mein chaar web VMs aur do SQL Server VMs chalata hai. Development VMs RG-Dev mein chalti hain."},
+   {"heading": "Requirements", "body": "1. Web tier ko 99.99% VM connectivity SLA milna chahiye.\n2. SQL VM disks guest OS ke andar BitLocker se encrypt hon, Tailspin ke key vault mein rakhi keys ke sath.\n3. Ek reporting VM North Europe mein move karni hai.\n4. Paise bachane ke liye development VMs har shaam khud band hon.\n5. Web tier CPU ki buniyad par khud scale ho.\n6. Ek VM ki OS disk 128 GB se 256 GB tak barhni chahiye."}
+  ]
  }
 }
