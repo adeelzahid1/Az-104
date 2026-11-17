@@ -72,3 +72,7 @@ details[open] summary {
   text-align: center;
   padding: 40px 20px;
 }
+
+.table-wrap {
+  overflow-x: auto;
+}

@@ -33,30 +33,36 @@
 
   <section class="card">
     <h2>{{ tw.byDomain }}</h2>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">{{ tw.domain }}</th>
-          <th scope="col" class="num">{{ tw.answeredCol }}</th>
-          <th scope="col" class="num">{{ tw.accuracy }}</th>
-          <th scope="col" class="num">{{ tw.mistakes }}</th>
-          <th scope="col"><span class="sr-only">{{ tw.action }}</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (d of domainRows(); track d.id) {
+    <div class="table-wrap">
+      <table>
+        <thead>
           <tr>
-            <td>{{ d.id }}. {{ tx.domains[d.id] }} <span class="muted">({{ d.weightLabel }})</span></td>
-            <td class="num">{{ d.row?.unique ?? 0 }}</td>
-            <td class="num" [class.weak]="d.weak">{{ pct(d.accuracy) }}</td>
-            <td class="num">{{ d.row?.mistakes ?? 0 }}</td>
-            <td class="num">
-              <a routerLink="/practice" [queryParams]="{ domain: d.id }">{{ tw.practice }}</a>
-            </td>
+            <th scope="col">{{ tw.domain }}</th>
+            <th scope="col" class="num">{{ tw.answeredCol }}</th>
+            <th scope="col" class="num">{{ tw.accuracy }}</th>
+            <th scope="col" class="num">{{ tw.mistakes }}</th>
+            <th scope="col">
+              <span class="sr-only">{{ tw.action }}</span>
+            </th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (d of domainRows(); track d.id) {
+            <tr>
+              <td>
+                {{ d.id }}. {{ tx.domains[d.id] }} <span class="muted">({{ d.weightLabel }})</span>
+              </td>
+              <td class="num">{{ d.row?.unique ?? 0 }}</td>
+              <td class="num" [class.weak]="d.weak">{{ pct(d.accuracy) }}</td>
+              <td class="num">{{ d.row?.mistakes ?? 0 }}</td>
+              <td class="num">
+                <a routerLink="/practice" [queryParams]="{ domain: d.id }">{{ tw.practice }}</a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section class="card">
@@ -65,8 +71,14 @@
       <ul class="subs">
         @for (s of weakSubtopics(); track s.domain + s.sub) {
           <li>
-            <span><strong>{{ s.sub }}</strong> <span class="muted">· {{ tx.domainN(s.domain) }}</span></span>
-            <span class="weak">{{ pct(s.accuracy) }} <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span>
+            <span
+              ><strong>{{ s.sub }}</strong>
+              <span class="muted">· {{ tx.domainN(s.domain) }}</span></span
+            >
+            <span class="weak"
+              >{{ pct(s.accuracy) }}
+              <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span
+            >
           </li>
         }
       </ul>
@@ -81,8 +93,13 @@
       <ul class="subs">
         @for (s of strongSubtopics(); track s.domain + s.sub) {
           <li>
-            <span>{{ s.sub }} <span class="muted">· {{ tx.domainN(s.domain) }}</span></span>
-            <span>{{ pct(s.accuracy) }} <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span>
+            <span
+              >{{ s.sub }} <span class="muted">· {{ tx.domainN(s.domain) }}</span></span
+            >
+            <span
+              >{{ pct(s.accuracy) }}
+              <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span
+            >
           </li>
         }
       </ul>
