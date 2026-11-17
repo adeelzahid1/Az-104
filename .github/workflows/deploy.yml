@@ -1,0 +1,77 @@
+name: CI / Deploy to Surge
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validate, test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate question bank
+        run: npm run validate:bank
+
+      # Ubuntu 24.04 blocks Chrome's sandbox by default; this lets headless Chrome start.
+      - name: Allow Chrome sandbox
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Unit tests
+        run: npx ng test --watch=false --browsers=ChromeHeadless
+
+      - name: Production build
+        run: npm run build
+
+      # Surge serves 200.html for any unknown path, so deep links like /study work.
+      - name: Add SPA fallback
+        run: cp dist/Az104/browser/index.csr.html dist/Az104/browser/200.html
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist/Az104/browser
+          retention-days: 7
+
+  deploy:
+    name: Deploy to Surge
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: site
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Publish
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+          SURGE_DOMAIN: ${{ secrets.SURGE_DOMAIN }}
+        run: |
+          if [ -z "$SURGE_TOKEN" ] || [ -z "$SURGE_DOMAIN" ]; then
+            echo "::error::Add the SURGE_LOGIN, SURGE_TOKEN and SURGE_DOMAIN repository secrets first."
+            exit 1
+          fi
+          npx --yes surge ./site "$SURGE_DOMAIN"
