@@ -1,0 +1,191 @@
+@let tx = t();
+@let ts = tx.study;
+
+<div class="study">
+  <aside class="side" [attr.aria-label]="ts.sectionsNav">
+    <a class="side-btn dark" routerLink="/mock">
+      <span>📝 {{ tx.nav.mock }}</span>
+      <span class="pill">{{ all()?.length ?? '…' }}</span>
+    </a>
+    <a class="side-btn" routerLink="/weak-areas">📊 {{ tx.nav.weak }}</a>
+
+    <nav [attr.aria-label]="ts.sectionsNav">
+      @for (d of domains; track d.id) {
+        <p class="side-head">{{ ts.sectionLabel(d.id) }}: {{ tx.domains[d.id] }}</p>
+        <p class="side-weight">{{ ts.weight(d.weightLabel) }}</p>
+        @for (s of d.sections; track s.id) {
+          <button
+            type="button"
+            class="side-item"
+            [class.active]="selected() === s.id"
+            [attr.aria-current]="selected() === s.id ? 'page' : null"
+            (click)="choose(s.id)"
+          >
+            <span class="num">{{ s.id }}</span>
+            <span class="name">{{ isRoman() ? s.ro : s.en }}</span>
+            <span class="badge">{{ stats().get(s.id) ?? '…' }}</span>
+          </button>
+        }
+      }
+      <p class="side-head">{{ ts.caseStudies }}</p>
+      <button
+        type="button"
+        class="side-item"
+        [class.active]="selected() === cases"
+        [attr.aria-current]="selected() === cases ? 'page' : null"
+        (click)="choose(cases)"
+      >
+        <span class="num">C</span>
+        <span class="name">{{ ts.caseStudies }}</span>
+        <span class="badge">{{ stats().get(cases) ?? '…' }}</span>
+      </button>
+    </nav>
+  </aside>
+
+  <section class="main">
+    <label class="field mobile-pick">
+      <span>{{ ts.chooseSection }}</span>
+      <select #pick (change)="choose(pick.value)">
+        @for (d of domains; track d.id) {
+          <optgroup [label]="ts.sectionLabel(d.id) + ': ' + tx.domains[d.id]">
+            @for (s of d.sections; track s.id) {
+              <option [value]="s.id" [selected]="selected() === s.id">
+                {{ s.id }} {{ isRoman() ? s.ro : s.en }} ({{ stats().get(s.id) ?? '…' }})
+              </option>
+            }
+          </optgroup>
+        }
+        <option [value]="cases" [selected]="selected() === cases">
+          {{ ts.caseStudies }} ({{ stats().get(cases) ?? '…' }})
+        </option>
+      </select>
+    </label>
+
+    <h1>{{ title() }}</h1>
+    <p class="howto"><strong>{{ ts.howToLabel }}</strong> {{ ts.howTo }}</p>
+
+    <div class="toolbar">
+      <input
+        #box
+        type="search"
+        class="search"
+        [placeholder]="ts.search"
+        [attr.aria-label]="ts.search"
+        [value]="search()"
+        (input)="search.set(box.value)"
+      />
+      <div class="seg" role="group" [attr.aria-label]="ts.levelLabel">
+        @for (l of levels; track l) {
+          <button type="button" [class.on]="level() === l" [attr.aria-pressed]="level() === l" (click)="level.set(l)">
+            {{ ts.levels[l] }}
+          </button>
+        }
+      </div>
+      <select #f class="filter" [attr.aria-label]="ts.filterLabel" (change)="setFilter(f.value)">
+        @for (name of filters; track name) {
+          <option [value]="name" [selected]="filter() === name">{{ ts.filters[name] }}</option>
+        }
+      </select>
+      <div class="seg" role="group" [attr.aria-label]="ts.modeLabel">
+        <button type="button" [class.on]="mode() === 'list'" [attr.aria-pressed]="mode() === 'list'" (click)="mode.set('list')">
+          {{ ts.list }}
+        </button>
+        <button type="button" [class.on]="mode() === 'cards'" [attr.aria-pressed]="mode() === 'cards'" (click)="mode.set('cards')">
+          {{ ts.cards }}
+        </button>
+      </div>
+    </div>
+
+    @if (all() === null) {
+      <p class="card">{{ ts.loading }}</p>
+    } @else if (mode() === 'list') {
+      <p class="muted count">{{ ts.count(visible().length, filtered().length) }}</p>
+      @for (item of visible(); track item.q.id) {
+        @let q = item.q;
+        @let shown = revealed().has(q.id);
+        @if (item.caseStudy; as cs) {
+          <app-case-panel [caseStudy]="cs" [open]="false" />
+        }
+        <article class="card qcard" [class.done]="study.isUnderstood(q.id)">
+          <header class="qhead">
+            <span class="muted small">{{ sectionIdOf(q) === cases ? 'C' : sectionIdOf(q) }} · {{ q.id }} · {{ ts.levels[q.diff] }}</span>
+            <button
+              type="button"
+              class="star"
+              [class.on]="study.isBookmarked(q.id)"
+              [attr.aria-pressed]="study.isBookmarked(q.id)"
+              [attr.aria-label]="study.isBookmarked(q.id) ? ts.unbookmark : ts.bookmark"
+              [title]="study.isBookmarked(q.id) ? ts.unbookmark : ts.bookmark"
+              (click)="study.toggleBookmark(q.id)"
+            >
+              {{ study.isBookmarked(q.id) ? '★' : '☆' }}
+            </button>
+          </header>
+          <app-question-view [question]="q" [answer]="shown ? q.ans : null" [reveal]="shown" [study]="true" />
+          <footer class="qfoot">
+            <button type="button" class="btn small" [class.primary]="!shown" (click)="toggleReveal(q.id)">
+              {{ shown ? ts.hideAnswer : ts.showAnswer }}
+            </button>
+            <label class="check">
+              <input type="checkbox" [checked]="study.isUnderstood(q.id)" (change)="study.toggleUnderstood(q.id)" />
+              {{ ts.understood }}
+            </label>
+          </footer>
+        </article>
+      } @empty {
+        <p class="card">{{ ts.empty }}</p>
+      }
+      @if (visible().length < filtered().length) {
+        <p class="more"><button type="button" class="btn" (click)="limit.set(limit() + 20)">{{ ts.loadMore }}</button></p>
+      }
+    } @else {
+      @if (cardQuestion(); as q) {
+        <p class="muted count">{{ ts.cardOf(pos() + 1, queue().length) }}</p>
+        @if (cardCase(); as cs) {
+          <app-case-panel [caseStudy]="cs" [open]="false" />
+        }
+        <article class="card qcard flash">
+          <header class="qhead">
+            <span class="muted small">{{ q.id }} · {{ ts.levels[q.diff] }}</span>
+            <button
+              type="button"
+              class="star"
+              [class.on]="study.isBookmarked(q.id)"
+              [attr.aria-pressed]="study.isBookmarked(q.id)"
+              [attr.aria-label]="study.isBookmarked(q.id) ? ts.unbookmark : ts.bookmark"
+              (click)="study.toggleBookmark(q.id)"
+            >
+              {{ study.isBookmarked(q.id) ? '★' : '☆' }}
+            </button>
+          </header>
+          <app-question-view [question]="q" [answer]="flipped() ? q.ans : null" [reveal]="flipped()" [study]="true" />
+          <footer class="qfoot">
+            @if (!flipped()) {
+              <button type="button" class="btn primary" (click)="flipped.set(true)">{{ ts.showAnswer }}</button>
+            } @else {
+              <div class="rates">
+                <button type="button" class="btn rate again" (click)="rate(q.id, 'again')">
+                  {{ ts.again }} <span>{{ intervalLabel(q.id, 'again') }}</span>
+                </button>
+                <button type="button" class="btn rate hard" (click)="rate(q.id, 'hard')">
+                  {{ ts.hard }} <span>{{ intervalLabel(q.id, 'hard') }}</span>
+                </button>
+                <button type="button" class="btn rate good" (click)="rate(q.id, 'good')">
+                  {{ ts.good }} <span>{{ intervalLabel(q.id, 'good') }}</span>
+                </button>
+              </div>
+            }
+          </footer>
+        </article>
+      } @else if (queue().length === 0) {
+        <p class="card">{{ ts.empty }}</p>
+      } @else {
+        <section class="card done-card">
+          <h2>{{ ts.deckDone }}</h2>
+          <p class="muted">{{ ts.deckDoneHint }}</p>
+          <button type="button" class="btn primary" (click)="restart()">{{ ts.restart }}</button>
+        </section>
+      }
+    }
+  </section>
+</div>

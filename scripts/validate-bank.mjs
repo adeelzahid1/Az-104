@@ -98,6 +98,23 @@ for (const id of caseIds) {
   if (!partsPerCase.has(id)) errors.push(`case ${id}: no questions reference it`);
 }
 
+// Study sections: every question's subtopic must belong to exactly one section of its domain.
+const sections = JSON.parse(readFileSync(join(DATA, 'study-sections.json'), 'utf8'));
+const sectionOf = new Map();
+for (const s of sections) {
+  for (const sub of s.subs) {
+    const key = `${s.domain}|${sub}`;
+    if (sectionOf.has(key)) errors.push(`study-sections: "${sub}" is in both ${sectionOf.get(key)} and ${s.id}`);
+    sectionOf.set(key, s.id);
+  }
+}
+const sectionSizes = {};
+for (const q of byId.values()) {
+  const id = sectionOf.get(`${q.id.charAt(1)}|${q.sub}`);
+  if (!id) errors.push(`${q.id}: subtopic "${q.sub}" is not in any study section`);
+  else if (!q.caseId) sectionSizes[id] = (sectionSizes[id] ?? 0) + 1;
+}
+
 // Roman Urdu translations in src/app/data/roman must line up with the English questions.
 const ROMAN = join(DATA, 'roman');
 const TEXT_FIELDS = ['ctx', 'q', 'exp', 'tpl'];
@@ -149,6 +166,7 @@ for (const [id, ro] of Object.entries(romanCases)) {
 
 console.log(`Questions: ${counts.total}  Case studies: ${caseIds.size}`);
 console.log('Roman Urdu translated:', romanDone, `cases ${Object.keys(romanCases).length}/${caseIds.size}`);
+console.log('Study sections (excluding case studies):', sectionSizes);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);
 if (errors.length) {

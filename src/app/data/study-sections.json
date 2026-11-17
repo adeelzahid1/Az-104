@@ -1,0 +1,35 @@
+[
+ {"id": "1.1", "domain": 1, "en": "Users, groups & devices", "ro": "Users, groups aur devices", "subs": ["Entra users", "Groups", "External users", "Devices", "Entra roles", "Administrative units", "Conditional Access"]},
+ {"id": "1.2", "domain": 1, "en": "Licenses & SSPR", "ro": "Licenses aur SSPR", "subs": ["Licenses", "SSPR"]},
+ {"id": "1.3", "domain": 1, "en": "RBAC & custom roles", "ro": "RBAC aur custom roles", "subs": ["RBAC", "Custom roles", "Managed identities"]},
+ {"id": "1.4", "domain": 1, "en": "Azure Policy", "ro": "Azure Policy", "subs": ["Policy", "Governance"]},
+ {"id": "1.5", "domain": 1, "en": "Locks, tags & resource groups", "ro": "Locks, tags aur resource groups", "subs": ["Locks", "Tags", "Resource groups"]},
+ {"id": "1.6", "domain": 1, "en": "Subscriptions, management groups & costs", "ro": "Subscriptions, management groups aur costs", "subs": ["Management groups", "Subscriptions", "Cost management"]},
+
+ {"id": "2.1", "domain": 2, "en": "Storage accounts & redundancy", "ro": "Storage accounts aur redundancy", "subs": ["Storage accounts", "Redundancy", "Storage design", "Storage pricing", "Monitoring storage"]},
+ {"id": "2.2", "domain": 2, "en": "Access & security", "ro": "Access aur security", "subs": ["SAS", "Stored access policy", "Access keys", "Storage access", "Data-plane RBAC", "Anonymous access", "Secure transfer", "Encryption", "Encryption scopes"]},
+ {"id": "2.3", "domain": 2, "en": "Storage networking", "ro": "Storage networking", "subs": ["Storage firewall", "Private endpoints", "Storage network"]},
+ {"id": "2.4", "domain": 2, "en": "Blob storage & data protection", "ro": "Blob storage aur data protection", "subs": ["Blob storage", "Access tiers", "Lifecycle", "Object replication", "Versioning", "Immutable storage", "Soft delete", "Data protection", "Point-in-time restore"]},
+ {"id": "2.5", "domain": 2, "en": "Azure Files & File Sync", "ro": "Azure Files aur File Sync", "subs": ["Azure Files", "Azure Files identity", "File Sync"]},
+ {"id": "2.6", "domain": 2, "en": "AzCopy & data movement", "ro": "AzCopy aur data movement", "subs": ["AzCopy", "Storage Explorer", "Data migration", "Storage tools"]},
+
+ {"id": "3.1", "domain": 3, "en": "ARM templates & Bicep", "ro": "ARM templates aur Bicep", "subs": ["ARM templates", "Bicep"]},
+ {"id": "3.2", "domain": 3, "en": "Virtual machines", "ro": "Virtual machines", "subs": ["VM creation", "VM operations", "VM sizing", "VM disks", "Disk encryption", "VM move", "VM networking", "VMs"]},
+ {"id": "3.3", "domain": 3, "en": "Availability & scale sets", "ro": "Availability aur scale sets", "subs": ["VM availability", "VMSS"]},
+ {"id": "3.4", "domain": 3, "en": "Containers (ACR, ACI, Container Apps)", "ro": "Containers (ACR, ACI, Container Apps)", "subs": ["ACR", "ACI", "Container Apps", "Containers"]},
+ {"id": "3.5", "domain": 3, "en": "App Service", "ro": "App Service", "subs": ["App Service plans", "App Service", "Deployment slots", "App Service scaling", "Custom domains", "TLS", "App Service networking", "App Service backup"]},
+
+ {"id": "4.1", "domain": 4, "en": "VNets, subnets & IP addresses", "ro": "VNets, subnets aur IP addresses", "subs": ["VNets", "Subnets", "Public IPs", "IP addressing", "NAT Gateway", "Networking design", "Hub-spoke"]},
+ {"id": "4.2", "domain": 4, "en": "Peering, routing & VPN", "ro": "Peering, routing aur VPN", "subs": ["VNet peering", "Routing", "VPN", "ExpressRoute", "Connectivity"]},
+ {"id": "4.3", "domain": 4, "en": "NSG, ASG, Firewall & Bastion", "ro": "NSG, ASG, Firewall aur Bastion", "subs": ["NSG", "ASG", "Azure Firewall", "Bastion", "Just-in-time", "DDoS", "Secure access"]},
+ {"id": "4.4", "domain": 4, "en": "Service & private endpoints", "ro": "Service aur private endpoints", "subs": ["Service endpoints", "Private endpoints", "Service vs private endpoint"]},
+ {"id": "4.5", "domain": 4, "en": "Azure DNS & private DNS", "ro": "Azure DNS aur private DNS", "subs": ["Azure DNS", "Private DNS", "Name resolution"]},
+ {"id": "4.6", "domain": 4, "en": "Load balancing", "ro": "Load balancing", "subs": ["Load balancer", "Load balancing choice", "Troubleshoot LB", "Application Gateway", "DNS and LB"]},
+ {"id": "4.7", "domain": 4, "en": "Network troubleshooting", "ro": "Network troubleshooting", "subs": ["Troubleshooting", "Network Watcher"]},
+
+ {"id": "5.1", "domain": 5, "en": "Azure Monitor, Log Analytics & KQL", "ro": "Azure Monitor, Log Analytics aur KQL", "subs": ["Metrics", "Log Analytics", "KQL", "Activity log", "Diagnostic settings", "Agents", "Azure Monitor", "Logs", "Workbooks", "Monitoring design", "Autoscale"]},
+ {"id": "5.2", "domain": 5, "en": "Alerts & action groups", "ro": "Alerts aur action groups", "subs": ["Alerts", "Action groups", "Service Health"]},
+ {"id": "5.3", "domain": 5, "en": "Insights & Network Watcher", "ro": "Insights aur Network Watcher", "subs": ["Insights", "VM insights", "Network Watcher", "Connection Monitor", "Flow logs"]},
+ {"id": "5.4", "domain": 5, "en": "Azure Backup", "ro": "Azure Backup", "subs": ["Backup vaults", "VM backup", "Backup", "Restore", "MARS", "Azure Files backup", "Backup policy", "Backup reports", "Backup alerts", "Backup security", "Backup center", "Cross-region restore", "SQL backup", "MABS", "Disk backup", "Blob backup"]},
+ {"id": "5.5", "domain": 5, "en": "Site Recovery", "ro": "Site Recovery", "subs": ["Site Recovery", "Backup and ASR", "Backup vs ASR", "Monitoring and backup"]}
+]

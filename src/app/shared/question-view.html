@@ -157,9 +157,11 @@
 
 @if (reveal()) {
   <div class="verdict" [class.ok]="isRight()" [class.bad]="!isRight()" role="status">
-    <p class="verdict-title">
-      <strong>{{ isRight() ? tq.correct : tq.incorrect }}</strong>
-    </p>
+    @if (!study()) {
+      <p class="verdict-title">
+        <strong>{{ isRight() ? tq.correct : tq.incorrect }}</strong>
+      </p>
+    }
 
     <p class="section-label">{{ tq.correctAnswer }}</p>
     @switch (q.type) {

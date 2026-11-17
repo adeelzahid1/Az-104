@@ -34,6 +34,26 @@
   </a>
 </section>
 
+<h2>{{ td.studyTitle }}</h2>
+<section class="summary">
+  <div class="card stat">
+    <p class="muted">{{ td.studyUnderstood }}</p>
+    <p class="big">{{ studyUnderstood() }}<span class="muted small"> / {{ totalQuestions() || '…' }}</span></p>
+  </div>
+  <div class="card stat">
+    <p class="muted">{{ td.studyDue }}</p>
+    <p class="big">{{ studyDue() }}</p>
+  </div>
+  <div class="card stat">
+    <p class="muted">{{ td.studyBookmarked }}</p>
+    <p class="big">{{ studyBookmarked() }}</p>
+  </div>
+  <a class="card stat link-card" routerLink="/study">
+    <p class="muted">{{ tx.nav.study }}</p>
+    <p class="muted small">{{ td.openStudy }}</p>
+  </a>
+</section>
+
 <h2>{{ td.domainsTitle }}</h2>
 <div class="domains">
   @for (d of cards(); track d.id) {

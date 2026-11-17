@@ -8,6 +8,11 @@ export const routes: Routes = [
     title: 'AZ-104 Prep',
     loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.Dashboard),
   },
+  {
+    path: 'study',
+    title: 'Study · AZ-104 Prep',
+    loadComponent: () => import('./features/study/study').then((m) => m.Study),
+  },
   { path: 'practice', title: 'Practice · AZ-104 Prep', loadComponent: setup, data: { mode: 'practice' } },
   { path: 'mock', title: 'Mock exam · AZ-104 Prep', loadComponent: setup, data: { mode: 'exam' } },
   {

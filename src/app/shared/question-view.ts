@@ -24,6 +24,8 @@ export class QuestionView {
   readonly question = input.required<Question>();
   readonly answer = input<Answer | null>(null);
   readonly reveal = input(false);
+  /** Study mode: the answer passed in is the correct one, so no Correct/Incorrect verdict is shown. */
+  readonly study = input(false);
   readonly answerChange = output<Answer>();
 
   protected readonly letters = LETTERS;
