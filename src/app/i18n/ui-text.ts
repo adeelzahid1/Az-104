@@ -188,9 +188,6 @@ export const EN = {
     allQuestions: 'All questions',
     title: 'Study',
     skillsTitle: 'Official exam skills (April 17, 2026)',
-    howToLabel: 'How to study:',
-    howTo:
-      'pick a section, read each question and think first, then press "Show answer". When it makes sense, tick "I understand this". Bookmark hard ones with ☆ and revise them with the "Bookmarked" filter. For revision use Flashcards: rate each card Again / Hard / Good, and it comes back when it is due (filter "Due for review").',
     sectionLabel: (n: number) => `Section ${n}`,
     weight: (w: string) => `Exam weight ${w}`,
     caseStudies: 'Case studies',
@@ -281,7 +278,7 @@ export const EN = {
   labs: {
     title: 'Hands-on labs',
     lead: (done: number, total: number) => `${done} of ${total} labs finished. Every lab uses its own resource group in Azure Cloud Shell (Bash).`,
-    beforeTitle: 'Before you start',
+    beforeTitle: 'Before you start: cost and safety',
     before: [
       'Use your own test subscription, never one that belongs to work. Open Cloud Shell in the portal (the >_ icon) and choose Bash.',
       'Run one step at a time and read its output. The variables ($RG, $SA…) last only for the Cloud Shell session: after a break, run the lines that set them again.',
@@ -299,6 +296,18 @@ export const EN = {
     cleanupNote: 'Do this last. It deletes only what this lab made. Check in the portal that the resource group is gone.',
     remember: 'For the exam',
     checklist: 'Skills checklist →',
+  },
+
+  guide: {
+    title: 'How to study',
+    topics: 'Topics',
+    open: 'Open this page →',
+  },
+
+  update: {
+    text: 'A new version of the app is ready.',
+    now: 'Update now',
+    later: 'Later',
   },
 
   keys: {
@@ -613,9 +622,6 @@ export const ROMAN: UiText = {
     allQuestions: 'Tamam sawal',
     title: 'Study',
     skillsTitle: 'Official exam skills (17 April 2026)',
-    howToLabel: 'Kaise parhein:',
-    howTo:
-      'koi section chunein, har sawal parhein aur pehle khud sochein, phir "Jawab dikhayen" dabayen. Jab samajh aa jaye to "Mujhe samajh aa gaya" par tick karein. Mushkil sawal ☆ se bookmark karein aur "Bookmarked" filter se dohrayen. Revision ke liye Flashcards use karein: har card ko Again / Hard / Good rate karein, aur woh waqt aane par wapas aata hai (filter "Review ke liye due").',
     sectionLabel: (n: number) => `Section ${n}`,
     weight: (w: string) => `Exam weight ${w}`,
     caseStudies: 'Case studies',
@@ -706,7 +712,7 @@ export const ROMAN: UiText = {
   labs: {
     title: 'Hands-on labs',
     lead: (done: number, total: number) => `${total} mein se ${done} labs mukammal. Har lab Azure Cloud Shell (Bash) mein apna resource group use karti hai.`,
-    beforeTitle: 'Shuru karne se pehle',
+    beforeTitle: 'Shuru karne se pehle: kharcha aur hifazat',
     before: [
       'Apni test subscription use karein, office wali kabhi nahi. Portal mein Cloud Shell (>_ icon) kholein aur Bash chunein.',
       'Ek waqt mein ek step chalayen aur output parhein. Variables ($RG, $SA…) sirf Cloud Shell session tak rehte hain: waqfe ke baad unhein set karne wali lines dobara chalayen.',
@@ -724,6 +730,18 @@ export const ROMAN: UiText = {
     cleanupNote: 'Aakhir mein karein. Sirf is lab ki banayi cheezein delete hoti hain. Portal mein dekhein ke resource group khatam ho gaya.',
     remember: 'Exam ke liye',
     checklist: 'Skills ki checklist →',
+  },
+
+  guide: {
+    title: 'Kaise parhein (guide)',
+    topics: 'Topics',
+    open: 'Yeh page kholein →',
+  },
+
+  update: {
+    text: 'App ka naya version tayyar hai.',
+    now: 'Abhi update karein',
+    later: 'Baad mein',
   },
 
   keys: {
@@ -776,7 +794,7 @@ export const ROMAN: UiText = {
     show: 'Jawab dekhein',
     hide: 'Jawab chhupayen',
     markRead: 'Maine yeh section parh liya',
-    markHint: 'Plan mein bhi is section ki skills par "Parh liya" lag jata hai.',
+    markHint: 'Plan mein bhi is section ki skills par "Parha" lag jata hai.',
     study: 'Is section ke sawal →',
     practice: 'Is section ki practice',
     cards: 'Yaad rakhne wali tables aur commands',

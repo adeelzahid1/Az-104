@@ -13,18 +13,21 @@ import {
 } from '@angular/router';
 import { Busy } from './core/busy';
 import { Display } from './core/display';
+import { Guide } from './core/guide';
 import { Shortcuts, registerShortcuts } from './core/shortcuts';
 import { Language } from './i18n/language';
 import { Lang } from './i18n/ui-text';
 import { FullScreenButton } from './shared/full-screen-button';
+import { GuideDialog } from './shared/guide-dialog';
 import { ShortcutHelp } from './shared/shortcut-help';
+import { UpdateBanner } from './shared/update-banner';
 
 const pathOf = (url: string): string => url.split(/[?#]/)[0];
 
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, FullScreenButton, ShortcutHelp],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, FullScreenButton, GuideDialog, ShortcutHelp, UpdateBanner],
   templateUrl: './app.html',
   styleUrl: './app.css',
   host: {
@@ -40,6 +43,7 @@ export class App {
   private readonly document = inject(DOCUMENT);
   protected readonly shortcuts = inject(Shortcuts);
   protected readonly display = inject(Display);
+  protected readonly guide = inject(Guide);
 
   protected readonly t = this.language.t;
   protected readonly lang = this.language.lang;
@@ -93,6 +97,7 @@ export class App {
         const tk = this.t().keys;
         return [
           { keys: ['?'], label: tk.title, run: () => this.shortcuts.helpOpen.set(true) },
+          { keys: ['h'], label: this.t().guide.title, run: () => this.openGuide() },
           { keys: ['f'], label: tk.full, run: () => this.display.toggleFullScreen() },
           {
             keys: ['Escape'],
@@ -117,6 +122,10 @@ export class App {
 
   private searchBox(): HTMLInputElement | null {
     return this.document.querySelector<HTMLInputElement>('main input[type=search]');
+  }
+
+  protected openGuide(): void {
+    this.guide.open(this.router.url);
   }
 
   protected onScroll(): void {

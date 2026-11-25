@@ -184,6 +184,22 @@ nav a.opening {
   align-items: center;
 }
 
+.guide {
+  position: relative;
+}
+
+/* Not opened yet. */
+.guide.new::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bad);
+}
+
 .to-top {
   position: fixed;
   right: 18px;
@@ -255,6 +271,12 @@ nav a.opening {
   }
 
   .hint {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand span:last-child {
     display: none;
   }
 }

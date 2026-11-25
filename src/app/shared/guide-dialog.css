@@ -1,0 +1,134 @@
+dialog {
+  width: min(980px, calc(100vw - 24px));
+  height: min(720px, calc(100vh - 32px));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  overflow: hidden;
+}
+
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+h2 {
+  margin: 0;
+}
+
+header .btn {
+  flex: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+nav {
+  padding: 12px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+nav button {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+nav button:hover {
+  background: var(--surface-2);
+}
+
+nav button.on {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  line-height: 1.6;
+}
+
+h3 {
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+}
+
+.lead {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+ol {
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.tip {
+  padding: 10px 14px;
+  border-left: 4px solid var(--ok);
+  border-radius: 8px;
+  background: var(--ok-soft);
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  nav {
+    display: flex;
+    gap: 6px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav button {
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .body {
+    padding: 16px;
+  }
+}

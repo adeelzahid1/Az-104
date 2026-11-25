@@ -101,9 +101,6 @@
     @if (skills().length) {
       <p [class.full-hide]="mode() === 'cards'"><a routerLink="/notes" [queryParams]="{ s: selected() }">📖 {{ ts.toNotes }}</a></p>
     }
-    @if (mode() === 'list') {
-      <p class="howto full-hide"><strong>{{ ts.howToLabel }}</strong> {{ ts.howTo }}</p>
-    }
 
     @if (skills().length) {
       <details class="card skills" [class.full-hide]="mode() === 'cards'">

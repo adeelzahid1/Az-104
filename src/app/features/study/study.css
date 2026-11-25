@@ -117,20 +117,6 @@
   display: none;
 }
 
-.howto {
-  margin: 0 0 14px;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--ok);
-  border-radius: 10px;
-  background: var(--ok-soft);
-  line-height: 1.55;
-}
-
-.howto strong {
-  color: var(--ok);
-}
-
 .skills summary {
   cursor: pointer;
   font-weight: 600;

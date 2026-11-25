@@ -3,14 +3,14 @@
 <h1>{{ tl.title }}</h1>
 <p class="muted">{{ tl.lead(finished(), labs().length) }}</p>
 
-<section class="card warn">
-  <h2>{{ tl.beforeTitle }}</h2>
+<details class="card warn">
+  <summary class="name">⚠️ {{ tl.beforeTitle }}</summary>
   <ul>
     @for (x of tl.before; track $index) {
       <li>{{ x }}</li>
     }
   </ul>
-</section>
+</details>
 
 @for (l of labs(); track l.id) {
   <details class="card" [open]="lab() === l.id">

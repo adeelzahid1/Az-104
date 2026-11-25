@@ -1,0 +1,161 @@
+[
+  {
+    "id": "start",
+    "icon": "🧭",
+    "t": ["Start here", "Yahan se shuru karein"],
+    "path": "/plan",
+    "lead": ["The order that works: **understand, practise, repeat, test.**", "Kaamyab tarteeb: **samjhein, practice karein, dohrayen, test dein.**"],
+    "steps": [
+      ["**Plan**: set your exam date and the minutes you have each day. The page then gives you today's work.", "**Plan**: exam ki date aur rozana ke minute set karein. Phir page aaj ka kaam khud batata hai."],
+      ["**Notes**: read one section until you could explain it to a friend.", "**Notes**: ek section parhein, itna ke kisi dost ko samjha sakein."],
+      ["**Study**: answer the questions of the same section.", "**Study**: usi section ke sawal karein."],
+      ["**Labs**: do the lab of the section, if it has one. What you've clicked yourself stays in your head.", "**Labs**: section ki lab ho to karein. Jo khud kiya ho woh yaad rehta hai."],
+      ["**Practice**: 10 to 20 mixed questions, and read every explanation, also when you were right.", "**Practice**: 10 se 20 mile jule sawal, aur har explanation parhein, jawab sahi ho tab bhi."],
+      ["**Flashcards** every day: only the cards that are due.", "**Flashcards** rozana: sirf woh cards jin ki bari aayi ho."],
+      ["**Mock exam** once a week, then **Weak areas**.", "Hafte mein ek **Mock exam**, phir **Weak areas**."]
+    ],
+    "tip": ["Short and daily beats long and rare: 45 minutes every day is better than 5 hours on Sunday.", "Thora aur rozana behtar hai: har din 45 minute, Itwar ke 5 ghanton se ache hain."]
+  },
+  {
+    "id": "notes",
+    "icon": "📖",
+    "t": ["Reading the notes", "Notes kaise parhein"],
+    "path": "/notes",
+    "lead": ["Don't just read: **ask, answer, write.**", "Sirf na parhein: **poochein, jawab dein, likhein.**"],
+    "steps": [
+      ["First look at the headings under *On this page*. Ask yourself what you know already.", "Pehle *Is page par* ki headings dekhein. Khud se poochein kya pehle se pata hai."],
+      ["Read slowly, one heading at a time. After each one, look away and say it in your own words.", "Aahista parhein, ek waqt mein ek heading. Har ek ke baad nazar hata kar apne lafzon mein kahein."],
+      ["The boxes: 💡 **Example** shows the rule at work, 📍 **Where** is the portal menu, ⚠️ **Trap** is what the exam likes to ask.", "Boxes: 💡 **Misaal** mein rule kaam karta dikhta hai, 📍 **Kahan** portal ka menu hai, ⚠️ **Jaal** woh jo exam poochta hai."],
+      ["Answer the *Check yourself* questions **before** you open the answer.", "*Khud ko parkhein* ke sawal ka jawab **pehle** khud dein, phir kholein."],
+      ["Write three lines on paper: the rule, one number, one trap.", "Kaghaz par teen lines likhein: rule, ek number, ek jaal."],
+      ["Tick *I have read this section*. It counts in your Plan.", "*Maine yeh section parh liya* tick karein. Plan mein gina jata hai."],
+      ["Read the tables at the bottom last, and come back to the section after a few days.", "Neeche ki tables aakhir mein parhein, aur chand din baad section par wapas aayen."]
+    ],
+    "tip": ["Lost? Use the search: it looks in all 29 sections.", "Kuch dhoondna ho to search karein: tamam 29 sections mein dekhta hai."]
+  },
+  {
+    "id": "study",
+    "icon": "🎓",
+    "t": ["Study questions", "Study ke sawal"],
+    "path": "/study",
+    "lead": ["For learning, without marks or time.", "Seekhne ke liye, number aur waqt ke baghair."],
+    "steps": [
+      ["Choose a section. Start with the level *Basic*, then *Inter* and *Adv*.", "Section chunein. Pehle level *Basic*, phir *Inter* aur *Adv*."],
+      ["Read the question and **decide on an answer** before you press *Show answer*.", "Sawal parhein aur *Jawab dikhayen* dabane se pehle **apna jawab tay karein**."],
+      ["Read why the right option is right **and why the others are wrong**. That's where the exam points are.", "Parhein ke sahi option kyun sahi hai **aur baqi kyun ghalat**. Exam ke number wahin hain."],
+      ["Clear? Tick *I understand this*. Hard? Press ☆ and find it later under *Bookmarked*.", "Samajh aa gaya? *Mujhe samajh aa gaya* tick karein. Mushkil? ☆ dabayen, baad mein *Bookmarked* mein milega."],
+      ["*Not understood yet* shows what is left, *My quiz mistakes* what you answered wrong.", "*Abhi samajh nahi aaye* baqi sawal dikhata hai, *Meri quiz ghaltiyan* ghalat jawab wale."],
+      ["*Concept questions* test the idea itself. Do them before the long scenarios.", "*Concept wale sawal* asal baat parakhte hain. Lambe scenarios se pehle yeh karein."]
+    ],
+    "tip": ["Still unclear after the explanation? Open the Microsoft Learn link under it.", "Explanation ke baad bhi samajh na aaye to us ke neeche Microsoft Learn ka link kholein."]
+  },
+  {
+    "id": "cards",
+    "icon": "🗂️",
+    "t": ["Flashcards", "Flashcards"],
+    "path": "/study",
+    "params": { "s": "all", "f": "due", "m": "cards" },
+    "lead": ["Short daily revision. The app decides when a card comes back.", "Rozana ki choti revision. Card kab wapas aaye, app tay karti hai."],
+    "steps": [
+      ["In Study choose *Flashcards*. Press `F` for full screen.", "Study mein *Flashcards* chunein. Full screen ke liye `F`."],
+      ["Say the answer, then press `Space`.", "Jawab bolein, phir `Space` dabayen."],
+      ["Rate honestly: `1` **Again** didn't know, `2` **Hard** knew with effort, `3` **Good** knew at once.", "Imandari se rating dein: `1` **Again** nahi aata tha, `2` **Hard** mushkil se aaya, `3` **Good** foran aaya."],
+      ["*Again* comes back in this round. *Hard* and *Good* come back after days, and the gap grows each time.", "*Again* isi round mein wapas aata hai. *Hard* aur *Good* kuch din baad, aur waqfa har dafa barhta hai."],
+      ["Every day: the filter *Due for review*, until it's empty.", "Rozana: filter *Review ke liye due*, jab tak khaali na ho jaye."],
+      ["`←` `→` move between cards without rating, `S` shuffles. On a phone, swipe.", "`←` `→` rating ke baghair card badalte hain, `S` shuffle. Phone par swipe karein."]
+    ],
+    "tip": ["An honest *Again* helps more than a kind *Good*.", "Imandar *Again*, narm *Good* se zyada faida deta hai."]
+  },
+  {
+    "id": "practice",
+    "icon": "✍️",
+    "t": ["Practice", "Practice"],
+    "path": "/practice",
+    "lead": ["Answer, check, learn. Every answer is explained at once.", "Jawab dein, check karein, seekhein. Har jawab ki explanation foran."],
+    "steps": [
+      ["Pick one domain after reading its notes; later mix all five.", "Notes parhne ke baad ek domain chunein; baad mein paanchon milayen."],
+      ["10 to 20 questions are enough for one sitting.", "Ek baithak mein 10 se 20 sawal kaafi hain."],
+      ["Answer with `A`–`E` or `1`–`5`, `Y` / `N` for statements, and `Enter` to check and go on.", "Jawab `A`–`E` ya `1`–`5`, statements ke liye `Y` / `N`, aur check aur aage ke liye `Enter`."],
+      ["For every mistake ask: *didn't I know it, or did I read it wrong?* The two need different cures.", "Har ghalti par poochein: *pata nahi tha, ya ghalat parha?* Dono ka ilaj alag hai."],
+      ["Tick *Only questions I got wrong last time* to clear your mistakes.", "Ghaltiyan khatam karne ke liye *Sirf woh sawal jo pichli baar ghalat hue* tick karein."]
+    ],
+    "tip": ["Aim for **80% and more** in a section with at least 10 answers. Plan then marks it.", "Section mein kam se kam 10 jawab ke sath **80% ya zyada** ka hadaf rakhein. Plan usay mark kar deta hai."]
+  },
+  {
+    "id": "mock",
+    "icon": "⏱️",
+    "t": ["Taking a mock exam", "Mock exam kaise dein"],
+    "path": "/mock",
+    "lead": ["A rehearsal. Treat it like the real thing.", "Asal exam ki rehearsal. Bilkul asal samajh kar dein."],
+    "steps": [
+      ["Choose **50 questions, timed**. Phone away, no notes, full screen (`F`).", "**50 sawal, timed** chunein. Phone door, notes band, full screen (`F`)."],
+      ["Read the **last sentence first**: what is asked? Then the rest, looking for words such as *minimum cost*, *least privilege*, *least administrative effort*.", "**Pehle aakhri jumla** parhein: kya poocha hai? Phir baqi, aur *minimum cost*, *least privilege*, *least administrative effort* jaise lafz dhoondein."],
+      ["Strike out what can't be right, then choose. Not sure? Choose anyway, press `M` **Mark for review**, and go on.", "Jo sahi nahi ho sakta usay nikaalein, phir chunein. Shak ho to bhi chunein, `M` **Review ke liye nishaan** dabayen, aur aage barhein."],
+      ["About **2 minutes** per question. Halfway through the time you should be past half of the questions.", "Har sawal par taqreeban **2 minute**. Aadha waqt guzre to aadhe se zyada sawal ho chuke hon."],
+      ["On the review screen open the marked and unanswered questions. **Never leave one empty.**", "Review screen par marked aur khaali sawal kholein. **Koi sawal khaali na chhorein.**"],
+      ["In problem-solution sets you can't go back, and parts close when you leave them.", "Problem-solution sets mein wapas nahi ja sakte, aur part chhorne par band ho jata hai."],
+      ["Afterwards read **every wrong answer**, then practise the weakest domain the same day.", "Baad mein **har ghalat jawab** parhein, phir usi din sab se kamzor domain ki practice."]
+    ],
+    "tip": ["Ready for the exam: two or three mocks in a row above **800**, and no domain below 70%.", "Exam ke liye tayyar: lagatar do teen mocks **800** se upar, aur koi domain 70% se kam nahi."]
+  },
+  {
+    "id": "exam",
+    "icon": "🏁",
+    "t": ["The real exam", "Asal exam"],
+    "path": "/plan",
+    "lead": ["What Microsoft says about the exam (checked on 26 November 2026).", "Microsoft exam ke bare mein kya kehta hai (26 November 2026 ko check kiya)."],
+    "steps": [
+      ["**100 minutes** (120 if it has labs), usually 40 to 60 questions, pass mark **700 of 1000**. 700 isn't the same as 70%.", "**100 minute** (labs hon to 120), aam tor par 40 se 60 sawal, pass **1000 mein se 700**. 700 ka matlab 70% nahi."],
+      ["**No points are taken off** for wrong answers, and most questions with several parts give a point per correct part. Answer everything.", "Ghalat jawab par **number nahi kat-te**, aur kai hisson wale aksar sawalon mein har sahi hisse ka number milta hai. Sab ka jawab dein."],
+      ["**Online**: check in from 30 minutes before. Government ID whose name matches your profile exactly, a closed room, an empty desk, no second monitor, phone out of reach. Run the system test days before.", "**Online**: 30 minute pehle se check in. Government ID jis ka naam profile se bilkul mile, band kamra, khaali mez, doosra monitor nahi, phone door. System test kai din pehle karein."],
+      ["**Microsoft Learn is open** during the exam, but the clock keeps running. Use it for one or two details, not for learning. Q&A and practice assessments are blocked.", "Exam mein **Microsoft Learn khula hota hai**, lekin waqt chalta rehta hai. Ek do tafseel ke liye, seekhne ke liye nahi. Q&A aur practice assessments band hain."],
+      ["**Breaks** are allowed and the clock runs on. Questions you saw before the break can't be opened again, so finish them first.", "**Break** le sakte hain, waqt chalta rehta hai. Break se pehle dekhe sawal dobara nahi khulte, is liye pehle mukammal karein."],
+      ["**Try the sandbox** beforehand (aka.ms/examdemo): it shows every type of question.", "Pehle **sandbox** azmayen (aka.ms/examdemo): har qism ka sawal dikhata hai."],
+      ["**Not passed?** Wait 24 hours, after that 14 days between attempts, five attempts in 12 months. **Passed?** Renew every year, free and online.", "**Fail ho jayen?** 24 ghante rukein, phir har koshish mein 14 din, 12 mahine mein paanch koshishein. **Pass?** Har saal free aur online renew."]
+    ],
+    "tip": ["The last evening: only the cheat sheet, then sleep. In the exam, the first thought is often right; change it only for a reason.", "Aakhri shaam: sirf cheat sheet, phir neend. Exam mein pehla khayal aksar sahi hota hai; wajah ho tabhi badlein."]
+  },
+  {
+    "id": "labs",
+    "icon": "🧪",
+    "t": ["Labs", "Labs"],
+    "path": "/labs",
+    "lead": ["Real work in Azure Cloud Shell, with your own test subscription.", "Azure Cloud Shell mein asal kaam, apni test subscription ke sath."],
+    "steps": [
+      ["Set a **budget alert** first, and look at the cost label of the lab.", "Pehle **budget alert** lagayen, aur lab ka cost label dekhein."],
+      ["Open the portal, click `>_` and choose Bash. Run one step at a time.", "Portal kholein, `>_` par click karein aur Bash chunein. Ek waqt mein ek step."],
+      ["Before each command, say what it will do. After it, find the result in the portal.", "Har command se pehle kahein yeh kya karegi. Baad mein portal mein nateeja dhoondein."],
+      ["An error? Read it. Finding the cause is exam practice.", "Error aaye? Parhein. Wajah dhoondna exam ki practice hai."],
+      ["Run **Clean up the same day** and check that the resource group is gone.", "**Cleanup usi din** chalayen aur dekhein ke resource group khatam ho gaya."]
+    ],
+    "tip": ["Finishing a lab ticks *Lab done* for its skills in your Plan.", "Lab mukammal karne par Plan mein us ki skills par *Lab ki* lag jata hai."]
+  },
+  {
+    "id": "weak",
+    "icon": "📊",
+    "t": ["Weak areas and cheat sheet", "Kamzor areas aur cheat sheet"],
+    "path": "/weak-areas",
+    "lead": ["Work where the points are missing.", "Wahan kaam karein jahan number kam hain."],
+    "steps": [
+      ["Open *Weak areas* after every practice set and take the lowest subtopic.", "Har practice ke baad *Weak areas* kholein aur sab se neeche wala subtopic lein."],
+      ["Read its notes again, then practise only that subtopic.", "Us ke notes dobara parhein, phir sirf usi subtopic ki practice."],
+      ["Clear your open mistakes before you learn new things.", "Naya seekhne se pehle purani ghaltiyan khatam karein."],
+      ["Use the **cheat sheet** in the last two weeks: ten minutes a day, one topic.", "**Cheat sheet** aakhri do hafte: rozana das minute, ek topic."]
+    ],
+    "tip": ["A weak domain with a high weight (identity, compute) gives the most points back.", "Zyada weight wala kamzor domain (identity, compute) sab se zyada number wapas deta hai."]
+  },
+  {
+    "id": "app",
+    "icon": "⚙️",
+    "t": ["Using this app", "App ka istemal"],
+    "path": "/",
+    "lead": ["Small things that save time.", "Choti baatein jo waqt bachati hain."],
+    "steps": [
+      ["`?` lists the keyboard shortcuts, `F` is full screen, `I` light or dark, `L` English or Roman Urdu, `H` this guide.", "`?` keyboard shortcuts ki list, `F` full screen, `I` light ya dark, `L` English ya Roman Urdu, `H` yeh guide."],
+      ["After the first visit the app also works **offline**. When a new version is ready, a message at the bottom offers it.", "Pehli dafa ke baad app **offline** bhi chalti hai. Naya version tayyar ho to neeche paigham aata hai."],
+      ["Your progress is saved **only in this browser**. Export it on the Dashboard once a week, and before you clear browser data.", "Progress **sirf isi browser** mein hai. Hafte mein ek dafa Dashboard se Export karein, aur browser data saaf karne se pehle bhi."],
+      ["To continue on another device, import that file there.", "Doosre device par jari rakhne ke liye wahan woh file Import karein."]
+    ],
+    "tip": ["The content is original and based on Microsoft Learn; it isn't an exam dump. When in doubt, Learn decides.", "Mawad original hai aur Microsoft Learn par mabni; exam dump nahi. Shak ho to Learn ki baat maanein."]
+  }
+]

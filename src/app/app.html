@@ -4,7 +4,7 @@
 <a class="skip" href="#main">{{ tx.skip }}</a>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" routerLink="/">
+    <a class="brand" routerLink="/" aria-label="AZ-104 Prep">
       <span class="logo" aria-hidden="true">A</span>
       <span>AZ-104 Prep</span>
     </a>
@@ -26,6 +26,16 @@
         }
       </nav>
       <div class="tools">
+        <button
+          type="button"
+          class="icon guide"
+          [class.new]="!guide.seen()"
+          [title]="tx.guide.title + ' (H)'"
+          [attr.aria-label]="tx.guide.title"
+          (click)="openGuide()"
+        >
+          <span aria-hidden="true">💡</span>
+        </button>
         <app-full-screen-button [compact]="true" />
         <button type="button" class="icon" [title]="tx.keys.theme" [attr.aria-label]="tx.keys.theme" (click)="display.toggleTheme()">
           ◐
@@ -75,4 +85,8 @@
     ↑
   </button>
 }
+<app-update-banner />
 <app-shortcut-help />
+@defer (when guide.wanted(); prefetch on idle) {
+  <app-guide-dialog />
+}

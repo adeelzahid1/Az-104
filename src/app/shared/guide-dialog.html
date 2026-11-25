@@ -1,0 +1,43 @@
+@let tg = t().guide;
+@let g = shown();
+
+<dialog
+  #dialog
+  aria-labelledby="guide-title"
+  (close)="guide.isOpen.set(false)"
+  (click)="closeOnBackdrop($event, dialog)"
+>
+  <header>
+    <h2 id="guide-title">{{ tg.title }}</h2>
+    <button type="button" class="btn small" (click)="dialog.close()">✕ {{ t().keys.close }}</button>
+  </header>
+
+  <div class="grid">
+    <nav [attr.aria-label]="tg.topics">
+      @for (x of topics(); track x.id) {
+        <button
+          type="button"
+          [class.on]="x.id === g.id"
+          [attr.aria-current]="x.id === g.id ? 'true' : null"
+          (click)="choose(x.id)"
+        >
+          <span aria-hidden="true">{{ x.icon }}</span> {{ x.title }}
+        </button>
+      }
+    </nav>
+
+    <section class="body" tabindex="0" [attr.aria-label]="g.title">
+      <h3>
+        <span aria-hidden="true">{{ g.icon }}</span> {{ g.title }}
+      </h3>
+      <p class="lead"><app-rich-text [text]="g.lead" /></p>
+      <ol>
+        @for (s of g.steps; track $index) {
+          <li><app-rich-text [text]="s" /></li>
+        }
+      </ol>
+      <p class="tip"><span aria-hidden="true">💡</span> <app-rich-text [text]="g.tip" /></p>
+      <a class="btn primary" [routerLink]="g.path" [queryParams]="g.params" (click)="dialog.close()">{{ tg.open }}</a>
+    </section>
+  </div>
+</dialog>

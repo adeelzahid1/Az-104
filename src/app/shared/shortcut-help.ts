@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, viewChild } from '@angular/core';
 import { Shortcuts } from '../core/shortcuts';
 import { Language } from '../i18n/language';
+import { closeOnBackdrop } from './dialog';
 
 const SYMBOLS: Record<string, string> = {
   ArrowRight: '→',
@@ -16,7 +17,7 @@ const SYMBOLS: Record<string, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let tk = t().keys;
-    <dialog #dialog aria-labelledby="keys-title" (close)="shortcuts.helpOpen.set(false)" (click)="onClick($event)">
+    <dialog #dialog aria-labelledby="keys-title" (close)="shortcuts.helpOpen.set(false)" (click)="closeOnBackdrop($event, dialog)">
       <header>
         <h2 id="keys-title">{{ tk.title }}</h2>
         <button type="button" class="btn small" (click)="dialog.close()">{{ tk.close }}</button>
@@ -110,6 +111,7 @@ const SYMBOLS: Record<string, string> = {
 export class ShortcutHelp {
   protected readonly shortcuts = inject(Shortcuts);
   protected readonly t = inject(Language).t;
+  protected readonly closeOnBackdrop = closeOnBackdrop;
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   constructor() {
@@ -120,15 +122,5 @@ export class ShortcutHelp {
 
   protected show(key: string): string {
     return SYMBOLS[key] ?? (key.length === 1 ? key.toUpperCase() : key);
-  }
-
-  /** A click on the backdrop closes the list. */
-  protected onClick(event: MouseEvent): void {
-    const dialog = this.dialog().nativeElement;
-    if (event.target !== dialog) return;
-    const r = dialog.getBoundingClientRect();
-    const inside =
-      event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom;
-    if (!inside) dialog.close();
   }
 }
