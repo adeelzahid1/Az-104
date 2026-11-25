@@ -2289,14 +2289,14 @@
   "exp": "Health check har instance par aap ka chuna path, jaise /health, ping karta hai. Jo instance baar baar fail ho woh load balancer rotation se nikal jata hai (aur kharab rehne par badal diya jata hai). Auto heal aap ki shartein poori hone par restart karta hai, access restrictions callers filter karti hain, aur logging sirf events record karti hai."
  },
  "D3-191": {
-  "q": "Standard tier kitne deployment slots (production samet) deta hai?",
+  "q": "Standard tier mein ek app ke kitne staging slots ho sakte hain?",
   "opts": [
    "5",
    "20",
    "1",
    "10"
   ],
-  "exp": "Standard tier production samet 5 deployment slots deta hai, aur Premium 20. Free, Shared aur Basic slots support nahi karte, is liye agar staging slot chahiye to kam az kam Standard chahiye."
+  "exp": "Standard tier har app ke 5 staging slots deta hai, aur Premium aur Isolated 20. Free, Shared aur Basic slots support nahi karte, is liye staging slot chahiye to kam az kam Standard chahiye."
  },
  "D3-192": {
   "q": "Kaun si CLI command staging slot ko production se swap karti hai?",

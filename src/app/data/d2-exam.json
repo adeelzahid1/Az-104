@@ -911,15 +911,15 @@
    "The \"linux\" share is in a FileStorage (premium) account",
    "Linux clients can mount \"docs\" over NFS",
    "Windows clients can mount \"docs\" over SMB",
-   "The \"docs\" quota can grow past 5 TiB without enabling large file shares"
+   "The \"docs\" quota can grow past 5 TiB"
   ],
   "ans": [
    true,
    false,
    true,
-   false
+   true
   ],
-  "exp": "NFS shares only exist on premium FileStorage accounts, so the \"linux\" share is premium. \"docs\" is an SMB share, so Windows clients can mount it but Linux clients can't mount it over NFS. Standard shares are limited to 5 TiB unless large file shares are enabled.",
+  "exp": "NFS shares only exist on premium FileStorage accounts, so the \"linux\" share is premium. \"docs\" is an SMB share, so Windows clients can mount it but Linux clients can't mount it over NFS. Pay-as-you-go shares can grow up to 100 TiB, so the old 5 TiB limit no longer applies.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-planning"
  },
  {

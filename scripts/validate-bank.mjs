@@ -165,6 +165,26 @@ for (const [id, ro] of Object.entries(romanCases)) {
   }
 }
 
+// Cheat sheet: complete tables, text in both languages, every study section covered.
+const cheat = JSON.parse(readFileSync(join(DATA, 'cheatsheet.json'), 'utf8'));
+const bilingual = (x) =>
+  typeof x === 'string' || (Array.isArray(x) && x.length === 2 && x.every((s) => typeof s === 'string' && s.trim()));
+const covered = new Set();
+let cheatFacts = 0;
+for (const g of cheat) {
+  for (const c of g.cards) {
+    const fail = (msg) => errors.push(`cheatsheet ${g.id} "${[c.t].flat()[0]}": ${msg}`);
+    covered.add(c.s);
+    if (!sections.some((s) => s.id === c.s)) fail(`unknown section ${c.s}`);
+    if (c.link && !c.link.startsWith('https://learn.microsoft.com/')) fail('link must point to Microsoft Learn');
+    const texts = [c.t, ...(c.head ?? []), ...(c.rows ?? []).flat(), ...(c.list ?? []), ...(c.code ?? []).map((x) => x[1])];
+    if (!texts.every(bilingual)) fail('text must be a string or [English, Roman]');
+    if (c.rows?.some((r) => r.length !== c.head?.length)) fail('every row needs one cell per heading');
+    cheatFacts += (c.rows?.length ?? 0) + (c.list?.length ?? 0) + (c.code?.length ?? 0);
+  }
+}
+for (const s of sections) if (!covered.has(s.id)) errors.push(`cheatsheet: section ${s.id} has no card`);
+
 // The correct option must not be recognisable by its length, in English or in Roman Urdu.
 const MAX_STANDOUT_SHARE = 0.12;
 const romanById = Object.assign(
@@ -199,6 +219,7 @@ for (const [lang, optsOf] of [
 console.log(`Questions: ${counts.total}  Case studies: ${caseIds.size}`);
 console.log('Roman Urdu translated:', romanDone, `cases ${Object.keys(romanCases).length}/${caseIds.size}`);
 console.log('Study sections (excluding case studies):', sectionSizes);
+console.log(`Cheat sheet: ${cheat.reduce((n, g) => n + g.cards.length, 0)} cards, ${cheatFacts} entries`);
 console.log('Correct option noticeably longest:', standout);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);

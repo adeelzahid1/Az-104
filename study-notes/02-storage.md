@@ -35,7 +35,7 @@ Exam-focused cheat sheet. Pair with `question-bank/02-storage.md`.
 
 ### Keys & SAS
 - **2 access keys** → rotate without downtime; key rotation kills every SAS signed with that key.
-- **SAS types:** Account SAS (account-wide) · Service SAS (one service/object) · **User delegation SAS** (signed by Entra ID, **blob only** — most secure).
+- **SAS types:** Account SAS (account-wide) · Service SAS (one service/object) · **User delegation SAS** (signed by Entra ID; Blob, Queue, Table and Files — most secure).
 - SAS limits: expiry, permissions, **IP range**, **HTTPS-only**.
 - **Ad-hoc SAS can't be revoked individually** — only by rotating the key. → Create SAS from a **stored access policy** (max **5 per container**): edit/delete policy = instant revoke for all tokens tied to it.
 
@@ -70,7 +70,7 @@ Exam-focused cheat sheet. Pair with `question-bank/02-storage.md`.
 
 - SMB port **445** — often ISP-blocked → VPN/ExpressRoute (+ private endpoint) or Azure File Sync.
 - **NFS 4.1**: premium FileStorage only, Linux.
-- Standard share up to 5 TiB (100 TiB with large file shares); premium up to 100 TiB.
+- Pay-as-you-go (HDD) and provisioned v1 SSD shares: up to 100 TiB; provisioned v2: up to 256 TiB.
 - **Share snapshots**: read-only, incremental; Azure Backup for files = policy-driven snapshots.
 - **Azure File Sync:** Storage Sync Service → **sync group** → **1 cloud endpoint** (Azure share) + N **server endpoints** (Windows Server paths). **Cloud tiering** = hot files cached locally, cold files = stubs recalled on demand. Agent: Windows Server 2012 R2+.
 

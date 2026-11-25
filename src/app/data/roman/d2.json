@@ -874,9 +874,9 @@
    "\"linux\" share FileStorage (premium) account mein hai",
    "Linux clients \"docs\" ko NFS par mount kar sakte hain",
    "Windows clients \"docs\" ko SMB par mount kar sakte hain",
-   "\"docs\" ka quota large file shares enable kiye baghair 5 TiB se aage barh sakta hai"
+   "\"docs\" ka quota 5 TiB se aage barh sakta hai"
   ],
-  "exp": "NFS shares sirf premium FileStorage accounts par hote hain, is liye \"linux\" share premium hai. \"docs\" SMB share hai, is liye Windows clients usay mount kar sakte hain lekin Linux clients NFS par nahi. Standard shares large file shares enable na hon to 5 TiB tak mehdood hain."
+  "exp": "NFS shares sirf premium FileStorage accounts par hote hain, is liye \"linux\" share premium hai. \"docs\" SMB share hai, is liye Windows clients usay mount kar sakte hain lekin Linux clients NFS par nahi. Pay-as-you-go shares 100 TiB tak barh sakte hain, is liye purani 5 TiB ki had ab nahi."
  },
  "D2-240": {
   "q": "Yeh command kis qisam ka SAS banati hai?",
@@ -2194,14 +2194,14 @@
   "exp": "Standard (HDD) file shares transaction optimized, hot ya cool ho sakte hain, jo is hisaab se chune jate hain ke files kitni baar access hoti hain. Premium (SSD) shares FileStorage accounts mein hote hain. File shares ke liye archive available nahi."
  },
  "D2-181": {
-  "q": "Ek standard file share ko 5 TiB se zyada barhna hai. Aap kya enable karenge?",
+  "q": "Pay-as-you-go (HDD) Azure file share ka zyada se zyada size kya hai?",
   "opts": [
-   "Large file shares (100 TiB tak)",
-   "Premium tier",
-   "Versioning",
-   "Hierarchical namespace"
+   "100 TiB",
+   "5 TiB",
+   "500 TiB",
+   "1 TiB"
   ],
-  "exp": "Standard file shares 5 TiB tak mehdood hain jab tak aap storage account par large file shares enable na karein, jo limit 100 TiB tak barha deta hai. Premium shares alag account kind hain, aur versioning ya hierarchical namespace share ka size nahi badalte."
+  "exp": "Har pay-as-you-go Azure file share ab 100 TiB tak barh sakta hai. Purani 5 TiB ki had, jisay barhane ke liye large file shares setting chahiye thi, ab nahi rahi. Provisioned v2 shares us se bhi bare, 256 TiB tak, ho sakte hain."
  },
  "D2-182": {
   "q": "Windows machine par Azure file share kaise mount karte hain?",

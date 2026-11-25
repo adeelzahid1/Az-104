@@ -1,0 +1,134 @@
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.top h1 {
+  margin-bottom: 4px;
+}
+
+.top p {
+  margin: 0 0 14px;
+}
+
+.tools {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.search {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chips button {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.chips button.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.cards {
+  columns: 440px;
+  column-gap: 16px;
+  margin-bottom: 14px;
+}
+
+.card {
+  break-inside: avoid;
+}
+
+h3 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: var(--accent);
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  padding: 5px 10px 5px 0;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 0.93rem;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+dl {
+  margin: 0;
+}
+
+dt {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+dd {
+  margin: 2px 0 10px;
+}
+
+dd code {
+  display: block;
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 0.83rem;
+  overflow-wrap: anywhere;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 520px) {
+  .cards {
+    columns: auto;
+  }
+}

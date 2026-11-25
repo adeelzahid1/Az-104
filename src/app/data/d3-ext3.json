@@ -728,7 +728,7 @@
   "sub": "Deployment slots",
   "type": "mcq",
   "diff": 2,
-  "q": "How many deployment slots (including production) does the Standard tier allow?",
+  "q": "How many staging slots can an app have in the Standard tier?",
   "opts": [
    "5",
    "20",
@@ -738,7 +738,7 @@
   "ans": [
    0
   ],
-  "exp": "The Standard tier allows 5 deployment slots, counting production, and Premium allows 20. Free, Shared and Basic don't support slots, so if you need a staging slot, you need at least Standard.",
+  "exp": "The Standard tier allows 5 staging slots per app, and Premium and Isolated allow 20. Free, Shared and Basic don't support slots, so if you need a staging slot, you need at least Standard.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#app-service-limits"
  },
  {

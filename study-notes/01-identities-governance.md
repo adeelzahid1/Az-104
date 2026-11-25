@@ -58,7 +58,7 @@ Role assignment = **principal + role definition + scope**. Scopes: management gr
 - **Entra roles ≠ RBAC.** Global Admin has no Azure access by default; **elevate access** toggle → UAA at root `/` (temporary).
 - Custom roles: `Actions`, `NotActions` (subtract within the role — NOT a deny), `DataActions`, `AssignableScopes` (no `/` root for custom roles). Create: IAM → Roles → clone, or `az role definition create`.
 - Deny assignments: only created by Azure (Blueprints/managed apps), never directly by admins.
-- Best practice: assign roles to **groups** (limit: 4,000 assignments/subscription).
+- Best practice: assign roles to **groups** (limit: 5,000 assignments/subscription).
 - Deleted principal → "Identity not found" assignment remains.
 - Verify access: IAM → **Check access**.
 - CLI: `az role assignment create --assignee X --role Y --resource-group Z` · `az role assignment list --assignee X --all`.

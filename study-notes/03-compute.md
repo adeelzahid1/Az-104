@@ -72,13 +72,13 @@ Exam-focused cheat sheet. Pair with `question-bank/03-compute.md`.
 
 ## 5. App Service
 
-- **Plan** = region + compute size; all apps in a plan share instances. Tiers: Free/Shared (dev) → **Basic** (custom domain+SSL, manual scale) → **Standard** (autoscale, **5 slots**, backups) → **Premium** (more slots/scale, VNet features) → Isolated (ASE).
+- **Plan** = region + compute size; all apps in a plan share instances. Tiers: Free/Shared (dev) → **Basic** (custom domain+SSL, manual scale) → **Standard** (autoscale, **5 slots**) → **Premium** (more slots/scale, VNet features) → Isolated (ASE).
 - **Scale up** = tier/size; **scale out** = instances. **Autoscale = Standard+**.
 - **Deployment slots** (Standard+): deploy to staging → **swap** (pre-warmed, no downtime, instant rollback). Settings marked **"Deployment slot setting"** are sticky to the slot (e.g. prod connection string).
 - **Custom domain:** CNAME `www → app.azurewebsites.net` + TXT `asuid` verification (apex: A record + TXT). Then add **TLS binding**.
 - **Managed certificate (free):** auto-renew, **no wildcard**, not exportable, Basic+.
 - **Networking:** inbound restrictions = **Access restrictions** (IP rules); inbound private = **private endpoint**; outbound into your VNet = **regional VNet integration**; hybrid connections for single on-prem endpoints.
-- **Backup** (Standard+): scheduled, to a storage account.
+- **Backup** (Basic+): automatic (hourly, 30 days) or custom to a storage account.
 - Always On: keeps app warm (needed for continuous WebJobs).
 
 ---
@@ -92,7 +92,7 @@ Exam-focused cheat sheet. Pair with `question-bank/03-compute.md`.
 6. ADE Key Vault must be same region + subscription.
 7. Geo-replication of ACR = Premium.
 8. Multi-container ACI group = Linux only.
-9. Slots & backups = Standard+; autoscale = Standard+; manual scale = Basic.
+9. Slots & autoscale = Standard+; backups & manual scale = Basic+.
 10. Slot-sticky settings don't swap.
 
 📎 [Template docs](https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/) · [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) · [VM availability](https://learn.microsoft.com/en-us/azure/virtual-machines/availability) · [Disk types](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-types) · [VMSS](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview) · [ACR](https://learn.microsoft.com/en-us/azure/container-registry/) · [ACI](https://learn.microsoft.com/en-us/azure/container-instances/) · [Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/) · [App Service](https://learn.microsoft.com/en-us/azure/app-service/)

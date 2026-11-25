@@ -551,18 +551,18 @@
   "sub": "Azure Files",
   "type": "mcq",
   "diff": 3,
-  "q": "A standard file share must grow beyond 5 TiB. What do you enable?",
+  "q": "What is the maximum size of a pay-as-you-go (HDD) Azure file share?",
   "opts": [
-   "Large file shares (up to 100 TiB)",
-   "Premium tier",
-   "Versioning",
-   "Hierarchical namespace"
+   "100 TiB",
+   "5 TiB",
+   "500 TiB",
+   "1 TiB"
   ],
   "ans": [
    0
   ],
-  "exp": "Standard file shares are limited to 5 TiB unless you enable large file shares on the storage account, which raises the limit to 100 TiB. Premium shares are a different account kind, and versioning or hierarchical namespace don't change share size.",
-  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-how-to-create-file-share"
+  "exp": "Every pay-as-you-go Azure file share can now grow up to 100 TiB. The old 5 TiB limit, which needed the large file shares setting to be raised, no longer applies. Provisioned v2 shares can be even larger, up to 256 TiB.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-scale-targets"
  },
  {
   "id": "D2-182",

@@ -1,0 +1,105 @@
+@let tc = t().cheat;
+
+<header class="top">
+  <div>
+    <h1>{{ tc.title }}</h1>
+    <p class="muted">{{ tc.lead }}</p>
+  </div>
+  <button type="button" class="btn no-print" (click)="print()">{{ tc.print }}</button>
+</header>
+
+<div class="tools no-print">
+  <input
+    #box
+    type="search"
+    class="search"
+    [placeholder]="tc.search"
+    [attr.aria-label]="tc.search"
+    [value]="search()"
+    (input)="search.set(box.value)"
+  />
+  <div class="chips" role="group" [attr.aria-label]="tc.groups">
+    <button
+      type="button"
+      [class.on]="!group() && !search().trim()"
+      [attr.aria-pressed]="!group() && !search().trim()"
+      (click)="choose('')"
+    >
+      {{ tc.all }}
+    </button>
+    @for (c of chips(); track c.id) {
+      <button
+        type="button"
+        [class.on]="group() === c.id && !search().trim()"
+        [attr.aria-pressed]="group() === c.id && !search().trim()"
+        (click)="choose(c.id)"
+      >
+        {{ c.label }}
+      </button>
+    }
+  </div>
+</div>
+
+@if (search().trim()) {
+  <p class="muted" role="status">{{ tc.found(count()) }}</p>
+}
+
+@for (g of groups(); track g.id) {
+  <section>
+    <h2>{{ g.title }}</h2>
+    <div class="cards">
+      @for (c of g.cards; track c.id) {
+        <article class="card">
+          <h3>{{ c.title }}</h3>
+          @if (c.rows.length) {
+            <div class="scroll">
+              <table>
+                <thead>
+                  <tr>
+                    @for (h of c.head; track $index) {
+                      <th scope="col">{{ h }}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of c.rows; track $index) {
+                    <tr>
+                      @for (cell of row; track $index) {
+                        <td><app-rich-text [text]="cell" /></td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+          @if (c.code.length) {
+            <dl>
+              @for (x of c.code; track x.command) {
+                <dt>{{ x.note }}</dt>
+                <dd>
+                  <code>{{ x.command }}</code>
+                </dd>
+              }
+            </dl>
+          }
+          @if (c.list.length) {
+            <ul>
+              @for (x of c.list; track $index) {
+                <li><app-rich-text [text]="x" /></li>
+              }
+            </ul>
+          }
+          <p class="links no-print">
+            <a routerLink="/study" [queryParams]="{ s: c.section }">{{ tc.practise(c.section) }}</a>
+            @if (c.link) {
+              <a [href]="c.link" target="_blank" rel="noopener">{{ tc.learn }}</a>
+            }
+          </p>
+        </article>
+      }
+    </div>
+  </section>
+} @empty {
+  <p class="card">{{ tc.none }}</p>
+}

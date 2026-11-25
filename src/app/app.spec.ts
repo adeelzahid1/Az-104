@@ -21,6 +21,6 @@ describe('App', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('.brand')?.textContent).toContain('AZ-104 Prep');
-    expect(el.querySelectorAll('nav a').length).toBe(5);
+    expect(el.querySelectorAll('nav a').length).toBe(6);
   });
 });

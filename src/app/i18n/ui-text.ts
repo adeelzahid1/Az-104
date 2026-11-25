@@ -11,7 +11,7 @@ export const EN = {
   skip: 'Skip to content',
   footer:
     'Original practice questions written from Microsoft Learn documentation. Not affiliated with Microsoft. Your progress is saved only in this browser.',
-  nav: { dashboard: 'Dashboard', study: 'Study', practice: 'Practice', mock: 'Mock exam', weak: 'Weak areas' },
+  nav: { dashboard: 'Dashboard', study: 'Study', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Weak areas' },
   domains: {
     1: 'Manage Azure identities and governance',
     2: 'Implement and manage storage',
@@ -204,6 +204,19 @@ export const EN = {
     progress: (done: number, total: number) => `${done}/${total} understood`,
   },
 
+  cheat: {
+    title: 'Cheat sheet',
+    lead: 'Everything to remember for AZ-104 on one page: traps, keywords, comparisons, numbers and commands. Skills measured as of April 17, 2026.',
+    search: 'Search (e.g. archive, NSG, backup)',
+    groups: 'Topics',
+    all: 'All',
+    print: 'Print / save as PDF',
+    found: (n: number) => (n === 1 ? '1 card found' : `${n} cards found`),
+    none: 'Nothing found. Try another word.',
+    practise: (id: string) => `Practise section ${id} →`,
+    learn: 'Microsoft Learn ↗',
+  },
+
   dashboard: {
     reviewDue: 'Review now →',
     reviewBookmarked: 'See them →',
@@ -267,7 +280,7 @@ export const ROMAN: UiText = {
   skip: 'Content par jayen',
   footer:
     'Yeh original practice sawal Microsoft Learn documentation se likhe gaye hain. Microsoft se koi taluq nahi. Aap ki progress sirf isi browser mein save hoti hai.',
-  nav: { dashboard: 'Dashboard', study: 'Study', practice: 'Practice', mock: 'Mock exam', weak: 'Kamzor areas' },
+  nav: { dashboard: 'Dashboard', study: 'Study', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Kamzor areas' },
   domains: {
     1: 'Azure identities aur governance manage karna',
     2: 'Storage implement aur manage karna',
@@ -460,6 +473,19 @@ export const ROMAN: UiText = {
     deckDoneHint: 'Jo cards aap ne rate kiye woh waqt aane par wapas aayenge. Unhein dohrane ke liye "Review ke liye due" chunein.',
     restart: 'Dobara shuru karein',
     progress: (done: number, total: number) => `${total} mein se ${done} samajh aaye`,
+  },
+
+  cheat: {
+    title: 'Cheat sheet',
+    lead: 'AZ-104 ki yaad rakhne wali har cheez ek page par: traps, keywords, muqable, numbers aur commands. 17 April 2026 ke skills.',
+    search: 'Search karein (maslan archive, NSG, backup)',
+    groups: 'Topics',
+    all: 'Tamam',
+    print: 'Print / PDF save karein',
+    found: (n: number) => `${n} cards mile`,
+    none: 'Kuch nahi mila. Koi aur lafz likhein.',
+    practise: (id: string) => `Section ${id} ki practice →`,
+    learn: 'Microsoft Learn ↗',
   },
 
   dashboard: {
