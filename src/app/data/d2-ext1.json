@@ -6,7 +6,7 @@
   "diff": 1,
   "q": "By default, a newly created storage account accepts connections from:",
   "opts": [
-   "All networks (public network access enabled)",
+   "All networks",
    "Only the VNet it was created in",
    "No networks",
    "Only Microsoft services"
@@ -25,7 +25,7 @@
   "q": "Which CLI command adds a VNet subnet rule to a storage account firewall?",
   "opts": [
    "az storage account network-rule add --account-name st1 --vnet-name VNet1 --subnet SubnetA",
-   "az network vnet rule add --storage st1",
+   "az network vnet subnet rule add --storage-name st1 --vnet-name VNet1 --subnet SubnetA --allow",
    "az storage firewall add --subnet SubnetA",
    "az storage account update --allow-subnet SubnetA"
   ],
@@ -43,7 +43,7 @@
   "q": "After enabling the firewall with selected networks, an admin can't browse containers in the portal from home. Their data access works from Azure VMs. Why?",
   "opts": [
    "The portal requests come from the admin's public IP, which isn't in the IP rules",
-   "The admin needs Owner",
+   "The admin needs the Owner role to browse from outside the VNet",
    "Containers are private",
    "The account is premium"
   ],
@@ -61,9 +61,9 @@
   "q": "Can you add a private IP range (e.g., 10.0.0.0/8) to the storage firewall's IP rules to allow on-premises clients?",
   "opts": [
    "Yes",
-   "No — IP rules accept public IP addresses only; use VNet rules or private endpoints for private ranges",
+   "No — IP rules accept public IP addresses only",
    "Only for ZRS accounts",
-   "Only with ExpressRoute Microsoft peering"
+   "Only with ExpressRoute Microsoft peering enabled"
   ],
   "ans": [
    1
@@ -171,7 +171,7 @@
   "opts": [
    "Rejects requests made over HTTP (and SMB without encryption)",
    "Encrypts data at rest",
-   "Enables private endpoints",
+   "Forces all traffic to go through a private endpoint",
    "Requires MFA"
   ],
   "ans": [
@@ -262,7 +262,7 @@
    "Disable 'Allow storage account key access' (shared key authorization)",
    "Rotate keys daily",
    "Enable the firewall",
-   "Delete stored access policies"
+   "Delete every stored access policy and rotate both access keys daily"
   ],
   "ans": [
    0
@@ -279,7 +279,7 @@
   "opts": [
    "1 hour",
    "7 days (limited by the user delegation key)",
-   "30 days",
+   "30 days (limited by the account key rotation)",
    "Unlimited"
   ],
   "ans": [
@@ -315,7 +315,7 @@
   "opts": [
    "The SAS expired (se passed) or the signing key was rotated",
    "Storage account deleted",
-   "Wrong tier",
+   "The blob's tier was changed to cool by a lifecycle policy rule",
    "Blob was archived"
   ],
   "ans": [
@@ -332,7 +332,7 @@
   "q": "Which levels can have a stored access policy?",
   "opts": [
    "Container, file share, queue, table",
-   "Storage account only",
+   "Storage account, resource group",
    "Blob only",
    "Management group"
   ],
@@ -351,7 +351,7 @@
   "opts": [
    "It's permanently invalid",
    "It becomes valid again under the new p1's settings",
-   "It stays invalid for 30 days",
+   "It stays invalid until the partner signs it again",
    "It's converted to account SAS"
   ],
   "ans": [
@@ -408,7 +408,7 @@
   "opts": [
    "az storage account keys renew --account-name st1 --key primary",
    "az storage key regen st1",
-   "az storage account update --new-key",
+   "az storage account update --name st1 --new-key primary --force",
    "az keyvault key rotate"
   ],
   "ans": [
@@ -425,8 +425,8 @@
   "q": "Which role lets a user list storage account access keys?",
   "opts": [
    "Reader",
-   "Storage Account Key Operator Service Role (or Contributor/Owner)",
-   "Storage Blob Data Reader",
+   "Storage Account Key Operator Service Role",
+   "Storage Blob Data Reader with delegation",
    "Monitoring Reader"
   ],
   "ans": [
@@ -442,8 +442,8 @@
   "diff": 2,
   "q": "What does a key expiration policy on a storage account do?",
   "opts": [
-   "Automatically rotates keys",
-   "Flags keys that are older than the set interval (in Azure Policy/Advisor) so you know to rotate them",
+   "Rotates keys automatically at the set interval",
+   "Flags keys that are older than the set interval",
    "Deletes keys",
    "Blocks SAS"
   ],
@@ -496,7 +496,7 @@
   "diff": 2,
   "q": "An app must read messages from an Azure Storage queue using Entra ID. Which role?",
   "opts": [
-   "Storage Queue Data Message Processor (or Queue Data Reader)",
+   "Storage Queue Data Message Processor",
    "Storage Blob Data Reader",
    "Reader",
    "Storage File Data SMB Share Reader"
@@ -535,7 +535,7 @@
    "Default to Microsoft Entra authorization in the Azure portal",
    "Secure transfer",
    "Hierarchical namespace",
-   "Allow blob anonymous access"
+   "Allow blob anonymous access for signed-in Azure portal users"
   ],
   "ans": [
    0
@@ -569,7 +569,7 @@
   "q": "Administrators must change NTFS permissions on folders in an Azure file share. Which share-level role do they need?",
   "opts": [
    "Storage File Data SMB Share Elevated Contributor",
-   "Storage File Data SMB Share Reader",
+   "Storage File Data SMB Share Contributor (Modify)",
    "Reader",
    "Storage Blob Data Owner"
   ],
@@ -587,7 +587,7 @@
   "q": "All authenticated identities should get the same share-level permission without individual assignments. What do you use?",
   "opts": [
    "Default share-level permission",
-   "Anonymous access",
+   "Anonymous access at share level",
    "An account SAS",
    "A lifecycle rule"
   ],
@@ -604,8 +604,8 @@
   "diff": 2,
   "q": "To enable on-premises AD DS authentication for Azure Files, the storage account must be:",
   "opts": [
-   "Joined/registered to the AD DS domain as a computer or service logon account (for example, with the AzFilesHybrid module)",
-   "Converted to premium",
+   "Joined/registered to the AD DS domain as a computer or service logon account",
+   "Converted to a premium FileStorage account and moved into the domain controller's VNet",
    "Moved to a different tenant",
    "Configured with RA-GRS"
   ],
@@ -623,7 +623,7 @@
   "q": "Which identities must users have for AD DS authentication to Azure Files to work?",
   "opts": [
    "Hybrid identities synced to Entra ID via Entra Connect",
-   "Cloud-only accounts",
+   "Cloud-only accounts that hold an Entra ID P2 license",
    "Guest accounts",
    "Local accounts"
   ],
@@ -682,7 +682,7 @@
    "Read blobs and list the blobs in the container",
    "Write blobs",
    "Delete the container",
-   "Only read the container metadata"
+   "Read only the container metadata, not its blobs"
   ],
   "ans": [
    0
@@ -700,7 +700,7 @@
   "opts": [
    "Yes, a valid SAS always works",
    "No, the firewall still blocks traffic from networks that aren't allowed",
-   "Yes, if HTTPS",
+   "Yes, as long as the request uses HTTPS and the SAS is unexpired",
    "Only for reads"
   ],
   "ans": [
@@ -717,7 +717,7 @@
   "q": "Which authorization method does Microsoft recommend for blob access from Azure-hosted apps?",
   "opts": [
    "Microsoft Entra ID with managed identities",
-   "Account keys in config files",
+   "Account keys stored in encrypted app settings",
    "Anonymous access",
    "Account SAS embedded in code"
   ],
@@ -754,7 +754,7 @@
   "q": "How do you invalidate all user delegation SAS tokens immediately?",
   "opts": [
    "Revoke all user delegation keys for the account",
-   "Rotate the account keys",
+   "Rotate both of the account's access keys",
    "Delete the containers",
    "Disable soft delete"
   ],
@@ -772,7 +772,7 @@
   "q": "Which statement about CORS on a storage account is correct?",
   "opts": [
    "CORS rules let browser apps from specific origins call storage endpoints",
-   "CORS controls the storage firewall",
+   "CORS rules control which networks can pass through the storage firewall",
    "CORS replaces SAS",
    "CORS encrypts data"
   ],
@@ -848,7 +848,7 @@
   "opts": [
    "A managed identity (system- or user-assigned) with key permissions",
    "The account key",
-   "A guest user",
+   "A guest user with the Key Vault Administrator role on the vault",
    "The subscription owner"
   ],
   "ans": [
@@ -882,7 +882,7 @@
   "diff": 2,
   "q": "With customer-managed keys, which option lets Azure Storage automatically use the newest key version after rotation?",
   "opts": [
-   "Specify the key URI without a version (automatic key version updates)",
+   "Specify the key URI without a version",
    "Use a fixed version",
    "Use infrastructure encryption",
    "Use SAS"

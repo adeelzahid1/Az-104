@@ -26,7 +26,7 @@
   "opts": [
    "Users only",
    "Users, groups, service principals, and managed identities",
-   "Users and devices",
+   "Users, Entra-registered devices, and resource groups",
    "Groups and subscriptions"
   ],
   "ans": [
@@ -97,7 +97,7 @@
   "q": "An app needs to read blobs in a storage account using Microsoft Entra authentication. Which role assignment is least privileged?",
   "opts": [
    "Reader on the storage account",
-   "Storage Account Contributor",
+   "Storage Account Contributor on the account, with its access keys",
    "Storage Blob Data Reader on the container or account",
    "Owner on the resource group"
   ],
@@ -153,7 +153,7 @@
    "Resource group → Access control (IAM) → Add role assignment",
    "Entra ID → Roles and administrators",
    "Resource group → Policies",
-   "Subscription → Usage + quotas"
+   "Subscription → Resource providers → Register role → Add assignment"
   ],
   "ans": [
    0
@@ -169,7 +169,7 @@
   "q": "You want to find out what roles a specific user has on a resource group, including inherited ones. Fastest portal tool?",
   "opts": [
    "Access control (IAM) → Check access",
-   "Activity log",
+   "Activity log → Filter by the user's name",
    "Azure Advisor",
    "Policy compliance"
   ],
@@ -188,7 +188,7 @@
   "opts": [
    "az role assignment list --assignee user@contoso.com --all --include-inherited",
    "az ad user show --roles",
-   "az role definition list --user",
+   "az role definition list --name user@contoso.com --scope / --include-inherited",
    "az account list --roles"
   ],
   "ans": [
@@ -224,7 +224,7 @@
   "opts": [
    "Assign roles to groups instead of individual users",
    "Create more subscriptions",
-   "Use deny assignments",
+   "Use deny assignments in place of individual role assignments",
    "Use Azure Policy"
   ],
   "ans": [
@@ -240,7 +240,7 @@
   "diff": 3,
   "q": "User1 is Owner of RG1. An administrator applies a ReadOnly lock to RG1. Can User1 delete a VM in RG1?",
   "opts": [
-   "Yes — Owner overrides locks",
+   "Yes — the Owner role overrides locks on its own scope",
    "No — locks apply to all users regardless of role",
    "Yes, but only after 24 hours",
    "Only with PowerShell"
@@ -319,7 +319,7 @@
    "Resources are deleted on transfer",
    "All role assignments are permanently removed when a subscription changes tenant",
    "Policies block access",
-   "The subscription is disabled for 30 days"
+   "The subscription is disabled for 30 days until the new tenant confirms the transfer"
   ],
   "ans": [
    1
@@ -336,7 +336,7 @@
   "opts": [
    "Add attribute-based checks, for example limiting blob access by blob index tags",
    "Deny all access to a tenant",
-   "Schedule role assignments",
+   "Add a schedule, for example activating blob access only during working hours and on weekdays",
    "Enable MFA"
   ],
   "ans": [
@@ -352,10 +352,10 @@
   "diff": 3,
   "q": "Admins must activate the Owner role only when needed, for a limited time, with approval. Which feature?",
   "opts": [
-   "Microsoft Entra Privileged Identity Management (eligible assignments)",
+   "Microsoft Entra Privileged Identity Management",
    "Resource locks",
    "Azure Policy",
-   "Access reviews only"
+   "Microsoft Entra access reviews for the Owner role"
   ],
   "ans": [
    0
@@ -390,7 +390,7 @@
   "opts": [
    "Only the root group object",
    "All management groups, subscriptions, and resources in the tenant",
-   "Only Entra ID objects",
+   "Only Entra ID objects such as users, groups, and app registrations",
    "Nothing; assignments at root aren't allowed"
   ],
   "ans": [
@@ -407,7 +407,7 @@
   "q": "Which statement best describes the Owner role?",
   "opts": [
    "Full access to manage all resources, including assigning roles in Azure RBAC",
-   "Full access except deleting resources",
+   "Full access to manage all resources, but no right to assign roles in Azure RBAC",
    "Read-only plus role assignments",
    "Manage billing only"
   ],
@@ -443,7 +443,7 @@
   "q": "What happens when a deny assignment conflicts with a role assignment that allows the same action?",
   "opts": [
    "The role assignment wins",
-   "The deny assignment wins — deny takes precedence",
+   "The deny assignment wins",
    "The newest wins",
    "The user is prompted"
   ],
@@ -514,7 +514,7 @@
   "diff": 3,
   "q": "Can a custom role use the root scope \"/\" in AssignableScopes?",
   "opts": [
-   "Yes, always",
+   "Yes — any Global Administrator can add the root scope to a custom role's definition",
    "No — custom roles can't use root scope; only built-in roles are available there",
    "Only with P2 license",
    "Only for data actions"
@@ -550,7 +550,7 @@
   "diff": 2,
   "q": "A custom role has Actions [\"Microsoft.Compute/*\"] and NotActions [\"Microsoft.Compute/virtualMachines/delete\"]. The user also has Contributor on the same scope. Can they delete a VM?",
   "opts": [
-   "No — NotActions is a deny",
+   "No — NotActions acts as a deny for every role the user holds on that scope",
    "Yes — NotActions doesn't block permissions granted by another role",
    "No — custom roles override built-in roles",
    "Only if the VM is stopped"
@@ -570,7 +570,7 @@
   "opts": [
    "Only read on storage accounts",
    "All operations on storage accounts and their child control-plane resources",
-   "Data access to all blobs",
+   "Data access to all blobs, files, queues, and tables in every storage account",
    "Access to all resource providers"
   ],
   "ans": [
@@ -720,7 +720,7 @@
   "opts": [
    "Nothing — guests can't use Azure",
    "The resources in RG1, after switching to your directory",
-   "Your entire tenant's resources",
+   "Every resource in your tenant, after switching to your directory",
    "Only billing"
   ],
   "ans": [
@@ -815,7 +815,7 @@
   "opts": [
    "No, never",
    "Yes, if the group was created as role-assignable (isAssignableToRole = true)",
-   "Yes, any group",
+   "Yes, any security group can, as long as its membership type is Dynamic user",
    "Only dynamic groups"
   ],
   "ans": [
@@ -850,7 +850,7 @@
   "q": "A VM-hosted app must access Key Vault without storing credentials in code. What should you use?",
   "opts": [
    "A managed identity for the VM, granted access to Key Vault",
-   "A storage account key",
+   "A storage account key, kept in an environment variable on the VM",
    "A user's password in app settings",
    "A SAS token"
   ],

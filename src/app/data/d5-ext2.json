@@ -7,7 +7,7 @@
   "q": "Network Watcher is a:",
   "opts": [
    "Regional service for monitoring and diagnosing network conditions in Azure IaaS",
-   "Global DNS service",
+   "Global service for filtering and inspecting network traffic in Azure IaaS",
    "Firewall",
    "Load balancer"
   ],
@@ -44,7 +44,7 @@
   "opts": [
    "No custom NSG rule allows the flow, so the default deny matched",
    "A custom deny rule matched",
-   "Routing failed",
+   "Routing failed, so the packet was dropped before any NSG rule",
    "DNS failed"
   ],
   "ans": [
@@ -61,7 +61,7 @@
   "q": "Next hop returns 'None' for traffic from VM1 to 10.5.0.4. What does it mean?",
   "opts": [
    "A route with next hop None (or no matching route) drops the traffic",
-   "The traffic goes to the internet",
+   "The traffic goes to the internet, because no route in Azure matches it",
    "An NVA handles it",
    "Peering is used"
   ],
@@ -79,7 +79,7 @@
   "q": "Next hop reports 'VirtualAppliance 10.0.1.4' for traffic to the internet. What does it tell you?",
   "opts": [
    "A UDR forces the traffic through the NVA at 10.0.1.4",
-   "The NSG blocks it",
+   "An NSG rule redirects the traffic to the host 10.0.1.4",
    "The traffic is local",
    "DNS is misconfigured"
   ],
@@ -97,7 +97,7 @@
   "q": "A packet capture must stop automatically after 10 minutes or 1 GB. Is that configurable?",
   "opts": [
    "Yes — capture time limit, bytes per packet, and total size are configurable, with filters",
-   "No, captures run forever",
+   "No — every capture runs until you stop it manually, and only the filters can be set",
    "Only time",
    "Only size"
   ],
@@ -116,7 +116,7 @@
   "opts": [
    "An alert triggers an Azure Function or Automation runbook that starts a Network Watcher packet capture",
    "It's automatic by default",
-   "Use NSG flow logs",
+   "A flow log with Traffic Analytics enabled starts a Network Watcher packet capture by itself",
    "Use Advisor"
   ],
   "ans": [
@@ -133,7 +133,7 @@
   "q": "Connection troubleshoot reports 'Unreachable' with a hop showing 'NSG rule blocked'. What's next?",
   "opts": [
    "Review effective security rules and adjust the NSG rule shown",
-   "Restart the VM",
+   "Restart the destination VM and run the Connection troubleshoot again",
    "Change the disk type",
    "Delete the VNet"
   ],
@@ -170,7 +170,7 @@
   "opts": [
    "An Azure Arc-enabled server with the Azure Monitor Agent (or a supported monitoring agent)",
    "Nothing",
-   "Network Watcher VM extension only",
+   "The Network Watcher VM extension, plus a public IP and an inbound NSG rule",
    "A public IP"
   ],
   "ans": [
@@ -187,7 +187,7 @@
   "q": "In Connection Monitor, what's a test group?",
   "opts": [
    "A set of sources, destinations, and test configurations (protocol, port, frequency) evaluated together",
-   "A resource group",
+   "A resource group that holds the sources and destinations, with one action group for their alerts",
    "An action group",
    "An NSG"
   ],
@@ -205,7 +205,7 @@
   "q": "You need an alert when latency between two VMs exceeds 50 ms over time. Which tool?",
   "opts": [
    "Connection Monitor with a metric alert on round-trip time",
-   "IP flow verify",
+   "IP flow verify scheduled every minute with a log alert",
    "Next hop",
    "Topology"
   ],
@@ -223,7 +223,7 @@
   "q": "What information does a flow log record contain?",
   "opts": [
    "Source/destination IP and port, protocol, allowed or denied, and bytes/packets",
-   "Full packet payloads",
+   "Full packet payloads, TLS certificates, DNS queries, and the process name",
    "Only DNS queries",
    "CPU usage"
   ],
@@ -260,7 +260,7 @@
   "opts": [
    "Every 10 minutes or every 60 minutes",
    "Every second",
-   "Daily only",
+   "Once every day or once every week",
    "Weekly"
   ],
   "ans": [
@@ -339,7 +339,7 @@
   "opts": [
    "az backup vault create -g RG1 -n rsv1 -l westeurope",
    "az recovery vault new",
-   "az backup create rsv1",
+   "az recovery vault create -g RG1 -n rsv1 --region westeurope",
    "az vault create --backup"
   ],
   "ans": [
@@ -357,7 +357,7 @@
   "opts": [
    "az backup protection enable-for-vm -g RG1 -v rsv1 --vm VM1 --policy-name DefaultPolicy",
    "az vm backup VM1",
-   "az backup vm add VM1",
+   "az backup vm add-protection -g RG1 --target-vault rsv1 --name VM1 --default-policy true",
    "az backup policy apply VM1"
   ],
   "ans": [
@@ -374,7 +374,7 @@
   "q": "Which CLI command triggers an on-demand backup?",
   "opts": [
    "az backup protection backup-now ... --retain-until 30-12-2026",
-   "az backup start now",
+   "az backup policy start-now ... --keep-until 30-12-2026 --force",
    "az vm backup-now",
    "az backup job start"
   ],
@@ -391,7 +391,7 @@
   "diff": 3,
   "q": "Which vault security feature requires a second user's approval (via Resource Guard) before critical operations like disabling soft delete?",
   "opts": [
-   "Multi-user authorization (MUA)",
+   "Multi-user authorization",
    "Soft delete",
    "Immutable vault",
    "Private endpoints"
@@ -445,9 +445,9 @@
   "diff": 2,
   "q": "Can you move a Recovery Services vault to another subscription?",
   "opts": [
-   "Yes, vault moves across resource groups and subscriptions are supported (with documented constraints)",
+   "Yes, vault moves across resource groups and subscriptions are supported",
    "No, never",
-   "Only if empty",
+   "Only if the vault is empty and was created with LRS redundancy",
    "Only across regions"
   ],
   "ans": [
@@ -463,8 +463,8 @@
   "diff": 3,
   "q": "Backup data must be encrypted with your own key in the vault. What do you configure?",
   "opts": [
-   "Customer-managed keys for the Recovery Services vault (Key Vault + managed identity)",
-   "Infrastructure encryption on storage",
+   "Customer-managed keys for the Recovery Services vault",
+   "Infrastructure encryption on the cache storage account",
    "ADE",
    "SSE only"
   ],
@@ -483,7 +483,7 @@
   "opts": [
    "VMSnapshot (Windows) / VMSnapshotLinux extension",
    "MARS agent",
-   "Dependency agent",
+   "Dependency agent with the AMA extension",
    "ADE extension"
   ],
   "ans": [
@@ -499,7 +499,7 @@
   "diff": 2,
   "q": "What consistency does Azure Backup aim for with Windows VMs running VSS-aware apps?",
   "opts": [
-   "Application-consistent snapshots (using VSS)",
+   "Application-consistent snapshots",
    "Crash-consistent only",
    "File-consistent only",
    "None"
@@ -518,7 +518,7 @@
   "q": "An Azure VM's backup is crash-consistent instead of application-consistent. A likely reason?",
   "opts": [
    "The VM was shut down during backup, or VSS failed",
-   "GRS vault",
+   "The vault uses GRS, or the VM has Premium SSD",
    "Premium SSD",
    "Too many tags"
   ],
@@ -536,7 +536,7 @@
   "q": "Is the first VM backup full or incremental?",
   "opts": [
    "Full, then incremental afterwards",
-   "Always full",
+   "Full, and so is every later backup",
    "Always incremental",
    "Differential"
   ],
@@ -572,7 +572,7 @@
   "q": "A VM has 4 data disks, but only the OS disk and disk 1 need protection. Is that possible?",
   "opts": [
    "Yes — selective disk backup lets you exclude disks",
-   "No, all disks are always backed up",
+   "No — a VM backup always includes all disks",
    "Only for Linux",
    "Only with MARS"
   ],
@@ -589,7 +589,7 @@
   "diff": 3,
   "q": "Long-term monthly and yearly VM recovery points should move to a cheaper tier automatically. Which feature?",
   "opts": [
-   "Archive tier for Azure Backup (recommended or policy-based move)",
+   "Archive tier for Azure Backup",
    "Blob lifecycle rules",
    "Soft delete",
    "Immutability"
@@ -607,9 +607,9 @@
   "diff": 2,
   "q": "From where can you enable backup for a VM?",
   "opts": [
-   "From the VM's Backup blade or from the vault (Backup → Azure VM)",
+   "From the VM's Backup blade or from the vault",
    "Only from the vault",
-   "Only from Advisor",
+   "From Azure Advisor or the Activity log",
    "Only with CLI"
   ],
   "ans": [
@@ -625,9 +625,9 @@
   "diff": 2,
   "q": "You restore a VM with the 'Create new VM' option. What's required?",
   "opts": [
-   "A target resource group, VNet/subnet, and a staging location (storage account) for some restores",
+   "A target resource group and a VNet/subnet",
    "Nothing",
-   "A new vault",
+   "A new vault in the target VNet's region",
    "A different region"
   ],
   "ans": [
@@ -663,7 +663,7 @@
   "opts": [
    "Restore disks, then use the generated template to customize and deploy",
    "Create new VM only",
-   "Replace existing",
+   "Replace existing disks, then resize the VM and attach the extra NIC",
    "File recovery"
   ],
   "ans": [
@@ -681,7 +681,7 @@
   "opts": [
    "12 hours (then it unmounts automatically)",
    "1 hour",
-   "7 days",
+   "7 days (then the script must run again)",
    "Until reboot"
   ],
   "ans": [
@@ -697,8 +697,8 @@
   "diff": 3,
   "q": "SQL Server in an Azure VM needs log backups every 15 minutes with point-in-time restore. Which solution?",
   "opts": [
-   "Azure Backup for SQL Server in Azure VMs (workload backup in a Recovery Services vault)",
-   "VM backup only",
+   "Azure Backup for SQL Server in Azure VMs",
+   "VM backup with the Enhanced policy",
    "MARS",
    "Blob lifecycle"
   ],
@@ -717,7 +717,7 @@
   "opts": [
    "Vault credentials file downloaded from the vault",
    "An SSH key",
-   "A SAS token",
+   "A SAS token generated on the vault's storage",
    "An Entra P2 license"
   ],
   "ans": [
@@ -734,7 +734,7 @@
   "q": "During MARS setup, you set an encryption passphrase. What happens if it's lost?",
   "opts": [
    "Microsoft can't recover it, so you can't restore the data",
-   "Microsoft resets it",
+   "Microsoft resets it after it verifies the subscription owner",
    "You restore without it",
    "The vault regenerates it"
   ],
@@ -752,7 +752,7 @@
   "q": "On-premises Hyper-V VMs and SQL Server need app-aware backups to Azure. Which solution?",
   "opts": [
    "Microsoft Azure Backup Server (MABS) or System Center DPM, with the vault as offsite storage",
-   "MARS only",
+   "The MARS agent on each Hyper-V host, with app-aware mode enabled and the vault as storage",
    "ASR only",
    "AzCopy"
   ],
@@ -788,7 +788,7 @@
   "q": "Which Azure Backup option protects blobs with continuous point-in-time recovery locally in the storage account (no vault copy)?",
   "opts": [
    "Operational backup for Azure Blobs",
-   "Vaulted backup",
+   "Vaulted backup for Azure Blobs",
    "MARS",
    "VM backup"
   ],
@@ -807,7 +807,7 @@
   "opts": [
    "Diagnostic settings on the vaults sending data to a Log Analytics workspace",
    "Nothing",
-   "A storage account only",
+   "A storage account per vault and the Reports Reader role on each of them",
    "Advisor"
   ],
   "ans": [
@@ -824,7 +824,7 @@
   "q": "You want email notifications when backup jobs fail, using the recommended Azure Monitor approach. Use:",
   "opts": [
    "Azure Monitor-based built-in alerts for Backup, routed with alert processing rules and action groups",
-   "Classic vault email only",
+   "Classic vault email notifications, sent to the co-administrators listed in the vault's properties",
    "Advisor",
    "A budget"
   ],
@@ -841,7 +841,7 @@
   "diff": 3,
   "q": "Where can you see the status of backup jobs (completed, failed, in progress) for a vault?",
   "opts": [
-   "Vault → Backup jobs (or Backup center → Jobs)",
+   "Vault → Backup jobs",
    "Activity log only",
    "Metrics explorer",
    "VM insights"
@@ -879,7 +879,7 @@
   "q": "You change a backup policy's daily retention from 30 to 10 days. What happens to existing recovery points?",
   "opts": [
    "Existing points follow the new retention, so points older than 10 days are cleaned up",
-   "They keep the old 30 days",
+   "Existing points keep the old 30 days, and only new points follow the 10-day retention",
    "All are deleted immediately",
    "Nothing; only new VMs are affected"
   ],

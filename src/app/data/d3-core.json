@@ -25,8 +25,8 @@
   "q": "What is the difference between a parameter and a variable in an ARM template?",
   "opts": [
    "None",
-   "Parameters accept values at deployment time; variables are computed inside the template and can't be set by the deployer",
-   "Variables are typed; parameters aren't",
+   "Parameters accept values at deployment time; variables are computed inside the template",
+   "Variables accept values at deployment time; parameters are computed inside the template",
    "Parameters are only for passwords"
   ],
   "ans": [
@@ -78,7 +78,7 @@
   "diff": 2,
   "q": "Before deploying a modified template to production, you want to preview exactly which resources would change. Use:",
   "opts": [
-   "The what-if operation (az deployment group what-if / --confirm-with-what-if)",
+   "The what-if operation",
    "az group delete --dry-run",
    "Azure Advisor",
    "Activity log"
@@ -99,7 +99,7 @@
    "az deployment group create --resource-group RG1 --template-file azuredeploy.json",
    "az group deploy start azuredeploy.json",
    "az arm push azuredeploy.json",
-   "az template deploy RG1"
+   "az template deploy --resource-group RG1 --arm-file azuredeploy.json --start"
   ],
   "ans": [
    0
@@ -117,7 +117,7 @@
    "Write the template from scratch",
    "Use Export template on the resource or resource group",
    "Screenshot the configuration",
-   "Azure Policy"
+   "Use Azure Policy to export the resource's definition"
   ],
   "ans": [
    1
@@ -134,7 +134,7 @@
   "opts": [
    "Bicep deploys through a separate engine from ARM",
    "Bicep transpiles to ARM JSON, so anything ARM templates can deploy, Bicep can too",
-   "Bicep supports only VMs",
+   "Bicep supports only VMs and networks, so other resources still need separate ARM templates",
    "Bicep files must be converted manually before every deployment"
   ],
   "ans": [
@@ -152,7 +152,7 @@
   "opts": [
    "az bicep decompile --file azuredeploy.json",
    "az bicep build",
-   "az bicep export",
+   "az bicep export --from-json azuredeploy.json",
    "bicep deploy azuredeploy.json"
   ],
   "ans": [
@@ -188,7 +188,7 @@
   "opts": [
    "A comment",
    "A template expression calling a template function",
-   "A variable declaration",
+   "A variable declaration with a default value",
    "Invalid syntax"
   ],
   "ans": [
@@ -244,8 +244,8 @@
   "q": "An availability set protects against:",
   "opts": [
    "Region-wide outages",
-   "Hardware rack failures (fault domains) and planned maintenance reboots (update domains) within a datacenter",
-   "Zone failures",
+   "Rack failures and planned maintenance reboots within a datacenter",
+   "Failure of a whole availability zone within the same Azure region",
    "Accidental deletion"
   ],
   "ans": [
@@ -279,8 +279,8 @@
   "diff": 3,
   "q": "VM1 was deployed without an availability set. You now want it in AVSet1. What must you do?",
   "opts": [
-   "Edit the VM's availability settings",
-   "Delete and recreate the VM (keeping disks and NIC) — a VM can only join an availability set at creation",
+   "Stop (deallocate) the VM and edit its availability settings",
+   "Delete and recreate the VM (keeping disks and NIC)",
    "Move it with az vm update",
    "Stop and restart it"
   ],
@@ -317,7 +317,7 @@
   "opts": [
    "Any disk type",
    "Premium SSD (or Ultra) for all OS and data disks",
-   "Standard SSD",
+   "Standard SSD disks with accelerated networking enabled",
    "Accelerated networking"
   ],
   "ans": [
@@ -351,7 +351,7 @@
   "diff": 3,
   "q": "Azure Disk Encryption requires which supporting resource, with which constraint?",
   "opts": [
-   "A storage account in any region",
+   "A storage account with geo-redundancy in the region paired with the VM",
    "A key vault in the same region and subscription as the VM",
    "A Log Analytics workspace",
    "An on-premises HSM"
@@ -369,9 +369,9 @@
   "diff": 2,
   "q": "How does encryption at host differ from Azure Disk Encryption?",
   "opts": [
-   "It encrypts data on the VM host itself (temp disks, caches, data flows) with no agent or extension inside the VM",
+   "It encrypts data on the VM host itself, with no agent or extension inside the VM",
    "It's Linux only",
-   "It requires BitLocker",
+   "It encrypts only the OS disk with BitLocker and stores the keys in the guest registry",
    "It works only with unmanaged disks"
   ],
   "ans": [
@@ -424,7 +424,7 @@
   "q": "Which statement about moving a VM to another resource group or subscription is true?",
   "opts": [
    "The VM must be deleted first",
-   "It's supported; dependent resources must move together and resource IDs change",
+   "It's supported",
    "Only stopped VMs, via a support ticket",
    "It changes the VM's region"
   ],
@@ -443,7 +443,7 @@
   "opts": [
    "Back up VMs",
    "Deploy and automatically scale a set of VMs based on demand",
-   "Encrypt VMs",
+   "Encrypt and patch a set of VMs from one central policy",
    "Monitor VMs"
   ],
   "ans": [
@@ -460,7 +460,7 @@
   "q": "An autoscale rule says: if average CPU > 75% for 10 minutes, add 2 instances; maximum 10. There are 9 instances now, and CPU has been 80% for 15 minutes. What happens?",
   "opts": [
    "2 instances are added (11 total)",
-   "1 instance is added; the maximum of 10 is respected",
+   "1 instance is added",
    "Nothing",
    "Autoscale disables itself"
   ],
@@ -497,7 +497,7 @@
   "opts": [
    "az vm create -g RG1 -n VM1 --image Ubuntu2204 --generate-ssh-keys",
    "az vm new -n VM1 --os linux",
-   "az compute vm create VM1",
+   "az compute vm create -g RG1 -n VM1 --os linux --ssh auto-generate",
    "New-AzVM -Linux"
   ],
   "ans": [
@@ -576,7 +576,7 @@
    "docker push",
    "az acr build --registry myacr --image app:v1 .",
    "az acr import",
-   "az container create"
+   "az container create --registry myacr --image app:v1"
   ],
   "ans": [
    1
@@ -609,7 +609,7 @@
   "diff": 1,
   "q": "Azure Container Instances is best suited for:",
   "opts": [
-   "Long-running orchestrated microservice fleets",
+   "Long-running fleets of orchestrated microservices that need a service mesh and rolling upgrades",
    "Fast, serverless, per-second-billed single containers or small container groups",
    "Replacing all VMs",
    "Running Hyper-V"
@@ -627,7 +627,7 @@
   "diff": 2,
   "q": "In an ACI container group, the containers:",
   "opts": [
-   "Run on separate hosts",
+   "Run on separate hosts, each with its own IP address, and can't share any volumes",
    "Share a host, lifecycle, and local network (localhost), and can share volumes",
    "Can't communicate",
    "Must use different OS types"
@@ -664,8 +664,8 @@
   "q": "Which capability does Azure Container Apps have that ACI doesn't?",
   "opts": [
    "Running Linux containers",
-   "Built-in autoscaling (including to zero) with KEDA, revisions, and traffic splitting",
-   "Public IP addresses",
+   "Built-in autoscaling (including to zero), revisions, and traffic splitting",
+   "Public IP addresses, DNS name labels, and mounted Azure Files volumes",
    "Environment variables"
   ],
   "ans": [
@@ -684,7 +684,7 @@
    "Minimum replicas = 0 with a KEDA queue-based scale rule",
    "A VM with cron",
    "Always-on = true",
-   "Manual scaling"
+   "Minimum replicas = 1 with manual scaling from the portal"
   ],
   "ans": [
    0
@@ -738,7 +738,7 @@
   "diff": 1,
   "q": "An App Service plan determines:",
   "opts": [
-   "Only the app's name",
+   "The app's name, its custom domain, and its deployment credentials",
    "The region, instance size, and features available to all apps in the plan",
    "The DNS zone",
    "Only storage pricing"
@@ -774,7 +774,7 @@
   "diff": 2,
   "q": "What's the difference between scaling up and scaling out an App Service plan?",
   "opts": [
-   "Up = more instances; Out = bigger instances",
+   "Up = more instances of the same size; Out = a more powerful tier or size",
    "Up = a more powerful tier or size; Out = more instances of the same size",
    "They mean the same",
    "Out is only for VMs"
@@ -810,8 +810,8 @@
   "diff": 2,
   "q": "What's the main benefit of swapping a staging slot into production instead of redeploying?",
   "opts": [
-   "Cheaper compute",
-   "Near-zero downtime with pre-warmed instances, and an instant swap back if something breaks",
+   "Cheaper compute, because the staging slot stops after each swap",
+   "Near-zero downtime with pre-warmed instances and an easy swap back",
    "Automatic code review",
    "Free SSL"
   ],
@@ -830,7 +830,7 @@
   "opts": [
    "All settings always swap",
    "App settings and connection strings marked as deployment slot settings",
-   "Only TLS certificates",
+   "Custom domain names, TLS certificates, and all app settings swap",
    "The code stays; settings always swap"
   ],
   "ans": [
@@ -848,7 +848,7 @@
   "opts": [
    "A CNAME to the app's azurewebsites.net hostname, plus a TXT asuid verification record",
    "An MX record",
-   "An SRV record",
+   "An SRV record for port 443, plus an MX record that points to the app's IP",
    "An NS delegation"
   ],
   "ans": [
@@ -864,7 +864,7 @@
   "diff": 2,
   "q": "Which statement about free App Service managed certificates is TRUE?",
   "opts": [
-   "They support wildcard domains",
+   "They support wildcard domains and can be exported as a PFX, but must be renewed by hand every year",
    "They cover custom domains with auto-renewal, but don't support wildcards and can't be exported",
    "They must be bought from a CA",
    "They work on the Free tier"

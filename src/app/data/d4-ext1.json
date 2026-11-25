@@ -8,7 +8,7 @@
   "opts": [
    "Private RFC 1918 ranges such as 10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16",
    "Any public range you like",
-   "Only 169.254.0.0/16",
+   "Link-local ranges such as 169.254.0.0/16, 168.63.129.0/24, or 224.0.0.0/4",
    "224.0.0.0/4"
   ],
   "ans": [
@@ -26,7 +26,7 @@
   "opts": [
    "az network vnet create -g RG1 -n VNet1 --address-prefix 10.0.0.0/16 --subnet-name Web --subnet-prefix 10.0.1.0/24",
    "az vnet new VNet1 10.0.0.0/16",
-   "az network create vnet VNet1",
+   "az network create vnet -g RG1 -n VNet1 --cidr 10.0.0.0/16 --add-subnet Web --subnet-cidr 10.0.1.0/24",
    "az group vnet create"
   ],
   "ans": [
@@ -43,7 +43,7 @@
   "q": "Which CLI command adds a subnet to an existing VNet?",
   "opts": [
    "az network vnet subnet create -g RG1 --vnet-name VNet1 -n App --address-prefixes 10.0.2.0/24",
-   "az network subnet add App",
+   "az network subnet add -g RG1 --parent-vnet VNet1 -n App --cidr 10.0.2.0/24 --attach",
    "az vnet update --add-subnet App",
    "az network vnet create --subnet App"
   ],
@@ -78,10 +78,10 @@
   "diff": 3,
   "q": "Can you change a subnet's address range while VMs are deployed in it?",
   "opts": [
-   "Only if the new range still contains all the existing IP addresses in use; otherwise remove the resources first",
+   "Only if the new range still contains all the existing IP addresses in use",
    "Yes, always",
    "Never",
-   "Only for /24 subnets"
+   "Only if the subnet is a /24 and every VM in it has been deallocated"
   ],
   "ans": [
    0
@@ -114,10 +114,10 @@
   "diff": 3,
   "q": "A subnet is delegated to Microsoft.Web/serverFarms. What does that mean?",
   "opts": [
-   "The subnet is dedicated to that service (here, App Service VNet integration), which can create service-specific resources in it",
+   "The subnet is dedicated to that service",
    "Anyone can deploy VMs there",
    "The subnet is deleted",
-   "The subnet becomes public"
+   "The subnet becomes public for that service"
   ],
   "ans": [
    0
@@ -132,7 +132,7 @@
   "diff": 2,
   "q": "VMs in VNet1 need a custom DNS server (10.0.0.10, a domain controller). Where do you set it?",
   "opts": [
-   "VNet1 → DNS servers → Custom (10.0.0.10)",
+   "VNet1 → DNS servers → Custom",
    "An NSG rule",
    "A route table",
    "A private DNS zone only"
@@ -152,7 +152,7 @@
   "opts": [
    "Restart the VMs (or renew DHCP leases) so they receive the new DNS settings",
    "Delete the VNet",
-   "Add an NSG rule",
+   "Add an NSG rule that allows TCP port 53 from each VM to the DNS server",
    "Change the subnet prefix"
   ],
   "ans": [
@@ -186,9 +186,9 @@
   "diff": 3,
   "q": "Why shouldn't you configure a static IP manually inside a Windows VM's network adapter settings?",
   "opts": [
-   "It can cause loss of connectivity if it doesn't match Azure's assignment; configure the IP on the Azure NIC instead",
+   "It can cause loss of connectivity if it doesn't match Azure's assignment",
    "It costs more",
-   "It disables DNS",
+   "It disables DNS registration and turns off the VM's accelerated networking",
    "It's required"
   ],
   "ans": [
@@ -206,7 +206,7 @@
   "opts": [
    "az network public-ip create -g RG1 -n pip1 --sku Standard --allocation-method Static",
    "az public-ip new pip1",
-   "az network ip create --static",
+   "az network ip create -g RG1 -n pip1 --tier Standard --type Static --public",
    "az vm ip add"
   ],
   "ans": [
@@ -259,7 +259,7 @@
   "q": "Many VMs without public IPs need outbound internet access from a few predictable public IPs. Best service?",
   "opts": [
    "NAT Gateway associated with the subnet",
-   "Public IPs on every VM",
+   "Dynamic public IPs on every VM's NIC",
    "A service endpoint",
    "Bastion"
   ],
@@ -277,7 +277,7 @@
   "q": "A subnet has a NAT Gateway, and a VM in it also has an instance-level public IP. Which IP does the VM's outbound traffic use?",
   "opts": [
    "The VM's own public IP",
-   "The NAT Gateway's public IP (NAT Gateway takes precedence for outbound)",
+   "The NAT Gateway's public IP",
    "Both alternately",
    "None"
   ],
@@ -294,7 +294,7 @@
   "diff": 2,
   "q": "Microsoft has been retiring default outbound access for VMs. What's the recommended explicit outbound method?",
   "opts": [
-   "NAT Gateway (or a load balancer outbound rule, or an instance public IP)",
+   "A NAT Gateway on the subnet",
    "Rely on implicit default outbound IPs",
    "Service endpoints",
    "Private DNS"
@@ -314,7 +314,7 @@
   "opts": [
    "az network vnet peering create -g RG1 -n v1-to-v2 --vnet-name VNet1 --remote-vnet VNet2 --allow-vnet-access",
    "az vnet peer VNet1 VNet2",
-   "az network peering add",
+   "az network peering add -g RG1 -n v1-to-v2 --from-vnet VNet1 --to-vnet VNet2 --allow-gateway-access",
    "az network vnet connect"
   ],
   "ans": [
@@ -330,8 +330,8 @@
   "diff": 3,
   "q": "Peering shows 'Initiated' on VNet1 and doesn't exist on VNet2. What's wrong?",
   "opts": [
-   "The peering hasn't been created on VNet2 yet; both sides must be configured to reach 'Connected'",
-   "Address overlap",
+   "The peering hasn't been created on VNet2 yet",
+   "The two VNets' address spaces overlap on one subnet",
    "The NSG blocks it",
    "Different regions"
   ],
@@ -349,7 +349,7 @@
   "q": "After adding a new address prefix to VNet1, peered VNet2 can't reach the new range. What should you do?",
   "opts": [
    "Sync the peering (resync the remote address space) on the peering link",
-   "Delete VNet2",
+   "Delete VNet2 and create it again with the new address prefix",
    "Add an NSG rule",
    "Change DNS"
   ],
@@ -384,9 +384,9 @@
   "diff": 2,
   "q": "How is VNet peering billed?",
   "opts": [
-   "Per GB of ingress and egress traffic across the peering (higher for global)",
+   "Per GB of ingress and egress traffic across the peering",
    "Free always",
-   "Per hour per peering",
+   "Per hour for each peering link, regardless of traffic",
    "Per VM"
   ],
   "ans": [
@@ -424,7 +424,7 @@
   "q": "Which service connects an on-premises network to an Azure VNet over an encrypted IPsec tunnel across the internet?",
   "opts": [
    "Site-to-site VPN through a VPN gateway",
-   "ExpressRoute",
+   "ExpressRoute with private peering enabled",
    "VNet peering",
    "Bastion"
   ],
@@ -518,7 +518,7 @@
   "opts": [
    "Up to about 45 minutes or more",
    "Seconds",
-   "24 hours",
+   "About 24 hours, or 48 with BGP",
    "5 minutes always"
   ],
   "ans": [
@@ -552,8 +552,8 @@
   "diff": 2,
   "q": "Which CLI commands create a route table and a route to an NVA?",
   "opts": [
-   "az network route-table create ... then az network route-table route create --next-hop-type VirtualAppliance --next-hop-ip-address 10.0.100.4",
-   "az network route add --nva",
+   "az network route-table create, then az network route-table route create",
+   "az network vnet route create, then az network nva route-table attach",
    "az vnet route create",
    "az network nva route"
   ],
@@ -571,7 +571,7 @@
   "q": "You created a route table with a UDR, but traffic doesn't follow it. What's commonly missing?",
   "opts": [
    "Associating the route table with the subnet",
-   "An NSG",
+   "Allowing the next hop in the subnet's NSG",
    "DNS",
    "A public IP"
   ],
@@ -590,7 +590,7 @@
   "opts": [
    "To the NVA — longest prefix match wins",
    "To the VNet route",
-   "It's dropped",
+   "It's dropped — overlapping routes conflict",
    "Load-balanced across both"
   ],
   "ans": [
@@ -606,7 +606,7 @@
   "diff": 3,
   "q": "Which route table setting stops on-premises BGP routes from the VPN gateway from being added to a subnet?",
   "opts": [
-   "Propagate gateway routes = No (disable BGP route propagation)",
+   "Propagate gateway routes = No",
    "Next hop None",
    "IP forwarding off",
    "Remove the NSG"
@@ -627,7 +627,7 @@
    "IP forwarding on the NVA's NIC in Azure, plus forwarding enabled inside the OS",
    "A public IP",
    "A bigger VM size",
-   "Accelerated networking"
+   "Accelerated networking on the NVA's NIC, plus a Standard public IP address"
   ],
   "ans": [
    0
@@ -662,7 +662,7 @@
   "q": "With 0.0.0.0/0 → NVA on a subnet, VMs still reach Azure Storage directly through a service endpoint. Why?",
   "opts": [
    "Service endpoint routes are more specific system routes that apply for the service's prefixes",
-   "UDRs never apply to storage",
+   "UDRs never apply to Azure Storage, whether or not a service endpoint is enabled on the subnet",
    "The NVA is down",
    "Storage is private"
   ],
@@ -700,8 +700,8 @@
   "diff": 2,
   "q": "Two VMs in peered VNets can ping by IP but not by hostname. What's the cause?",
   "opts": [
-   "Azure-provided DNS doesn't resolve names across VNets; use a private DNS zone linked to both VNets or a custom DNS server",
-   "An NSG blocks ICMP",
+   "Azure-provided DNS doesn't resolve names across VNets",
+   "An NSG blocks ICMP and NetBIOS between the VNets",
    "A route problem",
    "Peering is broken"
   ],
@@ -738,7 +738,7 @@
   "opts": [
    "The Windows Firewall inside the guest blocks ICMP by default",
    "The NSG blocks all traffic",
-   "Peering is broken",
+   "Peering is broken, so only TCP traffic passes between them",
    "DNS"
   ],
   "ans": [
@@ -756,7 +756,7 @@
   "opts": [
    "NSG rules (effective security rules), VM running state, public IP/Bastion path, and the guest firewall",
    "Delete the VM",
-   "Change the storage tier",
+   "The storage redundancy of the OS disk, the subscription budget, and the VM's tags and locks",
    "Add a budget"
   ],
   "ans": [
@@ -772,7 +772,7 @@
   "diff": 3,
   "q": "Which feature isolates a whole subnet from internet outbound access by default for new deployments?",
   "opts": [
-   "Private subnet (defaultOutboundAccess = false)",
+   "Private subnet",
    "A service endpoint",
    "An NSG on the NIC",
    "Bastion"
@@ -808,9 +808,9 @@
   "diff": 2,
   "q": "Can a VNet span multiple subscriptions?",
   "opts": [
-   "No — a VNet belongs to one subscription; use peering to connect VNets across subscriptions",
+   "No — a VNet belongs to one subscription",
    "Yes",
-   "Only in the same region",
+   "Yes — if both are in the same region",
    "Only with ExpressRoute"
   ],
   "ans": [
@@ -826,9 +826,9 @@
   "diff": 3,
   "q": "Can you move a VM's NIC to a different VNet?",
   "opts": [
-   "No — a NIC's VNet can't change; create a new NIC in the target VNet (or recreate the VM)",
+   "No — a NIC's VNet can't change; create a new NIC in the target VNet",
    "Yes, edit the NIC",
-   "Yes, with peering",
+   "Yes — if both VNets are peered and the VM has been stopped",
    "Only stopped VMs"
   ],
   "ans": [
@@ -844,8 +844,8 @@
   "diff": 2,
   "q": "Can a VM's NIC move to a different subnet in the SAME VNet?",
   "opts": [
-   "Yes — change the subnet in the NIC's IP configuration (static IPs must be updated)",
-   "No",
+   "Yes — change the subnet in the NIC's IP configuration",
+   "No — the NIC must be deleted and created again",
    "Only with a new VNet",
    "Only for Linux"
   ],
@@ -881,7 +881,7 @@
   "q": "Can a VM NIC have multiple IP configurations?",
   "opts": [
    "Yes — a NIC can have multiple private IPs (and associated public IPs)",
-   "No, one IP only",
+   "No — a NIC has exactly one private IP; add a second NIC instead",
    "Only Linux VMs",
    "Only for load balancers"
   ],

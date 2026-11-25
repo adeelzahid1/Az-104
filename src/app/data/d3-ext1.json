@@ -44,7 +44,7 @@
   "opts": [
    "uniqueString(resourceGroup().id)",
    "guid()",
-   "random()",
+   "random(resourceGroup().name)",
    "newName()"
   ],
   "ans": [
@@ -80,7 +80,7 @@
   "opts": [
    "copy loop (copy: { name, count: 5 })",
    "dependsOn",
-   "outputs",
+   "outputs loop (outputs: { count: 5 })",
    "condition"
   ],
   "ans": [
@@ -116,7 +116,7 @@
   "opts": [
    "Reference a Key Vault secret from the parameter file",
    "Hard-code it in variables",
-   "Use outputs",
+   "Return the password from the template's outputs",
    "Put it in tags"
   ],
   "ans": [
@@ -132,8 +132,8 @@
   "diff": 3,
   "q": "A deployment referencing a Key Vault secret fails with an access error. Which vault setting is likely missing?",
   "opts": [
-   "Azure Resource Manager for template deployment (enabledForTemplateDeployment)",
-   "Soft delete",
+   "Azure Resource Manager for template deployment",
+   "Soft delete with a 90-day retention period",
    "Purge protection",
    "Private endpoint"
   ],
@@ -151,7 +151,7 @@
   "q": "What's the purpose of a parameter file (azuredeploy.parameters.json)?",
   "opts": [
    "Supply environment-specific values to a template without editing it",
-   "Define resources",
+   "Define the resources that the template is allowed to create",
    "Store deployment logs",
    "Replace the template"
   ],
@@ -171,7 +171,7 @@
    "az deployment sub create --location westeurope --template-file main.json",
    "az deployment group create",
    "az group create --template",
-   "az deployment tenant create"
+   "az deployment tenant create --subscription Sub1 --template-file main.json"
   ],
   "ans": [
    0
@@ -223,7 +223,7 @@
   "q": "A resource should deploy only when the parameter deployDiagnostics is true. Which ARM property?",
   "opts": [
    "\"condition\": \"[parameters('deployDiagnostics')]\"",
-   "dependsOn",
+   "\"dependsOn\": \"[parameters('deployDiagnostics')]\"",
    "copy",
    "outputs"
   ],
@@ -260,7 +260,7 @@
   "opts": [
    "type, apiVersion, and name",
    "dependsOn",
-   "tags",
+   "location, tags, and dependsOn",
    "copy"
   ],
   "ans": [
@@ -276,7 +276,7 @@
   "diff": 2,
   "q": "You want to reuse a shared networking template inside a main template. Which technique?",
   "opts": [
-   "Linked or nested templates (Microsoft.Resources/deployments)",
+   "Linked or nested templates",
    "Copy the JSON into every template",
    "Use tags",
    "Use Azure Policy"
@@ -294,8 +294,8 @@
   "diff": 3,
   "q": "Where must a linked template file be stored for ARM to reach it during deployment?",
   "opts": [
-   "A URI accessible to Resource Manager (for example, a storage account with a SAS token) or use a template spec",
-   "Only on your local disk",
+   "At a URI that Resource Manager can access",
+   "In the local folder that holds the main template",
    "In Entra ID",
    "In a Log Analytics workspace"
   ],
@@ -393,7 +393,7 @@
    "@allowed([ 'Standard_LRS', 'Standard_GRS' ])",
    "@values",
    "@enum",
-   "@restrict"
+   "@restrict([ 'Standard_LRS', 'Standard_GRS' ])"
   ],
   "ans": [
    0
@@ -428,7 +428,7 @@
   "opts": [
    "az deployment group create -g RG1 --template-file main.bicep",
    "az bicep deploy main.bicep",
-   "az group create --bicep main.bicep",
+   "az group create -g RG1 --bicep-file main.bicep --deploy",
    "bicep run main.bicep"
   ],
   "ans": [
@@ -445,7 +445,7 @@
   "q": "In Bicep, how are dependencies between resources usually handled?",
   "opts": [
    "Automatically, when one resource references another's symbolic name or properties",
-   "Always manually with dependsOn",
+   "Always manually, by listing every resource ID in the dependsOn property",
    "With the copy element",
    "They aren't supported"
   ],
@@ -465,7 +465,7 @@
    "resource st 'Microsoft.Storage/storageAccounts@2023-01-01' = [for i in range(0, 3): {...}]",
    "copy: { count: 3 }",
    "foreach (i in 3) { resource ... }",
-   "resource[3] st = {...}"
+   "resource[3] st 'Microsoft.Storage/storageAccounts@2023-01-01' = { copy: range(0, 3) }"
   ],
   "ans": [
    0
@@ -483,7 +483,7 @@
    "resource x '...' = if (deployIt) { ... }",
    "condition: true",
    "@if decorator",
-   "when keyword"
+   "resource x '...' when deployIt { ... }"
   ],
   "ans": [
    0
@@ -519,7 +519,7 @@
    "resource stg 'Microsoft.Storage/storageAccounts@2023-01-01' existing = { name: 'st1' }",
    "reference('st1')",
    "import stg",
-   "module stg existing"
+   "module stg 'Microsoft.Storage/storageAccounts@2023-01-01' reference = { id: 'st1' }"
   ],
   "ans": [
    0
@@ -537,7 +537,7 @@
    "Run az bicep decompile on the exported JSON",
    "Rename it to .bicep",
    "It isn't possible",
-   "Use az bicep build"
+   "Run az bicep build on the exported JSON file"
   ],
   "ans": [
    0
@@ -664,7 +664,7 @@
   "q": "VMs must run a startup script that installs IIS automatically at first boot. Which features can do this?",
   "opts": [
    "Custom Script Extension or cloud-init/custom data",
-   "Boot diagnostics",
+   "Boot diagnostics with a managed storage account",
    "Azure Advisor",
    "Serial console only"
   ],
@@ -773,7 +773,7 @@
   "opts": [
    "az vm disk attach -g RG1 --vm-name VM1 --name data1 --new --size-gb 128",
    "az disk add VM1 128",
-   "az vm update --add-disk 128",
+   "az vm update -g RG1 --name VM1 --add-disk data1 --size-gb 128 --sku new",
    "az storage disk attach"
   ],
   "ans": [
@@ -791,7 +791,7 @@
   "opts": [
    "No — managed disks can only be increased in size",
    "Yes, live",
-   "Yes, after deallocation",
+   "Yes — after the VM has been deallocated",
    "Only for HDD"
   ],
   "ans": [
@@ -810,7 +810,7 @@
    "Extend the partition/volume inside the guest OS",
    "Nothing",
    "Reinstall the OS",
-   "Recreate the VM"
+   "Detach the disk and recreate the VM from it"
   ],
   "ans": [
    0

@@ -8,7 +8,7 @@
   "opts": [
    "A private endpoint",
    "The Microsoft.Storage service endpoint on SubnetA",
-   "An NSG rule allowing port 445",
+   "An NSG rule on SubnetA allowing inbound port 445",
    "A public IP on each VM"
   ],
   "ans": [
@@ -25,7 +25,7 @@
   "q": "After enabling the storage firewall with 'selected networks', Azure Backup and some Microsoft services stop working. Which setting fixes this without opening the account to the internet?",
   "opts": [
    "Allow trusted Microsoft services to access this storage account",
-   "Add 0.0.0.0/0 to the IP rules",
+   "Add 0.0.0.0/0 to the IP rules and require secure transfer",
    "Disable the firewall",
    "Enable anonymous blob access"
   ],
@@ -42,7 +42,7 @@
   "diff": 2,
   "q": "You administer the storage account from your office (public IP 203.0.113.10) while the firewall is enabled. What do you add?",
   "opts": [
-   "A VNet rule for your office",
+   "A VNet rule for your office with the Microsoft.Storage service endpoint",
    "Your office public IP (or range) to the firewall's IP address rules",
    "A private endpoint at the office",
    "Port 443 to the NSG"
@@ -79,7 +79,7 @@
   "q": "You issued ad-hoc service SAS tokens valid for 1 year. One token leaked. How do you revoke it?",
   "opts": [
    "Delete the container",
-   "Regenerate the account key that signed it (this invalidates all SAS signed with that key)",
+   "Regenerate the account key that signed it",
    "Remove the user from Entra ID",
    "Set the blob tier to Archive"
   ],
@@ -99,7 +99,7 @@
    "Tokens never expire",
    "You can modify or revoke the policy afterwards, which immediately affects all SAS tied to it",
    "Tokens work without a signature",
-   "Tokens bypass the firewall"
+   "Tokens bypass the storage firewall, so partners need no IP rule or private endpoint of their own"
   ],
   "ans": [
    1
@@ -153,7 +153,7 @@
    "Blob storage (including Data Lake) only",
    "Blob (including Data Lake), Queue, Table and Azure Files",
    "Azure Files only",
-   "Queue and Table only"
+   "Queue and Table only, when the account is general-purpose v2"
   ],
   "ans": [
    1
@@ -170,7 +170,7 @@
   "opts": [
    "1, for simplicity",
    "2, so you can rotate one key while clients use the other",
-   "3: primary, secondary, tertiary",
+   "3, so primary, secondary and tertiary regions each have their own",
    "5, one per service"
   ],
   "ans": [
@@ -187,7 +187,7 @@
   "q": "Which service stores storage keys securely for applications and can help automate rotation?",
   "opts": [
    "Azure Advisor",
-   "Azure Key Vault (plus a key expiration policy on the storage account)",
+   "Azure Key Vault",
    "Azure Monitor",
    "Network Watcher"
   ],
@@ -205,8 +205,8 @@
   "q": "Azure file share users must authenticate with their on-premises AD DS identities over SMB. Besides enabling AD DS authentication on the account, what must be configured for users to access files?",
   "opts": [
    "Nothing else",
-   "Share-level permissions (RBAC roles such as Storage File Data SMB Share Contributor) AND NTFS permissions on files and directories",
-   "A SAS token per user",
+   "Share-level RBAC permissions AND NTFS permissions on files and directories",
+   "A SAS token per user AND anonymous read access on the root directory of the share",
    "Anonymous access on the share"
   ],
   "ans": [
@@ -261,7 +261,7 @@
   "diff": 3,
   "q": "A user with the Reader role on a storage account browses blobs in the portal using 'Microsoft Entra user account' authentication. What happens?",
   "opts": [
-   "Full blob read access",
+   "Full blob read access, because Reader includes every read data action",
    "Access denied to blob data, because Reader is a control-plane role",
    "Write access",
    "Access to $logs only"
@@ -408,7 +408,7 @@
   "diff": 3,
   "q": "During a prolonged primary-region outage on a GRS account, who can initiate the failover, and what is the redundancy afterwards?",
   "opts": [
-   "Microsoft only; it remains GRS",
+   "Only Microsoft can initiate it; the account stays GRS with the regions swapped",
    "The customer can initiate it; the account becomes LRS in the new primary region",
    "It's automatic after 1 hour; ZRS",
    "Failover isn't possible"
@@ -446,7 +446,7 @@
   "opts": [
    "Nothing special",
    "Blob versioning on source and destination, and change feed on the source",
-   "Soft delete on both",
+   "Blob soft delete on source and destination, and a lifecycle rule",
    "Both accounts in the same region"
   ],
   "ans": [
@@ -462,7 +462,7 @@
   "diff": 2,
   "q": "Which statement best describes object replication?",
   "opts": [
-   "Synchronous copy of all blob types",
+   "Synchronous copy of all blob types, including page and append blobs, inside the same Azure region",
    "Asynchronous copy of block blobs between accounts, which can be in different regions or subscriptions",
    "Works only inside one account",
    "Requires the archive tier"
@@ -536,7 +536,7 @@
   "opts": [
    "azcopy copy with --overwrite=false",
    "azcopy sync \"C:\\data\" \"https://acct.blob.core.windows.net/container?<SAS>\"",
-   "azcopy move",
+   "azcopy move \"C:\\data\" \"https://acct.blob.core.windows.net/container?<SAS>\" --changed",
    "azcopy benchmark"
   ],
   "ans": [
@@ -554,7 +554,7 @@
   "opts": [
    "SAS tokens only",
    "Entra ID (azcopy login) or SAS tokens",
-   "The account name only",
+   "The account name and an SSH key pair",
    "SSH keys"
   ],
   "ans": [
@@ -570,7 +570,7 @@
   "diff": 1,
   "q": "Azure Storage Explorer is best described as:",
   "opts": [
-   "A web-only monitoring dashboard",
+   "A web-only monitoring dashboard that shows storage capacity, latency, and availability",
    "A free cross-platform desktop app to manage blobs, files, queues, tables, and Data Lake",
    "A paid Visual Studio extension",
    "A PowerShell module"
@@ -588,8 +588,8 @@
   "diff": 2,
   "q": "You must copy 60 TB of data to Azure from a site with very low bandwidth. The practical option is:",
   "opts": [
-   "AzCopy over the weekend",
-   "Azure Import/Export or Azure Data Box (ship physical drives)",
+   "AzCopy with parallel uploads over the weekend",
+   "Azure Import/Export or Azure Data Box",
    "Storage Explorer upload",
    "RDP file copy to a VM"
   ],
@@ -647,7 +647,7 @@
   "opts": [
    "Switch to HTTP",
    "Use VPN/ExpressRoute (or Azure File Sync) so SMB doesn't go directly over the internet",
-   "Open port 80",
+   "Switch the account to RA-GRS so that users mount the share from the secondary region",
    "Use RA-GRS"
   ],
   "ans": [
@@ -702,7 +702,7 @@
    "Moves blobs to the archive tier",
    "Keeps frequently used files on the local server while cold files become pointers, with full copies in Azure",
    "Compresses files locally",
-   "Replicates files between two servers"
+   "Replicates all files in full between two local servers, while Azure keeps only their metadata"
   ],
   "ans": [
    1
@@ -808,7 +808,7 @@
   "q": "Blobs should move to cool after 30 days without modification, to archive after 90, and be deleted after 365. What do you configure?",
   "opts": [
    "A lifecycle management policy with rules based on last modified time",
-   "An Azure Policy",
+   "An Azure Policy with a Modify effect that changes the access tier",
    "A budget",
    "Object replication"
   ],
@@ -844,8 +844,8 @@
   "q": "What's the key difference between blob versioning and blob snapshots?",
   "opts": [
    "No difference",
-   "Versioning creates a version automatically on every write or delete; snapshots are manual point-in-time copies",
-   "Snapshots are automatic; versions are manual",
+   "Versioning creates a version automatically on every write or delete",
+   "Snapshots are created automatically on every write; versions are manual",
    "Versioning requires the archive tier"
   ],
   "ans": [
@@ -880,7 +880,7 @@
   "q": "Share snapshots for Azure Files are:",
   "opts": [
    "Read-only point-in-time copies of the whole share, incremental in storage use",
-   "Full copies billed at 100% each time",
+   "Full read-write copies of the whole share, billed at 100% each time",
    "Automatic every hour and not configurable",
    "Only available with NFS"
   ],
@@ -899,7 +899,7 @@
   "q": "Which tier strategy is cheapest for months 7–84?",
   "opts": [
    "Keep in hot",
-   "Move to cool",
+   "Move to cool with a lifecycle rule and enable versioning",
    "Move to archive with a lifecycle rule after 6 months",
    "Delete and re-upload when needed"
   ],

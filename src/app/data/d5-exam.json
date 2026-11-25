@@ -9,7 +9,7 @@
   "opts": [
    "Enable boot diagnostics on every VM",
    "Install the Azure Monitor Agent and create a data collection rule that sends events and counters to a Log Analytics workspace",
-   "Create diagnostic settings on each VM that send to a storage account",
+   "Create diagnostic settings on each VM that send guest events and counters to a storage account, read by a Function app",
    "Use the Activity log"
   ],
   "ans": [
@@ -55,7 +55,7 @@
   "caseId": "C9",
   "q": "What meets requirement 3?",
   "opts": [
-   "Disable the alert rules every Sunday with a runbook",
+   "Disable the alert rules every Sunday with a scheduled Automation runbook",
    "An alert processing rule that suppresses notifications on a weekly schedule",
    "Remove the SMS receivers from the action group on Sundays",
    "Set the alert severity to 4"
@@ -98,7 +98,7 @@
   "opts": [
    "IP flow verify",
    "Connection Monitor, testing from the VMs to api.payments.contoso.com on port 443",
-   "Packet capture on every VM",
+   "Packet capture on every VM, filtered to api.payments.contoso.com port 443",
    "An Activity log alert"
   ],
   "ans": [
@@ -163,7 +163,7 @@
   "caseId": "C10",
   "q": "What meets requirement 5?",
   "opts": [
-   "Azure Backup with cross-region restore",
+   "Azure Backup with cross-region restore, a vault in West Europe and a daily policy that keeps 30 days",
    "Azure Site Recovery replicating the VMs to West Europe, with the vault in West Europe and a recovery plan",
    "Geo-redundant storage for the VM disks",
    "Daily VM snapshots copied to West Europe"
@@ -755,7 +755,7 @@
   "opts": [
    "Resources deleted in the last 7 days and who deleted them; the Activity log must be sent to the workspace",
    "Failed deployments; nothing needs setting up",
-   "Deleted blobs; the storage account needs diagnostic settings",
+   "Blobs deleted in the last 7 days and who deleted them; the storage account needs diagnostic settings",
    "Deleted users; Entra ID P2 is needed"
   ],
   "ans": [
@@ -794,7 +794,7 @@
   "code": "\"schedulePolicy\": {\n  \"scheduleRunFrequency\": \"Daily\",\n  \"scheduleRunTimes\": [ \"2026-01-01T23:00:00Z\" ]\n},\n\"retentionPolicy\": {\n  \"dailySchedule\":   { \"retentionDuration\": { \"count\": 30, \"durationType\": \"Days\" } },\n  \"monthlySchedule\": { \"retentionDuration\": { \"count\": 12, \"durationType\": \"Months\" } }\n},\n\"instantRpRetentionRangeInDays\": 2",
   "q": "Which statement describes this backup policy?",
   "opts": [
-   "Backups run daily at 23:00 UTC; daily points are kept 30 days and monthly points 12 months; snapshots stay local for 2 days",
+   "Backups run daily at 23:00 UTC",
    "Backups run every 2 days and are kept 30 days",
    "Backups run hourly and are kept 12 months",
    "Only monthly backups are kept"
@@ -813,7 +813,7 @@
   "code": "Name     Replication health  Status     RPO\nvm-web1  Healthy             Protected  2 min\nvm-sql1  Critical            Protected  3 h 10 min",
   "q": "What does this replication status mean for vm-sql1?",
   "opts": [
-   "It is fully protected with no data at risk",
+   "It is fully protected, and a failover now would lose at most 3 minutes of data",
    "A failover now could lose about 3 hours of data, so replication needs investigating",
    "It has already failed over",
    "Its backups have failed"
@@ -854,8 +854,8 @@
   "code": "\"dataSources\": {\n  \"windowsEventLogs\": [ {\n    \"name\": \"sec\", \"streams\": [ \"Microsoft-Event\" ],\n    \"xPathQueries\": [ \"Security!*[System[(EventID=4624 or EventID=4625)]]\" ]\n  } ],\n  \"performanceCounters\": [ {\n    \"name\": \"perf\", \"streams\": [ \"Microsoft-Perf\" ],\n    \"samplingFrequencyInSeconds\": 60,\n    \"counterSpecifiers\": [\n      \"\\\\Processor(_Total)\\\\% Processor Time\",\n      \"\\\\Memory\\\\Available MBytes\"\n    ]\n  } ]\n},\n\"destinations\": { \"logAnalytics\": [ { \"name\": \"law\", \"workspaceResourceId\": \".../workspaces/law-prod\" } ] }",
   "q": "What does this data collection rule collect?",
   "opts": [
-   "All Windows events and all performance counters",
-   "Only successful and failed logon security events, plus CPU and available memory every 60 seconds, sent to law-prod",
+   "All Windows events and all performance counters, sent to law-prod hourly",
+   "Logon security events, plus CPU and available memory, sent to law-prod",
    "Only Linux syslog",
    "Activity log events"
   ],
@@ -914,7 +914,7 @@
   "code": "Next hop type:  VirtualAppliance\nIP address:     10.0.1.4\nRoute table ID: /subscriptions/1111/resourceGroups/RG-Net/providers/Microsoft.Network/routeTables/rt-spoke-app",
   "q": "What does this next hop result tell you?",
   "opts": [
-   "The traffic goes straight to the internet",
+   "The traffic goes straight to the internet through the default system route of the spoke-app subnet",
    "A user-defined route in rt-spoke-app sends the traffic to the network virtual appliance at 10.0.1.4",
    "An NSG blocks the traffic",
    "The traffic uses VNet peering only"
@@ -935,7 +935,7 @@
   "opts": [
    "Backup jobs are never logged",
    "The vault has no diagnostic setting sending Azure Backup data (resource-specific tables) to this workspace",
-   "The query needs Entra ID P2",
+   "The query needs the Backup Operator role and an Entra ID P2 license to read job data in this workspace",
    "Failed jobs are deleted after 1 hour"
   ],
   "ans": [

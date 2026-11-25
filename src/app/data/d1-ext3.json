@@ -25,7 +25,7 @@
   "q": "You need every new resource group to have a 'costcenter' tag, and creation must fail if it's missing. Which built-in policy and effect?",
   "opts": [
    "Require a tag on resource groups — Deny",
-   "Inherit a tag — Modify",
+   "Inherit a tag from the subscription — Modify",
    "Allowed locations — Audit",
    "Append a tag — Append"
   ],
@@ -78,7 +78,7 @@
   "diff": 2,
   "q": "You must prevent anyone from creating public IP addresses in a subscription. Simplest built-in policy?",
   "opts": [
-   "Not allowed resource types (with Microsoft.Network/publicIPAddresses)",
+   "Not allowed resource types",
    "Allowed locations",
    "Audit VMs without managed disks",
    "Require a tag"
@@ -98,7 +98,7 @@
   "opts": [
    "The policy's managed identity lacks the required role assignment at the target scope",
    "The policy is in Audit mode",
-   "Resource locks are missing",
+   "Resource locks are missing, so the remediation task can't protect the target scope",
    "The subscription has no budget"
   ],
   "ans": [
@@ -114,7 +114,7 @@
   "diff": 2,
   "q": "How often does Azure Policy run a standard compliance evaluation for already-assigned policies?",
   "opts": [
-   "Every 24 hours (plus on create/update and new assignments)",
+   "Every 24 hours",
    "Every 5 minutes",
    "Only when manually triggered",
    "Once a month"
@@ -133,7 +133,7 @@
   "q": "Which command triggers an on-demand policy compliance scan for a resource group?",
   "opts": [
    "az policy state trigger-scan --resource-group RG1",
-   "az policy assignment refresh RG1",
+   "az policy assignment refresh --resource-group RG1 --now",
    "az group policy scan",
    "Start-AzPolicyAssignment"
   ],
@@ -153,7 +153,7 @@
    "Management group, subscription, or resource group",
    "Only subscriptions",
    "Only management groups",
-   "Entra ID tenant only"
+   "Entra ID tenant, administrative unit, or security group"
   ],
   "ans": [
    0
@@ -169,8 +169,8 @@
   "q": "What's the difference between a policy exclusion and a policy exemption?",
   "opts": [
    "No difference",
-   "An exclusion removes a scope from evaluation entirely; an exemption keeps it evaluated but marks it Exempt (with a category and optional expiry)",
-   "Exemptions delete resources",
+   "An exclusion removes a scope from evaluation entirely; an exemption keeps it evaluated but marks it Exempt",
+   "An exemption removes a scope from evaluation entirely; an exclusion keeps it evaluated but hides it from reports",
    "Exclusions require P2"
   ],
   "ans": [
@@ -189,7 +189,7 @@
    "Set the assignment's enforcement mode to DoNotEnforce",
    "Delete the policy",
    "Use a resource lock",
-   "Change scope to tenant root"
+   "Set the assignment's scope to the tenant root management group"
   ],
   "ans": [
    0
@@ -259,7 +259,7 @@
   "diff": 3,
   "q": "Policy A (assigned at the subscription) denies East US. Policy B (assigned at RG1) allows only East US. Can anyone create a resource in RG1?",
   "opts": [
-   "Yes, in East US — the RG-level policy wins",
+   "Yes, in East US — the RG-level policy wins, because it's closer to the resource",
    "No — both policies are evaluated; any location in RG1 is denied by one of them",
    "Yes, anywhere",
    "Only Owners can"
@@ -394,7 +394,7 @@
    "az lock create --name NoDelete --lock-type CanNotDelete --resource-group RG1",
    "az group lock RG1",
    "az resource lock --delete RG1",
-   "az policy create --lock"
+   "az policy lock create --name NoDelete --effect Deny --resource-group RG1 --force"
   ],
   "ans": [
    0
@@ -410,7 +410,7 @@
   "q": "A ReadOnly lock is on a VM's resource group. Users report they can't start the VM. Why?",
   "opts": [
    "Start is a POST action, and ReadOnly allows only reads",
-   "The VM is deallocated permanently",
+   "A ReadOnly lock deallocates the VM and releases its compute",
    "Network issue",
    "License problem"
   ],
@@ -469,7 +469,7 @@
    "Tag resources with department and group by that tag in Cost analysis",
    "Create one subscription per resource",
    "Use resource locks",
-   "Create budgets per VM"
+   "Create a budget per department and group by that budget in Azure Advisor"
   ],
   "ans": [
    0
@@ -503,7 +503,7 @@
   "q": "Which CLI command adds tag env=prod to an existing resource group without removing other tags?",
   "opts": [
    "az tag update --resource-id <rg-id> --operation Merge --tags env=prod",
-   "az group update --tags env=prod (always merges)",
+   "az group update --name <rg-name> --operation Replace --set tags.env=prod",
    "az tag create env=prod",
    "az resource tag --replace"
   ],
@@ -520,7 +520,7 @@
   "diff": 2,
   "q": "In Cost Management, which feature applies subscription and resource group tags to child resource usage records for reporting?",
   "opts": [
-   "Tag inheritance (cost allocation setting)",
+   "Tag inheritance",
    "Azure Policy Deny",
    "Resource locks",
    "Budgets"
@@ -556,7 +556,7 @@
   "diff": 2,
   "q": "Can a resource group in West Europe contain a VM deployed in East US?",
   "opts": [
-   "No, regions must match",
+   "No — a VM's region must match its resource group",
    "Yes — the RG location only stores metadata",
    "Only with global peering",
    "Only for storage accounts"
@@ -576,7 +576,7 @@
   "opts": [
    "Yes",
    "No — a resource belongs to exactly one resource group",
-   "Only with tags",
+   "Yes — if both resource groups are in the same region",
    "Only VNets"
   ],
   "ans": [
@@ -592,7 +592,7 @@
   "diff": 3,
   "q": "Before moving resources to another subscription, how do you check whether the move will succeed without performing it?",
   "opts": [
-   "Use the Validate move operation (portal validation / validateMoveResources API)",
+   "Use the Validate move operation",
    "Run what-if on an ARM template",
    "Check Azure Advisor",
    "Create a budget"
@@ -612,7 +612,7 @@
   "opts": [
    "Source and destination subscriptions must be in the same Entra tenant and the resource provider must be registered in the destination",
    "Different tenants",
-   "Destination must be empty",
+   "The destination subscription must be empty and in the same region as the source, and all resources must be stopped before the move",
    "A P2 license"
   ],
   "ans": [
@@ -629,7 +629,7 @@
   "q": "Which CLI command moves a resource to another resource group?",
   "opts": [
    "az resource move --destination-group RG2 --ids <resourceId>",
-   "az group move RG1 RG2",
+   "az group move --source RG1 --destination RG2 --ids <resourceId>",
    "az resource transfer",
    "az vm migrate"
   ],
@@ -648,7 +648,7 @@
   "opts": [
    "Request a quota increase in Usage + quotas",
    "Create a resource lock",
-   "Change the tenant",
+   "Move the subscription to a different Entra tenant",
    "Enable a budget"
   ],
   "ans": [
@@ -664,7 +664,7 @@
   "diff": 3,
   "q": "Deployment fails with 'The subscription is not registered to use namespace Microsoft.ContainerInstance'. Fix?",
   "opts": [
-   "Register the resource provider (az provider register --namespace Microsoft.ContainerInstance)",
+   "Register the resource provider",
    "Buy a license",
    "Create a management group",
    "Remove the policy"
@@ -684,7 +684,7 @@
   "opts": [
    "To separate billing, enforce boundaries for quotas and access, and isolate environments (prod/dev)",
    "Subscriptions are free to create without billing",
-   "Each VM needs its own subscription",
+   "To meet the Azure requirement that production VMs, storage accounts and VNets live in separate subscriptions",
    "To get more Entra tenants"
   ],
   "ans": [
@@ -703,7 +703,7 @@
    "Manage access, policy, and compliance across multiple subscriptions",
    "Store VMs",
    "Host DNS zones",
-   "Group users for licensing"
+   "Group users and devices for licensing across multiple tenants"
   ],
   "ans": [
    0
@@ -736,7 +736,7 @@
   "diff": 3,
   "q": "By default, where are new subscriptions placed in the management group hierarchy?",
   "opts": [
-   "Under the tenant root group (unless a default management group is configured)",
+   "Under the tenant root group",
    "In no management group",
    "Under the newest management group",
    "In a group named Default"
@@ -794,7 +794,7 @@
   "q": "You want an email and a webhook call when actual spend reaches 90% of a monthly budget. What do you configure?",
   "opts": [
    "A budget with an alert condition at 90% using an action group",
-   "An Azure Policy",
+   "An Azure Policy with an Audit effect at 90% of the monthly spend",
    "A resource lock",
    "Advisor"
   ],
@@ -832,7 +832,7 @@
    "Cost, Security, Reliability, Operational excellence, Performance",
    "Cost and Security only",
    "Networking only",
-   "Identity and Compliance"
+   "Identity, Compliance, Networking, Licensing, and Data protection"
   ],
   "ans": [
    0
@@ -847,9 +847,9 @@
   "diff": 3,
   "q": "A VM runs 24/7 for the next three years with a stable size. Which option reduces compute cost the most?",
   "opts": [
-   "Azure Reserved VM Instances (3-year)",
+   "Azure Reserved VM Instances",
    "Pay-as-you-go",
-   "Spot VM",
+   "Azure Spot VMs with a deallocate eviction policy",
    "Bigger VM size"
   ],
   "ans": [

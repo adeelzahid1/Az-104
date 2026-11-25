@@ -75,7 +75,7 @@
   "q": "Which registry option meets requirement 6?",
   "opts": [
    "Azure Container Registry Basic",
-   "Azure Container Registry Standard",
+   "Azure Container Registry Standard with webhooks",
    "Azure Container Registry Premium with geo-replication",
    "Docker Hub public repository"
   ],
@@ -115,7 +115,7 @@
   "caseId": "C6",
   "q": "How should you deploy the web tier for requirement 1?",
   "opts": [
-   "Four VMs in one availability set",
+   "Four VMs in one availability set with five update domains, behind a Basic gateway",
    "Four VMs spread across availability zones, behind a Standard load balancer",
    "One large VM with Premium SSD disks",
    "Four VMs in a proximity placement group"
@@ -136,7 +136,7 @@
   "opts": [
    "It can be in any region",
    "It must be in the same region and subscription as the VMs and be enabled for disk encryption",
-   "It must be a storage account with customer-managed keys",
+   "It must be a storage account in the same region with customer-managed keys",
    "It must be in the paired region"
   ],
   "ans": [
@@ -728,7 +728,7 @@
   "code": "Resource and property changes are indicated with these symbols:\n  - Delete\n  + Create\n  = Nochange\n\nScope: /subscriptions/1111/resourceGroups/RG1\n  - Microsoft.Compute/virtualMachines/vm-old\n  + Microsoft.Network/publicIPAddresses/pip-new\n  = Microsoft.Network/virtualNetworks/vnet1\n\nResource changes: 1 to delete, 1 to create, 1 no change.",
   "q": "A what-if run shows this output. Why will vm-old be deleted?",
   "opts": [
-   "The template sets vm-old to be deleted",
+   "The template declares vm-old with a delete option on its OS disk and NIC",
    "The deployment uses Complete mode, and vm-old is not defined in the template",
    "What-if always deletes stopped VMs",
    "The resource group has a CanNotDelete lock"
@@ -788,7 +788,7 @@
   "code": "apiVersion: 2021-10-01\nlocation: westeurope\nname: web-group\ntype: Microsoft.ContainerInstance/containerGroups\nproperties:\n  osType: Linux\n  restartPolicy: Always\n  ipAddress:\n    type: Public\n    ports: [ { protocol: tcp, port: 80 } ]\n  containers:\n  - name: web\n    properties:\n      image: myacr.azurecr.io/web:1\n      ports: [ { port: 80 } ]\n      resources: { requests: { cpu: 1, memoryInGB: 1.5 } }\n  - name: logger\n    properties:\n      image: myacr.azurecr.io/logger:1\n      resources: { requests: { cpu: 0.5, memoryInGB: 0.5 } }",
   "q": "Which statement about this container group is true?",
   "opts": [
-   "The two containers run on separate hosts",
+   "The two containers run on separate hosts with separate IPs",
    "The logger container can reach the web container on localhost:80",
    "Each container gets its own public IP",
    "The group can also run Windows containers"
@@ -845,7 +845,7 @@
   "code": "\"outputs\": {\n  \"webUrl\": {\n    \"type\": \"string\",\n    \"value\": \"[reference(resourceId('Microsoft.Web/sites', parameters('siteName'))).defaultHostName]\"\n  }\n}",
   "q": "What does this template output return?",
   "opts": [
-   "The resource ID of the web app",
+   "The full resource ID of the web app, starting with /subscriptions",
    "The web app's default host name, for example app1.azurewebsites.net",
    "The App Service plan name",
    "The publishing password"
@@ -887,9 +887,9 @@
   "q": "app2 needs rule-based autoscale. What must change?",
   "opts": [
    "Enable Always On for app2",
-   "The plan that runs app2 must be Standard or higher, for example by scaling plan1 up to S1 or moving app2 to an S1 plan",
+   "The plan that runs app2 must be Standard or higher",
    "Add a second worker to plan1",
-   "Create a deployment slot for app2"
+   "app2 needs its own deployment slot for scaling"
   ],
   "ans": [
    1
@@ -906,7 +906,7 @@
   "q": "What does this Bicep code do?",
   "opts": [
    "It deploys network.bicep as a nested deployment and outputs the subnet ID that module returns",
-   "It imports network.bicep's resources without deploying them",
+   "It imports the resource names from network.bicep without deploying them and outputs the first one",
    "It deletes the network if it already exists",
    "It runs network.bicep in a separate subscription"
   ],

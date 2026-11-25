@@ -24,7 +24,7 @@
   "diff": 1,
   "q": "Where in the portal do you chart a VM's Percentage CPU over the last 24 hours?",
   "opts": [
-   "Azure Monitor → Metrics (or the VM's Metrics blade)",
+   "Azure Monitor → Metrics",
    "Activity log",
    "Advisor",
    "Cost analysis"
@@ -43,7 +43,7 @@
   "q": "In Metrics explorer, how do you see storage transactions broken down by API name?",
   "opts": [
    "Apply splitting on the ApiName dimension",
-   "Change the time range",
+   "Apply a filter on the Time range control",
    "Pin to a dashboard",
    "Use the Activity log"
   ],
@@ -97,7 +97,7 @@
   "q": "Which feature shares a set of charts with a team in the portal?",
   "opts": [
    "Pin charts to an Azure dashboard (or use Workbooks) and share it",
-   "Activity log export",
+   "Export the charts to the Activity log and share its saved filter",
    "Budgets",
    "Locks"
   ],
@@ -132,8 +132,8 @@
   "diff": 3,
   "q": "Can you collect guest OS performance counters (like memory available) as metrics without an agent?",
   "opts": [
-   "No — guest OS data needs the Azure Monitor Agent; platform metrics only cover host-level data",
-   "Yes, always",
+   "No — guest OS data needs the Azure Monitor Agent",
+   "Yes — platform metrics always include guest counters",
    "Only for Linux",
    "Only with Premium SSD"
   ],
@@ -153,7 +153,7 @@
    "A unique environment for log data in Azure Monitor, with its own data, retention, and access configuration",
    "A VM",
    "A storage container",
-   "A dashboard"
+   "A shared dashboard that stores chart definitions, alert rules, and metric data for one resource group"
   ],
   "ans": [
    0
@@ -170,7 +170,7 @@
   "opts": [
    "az monitor log-analytics workspace create -g RG1 -n law1",
    "az loganalytics new law1",
-   "az monitor workspace add",
+   "az monitor workspace add -g RG1 -n law1 --type log-analytics",
    "az logs create"
   ],
   "ans": [
@@ -186,7 +186,7 @@
   "diff": 3,
   "q": "Users should only see log data for resources they have access to, without workspace-wide permissions. Which access mode?",
   "opts": [
-   "Resource-context access (workspace access control = use resource or workspace permissions)",
+   "Resource-context access",
    "Workspace-context only",
    "Public workspace",
    "Shared key"
@@ -223,7 +223,7 @@
   "q": "Data must be kept 7 years for compliance but is rarely queried. Cheapest approach in Log Analytics?",
   "opts": [
    "Long-term retention (archive) for older data, plus restore or search jobs when needed",
-   "Interactive retention for 7 years",
+   "Interactive retention for 7 years on every table, with a daily ingestion cap",
    "Export to an email",
    "Delete after 30 days"
   ],
@@ -242,7 +242,7 @@
   "opts": [
    "Use a commitment tier pricing level",
    "Use Pay-as-you-go only",
-   "Create more workspaces",
+   "Split the data over more workspaces",
    "Increase retention"
   ],
   "ans": [
@@ -276,8 +276,8 @@
   "diff": 2,
   "q": "Which CLI command creates a diagnostic setting sending a Key Vault's AuditEvent logs to a workspace?",
   "opts": [
-   "az monitor diagnostic-settings create --resource <kvId> -n kvdiag --workspace <lawId> --logs '[{\"category\":\"AuditEvent\",\"enabled\":true}]'",
-   "az keyvault logs enable",
+   "az monitor diagnostic-settings create --resource <kvId> -n kvdiag --workspace <lawId> --logs …",
+   "az keyvault diagnostic-settings enable --vault <kvId> -n kvdiag --workspace <lawId> --events …",
    "az monitor log enable kv",
    "az diag create kv"
   ],
@@ -297,7 +297,7 @@
    "Azure Policy with a DeployIfNotExists diagnostic settings definition",
    "Manual configuration per vault",
    "A resource lock",
-   "An alert rule"
+   "An Activity log alert rule that runs when a Key Vault is created"
   ],
   "ans": [
    0
@@ -350,7 +350,7 @@
   "opts": [
    "Activity log, filtered on the delete operation",
    "VM insights",
-   "Metrics",
+   "Metrics, filtered on the VM availability",
    "Boot diagnostics"
   ],
   "ans": [
@@ -369,7 +369,7 @@
    "Administrative, Service Health, Resource Health, Alert, Autoscale, Recommendation, Security, Policy",
    "Only Administrative",
    "Errors and Warnings only",
-   "Metrics and Logs"
+   "Metrics, Logs, Traces, Changes, Heartbeat, Performance, Syslog, Custom tables and Events"
   ],
   "ans": [
    0
@@ -385,7 +385,7 @@
   "q": "Do blob uploads (data-plane operations) appear in the Activity log?",
   "opts": [
    "No — only control-plane operations; data-plane operations need resource logs",
-   "Yes, all operations",
+   "Yes — control-plane and data-plane operations are both recorded for 90 days",
    "Only deletes",
    "Only with GRS"
   ],
@@ -422,7 +422,7 @@
   "opts": [
    "Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by Computer | top 10 by avg_CounterValue desc",
    "Perf | take 10",
-   "Perf | limit CPU 10",
+   "Perf | where CounterName == \"% Processor Time\" | order by CounterValue asc | summarize by Computer | limit 10 by avg desc",
    "SELECT TOP 10 FROM Perf"
   ],
   "ans": [
@@ -458,7 +458,7 @@
   "opts": [
    "Event | where TimeGenerated > ago(24h) and EventLevelName == \"Error\"",
    "Event | errors 24h",
-   "Syslog | where Level == Error",
+   "Syslog | where TimeGenerated > ago(24h) and SeverityLevel == \"Windows\"",
    "AzureActivity | where Level == Error"
   ],
   "ans": [
@@ -511,7 +511,7 @@
   "q": "Which query finds VMs that haven't sent a heartbeat in the last 15 minutes?",
   "opts": [
    "Heartbeat | summarize LastSeen = max(TimeGenerated) by Computer | where LastSeen < ago(15m)",
-   "Heartbeat | where TimeGenerated < ago(15m)",
+   "Heartbeat | where TimeGenerated < ago(15m) | summarize LastSeen = min(TimeGenerated) by Computer",
    "Heartbeat | take 15",
    "Perf | where Heartbeat == 0"
   ],
@@ -550,7 +550,7 @@
   "q": "What does a Data Collection Rule (DCR) define?",
   "opts": [
    "What data to collect (events, counters, logs), from which machines, and where to send it",
-   "Alert thresholds",
+   "The alert thresholds, the action groups, and the time windows for each machine",
    "RBAC roles",
    "Backup schedules"
   ],
@@ -570,7 +570,7 @@
    "Use an XPath query filter in the DCR's Windows event log data source",
    "Collect all events and delete later",
    "Use the MMA agent",
-   "Set a daily cap"
+   "Set a daily cap on the workspace for the SecurityEvent table"
   ],
   "ans": [
    0
@@ -604,7 +604,7 @@
   "q": "On-premises servers must send logs to Azure Monitor with AMA. What's required first?",
   "opts": [
    "Onboard them to Azure Arc, then install AMA as an extension",
-   "Install MMA",
+   "Install the MMA agent, then upgrade it to AMA with a policy",
    "Use Network Watcher",
    "Nothing"
   ],
@@ -621,7 +621,7 @@
   "diff": 2,
   "q": "Which identity does the Azure Monitor Agent use to authenticate when sending data?",
   "opts": [
-   "A managed identity (system- or user-assigned)",
+   "A managed identity",
    "A workspace key in config files",
    "A user password",
    "A SAS token"
@@ -639,9 +639,9 @@
   "diff": 2,
   "q": "What does enabling VM insights do?",
   "opts": [
-   "Installs AMA (and the dependency agent for Map, optionally) and creates a DCR sending performance data to a workspace",
+   "Installs AMA and creates a DCR that sends performance data",
    "Enables backup",
-   "Enables encryption",
+   "Enables disk encryption and sends its key logs to a workspace",
    "Adds a public IP"
   ],
   "ans": [
@@ -729,9 +729,9 @@
   "diff": 2,
   "q": "What's the difference between Service Health and Resource Health?",
   "opts": [
-   "Service Health covers Azure service issues in regions; Resource Health shows the health of your individual resources (for example, is VM1 available?)",
+   "Service Health covers Azure service issues in regions; Resource Health shows the health of your individual resources",
    "They're identical",
-   "Resource Health is about billing",
+   "Resource Health covers Azure service issues in regions; Service Health shows the health of your individual VMs",
    "Service Health is only for VMs"
   ],
   "ans": [
@@ -749,7 +749,7 @@
   "opts": [
    "Activity log alert on the delete operation",
    "Metric alert",
-   "Log alert on Perf",
+   "Log search alert on the Perf table",
    "Smart detection"
   ],
   "ans": [
@@ -765,7 +765,7 @@
   "diff": 3,
   "q": "A log search alert runs every 5 minutes over 5-minute windows but sometimes misses events. Why?",
   "opts": [
-   "Log ingestion latency — data may arrive after the window was evaluated; widen the window or account for latency",
+   "Log ingestion latency",
    "The rule is broken",
    "KQL doesn't support time",
    "The action group is full"
@@ -801,7 +801,7 @@
   "diff": 3,
   "q": "Alerts should resolve automatically when CPU drops back below the threshold. Which option?",
   "opts": [
-   "Automatically resolve alerts (stateful alerts)",
+   "Automatically resolve alerts",
    "Mute actions",
    "Alert processing rule",
    "Dynamic thresholds"
@@ -821,7 +821,7 @@
   "opts": [
    "An Automation runbook (or Logic App/Function) that restarts the VM",
    "Email only",
-   "A voice call",
+   "A voice call that asks the on-call engineer to restart the VM",
    "A budget"
   ],
   "ans": [

@@ -45,7 +45,7 @@
    "az storage container create --name images --account-name st1 --auth-mode login",
    "az storage blob create images",
    "az container create images",
-   "az storage share create images"
+   "az storage share create --name images --account-name st1 --auth-mode login --container"
   ],
   "ans": [
    0
@@ -61,7 +61,7 @@
   "q": "Which CLI command uploads a local file to a container?",
   "opts": [
    "az storage blob upload --container-name images --file photo.jpg --name photo.jpg --account-name st1",
-   "az storage file upload",
+   "az storage file upload --share-name images --source photo.jpg --path photo.jpg --account-name st1",
    "az blob push photo.jpg",
    "az storage container upload"
   ],
@@ -171,7 +171,7 @@
   "opts": [
    "Early deletion charge for the remaining 20 days",
    "No charge",
-   "A 180-day charge",
+   "Early deletion charge for the remaining 170 days",
    "A rehydration charge"
   ],
   "ans": [
@@ -190,7 +190,7 @@
    "No, premium block blob accounts don't support hot/cool/cold/archive tiering",
    "Yes",
    "Only with RA-GRS",
-   "Only via lifecycle"
+   "Yes, but only through a lifecycle management rule that targets base blobs"
   ],
   "ans": [
    0
@@ -243,7 +243,7 @@
   "opts": [
    "Last access time tracking",
    "Versioning",
-   "Change feed",
+   "Change feed with read events",
    "Soft delete"
   ],
   "ans": [
@@ -277,7 +277,7 @@
   "diff": 3,
   "q": "Which blob types can lifecycle management tier between hot, cool, and archive?",
   "opts": [
-   "Block blobs only (append blobs support delete only)",
+   "Block blobs only",
    "Page blobs",
    "All types",
    "Append blobs only"
@@ -318,7 +318,7 @@
   "opts": [
    "Promote the previous version to be the current version",
    "Restore from a snapshot only",
-   "Undelete the container",
+   "Undelete the container, which restores the previous content",
    "It can't be recovered"
   ],
   "ans": [
@@ -334,7 +334,7 @@
   "diff": 3,
   "q": "Versioning is enabled and a blob is deleted. What happens?",
   "opts": [
-   "The current version becomes a previous version; the data is kept until the versions are deleted",
+   "The current version becomes a previous version",
    "The blob and all versions are deleted",
    "Versioning doesn't cover deletes",
    "The blob moves to archive"
@@ -352,7 +352,7 @@
   "diff": 2,
   "q": "What's a cost consideration of enabling blob versioning on frequently overwritten data?",
   "opts": [
-   "Each version is billed, so storage costs can grow; use lifecycle rules to delete old versions",
+   "Each version is billed, so storage costs can grow",
    "Versioning is free forever",
    "Versions are stored in a separate account",
    "Versioning disables tiers"
@@ -408,7 +408,7 @@
   "opts": [
    "Point-in-time restore for block blobs",
    "Share snapshots",
-   "Object replication",
+   "Object replication in the reverse direction",
    "Rehydration"
   ],
   "ans": [
@@ -447,7 +447,7 @@
   "opts": [
    "Immutable storage with a time-based retention policy",
    "Soft delete",
-   "ReadOnly resource lock",
+   "A ReadOnly resource lock with a 7-year expiry on the account",
    "Versioning"
   ],
   "ans": [
@@ -481,10 +481,10 @@
   "diff": 3,
   "q": "What does locking a time-based retention policy do?",
   "opts": [
-   "The retention interval can't be shortened and the policy can't be deleted (it can only be extended)",
+   "The retention interval can't be shortened and the policy can't be deleted",
    "It deletes the data",
    "It makes the container public",
-   "It can be undone anytime"
+   "The retention interval can be shortened, but the policy can't be extended"
   ],
   "ans": [
    0
@@ -518,7 +518,7 @@
   "q": "Which CLI command creates a 100 GiB file share named 'docs'?",
   "opts": [
    "az storage share-rm create --storage-account st1 --name docs --quota 100",
-   "az storage container create docs",
+   "az storage container create --storage-account st1 --name docs --size 100",
    "az files create docs 100",
    "az storage blob share docs"
   ],
@@ -538,7 +538,7 @@
    "Transaction optimized, Hot, Cool",
    "Hot, Archive",
    "Premium only",
-   "Cold, Archive"
+   "Transaction optimized, Cold, Archive"
   ],
   "ans": [
    0
@@ -571,9 +571,9 @@
   "diff": 2,
   "q": "How do you mount an Azure file share on a Windows machine?",
   "opts": [
-   "net use Z: \\\\st1.file.core.windows.net\\docs (or New-PSDrive), using credentials over SMB 445",
+   "net use Z: \\\\st1.file.core.windows.net\\docs over SMB 445",
    "Map it as an iSCSI LUN",
-   "Use azcopy mount",
+   "azcopy mount Z: https://st1.blob.core.windows.net/docs",
    "Use FTP"
   ],
   "ans": [
@@ -609,7 +609,7 @@
   "opts": [
    "Enable soft delete for file shares",
    "Blob soft delete",
-   "Container soft delete",
+   "Enable soft delete for containers",
    "Versioning"
   ],
   "ans": [
@@ -646,7 +646,7 @@
    "Use the 'Previous Versions' tab in File Explorer",
    "Rebuild the share",
    "Contact Microsoft",
-   "Use AzCopy only"
+   "Run AzCopy with --undelete against the file share"
   ],
   "ans": [
    0
@@ -661,10 +661,10 @@
   "diff": 3,
   "q": "Can share snapshots protect you if the whole storage account is deleted?",
   "opts": [
-   "No — snapshots live in the same account, so they're deleted with it; use a delete lock and Azure Backup",
+   "No — snapshots live in the same account and are deleted with it",
    "Yes, always",
    "Only for premium",
-   "Only with ZRS"
+   "Yes — with ZRS, snapshots are kept in another zone for 14 days"
   ],
   "ans": [
    0
@@ -680,7 +680,7 @@
   "q": "What must be installed on a Windows Server to sync it with Azure Files?",
   "opts": [
    "The Azure File Sync agent, with the server registered to the Storage Sync Service",
-   "The MARS agent",
+   "The MARS agent, with the server registered to the Recovery Services vault",
    "The Azure Monitor Agent",
    "Nothing"
   ],
@@ -755,7 +755,7 @@
   "q": "A branch office needs fast local access to a central Azure file share. Which solution?",
   "opts": [
    "Azure File Sync with a server endpoint on a local Windows Server",
-   "Object replication",
+   "Object replication to a storage account in the branch's nearest region",
    "GRS",
    "Storage Explorer"
   ],
@@ -829,8 +829,8 @@
   "diff": 3,
   "q": "Which upload approach does AzCopy and the SDK use for large block blobs?",
   "opts": [
-   "Stage blocks in parallel (Put Block) then commit the block list (Put Block List)",
-   "One single PUT of up to 1 TB",
+   "Stage blocks in parallel (Put Block) then commit the block list",
+   "Send one single PUT of up to 1 TB and then verify its MD5 hash",
    "Page writes",
    "Append operations"
   ],
@@ -866,7 +866,7 @@
   "q": "You need SFTP access to Blob storage for a partner. What must be enabled?",
   "opts": [
    "Hierarchical namespace and SFTP support with local users",
-   "Static website",
+   "Static website hosting and a custom domain with SFTP",
    "Azure Files NFS",
    "Anonymous access"
   ],
@@ -907,7 +907,7 @@
   "q": "Which solution fits best?",
   "opts": [
    "Azure File Sync with cloud tiering on each branch server, syncing to one Azure file share",
-   "Blob storage with object replication",
+   "Blob storage with object replication between three accounts, one per branch office",
    "Three separate storage accounts with GRS",
    "DFS-R between branches only"
   ],

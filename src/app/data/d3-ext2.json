@@ -8,7 +8,7 @@
   "opts": [
    "A physically separate datacenter location within a region, with independent power, cooling, and networking",
    "A paired region",
-   "A rack within a datacenter",
+   "A rack within one datacenter that shares a power source and a network switch with others",
    "A resource group"
   ],
   "ans": [
@@ -26,7 +26,7 @@
   "opts": [
    "No — availability sets and zones are separate options; choose one per VM",
    "Yes",
-   "Only with Premium SSD",
+   "Yes — as long as all the VMs use Premium SSD managed disks",
    "Only for Linux"
   ],
   "ans": [
@@ -115,7 +115,7 @@
   "q": "A three-tier app needs high availability. What's the recommended pattern for the web tier?",
   "opts": [
    "Put web VMs across zones (or in their own availability set) behind a load balancer",
-   "Put all tiers in one availability set",
+   "Put the VMs of all three tiers together in one availability set with a public IP",
    "One large VM",
    "Use a single zone"
   ],
@@ -173,7 +173,7 @@
   "opts": [
    "az vm list-vm-resize-options -g RG1 -n VM1",
    "az vm list-sizes",
-   "az vm show --sizes",
+   "az vm show --sizes -g RG1 -n VM1 --hardware",
    "az compute sizes"
   ],
   "ans": [
@@ -191,7 +191,7 @@
   "opts": [
    "az vm resize -g RG1 -n VM1 --size Standard_D4s_v5",
    "az vm update --sku D4s",
-   "az vm scale VM1 D4s",
+   "az vm scale -g RG1 -n VM1 --sku Standard_D4s_v5",
    "az vm size set"
   ],
   "ans": [
@@ -225,9 +225,9 @@
   "diff": 2,
   "q": "What's the difference between Stop (from inside the OS) and Stop (deallocate) in the portal?",
   "opts": [
-   "An OS shutdown keeps the VM allocated and you're still billed for compute; deallocating releases compute and stops compute billing",
+   "An OS shutdown keeps the VM allocated and you're still billed for compute",
    "No difference",
-   "Deallocate deletes disks",
+   "Both stop compute billing, but deallocate also deletes the VM's disks",
    "OS shutdown deletes the VM"
   ],
   "ans": [
@@ -261,7 +261,7 @@
   "diff": 2,
   "q": "You forgot the local admin password of a Windows VM. Quickest fix?",
   "opts": [
-   "Use 'Reset password' in the portal (VMAccess extension)",
+   "Use 'Reset password' in the portal",
    "Delete and recreate the VM",
    "Use Bastion to bypass the password",
    "Open a support ticket"
@@ -300,7 +300,7 @@
    "Boot diagnostics (screenshot and serial log) and Serial Console",
    "Activity log",
    "Azure Advisor",
-   "IP flow verify"
+   "IP flow verify and the Activity log of the resource group"
   ],
   "ans": [
    0
@@ -353,7 +353,7 @@
   "opts": [
    "Enables VM extensions and handles provisioning and communication with the Azure fabric",
    "Encrypts disks",
-   "Backs up VMs",
+   "Backs up the VM's disks every day and reports results to the Activity log",
    "Acts as an antivirus"
   ],
   "ans": [
@@ -443,7 +443,7 @@
   "opts": [
    "Deallocate the VM, attach the NIC, and ensure the VM size supports multiple NICs",
    "Nothing, attach it live",
-   "Recreate the VM",
+   "Recreate the VM in a new subnet, because NICs are fixed at creation time",
    "Use a load balancer"
   ],
   "ans": [
@@ -477,8 +477,8 @@
   "diff": 2,
   "q": "Which statement about server-side encryption (SSE) of managed disks is correct?",
   "opts": [
-   "It's enabled by default with platform-managed keys, and customer-managed keys can be used via a disk encryption set",
-   "It must be enabled per disk manually",
+   "It's enabled by default with platform-managed keys",
+   "It must be enabled per disk, using BitLocker keys",
    "It needs BitLocker",
    "It's only for data disks"
   ],
@@ -516,7 +516,7 @@
    "Register the EncryptionAtHost feature for Microsoft.Compute",
    "Create a Recovery Services vault",
    "Enable Defender",
-   "Create a disk encryption set"
+   "Create a disk encryption set with a customer-managed key"
   ],
   "ans": [
    0
@@ -531,8 +531,8 @@
   "diff": 2,
   "q": "Which Key Vault access setting must be enabled for Azure Disk Encryption?",
   "opts": [
-   "Azure Disk Encryption for volume encryption (enabledForDiskEncryption)",
-   "Template deployment only",
+   "Azure Disk Encryption for volume encryption",
+   "Azure Resource Manager for template deployment",
    "Purge protection only",
    "Public network access disabled"
   ],
@@ -551,7 +551,7 @@
   "opts": [
    "az vm encryption enable -g RG1 -n VM1 --disk-encryption-keyvault kv1",
    "az disk encrypt VM1",
-   "az vm update --encrypt",
+   "az vm update -g RG1 -n VM1 --encrypt-disks all --keyvault kv1 --ade",
    "az keyvault encrypt-vm"
   ],
   "ans": [
@@ -587,7 +587,7 @@
   "q": "Which CLI command creates a scale set with 2 instances?",
   "opts": [
    "az vmss create -g RG1 -n vmss1 --image Ubuntu2204 --instance-count 2",
-   "az vm create --count 2",
+   "az vm create -g RG1 -n vmss1 --image Ubuntu2204 --scale-set --count 2",
    "az vmss new 2",
    "az group create --vmss"
   ],
@@ -605,7 +605,7 @@
   "q": "Which CLI command manually sets a scale set to 5 instances?",
   "opts": [
    "az vmss scale -g RG1 -n vmss1 --new-capacity 5",
-   "az vmss update --count 5",
+   "az vmss resize -g RG1 -n vmss1 --instances 5",
    "az vmss resize 5",
    "az autoscale set 5"
   ],
@@ -622,9 +622,9 @@
   "diff": 3,
   "q": "Autoscale has a scale-out rule at CPU > 70% and a scale-in rule at CPU < 65%. Instances keep flapping. Best fix?",
   "opts": [
-   "Widen the gap between thresholds (for example, scale in below 30%) and use cooldown periods",
+   "Widen the gap between the thresholds and use cooldown periods",
    "Remove the maximum",
-   "Use a manual schedule",
+   "Remove the maximum and replace both rules with a manual schedule",
    "Lower the minimum to 0"
   ],
   "ans": [
@@ -641,7 +641,7 @@
   "q": "Traffic peaks every weekday 8 AM–6 PM. How should you scale a VMSS predictably?",
   "opts": [
    "A schedule-based (recurrence) autoscale profile",
-   "Only CPU rules",
+   "A metric-based CPU rule with a longer duration",
    "A budget",
    "Manual scaling each morning"
   ],
@@ -659,7 +659,7 @@
   "q": "What does the Rolling upgrade policy on a scale set do when the model changes?",
   "opts": [
    "Updates instances in batches with optional pauses and health checks",
-   "Updates all instances at once",
+   "Updates all instances at the same time without any health checks",
    "Never updates instances",
    "Deletes and recreates the scale set"
   ],
@@ -694,7 +694,7 @@
   "diff": 3,
   "q": "Which scale set feature automatically replaces unhealthy instances?",
   "opts": [
-   "Automatic instance repairs (with an application health extension or LB probe)",
+   "Automatic instance repairs",
    "Rolling upgrade",
    "Overprovisioning",
    "Spot priority"
@@ -790,7 +790,7 @@
   "diff": 3,
   "q": "You move VM1 to another subscription. Which dependent resources must be moved together with it?",
   "opts": [
-   "Its managed disks and network interface (and a VNet if the NIC depends on it)",
+   "Its managed disks and network interface",
    "Only the VM resource",
    "Only the OS disk",
    "Nothing — dependencies are recreated automatically"
@@ -809,7 +809,7 @@
   "q": "VM1 is moved from RG1 to RG2. What happens to its resource ID?",
   "opts": [
    "It changes, so scripts referencing the old ID must be updated",
-   "It stays the same",
+   "It stays the same, because the resource group isn't part of the ID",
    "It becomes a GUID",
    "The VM gets a new name"
   ],
@@ -828,7 +828,7 @@
   "opts": [
    "You need a Key Vault in the target region and must handle the encryption keys and secrets as part of the move",
    "ADE VMs can't move",
-   "Encryption is removed automatically",
+   "Encryption is removed automatically during the move and must be turned on again in the target region",
    "Nothing special"
   ],
   "ans": [

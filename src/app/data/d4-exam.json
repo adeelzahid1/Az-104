@@ -37,9 +37,9 @@
   "q": "What meets requirement 2?",
   "opts": [
    "Peer VNet-App directly with VNet-Data",
-   "Add route tables to the spoke subnets that send the other spoke's prefix to the next hop type Virtual appliance at 10.0.1.4",
+   "UDRs on both spoke subnets with next hop Virtual appliance 10.0.1.4",
    "Enable a service endpoint on both spokes",
-   "Add NSG rules that allow VNet-App to VNet-Data"
+   "NSG rules that allow VNet-App to VNet-Data through address 10.0.1.4"
   ],
   "ans": [
    1
@@ -74,7 +74,7 @@
   "caseId": "C7",
   "q": "What meets requirement 4?",
   "opts": [
-   "A service endpoint for Microsoft.Sql on the spoke subnets",
+   "A service endpoint for Microsoft.Sql on the spoke subnets, with an ExpressRoute circuit for on-premises clients",
    "A private endpoint for the SQL server, a privatelink private DNS zone, and DNS forwarding for on-premises clients",
    "An NSG rule allowing TCP 1433 from on-premises",
    "A public endpoint restricted to the on-premises public IP"
@@ -117,7 +117,7 @@
   "opts": [
    "Create an A record that points to Azure",
    "Replace the domain's NS records with the four Azure DNS name servers of the proseware.com zone",
-   "Add a TXT record with the Azure subscription ID",
+   "Add a TXT record with the Azure subscription ID and an A record that points to the Azure DNS zone",
    "Nothing; Azure DNS takes over automatically"
   ],
   "ans": [
@@ -134,7 +134,7 @@
   "caseId": "C8",
   "q": "Which record meets requirement 2?",
   "opts": [
-   "A CNAME record at the apex pointing to the load balancer",
+   "A CNAME record at the apex that points to the load balancer's DNS name label",
    "An alias A record at the apex that targets the load balancer's public IP resource",
    "A static A record with the current IP address",
    "An MX record"
@@ -184,7 +184,7 @@
   "opts": [
    "A public Standard load balancer with a rule for TCP 8443",
    "An internal Standard load balancer with a private frontend IP and a rule for TCP 8443",
-   "An Application Gateway with a public listener",
+   "An Application Gateway with a public listener and a routing rule for TCP 8443",
    "Traffic Manager with two endpoints"
   ],
   "ans": [
@@ -747,7 +747,7 @@
    "Add a route table to the database subnet",
    "Add an Allow rule with a lower priority number than Deny-SQL-From-Web, or change that rule",
    "Restart the database VM",
-   "Enable a service endpoint for Microsoft.Sql"
+   "Enable a service endpoint for Microsoft.Sql on the web subnet, then restart the database VM"
   ],
   "ans": [
    1
@@ -763,7 +763,7 @@
   "code": "> nslookup stdata01.blob.core.windows.net\nNon-authoritative answer:\nName:    stdata01.privatelink.blob.core.windows.net\nAddress: 10.2.4.5\nAliases: stdata01.blob.core.windows.net",
   "q": "You run this command on a VM in the VNet. What does the output show?",
   "opts": [
-   "The storage account is reached through its public endpoint",
+   "The storage account is reached through its public endpoint, because the name contains blob.core",
    "Private endpoint DNS works: the name resolves to a private IP through the privatelink zone",
    "DNS is broken because the name changed",
    "A service endpoint is configured"
@@ -784,7 +784,7 @@
   "opts": [
    "HTTP and HTTPS from the internet to NICs in the asg-web application security group",
    "All traffic from asg-web to the internet",
-   "HTTP and HTTPS from the VNet only",
+   "HTTP and HTTPS from the VNet only, to every NIC in the subnet that contains asg-web",
    "Nothing, because ASGs cannot be used as destinations"
   ],
   "ans": [
@@ -824,9 +824,9 @@
   "q": "Which statement about this private DNS zone is true?",
   "opts": [
    "All three records were created by auto-registration",
-   "vm-web1 and vm-sql1 were created by auto-registration through a registration-enabled VNet link; api was created manually",
+   "vm-web1 and vm-sql1 were created by auto-registration through a registration-enabled VNet link",
    "Auto-registration is disabled for the zone",
-   "The records can be resolved from the internet"
+   "All of its records can be resolved from the internet through the zone's public name servers"
   ],
   "ans": [
    1
@@ -842,7 +842,7 @@
   "code": "Name         PeeringState  AllowGatewayTransit  UseRemoteGateways  AllowForwardedTraffic\nhub-to-app   Connected     True                 False              True\napp-to-hub   Connected     False                True               True\nhub-to-data  Initiated     True                 False              True",
   "q": "Why can VMs in vnet-data not reach the hub?",
   "opts": [
-   "Gateway transit is enabled",
+   "Gateway transit is enabled on the hub side, which blocks traffic from VMs in vnet-data",
    "The peering has not been created on the vnet-data side yet, so its state is Initiated",
    "Forwarded traffic is allowed",
    "The hub has too many peerings"
@@ -861,7 +861,7 @@
   "code": "Connection status: Unreachable\nHop 1  10.1.1.4  Source            Issues: None\nHop 2  10.0.1.4  VirtualAppliance  Issues: None\nHop 3  10.2.1.5  Destination       Issues: NetworkSecurityRule 'Deny-All-Inbound' (nsg-data)",
   "q": "Connection troubleshoot returns this result. What is the cause?",
   "opts": [
-   "The firewall at 10.0.1.4 drops the traffic",
+   "The firewall at 10.0.1.4 (source network) drops the traffic",
    "An NSG on the destination subnet (nsg-data) blocks the traffic",
    "There is no route to the destination",
    "The source VM is stopped"
@@ -883,7 +883,7 @@
    "Mail is delivered to Exchange Online, and the apex follows the pip-web IP resource",
    "www is an alias record",
    "The zone is private",
-   "The apex record must be updated by hand when the IP changes"
+   "The apex record must be updated by hand when the IP of pip-web changes"
   ],
   "ans": [
    0

@@ -25,7 +25,7 @@
   "q": "For Azure-to-Azure disaster recovery, where should the Recovery Services vault be?",
   "opts": [
    "In the TARGET (recovery) region, not the source region",
-   "In the source region",
+   "In the SOURCE region, next to the VMs it replicates",
    "Any region",
    "On-premises"
   ],
@@ -44,7 +44,7 @@
   "opts": [
    "Backup: vault in the SAME region as the VM; ASR: vault in the TARGET region",
    "Both in the same region",
-   "Both in the target region",
+   "Backup: vault in the TARGET region; ASR: vault in the SAME region as the VM",
    "No rules"
   ],
   "ans": [
@@ -60,10 +60,10 @@
   "diff": 2,
   "q": "What does ASR create in the target region when you enable replication?",
   "opts": [
-   "A target resource group, VNet (or mapping), cache storage in the source region, and replica managed disks",
+   "A resource group, VNet, and replica managed disks",
    "Only a backup",
    "A new tenant",
-   "Nothing until failover"
+   "Nothing until a failover is started from the vault"
   ],
   "ans": [
    0
@@ -79,7 +79,7 @@
   "q": "Where does ASR temporarily store changes from source VMs before sending them to the target region?",
   "opts": [
    "A cache storage account in the SOURCE region",
-   "The target vault directly",
+   "A cache disk attached to each TARGET VM",
    "Key Vault",
    "Log Analytics"
   ],
@@ -96,8 +96,8 @@
   "diff": 2,
   "q": "What's a recovery point in ASR?",
   "opts": [
-   "A point-in-time state of the replicated VM that you can fail over to (crash-consistent or app-consistent)",
-   "A backup policy",
+   "A point-in-time state of the replicated VM that you can fail over to",
+   "A backup policy setting that decides how long replicas are kept",
    "A region pair",
    "A DNS record"
   ],
@@ -172,7 +172,7 @@
   "q": "After a test failover is validated, what do you do?",
   "opts": [
    "Run 'Cleanup test failover' to delete the test VMs",
-   "Commit the failover",
+   "Run 'Commit' to keep the test VMs as the new replicas",
    "Disable replication",
    "Delete the vault"
   ],
@@ -189,7 +189,7 @@
   "diff": 3,
   "q": "After a real failover, what does 'Commit' do?",
   "opts": [
-   "Finalizes the failover; you can no longer change to a different recovery point",
+   "Finalizes the failover",
    "Starts replication",
    "Deletes source VMs",
    "Cancels the failover"
@@ -208,7 +208,7 @@
   "q": "For a DR drill, which network should test-failover VMs connect to?",
   "opts": [
    "An isolated VNet in the target region, not connected to production",
-   "The production VNet",
+   "The production VNet in the target region, with the same IP ranges",
    "No network",
    "The source VNet"
   ],
@@ -226,7 +226,7 @@
   "q": "Failover options let you choose which recovery point?",
   "opts": [
    "Latest (lowest RPO), Latest processed (lowest RTO), Latest app-consistent, or a custom point",
-   "Only latest",
+   "Only the latest crash-consistent point, or the oldest point that is still kept",
    "Only app-consistent",
    "Random"
   ],
@@ -263,7 +263,7 @@
   "opts": [
    "Pre/post scripts, Azure Automation runbooks, and manual actions",
    "Budgets",
-   "Policies",
+   "Azure Policy assignments, budgets, and resource locks",
    "Locks"
   ],
   "ans": [
@@ -279,7 +279,7 @@
   "diff": 3,
   "q": "Several VMs must fail over to a shared, consistent recovery point (for example, multi-VM apps). Which setting?",
   "opts": [
-   "Multi-VM consistency (replication group)",
+   "Multi-VM consistency",
    "Separate vaults",
    "Recovery plan only",
    "Backup policy"
@@ -299,7 +299,7 @@
   "opts": [
    "Yes — ASR supports VMware, Hyper-V, and physical servers to Azure",
    "No, only Azure VMs",
-   "Only Hyper-V",
+   "Only Hyper-V — VMware VMs need Azure Migrate and Backup",
    "Only Linux"
   ],
   "ans": [
@@ -316,7 +316,7 @@
   "q": "Replicated VMs should come up in a specific availability zone in the target region. Is that configurable?",
   "opts": [
    "Yes — you can choose target availability zones or sets in replication settings",
-   "No",
+   "No — the target zone is always picked by Azure when the failover starts",
    "Only for Windows",
    "Only after failover"
   ],
@@ -334,7 +334,7 @@
   "q": "Can ASR replicate VMs between availability zones in the SAME region?",
   "opts": [
    "Yes — zone-to-zone disaster recovery is supported in many regions",
-   "No, only cross-region",
+   "No — ASR replicates VMs only between two paired regions",
    "Only with Backup",
    "Only for VMSS"
   ],
@@ -353,7 +353,7 @@
   "opts": [
    "Use recovery plan scripts or Traffic Manager to redirect users to the failed-over endpoints",
    "Nothing is needed",
-   "Change NSGs only",
+   "Move the public IP address of the source VM to the target region during the failover",
    "Use Advisor"
   ],
   "ans": [
@@ -371,7 +371,7 @@
   "opts": [
    "RPO (replication health and RPO values per VM)",
    "CPU",
-   "Disk IOPS only",
+   "Disk IOPS (average read and write per VM)",
    "Cost"
   ],
   "ans": [
@@ -427,7 +427,7 @@
   "diff": 2,
   "q": "Ransomware encrypted a VM's files 3 days ago and they were replicated. Which service recovers clean data?",
   "opts": [
-   "Azure Backup (restore a recovery point from before the infection)",
+   "Azure Backup",
    "ASR latest recovery point",
    "VNet peering",
    "Advisor"
@@ -500,8 +500,8 @@
   "diff": 3,
   "q": "Can you restore individual files from an Azure file share backup?",
   "opts": [
-   "Yes — full share restore or item-level (file/folder) restore to the original or an alternate location",
-   "No, only the full share",
+   "Yes — both full share restore and item-level restore",
+   "No — only the full share, to its original account",
    "Only via MARS",
    "Only to on-premises"
   ],
@@ -519,7 +519,7 @@
   "q": "When Azure Backup protects a file share, which protection does it add to the storage account?",
   "opts": [
    "A resource lock to prevent accidental deletion of the account",
-   "Immutable storage",
+   "An immutability policy on every share in the account",
    "Private endpoint",
    "GRS"
   ],
@@ -538,7 +538,7 @@
   "opts": [
    "Azure Monitor Workbooks (or a shared dashboard) combining metrics and log queries",
    "Advisor",
-   "Activity log",
+   "An Activity log view saved with filters for metrics and backups",
    "Cost analysis"
   ],
   "ans": [
@@ -555,7 +555,7 @@
   "q": "An admin must be alerted when anyone creates a role assignment at subscription scope. How?",
   "opts": [
    "An activity log alert on the Microsoft.Authorization/roleAssignments/write operation",
-   "A metric alert",
+   "A metric alert on the subscription's role assignment count with a threshold of 1",
    "Advisor",
    "A budget"
   ],
@@ -593,7 +593,7 @@
    "Azure Policy: 'Configure backup on VMs...' with DeployIfNotExists and remediation",
    "A manual monthly check",
    "An alert rule",
-   "Resource locks"
+   "A ReadOnly resource lock on every VM plus an alert rule for failed backups"
   ],
   "ans": [
    0
@@ -632,7 +632,7 @@
    "AddonAzureBackupJobs | where TimeGenerated > ago(1d) and JobStatus == \"Failed\"",
    "Heartbeat | where Backup == \"Failed\"",
    "Perf | where Job == Failed",
-   "AzureActivity | where Backup"
+   "AzureActivity | where TimeGenerated > ago(1d) and Category == \"BackupFailed\""
   ],
   "ans": [
    0
@@ -648,7 +648,7 @@
   "q": "A disk's free space must trigger an alert when it's below 10%. Which signal source?",
   "opts": [
    "A log search alert on guest perf data (collected by AMA) or a VM insights metric",
-   "A platform metric only",
+   "A platform metric alert on the VM's OS Disk Free Space Percentage counter",
    "Activity log",
    "Service Health"
   ],
@@ -665,8 +665,8 @@
   "diff": 3,
   "q": "Which built-in feature gives recommended alert rules for a VM with one click?",
   "opts": [
-   "Recommended alert rules (VM 'Alerts' → Enable recommended alert rules)",
-   "Advisor",
+   "Recommended alert rules",
+   "Advisor reliability checks",
    "Policy",
    "Workbooks"
   ],
@@ -685,7 +685,7 @@
   "opts": [
    "az monitor metrics alert create -g RG1 -n cpu80 --scopes <vmId> --condition \"avg Percentage CPU > 80\" --action ag1",
    "az alert create cpu80",
-   "az vm alert add 80",
+   "az vm alert add -g RG1 -n cpu80 --vm <vmId> --metric \"Percentage CPU\" --greater-than 80 --notify ag1",
    "az monitor log alert"
   ],
   "ans": [
@@ -703,7 +703,7 @@
   "opts": [
    "az monitor action-group create -g RG1 -n ag1 --action email ops ops@contoso.com",
    "az alert group new",
-   "az monitor email create",
+   "az monitor email create -g RG1 -n ag1 --receiver ops ops@contoso.com",
    "az actiongroup add"
   ],
   "ans": [
@@ -719,10 +719,10 @@
   "diff": 3,
   "q": "What rate limits apply to action group notifications, such as SMS?",
   "opts": [
-   "SMS and voice are rate-limited (for example, no more than about 1 SMS every 5 minutes per number); email has higher limits",
+   "SMS and voice notifications are rate-limited per number",
    "No limits",
    "Only email is limited",
-   "Webhooks are limited to 1 per day"
+   "Webhooks are limited to one call per action group per day"
   ],
   "ans": [
    0
@@ -738,7 +738,7 @@
   "q": "Autoscale settings, a feature of Azure Monitor, apply to which resources?",
   "opts": [
    "VM scale sets, App Service plans, Cloud Services, and some others",
-   "Storage accounts",
+   "Storage accounts, virtual networks, key vaults, and recovery vaults",
    "VNets",
    "Key Vault"
   ],
@@ -755,10 +755,10 @@
   "diff": 3,
   "q": "How can you be notified whenever autoscale adds or removes instances?",
   "opts": [
-   "Configure autoscale notifications (email/webhook) in the autoscale setting, or alert on the Autoscale activity log category",
+   "Configure email or webhook notifications in the autoscale setting",
    "Use Advisor",
    "Not possible",
-   "Only via Service Health"
+   "Create a Service Health alert for the region of the scale set"
   ],
   "ans": [
    0
@@ -773,9 +773,9 @@
   "diff": 2,
   "q": "Which feature checks a public website's availability from multiple global locations?",
   "opts": [
-   "Application Insights availability tests (standard tests)",
+   "Application Insights availability tests",
    "IP flow verify",
-   "Connection troubleshoot",
+   "Network Watcher connection troubleshoot",
    "Activity log"
   ],
   "ans": [
@@ -830,8 +830,8 @@
   "diff": 2,
   "q": "Can you back up a VM encrypted with Azure Disk Encryption?",
   "opts": [
-   "Yes — Azure Backup supports ADE VMs (with Key Vault permissions for the Backup service)",
-   "No",
+   "Yes — Azure Backup supports ADE VMs",
+   "No — ADE VMs can be protected only by ASR",
    "Only Linux",
    "Only with MARS"
   ],
@@ -850,7 +850,7 @@
   "opts": [
    "That the VM agent is installed, running, and up to date, and the VM can reach Azure endpoints",
    "Storage tier",
-   "NSG port 445",
+   "That the NSG allows inbound port 445 from the vault, and that the vault uses GRS redundancy",
    "DNS zone"
   ],
   "ans": [
@@ -866,7 +866,7 @@
   "diff": 2,
   "q": "Which restore type should you use to create a test copy of a VM from last week without touching the original?",
   "opts": [
-   "Create new VM (alternate location)",
+   "Create new VM",
    "Replace existing",
    "Delete and restore",
    "Test failover"
@@ -886,7 +886,7 @@
   "q": "Which combination meets ALL requirements?",
   "opts": [
    "Azure Backup (daily policy plus yearly retention, file recovery) and ASR to West Europe (with test failovers)",
-   "Azure Backup only with CRR",
+   "Azure Backup only (GRS vault with cross-region restore, instant restore snapshots, and yearly retention)",
    "ASR only",
    "Blob versioning and snapshots"
   ],

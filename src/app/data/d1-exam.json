@@ -835,7 +835,7 @@
   "code": "AzureActivity\n| where OperationNameValue == \"MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/WRITE\"\n| where ActivityStatusValue == \"Success\"\n| project TimeGenerated, Caller, ResourceGroup",
   "q": "What does this Log Analytics query return?",
   "opts": [
-   "Every failed sign-in to the tenant",
+   "Every failed sign-in to the tenant, with the user name and the IP address",
    "Successful role assignment creations, with who made them and where",
    "All users who have the Owner role",
    "Resource locks that were removed"
@@ -897,7 +897,7 @@
   "opts": [
    "Manage VMs in RG-App, but not the virtual networks they connect to, and not assign roles",
    "Manage every resource in RG-App",
-   "Manage VMs in every resource group of the subscription",
+   "Manage VMs and their virtual networks in RG-App, and assign VM roles to others",
    "Only start and stop VMs in RG-App"
   ],
   "ans": [
@@ -939,7 +939,7 @@
    "Policy assignments always need an identity",
    "The Modify effect needs an identity to change tags on existing resources through remediation",
    "The identity is needed to read the tag value from the resource group",
-   "It lets the policy bypass resource locks"
+   "The Modify effect needs an identity so that it can bypass resource locks during remediation"
   ],
   "ans": [
    1

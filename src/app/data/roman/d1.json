@@ -114,7 +114,7 @@
   "opts": [
    "Entra ID Free + Entra Connect",
    "Entra ID P1 (ya us se upar) aur Entra Connect mein password writeback enabled",
-   "Sirf Entra ID P2",
+   "Sirf Entra ID P2, aur Entra Connect mein pass-through authentication enabled",
    "Microsoft Identity Manager"
   ],
   "exp": "Password writeback se cloud mein kiya gaya password reset on-premises AD mein wapas likha jata hai, taa ke wahi password domain PCs par bhi chale. Is ke liye Microsoft Entra ID P1 (ya upar) aur Entra Connect (ya Cloud Sync) mein password writeback option on hona chahiye. Free tier yeh nahi kar sakta, aur P2 zaroori nahi."
@@ -135,7 +135,7 @@
    "Users blade mein Bulk create operation ke zariye CSV file upload karein",
    "Users blade mein JSON file upload karein",
    "List ko New user form mein paste karein",
-   "Bulk create sirf PowerShell se mumkin hai"
+   "PowerShell script chalana, kyunke portal ek waqt mein sirf ek user bana sakta hai"
   ],
   "exp": "Users blade mein Bulk operations → Bulk create hota hai. Aap CSV template download karte hain, har user ki ek row bharte hain aur upload karte hain, aur Entra ID sab ko bana deta hai. JSON accept nahi hota, New user form ek waqt mein ek user banata hai, aur PowerShell ya CLI alternative hain, wahid option nahi."
  },
@@ -145,7 +145,7 @@
    "Conditional Access policy",
    "Subscription par Azure RBAC",
    "Entra ID → Users → User settings → App registrations = No",
-   "Tenant root par Azure Policy assignment"
+   "Tenant root par Azure Policy assignment = Deny app registrations"
   ],
   "exp": "\"Users can register applications\" tenant ki ek User setting hai. Conditional Access sign-in ki shartein control karta hai; RBAC aur Azure Policy Azure resources ko govern karte hain, directory ko nahi."
  },
@@ -183,7 +183,7 @@
   "q": "Subscription scope par assign kiya gaya role kis par apply hota hai?",
   "opts": [
    "Sirf subscription object par",
-   "Subscription aur us ke andar tamam resource groups aur resources par (inherited)",
+   "Subscription aur us ke andar tamam resource groups aur resources par",
    "Sirf assignment ke baad bane resource groups par",
    "Poore management group par"
   ],
@@ -203,7 +203,7 @@
   "q": "User1 ke paas subscription Sub1 par Reader aur resource group RG1 (Sub1 ke andar) par Contributor hai. User1 RG1 mein kya kar sakta hai?",
   "opts": [
    "Sirf resources parh sakta hai (Reader jeetta hai — sab se sakht)",
-   "Resources bana, badal aur delete kar sakta hai (permissions jur jati hain; RG1 mein Contributor apply hota hai)",
+   "Resources bana, badal aur delete kar sakta hai",
    "Kuch nahi — takrane wale assignments ek doosre ko khatam kar dete hain",
    "Sirf woh actions jo dono roles mein common hain"
   ],
@@ -212,7 +212,7 @@
  "D1-022": {
   "q": "Tenant ka Global Administrator subscription mein koi Azure resource nahi dekh sakta. Kyun?",
   "opts": [
-   "Entra ID roles aur Azure RBAC roles alag hain; Global Admin ke paas default mein koi RBAC role nahi",
+   "Entra ID roles aur Azure RBAC roles alag hain",
    "Subscription disabled hai",
    "Global Admins Azure resources se blocked hain",
    "Unhein Entra ID P2 license chahiye"
@@ -223,8 +223,8 @@
   "q": "Ek Global Administrator ko orphaned access theek karne ke liye tenant ki TAMAM subscriptions manage karne ka waqti access chahiye. Supported tareeqa kya hai?",
   "opts": [
    "Har subscription par ek ek kar ke Owner assign karein",
-   "\"Access management for Azure resources\" (elevate access) on karein taa ke root scope (/) par User Access Administrator mil jaye",
-   "Tenant scope par custom role banayen",
+   "\"Access management for Azure resources\" (elevate access) on karein",
+   "Microsoft.Authorization/* wala custom role bana kar tenant scope par assign karein",
    "Access dene ke liye Azure Policy use karein"
   ],
   "exp": "Global Administrator Entra properties mein 'Access management for Azure resources' on kar sakta hai. Is se woh root scope (/) par User Access Administrator ban jata hai, aur khud ko kisi bhi subscription ka access de sakta hai. Masla hal hone ke baad isay dobara off kar dein."
@@ -243,7 +243,7 @@
   "q": "Ek custom role ko tamam read operations aur VMs restart karne ki ijazat deni hai, aur kuch nahi. Kaun sa Actions block sahi hai?",
   "opts": [
    "\"Actions\": [\"*/read\", \"Microsoft.Compute/virtualMachines/restart/action\"]",
-   "\"Actions\": [\"*\"], \"NotActions\": [\"*/write\"]",
+   "\"Actions\": [\"*\"], \"NotActions\": [\"*/write\", \"*/delete\", \"Microsoft.Compute/virtualMachines/start/action\"]",
    "\"Actions\": [\"Microsoft.Compute/*\"]",
    "\"Actions\": [\"*/read\"], \"DataActions\": [\"restart\"]"
   ],
@@ -252,7 +252,7 @@
  "D1-026": {
   "q": "Role definition mein NotActions:",
   "opts": [
-   "Ek explicit deny banata hai jo doosre roles ko override karta hai",
+   "Aisa explicit deny banata hai jo user ke har doosre role par haawi hota hai",
    "SIRF ussi role definition ke Actions mein se operations nikalta hai",
    "User ko poore tenant mein block karta hai",
    "Sirf built-in roles mein valid hai"
@@ -273,7 +273,7 @@
   "q": "Kaun si CLI command user ali@contoso.com ko resource group RG1 par Reader role assign karti hai?",
   "opts": [
    "az role assignment create --assignee ali@contoso.com --role Reader --resource-group RG1",
-   "az ad role create --user ali --role Reader",
+   "az ad role assignment create --user ali@contoso.com --role Reader --group RG1",
    "az rbac grant --role Reader --rg RG1",
    "az role definition create --role Reader"
   ],
@@ -292,7 +292,7 @@
  "D1-030": {
   "q": "Group \"Ops\" ke paas management group \"Corp\" par Contributor hai. Sub1 \"Corp\" mein hai. User2 group \"Ops\" mein hai. Sub1 ke resource group RG5 par User2 ka asal role kya hai?",
   "opts": [
-   "Seedha assign hone tak koi access nahi",
+   "Jab tak RG5 par seedha role assign na ho, koi access nahi",
    "Contributor (inherited: MG → subscription → RG)",
    "Reader",
    "Sirf RG5 par Owner"
@@ -324,7 +324,7 @@
   "opts": [
    "Dono ek hi service hain",
    "Policy control karti hai ke resources ke sath KYA ho sakta hai (properties/compliance); RBAC control karta hai ke KAUN actions kar sakta hai",
-   "RBAC resource properties control karta hai; Policy identities control karti hai",
+   "RBAC resources ki properties control karta hai; Policy yeh control karti hai ke kaun si identities tenant mein sign in kar sakti hain",
    "Policy sirf users par apply hoti hai; RBAC sirf groups par"
   ],
   "exp": "Azure Policy control karti hai ke resources kaise dikh sakte hain — allowed regions, SKUs, zaroori tags — chahe koi bhi deploy kare. RBAC control karta hai ke kaun kaun se actions kar sakta hai. Dono mil kar kaam karte hain: user ke paas sahi role ho tab bhi policy usay rok sakti hai."
@@ -335,7 +335,7 @@
    "Resource lock",
    "\"Allowed locations\" definition wali Azure Policy, Deny effect ke sath assign ki hui",
    "NSG",
-   "RBAC custom role"
+   "Custom RBAC role jis ki AssignableScopes property mein West Europe region ho"
   ],
   "exp": "Built-in 'Allowed locations' policy Deny effect ke sath aap ke diye gaye regions ke ilawa har deployment block kar deti hai. Locks sirf delete ya changes rokte hain, NSGs network traffic filter karte hain, aur RBAC control karta hai ke kaun action kar sakta hai, yeh nahi ke resources kahan banen."
  },
@@ -345,7 +345,7 @@
    "Woh delete ho jata hai",
    "Woh stop ho jata hai",
    "Kuch nahi — usay sirf compliance reports mein non-compliant mark kiya jata hai",
-   "Woh khud ba khud theek ho jata hai"
+   "Agli 24 ghante wali compliance evaluation par khud theek ho jata hai"
   ],
   "exp": "Audit effect sirf evaluate aur report karta hai. Non-compliant resource Policy compliance view mein non-compliant dikhaya jata hai aur Activity log entry likhi jati hai, lekin resource ko kuch nahi hota. Rokne ke liye Deny chahiye; theek karne ke liye Modify ya DeployIfNotExists remediation ke sath. Policy kabhi resources delete ya stop nahi karti."
  },
@@ -355,14 +355,14 @@
    "Append; kuch extra nahi chahiye",
    "DeployIfNotExists; managed identity use karne wala remediation task",
    "Deny; Owner role chahiye",
-   "Modify; service principal secret chahiye"
+   "Modify; service principal secret wala remediation task"
   ],
   "exp": "DeployIfNotExists kisi related resource ya setting (jaise monitoring agent) ko check karta hai aur agar missing ho to deploy kar deta hai. Remediation tasks mojooda resources theek karte hain, aur dono policy assignment ki managed identity ke taur par chalte hain, jis ke paas sahi RBAC roles hone chahiye. Append aur Modify properties badalte hain, aur Deny requests rokta hai."
  },
  "D1-037": {
   "q": "Azure Policy initiative kya hai?",
   "opts": [
-   "Aisi policy jo badli nahi ja sakti",
+   "Aisi policy definition jo assign hone ke baad badli nahi ja sakti",
    "Policy definitions ka group jo ek unit ki tarah ek sath assign hota hai",
    "Tenant root par assign ki gayi policy",
    "Deny assignment"
@@ -375,7 +375,7 @@
    "RG-Lab ko doosre tenant mein move karein",
    "Assignment par RG-Lab ko exclusion ke taur par add karein (ya policy exemption banayen)",
    "Policy delete kar dein",
-   "RG-Lab par public IPs allow karne wali doosri policy assign karein"
+   "RG-Lab par doosri policy assign karein jo public IPs allow kare, kyunke qareeb tareen scope jeetta hai"
   ],
   "exp": "Policy assignments mein exclusions (scope evaluate nahi hota) aur exemptions (evaluate hota hai lekin Exempt mark hota hai, chahein to expiry ke sath) hote hain, is liye RG-Lab ko exclude karein ya us ke liye exemption banayen. Doosri 'allow' policy deny ko override nahi kar sakti, kyun ke tamam policies ek sath apply hoti hain. Tenant badalna ya policy delete karna zaroorat se zyada hai."
  },
@@ -393,7 +393,7 @@
   "q": "Kaun sa lock type users ko resource parhne aur badalne deta hai lekin delete hone se rokta hai?",
   "opts": [
    "ReadOnly",
-   "CanNotDelete (Delete lock)",
+   "CanNotDelete",
    "NoDelete",
    "Protect"
   ],
@@ -402,7 +402,7 @@
  "D1-041": {
   "q": "Ek storage account par ReadOnly lock lagaya gaya hai. Kaun sa ghair-mutawaqqa side effect exam mein aksar poocha jata hai?",
   "opts": [
-   "Blobs ab parhe nahi ja sakte",
+   "Storage Blob Data Reader role wale users ab blobs nahi parh sakte",
    "Storage account keys list karne jaise operations fail ho jate hain, kyun ke list keys POST action hai",
    "Account 30 din baad delete ho jata hai",
    "Firewall disable ho jata hai"
@@ -423,7 +423,7 @@
   "q": "Kaun se roles management locks bana ya delete kar sakte hain?",
   "opts": [
    "Koi bhi Contributor",
-   "Owner aur User Access Administrator (Microsoft.Authorization/* access)",
+   "Owner aur User Access Administrator",
    "Reader",
    "Sirf Global Administrator"
   ],
@@ -444,7 +444,7 @@
   "opts": [
    "Resource lock",
    "Modify effect wali built-in Azure Policy \"Inherit a tag from the resource group\"",
-   "ARM template",
+   "Built-in Azure Policy \"Require a tag on resources\", Audit effect ke sath",
    "Azure Advisor"
   ],
   "exp": "Built-in policy 'Inherit a tag from the resource group if missing' (ya 'Inherit a tag from the resource group') Modify effect se naye ya update hone wale resources par tag add karti hai. Remediation task isay mojooda resources par apply karta hai. Locks, templates aur Advisor tags copy nahi karte."
@@ -453,7 +453,7 @@
   "q": "Aap ek VM ko usi subscription mein RG1 se RG2 mein move karte hain. Kaun si baat sahi hai?",
   "opts": [
    "VM ka region RG2 ke region mein badal jata hai",
-   "VM ka region wahi rehta hai; move ke dauran dono resource groups lock rehte hain",
+   "VM ka region wahi rehta hai",
    "Move ke dauran VM restart hota hai",
    "VMs ko resource groups ke darmiyan move karna supported nahi"
   ],
@@ -474,7 +474,7 @@
   "opts": [
    "Manually link karne tak koi bhi apply nahi hota",
    "Dono inherit hote hain: Sub9 ko policy milti hai, aur Bob Sub9 ke resources parh sakta hai",
-   "Sirf RBAC inherit hota hai, policies kabhi nahi",
+   "Sirf RBAC inherit hota hai: Bob Sub9 parh sakta hai, lekin policy dobara assign karni hogi",
    "Sirf policy inherit hoti hai, RBAC kabhi nahi"
   ],
   "exp": "RBAC role assignments aur policy assignments dono hierarchy mein neeche inherit hote hain. Root par Bob ka Reader role har subscription par apply hota hai, aur Corp par policy Corp ke neeche har cheez par. Is liye Sub9 ko dono khud mil jate hain."
@@ -485,7 +485,7 @@
    "Tamam resources khud ba khud deallocate ho jate hain",
    "Kuch nahi — budgets alert karte hain lekin khud kabhi resources stop nahi karte",
    "Subscription cancel ho jati hai",
-   "Naye deployments block ho jate hain"
+   "Agli billing period shuru hone tak nayi deployments block rehti hain"
   ],
   "exp": "Budgets threshold pohanchne par sirf notifications (email ya action groups) bhejte hain. Woh khud kabhi resources stop ya deallocate nahi karte, deployments block nahi karte, aur subscription cancel nahi karte. Resources khud stop karne ke liye aisa action group lagayen jo runbook ya Logic App jaisi automation chalaye."
  },
@@ -830,7 +830,7 @@
  "D1-235": {
   "q": "Yeh Log Analytics query kya return karti hai?",
   "opts": [
-   "Tenant mein har failed sign-in",
+   "Tenant mein har nakaam sign-in, user ke naam aur IP address ke sath",
    "Kamyab role assignment creations, kis ne aur kahan banaye",
    "Owner role wale tamam users",
    "Hataye gaye resource locks"
@@ -862,7 +862,7 @@
   "opts": [
    "RG-App mein VMs manage kar sakte hain, lekin un se jure virtual networks nahi, aur roles assign nahi kar sakte",
    "RG-App ka har resource manage kar sakte hain",
-   "Subscription ke har resource group mein VMs manage kar sakte hain",
+   "RG-App mein VMs aur un ke virtual networks manage karna, aur doosron ko VM roles assign karna",
    "RG-App mein sirf VMs start aur stop kar sakte hain"
   ],
   "exp": "Virtual Machine Contributor group ko VMs manage karne deta hai — banana, start, stop, resize aur delete — lekin VMs ke istemal wale virtual networks ya storage accounts nahi, aur yeh roles assign nahi kar sakta. Command ka scope RG-App hai, is liye yeh doosre resource groups par apply nahi hota."
@@ -883,7 +883,7 @@
    "Policy assignments ko hamesha identity chahiye",
    "Modify effect ko remediation ke zariye mojooda resources ke tags badalne ke liye identity chahiye",
    "Resource group se tag ki value parhne ke liye identity chahiye",
-   "Is se policy resource locks ko bypass kar sakti hai"
+   "Modify effect ko identity is liye chahiye ke remediation ke dauran resource locks bypass kar sake"
   ],
   "exp": "\"Inherit a tag from the resource group\" Modify effect use karti hai. Remediation tasks assignment ki managed identity ban kar mojooda resources badalte hain, jis ke paas Tag Contributor jaisa role hona chahiye."
  },
@@ -902,7 +902,7 @@
   "opts": [
    "Entra ki di hui value wala TXT (ya MX) record",
    "Entra ID ki taraf point karta A record",
-   "login.microsoftonline.com ka CNAME",
+   "CNAME record jo login.microsoftonline.com ki taraf ishara kare",
    "SRV record"
   ],
   "exp": "Yeh sabit karne ke liye ke contoso.com aap ka hai, Entra ID aap ko ek unique value deta hai jo DNS mein TXT record ke taur par publish karni hoti hai (MX record bhi chalta hai). Entra ID record dhoond kar domain ko verified mark kar deta hai. A, CNAME aur SRV records services ki taraf point karte hain; is process mein ownership sabit nahi karte."
@@ -922,7 +922,7 @@
   "opts": [
    "AzureAD",
    "MSOnline",
-   "Microsoft Graph PowerShell (Microsoft.Graph)",
+   "Microsoft Graph PowerShell",
    "Sirf Az.Accounts"
   ],
   "exp": "AzureAD aur MSOnline modules retire ho chuke hain. Microsoft Graph PowerShell (Microsoft.Graph module, New-MgUser aur Update-MgUser jaise cmdlets ke sath) supported replacement hai. Az.Accounts Azure sign-in handle karta hai, Entra user management nahi."
@@ -951,7 +951,7 @@
   "q": "Users Entra Connect ke zariye on-premises Active Directory se sync hote hain. Synced user ka job title kahan badalna hoga?",
   "opts": [
    "Entra admin center mein",
-   "On-premises Active Directory mein (source of authority)",
+   "On-premises Active Directory mein",
    "Azure RBAC mein",
    "Sirf Microsoft 365 admin center mein"
   ],
@@ -972,7 +972,7 @@
   "opts": [
    "Us ke licenses hata dein",
    "'Account enabled' (block sign-in) ko No par set karein",
-   "Usay tamam groups se nikal dein",
+   "Unhein tamam groups aur directory roles se nikalein",
    "Us ka display name badal dein"
   ],
   "exp": "'Account enabled' ko No karne (sign-in block karne) se user foran authenticate nahi kar pata, jab ke account, group memberships, licences aur data baqi rehte hain. Licences ya groups hatane se sign-in nahi rukta, aur display name badalne ka access par koi asar nahi."
@@ -1001,9 +1001,9 @@
   "q": "Aap ke users kin bahar ke domains se guests invite kar sakte hain, yeh kahan mehdood karte hain?",
   "opts": [
    "Conditional Access",
-   "External collaboration settings (domains ki allow/deny list)",
+   "External collaboration settings",
    "Azure Policy",
-   "Named locations"
+   "Conditional Access → Named locations settings"
   ],
   "exp": "External collaboration settings mein collaboration restrictions hain, jahan aap sirf kuch khaas domains ko invitations allow (allow list) ya kuch domains ko block (deny list) kar sakte hain. Conditional Access aur named locations sign-in ki shartein control karte hain, aur Azure Policy resources control karti hai."
  },
@@ -1012,7 +1012,7 @@
   "opts": [
    "User settings → App registrations",
    "External collaboration settings → Guest invite settings",
-   "Password reset properties",
+   "Password reset properties → Guest invite restrictions",
    "Device settings"
   ],
   "exp": "External collaboration settings ke neeche Guest invite settings control karti hain ke kaun guests invite kar sakta hai: koi bhi, member users, sirf admin roles aur Guest Inviter role wale users, ya koi nahi. App registrations, password reset aur device settings invitations control nahi karte."
@@ -1052,7 +1052,7 @@
   "opts": [
    "Members jitna",
    "Mehdood — woh users ki aur apne groups ki kuch properties dekh sakte hain",
-   "Bilkul kuch nahi, apna profile bhi nahi",
+   "Kuch bhi nahi — woh apni profile ya apni group memberships bhi nahi dekh sakte",
    "Sab kuch, admin roles samet"
   ],
   "exp": "Default mein guests ka directory access mehdood hota hai: woh apna profile aur doosre users aur apne groups ki kuch details dekh sakte hain, lekin members ki tarah poori directory browse nahi kar sakte. External collaboration settings mein aap guest access ko zyada ya kam sakht kar sakte hain."
@@ -1091,7 +1091,7 @@
   "q": "Aap 40 manually add kiye gaye members wale group ko Assigned se Dynamic user membership mein badalte hain. Un members ka kya hota hai?",
   "opts": [
    "Woh hamesha static members rehte hain",
-   "Membership rule se dobara calculate hoti hai; jo members rule se match nahi karte woh nikal diye jate hain",
+   "Membership rule se dobara calculate hoti hai",
    "Jab tak group mein members hain change block rehta hai",
    "Woh guests mein badal jate hain"
   ],
@@ -1101,7 +1101,7 @@
   "q": "Dynamic security group ka owner ek user ko manually add karne ki koshish karta hai. Kya hota hai?",
   "opts": [
    "User add ho jata hai",
-   "Manual adds allowed nahi — membership sirf rule se aati hai",
+   "Manual adds allowed nahi",
    "User 24 ghante ke liye add hota hai",
    "Rule khud ba khud disable ho jata hai"
   ],
@@ -1122,7 +1122,7 @@
   "opts": [
    "Azure Policy",
    "Group creation restriction setting (Graph/PowerShell directory setting) jo sirf us group ko allow kare",
-   "Conditional Access",
+   "Conditional Access policy jo Groups service ko target kare aur sirf GroupCreators ko shamil kare",
    "Baqi sab ko Groups Administrator role assign karein"
   ],
   "exp": "Microsoft 365 group banana directory setting EnableGroupCreation / GroupCreationAllowedGroupId ke zariye ek makhsoos security group ke members tak mehdood kiya ja sakta hai."
@@ -1173,7 +1173,7 @@
    "az ad group member add --group G1 --member-id <objectId>",
    "az group add-member",
    "az ad user join-group",
-   "az role assignment create --group"
+   "az role assignment create --assignee <objectId> --group G1"
   ],
   "exp": "az ad group member add Entra group mein member add karti hai, --group (naam ya ID) aur --member-id (user, group ya service principal ka object ID) ke sath. az group commands Azure resource groups manage karti hain, Entra groups nahi, aur az role assignment create group membership ke bajaye Azure roles deti hai."
  },
@@ -1191,7 +1191,7 @@
   "q": "Aap ke paas 100 P1 licenses hain aur aap unhein 110 members wale group ko assign karte hain. Kya hota hai?",
   "opts": [
    "Tamam 110 ko licenses mil jate hain",
-   "100 ko license milta hai; 10 par licenses kam hone ka error dikhta hai",
+   "100 ko license milta hai",
    "Kisi ko license nahi milta",
    "Azure khud 10 aur licenses khareed leta hai"
   ],
@@ -1212,7 +1212,7 @@
   "opts": [
    "Yeh namumkin hai",
    "Group ka license assignment edit karein aur woh makhsoos service plan off karein",
-   "Conditional Access policy banayen",
+   "Conditional Access policy banayen jo group ke liye Exchange Online block kare",
    "Tenant se Exchange hata dein"
   ],
   "exp": "Jab aap Microsoft 365 E3 jaisa product group ko assign karte hain, to aap us ke andar alag alag service plans (maslan Exchange Online) sirf us group ke liye band kar sakte hain. Members ko baqi product milta hai. Conditional Access sign-in control karta hai, licences nahi, aur poore tenant se Exchange hatane se sab par asar parega."
@@ -1271,7 +1271,7 @@
   "q": "SSPR 'Selected' par set hai. Aap kitne groups chun sakte hain?",
   "opts": [
    "Ek group (jis mein nested groups ho sakte hain)",
-   "10 groups tak",
+   "10 groups tak (nested groups supported nahi)",
    "Unlimited groups",
    "Sirf dynamic groups"
   ],
@@ -1302,7 +1302,7 @@
   "opts": [
    "Password reset → On-premises integration mein Write back passwords to your on-premises directory enabled hai",
    "P2 license",
-   "Conditional Access policy",
+   "Tamam users ko aisi Conditional Access policy assign ho jo domain-joined devices se password change allow kare",
    "Security questions enabled hain"
   ],
   "exp": "Password writeback do jagah on hona chahiye: Entra Connect mein, aur Entra admin center mein Password reset → On-premises integration ('Write back passwords to your on-premises directory') ke neeche. P1 kaafi hai, aur Conditional Access aur security questions writeback par asar nahi dalte."
@@ -1310,7 +1310,7 @@
  "D1-093": {
   "q": "SSPR se bhoola hua password reset karne ke liye users kaun sa URL kholte hain?",
   "opts": [
-   "https://aka.ms/sspr (passwordreset.microsoftonline.com)",
+   "https://aka.ms/sspr",
    "https://portal.azure.com/reset",
    "https://myapps.microsoft.com/password",
    "https://login.windows.net/reset"
@@ -1352,7 +1352,7 @@
   "opts": [
    "Device settings → Users may join devices to Microsoft Entra = Selected",
    "User settings → App registrations",
-   "Conditional Access → Device platforms",
+   "Conditional Access → Device platforms → Users may join devices = Selected",
    "RBAC → Virtual Machine Contributor"
   ],
   "exp": "Entra ID → Devices → Device settings → 'Users may join devices to Microsoft Entra' All, Selected ya None ho sakta hai. Selected chun kar IT-Staff group add karne se sirf woh users devices join kar sakte hain. App registrations, Conditional Access platforms aur Azure RBAC roles device join control nahi karte."
@@ -1372,7 +1372,7 @@
   "opts": [
    "Management group",
    "Lahore users wala administrative unit, jis tak Helpdesk Administrator scoped ho",
-   "Resource group",
+   "Lahore office ka resource group, jis ki IAM mein Helpdesk Administrator assigned ho",
    "Dynamic device group"
   ],
   "exp": "Administrative unit users ke ek hisse (yahan Lahore office) ko group karta hai. Us unit tak scoped Helpdesk Administrator assign karne se staff sirf unhi users ke passwords reset kar sakta hai. Management groups aur resource groups Azure resources organise karte hain, Entra users nahi, aur device groups admin roles mehdood nahi karte."
@@ -1402,7 +1402,7 @@
   "opts": [
    "Sirf users",
    "Users, groups, service principals aur managed identities",
-   "Users aur devices",
+   "Users, Entra-registered devices aur resource groups",
    "Groups aur subscriptions"
   ],
   "exp": "Azure role chaar qisam ke security principals ko assign ho sakta hai: users, groups, service principals (apps) aur managed identities. Devices ko roles nahi mil sakte, aur subscriptions scopes hain, principals nahi."
@@ -1441,7 +1441,7 @@
   "q": "Ek app ko Microsoft Entra authentication se storage account mein blobs parhne hain. Kaun sa role assignment least privileged hai?",
   "opts": [
    "Storage account par Reader",
-   "Storage Account Contributor",
+   "Account par Storage Account Contributor, access keys ke sath",
    "Container ya account par Storage Blob Data Reader",
    "Resource group par Owner"
   ],
@@ -1473,7 +1473,7 @@
    "Resource group → Access control (IAM) → Add role assignment",
    "Entra ID → Roles and administrators",
    "Resource group → Policies",
-   "Subscription → Usage + quotas"
+   "Subscription → Resource providers → Register role → Add assignment"
   ],
   "exp": "Har scope (management group, subscription, resource group aur resource) mein Access control (IAM) blade hota hai, jahan Add → Add role assignment Azure RBAC assignment banata hai. Entra ID → Roles and administrators User Administrator jaise directory roles ke liye hai, jo alag system hai."
  },
@@ -1481,7 +1481,7 @@
   "q": "Aap maloom karna chahte hain ke ek makhsoos user ke paas resource group par kaun se roles hain, inherited samet. Portal ka sab se tez tool?",
   "opts": [
    "Access control (IAM) → Check access",
-   "Activity log",
+   "Activity log → user ke naam se filter",
    "Azure Advisor",
    "Policy compliance"
   ],
@@ -1492,7 +1492,7 @@
   "opts": [
    "az role assignment list --assignee user@contoso.com --all --include-inherited",
    "az ad user show --roles",
-   "az role definition list --user",
+   "az role definition list --name user@contoso.com --scope / --include-inherited",
    "az account list --roles"
   ],
   "exp": "az role assignment list --assignee kisi principal ke role assignments list karti hai. --all subscription ke har scope ko shamil karta hai (sirf subscription ko nahi), aur --include-inherited management groups jaise upar ke scopes se inherit hue assignments bhi add karta hai. Baqi commands mojood nahi."
@@ -1512,7 +1512,7 @@
   "opts": [
    "Individual users ke bajaye groups ko roles assign karein",
    "Mazeed subscriptions banayen",
-   "Deny assignments use karein",
+   "Individual role assignments ki jagah deny assignments use karein",
    "Azure Policy use karein"
   ],
   "exp": "Subscription mein role assignments ki ek limit (4,000) hai. Groups ko roles assign karne se ek assignment har member ko cover kar leta hai, is liye bohat kam assignments lagte hain. Extra subscriptions, deny assignments aur Azure Policy assignments ki tadaad kam nahi karte."
@@ -1520,7 +1520,7 @@
  "D1-114": {
   "q": "User1 RG1 ka Owner hai. Ek administrator RG1 par ReadOnly lock lagata hai. Kya User1 RG1 mein VM delete kar sakta hai?",
   "opts": [
-   "Haan — Owner locks ko override karta hai",
+   "Haan — Owner role apne scope ke locks par haawi hota hai",
    "Nahi — locks har user par apply hote hain chahe role kuch bhi ho",
    "Haan, lekin sirf 24 ghante baad",
    "Sirf PowerShell se"
@@ -1563,7 +1563,7 @@
    "Transfer par resources delete ho jate hain",
    "Subscription ka tenant badalne par tamam role assignments permanently hat jate hain",
    "Policies access rok deti hain",
-   "Subscription 30 din ke liye disable ho jati hai"
+   "Subscription 30 din ke liye disable rehti hai jab tak naya tenant transfer confirm na kare"
   ],
   "exp": "Subscription ko doosre Microsoft Entra tenant mein move karne se us ke tamam Azure RBAC role assignments permanently delete ho jate hain, kyun ke purane tenant ke users aur groups naye tenant mein mojood nahi. Resources chalte rehte hain, lekin aap ko naye tenant mein role assignments dobara banane honge."
  },
@@ -1572,7 +1572,7 @@
   "opts": [
    "Attribute-based checks add karna, maslan blob index tags se blob access mehdood karna",
    "Tenant ka tamam access deny karna",
-   "Role assignments schedule karna",
+   "Schedule lagana, maslan blob access sirf kaam ke auqat aur hafte ke dinon mein activate karna",
    "MFA enable karna"
   ],
   "exp": "Role assignment conditions (attribute-based access control) role assignment par ek extra check lagati hain, jaise 'sirf woh blobs jin ka index tag Project=Alpha ho' ya 'sirf logs naam ke containers'. Yeh role ko aur tang karti hain. Yeh poora tenant deny nahi karti, assignments schedule nahi karti (woh PIM hai), aur MFA enforce nahi karti (woh Conditional Access hai)."
@@ -1580,10 +1580,10 @@
  "D1-120": {
   "q": "Admins ko Owner role sirf zaroorat par, mehdood waqt ke liye, approval ke sath activate karna hai. Kaun sa feature?",
   "opts": [
-   "Microsoft Entra Privileged Identity Management (eligible assignments)",
+   "Microsoft Entra Privileged Identity Management",
    "Resource locks",
    "Azure Policy",
-   "Sirf access reviews"
+   "Owner role ke liye Microsoft Entra access reviews"
   ],
   "exp": "Privileged Identity Management users ko role ka permanent assignment dene ke bajaye eligible banata hai. Woh usay sirf zaroorat par, mehdood waqt ke liye activate karte hain, chahein to approval, MFA aur justification ke sath. Is ke liye Entra ID P2 ya ID Governance chahiye. Locks, policies aur access reviews just-in-time access nahi dete."
  },
@@ -1602,7 +1602,7 @@
   "opts": [
    "Sirf root group object",
    "Tenant ke tamam management groups, subscriptions aur resources",
-   "Sirf Entra ID objects",
+   "Sirf Entra ID objects, jaise users, groups aur app registrations",
    "Kuch nahi; root par assignments allowed nahi"
   ],
   "exp": "Tenant root group management group hierarchy ki choti hai. Wahan assign kiya gaya role tenant ke har management group, subscription, resource group aur resource mein inherit hota hai. Yeh Entra ID objects cover nahi karta, kyun ke un ke liye alag Entra roles hain."
@@ -1611,7 +1611,7 @@
   "q": "Owner role ko kaun si baat behtareen tarah bayan karti hai?",
   "opts": [
    "Tamam resources manage karne ka poora access, Azure RBAC mein roles assign karna samet",
-   "Resources delete karne ke ilawa poora access",
+   "Tamam resources manage karne ka poora access, lekin Azure RBAC mein roles assign karne ka haq nahi",
    "Read-only plus role assignments",
    "Sirf billing manage karna"
   ],
@@ -1631,7 +1631,7 @@
   "q": "Jab deny assignment kisi aise role assignment se takrata hai jo wahi action allow karta hai to kya hota hai?",
   "opts": [
    "Role assignment jeetta hai",
-   "Deny assignment jeetta hai — deny ko tarjeeh milti hai",
+   "Deny assignment jeetta hai",
    "Naya wala jeetta hai",
    "User se poocha jata hai"
   ],
@@ -1670,7 +1670,7 @@
  "D1-129": {
   "q": "Kya custom role AssignableScopes mein root scope \"/\" use kar sakta hai?",
   "opts": [
-   "Haan, hamesha",
+   "Haan — koi bhi Global Administrator custom role ki definition mein root scope add kar sakta hai",
    "Nahi — custom roles root scope use nahi kar sakte; wahan sirf built-in roles available hain",
    "Sirf P2 license ke sath",
    "Sirf data actions ke liye"
@@ -1690,7 +1690,7 @@
  "D1-131": {
   "q": "Ek custom role ke Actions [\"Microsoft.Compute/*\"] aur NotActions [\"Microsoft.Compute/virtualMachines/delete\"] hain. User ke paas usi scope par Contributor bhi hai. Kya woh VM delete kar sakta hai?",
   "opts": [
-   "Nahi — NotActions deny hai",
+   "Nahi — NotActions us scope par user ke har role ke liye deny ka kaam karta hai",
    "Haan — NotActions doosre role ki di hui permissions block nahi karta",
    "Nahi — custom roles built-in roles ko override karte hain",
    "Sirf agar VM stopped ho"
@@ -1702,7 +1702,7 @@
   "opts": [
    "Storage accounts par sirf read",
    "Storage accounts aur un ke child control-plane resources par tamam operations",
-   "Tamam blobs ka data access",
+   "Har storage account ke tamam blobs, files, queues aur tables ka data access",
    "Tamam resource providers ka access"
   ],
   "exp": "* wildcard Microsoft.Storage/storageAccounts ke neeche har control-plane operation deta hai — create, read, update, delete, list keys aur child resources. Yeh blobs ka data access nahi deta; us ke liye DataActions chahiye. Yeh sirf storage accounts cover karta hai, har resource provider nahi."
@@ -1782,7 +1782,7 @@
   "opts": [
    "Kuch nahi — guests Azure use nahi kar sakte",
    "Aap ki directory par switch karne ke baad RG1 ke resources",
-   "Aap ke poore tenant ke resources",
+   "Aap ki directory par switch karne ke baad tenant ka har resource",
    "Sirf billing"
   ],
   "exp": "RG1 par Reader paane wala guest apne account se sign in karta hai, portal mein aap ki directory par switch karta hai, aur sirf RG1 ke resources dekhta hai. Woh doosre resource groups ya baqi tenant nahi dekhta, kyun ke us ke paas kahin aur koi role nahi."
@@ -1834,7 +1834,7 @@
   "opts": [
    "Nahi, kabhi nahi",
    "Haan, agar group role-assignable (isAssignableToRole = true) bana ho",
-   "Haan, koi bhi group",
+   "Haan, koi bhi security group, bas us ki membership type Dynamic user ho",
    "Sirf dynamic groups"
   ],
   "exp": "Groups ko Entra directory roles sirf tab mil sakte hain jab woh role-assignable (isAssignableToRole = true) bane hon. Yeh setting banate waqt chuni jati hai aur baad mein badli nahi ja sakti, aur role-assignable groups dynamic membership use nahi kar sakte. Aam groups ko Entra roles nahi diye ja sakte."
@@ -1853,7 +1853,7 @@
   "q": "VM par chalne wali app ko code mein credentials rakhe baghair Key Vault access karna hai. Aap kya use karenge?",
   "opts": [
    "VM ki managed identity, jise Key Vault ka access diya gaya ho",
-   "Storage account key",
+   "Storage account key, jo VM ke environment variable mein rakhi ho",
    "App settings mein kisi user ka password",
    "SAS token"
   ],
@@ -1903,7 +1903,7 @@
   "q": "Har naye resource group par 'costcenter' tag hona zaroori hai, aur missing ho to banana fail hona chahiye. Kaun si built-in policy aur effect?",
   "opts": [
    "Require a tag on resource groups — Deny",
-   "Inherit a tag — Modify",
+   "Subscription se tag inherit karna — Modify",
    "Allowed locations — Audit",
    "Append a tag — Append"
   ],
@@ -1932,7 +1932,7 @@
  "D1-155": {
   "q": "Aap ko subscription mein kisi ko bhi public IP addresses banane se rokna hai. Sab se aasan built-in policy?",
   "opts": [
-   "Not allowed resource types (Microsoft.Network/publicIPAddresses ke sath)",
+   "Not allowed resource types",
    "Allowed locations",
    "Audit VMs without managed disks",
    "Require a tag"
@@ -1944,7 +1944,7 @@
   "opts": [
    "Policy ki managed identity ke paas target scope par zaroori role assignment nahi",
    "Policy Audit mode mein hai",
-   "Resource locks missing hain",
+   "Resource locks maujood nahi, is liye remediation task target scope ko protect nahi kar sakta",
    "Subscription ka koi budget nahi"
   ],
   "exp": "DeployIfNotExists aur Modify remediations policy assignment ki managed identity ke taur par chalti hain. Agar us identity ke paas target scope par zaroori role (maslan Contributor) nahi to remediation authorization error ke sath fail hoti hai. Audit mode, locks aur budgets ka is se taluq nahi."
@@ -1952,7 +1952,7 @@
  "D1-157": {
   "q": "Azure Policy pehle se assign ki gayi policies ka standard compliance evaluation kitni baar chalati hai?",
   "opts": [
-   "Har 24 ghante (sath mein create/update aur naye assignments par)",
+   "Har 24 ghante",
    "Har 5 minute",
    "Sirf manually trigger karne par",
    "Mahine mein ek baar"
@@ -1963,7 +1963,7 @@
   "q": "Kaun si command resource group ke liye on-demand policy compliance scan trigger karti hai?",
   "opts": [
    "az policy state trigger-scan --resource-group RG1",
-   "az policy assignment refresh RG1",
+   "az policy assignment refresh --resource-group RG1 --now",
    "az group policy scan",
    "Start-AzPolicyAssignment"
   ],
@@ -1975,7 +1975,7 @@
    "Management group, subscription ya resource group",
    "Sirf subscriptions",
    "Sirf management groups",
-   "Sirf Entra ID tenant"
+   "Entra ID tenant, administrative unit ya security group"
   ],
   "exp": "Policy assignments management groups, subscriptions ya resource groups ko target karte hain aur neeche ki har cheez par apply hote hain. Child resource groups ya individual resources ko assignment se exclude kiya ja sakta hai."
  },
@@ -1983,8 +1983,8 @@
   "q": "Policy exclusion aur policy exemption mein kya farq hai?",
   "opts": [
    "Koi farq nahi",
-   "Exclusion scope ko evaluation se bilkul nikal deta hai; exemption usay evaluate karti hai lekin Exempt mark karti hai (category aur optional expiry ke sath)",
-   "Exemptions resources delete karti hain",
+   "Exclusion scope ko evaluation se bilkul nikal deta hai; exemption usay evaluate karti hai lekin Exempt mark karti hai",
+   "Exemption scope ko evaluation se bilkul nikal deti hai; exclusion usay evaluate karti hai lekin reports se chhupa deti hai",
    "Exclusions ko P2 chahiye"
   ],
   "exp": "Exclusion scope ko assignment se poori tarah nikal deta hai, is liye woh bilkul evaluate nahi hota. Exemption scope ko evaluate karti rehti hai lekin usay Exempt mark karti hai, category (Waiver ya Mitigated) aur optional expiry date ke sath, is liye woh compliance reports mein nazar aata rehta hai."
@@ -1995,7 +1995,7 @@
    "Assignment ka enforcement mode DoNotEnforce par set karein",
    "Policy delete kar dein",
    "Resource lock use karein",
-   "Scope tenant root par badal dein"
+   "Assignment ka scope tenant root management group par set karein"
   ],
   "exp": "Assignment ka enforcementMode DoNotEnforce karne se Azure Policy resources evaluate karti hai aur compliance report karti hai, lekin kuch block nahi karti. Is se enforce karne se pehle aap dekh sakte hain ke Deny policy kis par asar dalegi. Policy delete karne se koi result hi nahi milega, aur locks ka is se taluq nahi."
  },
@@ -2032,7 +2032,7 @@
  "D1-165": {
   "q": "Policy A (subscription par assigned) East US deny karti hai. Policy B (RG1 par assigned) sirf East US allow karti hai. Kya koi RG1 mein resource bana sakta hai?",
   "opts": [
-   "Haan, East US mein — RG-level policy jeetti hai",
+   "Haan, East US mein — RG-level policy jeetti hai, kyunke woh resource ke zyada qareeb hai",
    "Nahi — dono policies evaluate hoti hain; RG1 mein har location in mein se kisi ek se deny hoti hai",
    "Haan, kahin bhi",
    "Sirf Owners bana sakte hain"
@@ -2105,7 +2105,7 @@
    "az lock create --name NoDelete --lock-type CanNotDelete --resource-group RG1",
    "az group lock RG1",
    "az resource lock --delete RG1",
-   "az policy create --lock"
+   "az policy lock create --name NoDelete --effect Deny --resource-group RG1 --force"
   ],
   "exp": "az lock create --lock-type CanNotDelete --resource-group RG1 resource group par delete lock banati hai (read-only lock ke liye ReadOnly use karein). Baqi commands asal nahi; az policy policies banati hai, locks nahi."
  },
@@ -2113,7 +2113,7 @@
   "q": "VM ke resource group par ReadOnly lock hai. Users batate hain ke woh VM start nahi kar pa rahe. Kyun?",
   "opts": [
    "Start POST action hai, aur ReadOnly sirf reads allow karta hai",
-   "VM hamesha ke liye deallocated hai",
+   "ReadOnly lock VM ko deallocate kar ke us ka compute chhor deta hai",
    "Network ka masla",
    "License ka masla"
   ],
@@ -2145,7 +2145,7 @@
    "Resources par department tag lagayen aur Cost analysis mein us tag se group karein",
    "Har resource ke liye ek subscription banayen",
    "Resource locks use karein",
-   "Har VM ka budget banayen"
+   "Har department ka budget banayen aur Azure Advisor mein us budget se group karein"
   ],
   "exp": "Resources par department jaisa key wala tag lagayen, phir Cost Management → Cost analysis mein us tag se group ya filter kar ke har department ka kharcha dekhein. Har resource ki alag subscription amli nahi, locks costs par asar nahi dalte, aur budgets kharche par alert karte hain, department ke hisaab se report nahi karte."
  },
@@ -2163,7 +2163,7 @@
   "q": "Kaun si CLI command mojooda resource group par doosre tags hataye baghair tag env=prod add karti hai?",
   "opts": [
    "az tag update --resource-id <rg-id> --operation Merge --tags env=prod",
-   "az group update --tags env=prod (hamesha merge karta hai)",
+   "az group update --name <rg-name> --operation Replace --set tags.env=prod",
    "az tag create env=prod",
    "az resource tag --replace"
   ],
@@ -2172,7 +2172,7 @@
  "D1-179": {
   "q": "Cost Management mein kaun sa feature reporting ke liye subscription aur resource group tags ko child resources ke usage records par apply karta hai?",
   "opts": [
-   "Tag inheritance (cost allocation setting)",
+   "Tag inheritance",
    "Azure Policy Deny",
    "Resource locks",
    "Budgets"
@@ -2192,7 +2192,7 @@
  "D1-181": {
   "q": "Kya West Europe ke resource group mein East US mein deploy ki gayi VM ho sakti hai?",
   "opts": [
-   "Nahi, regions match hone chahiye",
+   "Nahi — VM ka region us ke resource group se match hona chahiye",
    "Haan — RG ki location sirf metadata store karti hai",
    "Sirf global peering ke sath",
    "Sirf storage accounts ke liye"
@@ -2204,7 +2204,7 @@
   "opts": [
    "Haan",
    "Nahi — resource bilkul ek resource group ka hissa hota hai",
-   "Sirf tags ke sath",
+   "Haan — agar dono resource groups ek hi region mein hon",
    "Sirf VNets"
   ],
   "exp": "Har resource ek waqt mein bilkul ek resource group ka hissa hota hai. Aap usay doosre resource group mein move kar sakte hain, lekin woh ek sath do mein nahi ho sakta. Tags reporting ke liye resource groups ke aar paar resources group karne dete hain, baghair yeh badle ke woh kahan rehte hain."
@@ -2212,7 +2212,7 @@
  "D1-183": {
   "q": "Resources doosri subscription mein move karne se pehle, move kiye baghair kaise check karein ke woh kamyab hoga?",
   "opts": [
-   "Validate move operation use karein (portal validation / validateMoveResources API)",
+   "Validate move operation use karein",
    "ARM template par what-if chalayen",
    "Azure Advisor check karein",
    "Budget banayen"
@@ -2224,7 +2224,7 @@
   "opts": [
    "Source aur destination subscriptions ek hi Entra tenant mein hon aur destination mein resource provider registered ho",
    "Alag tenants",
-   "Destination khali ho",
+   "Destination subscription khaali ho aur source wale region mein ho, aur move se pehle tamam resources band hon",
    "P2 license"
   ],
   "exp": "Resources doosri subscription mein move karne ke liye dono subscriptions ek hi Microsoft Entra tenant mein honi chahiye, aur destination mein resource provider registered hona chahiye (maslan Microsoft.Compute). Destination ka khali hona zaroori nahi, aur koi Entra licence nahi chahiye."
@@ -2233,7 +2233,7 @@
   "q": "Kaun si CLI command resource ko doosre resource group mein move karti hai?",
   "opts": [
    "az resource move --destination-group RG2 --ids <resourceId>",
-   "az group move RG1 RG2",
+   "az group move --source RG1 --destination RG2 --ids <resourceId>",
    "az resource transfer",
    "az vm migrate"
   ],
@@ -2244,7 +2244,7 @@
   "opts": [
    "Usage + quotas mein quota increase ki request karein",
    "Resource lock banayen",
-   "Tenant badlein",
+   "Subscription ko doosre Entra tenant mein move karein",
    "Budget enable karein"
   ],
   "exp": "vCPU quotas har region aur har subscription ke liye set hote hain. Jab deployment limit se takraye to Subscription → Usage + quotas (ya Help + support) mein increase ki request karein. Locks, tenant badalna aur budgets quotas nahi badalte."
@@ -2252,7 +2252,7 @@
  "D1-187": {
   "q": "Deployment 'The subscription is not registered to use namespace Microsoft.ContainerInstance' error ke sath fail hota hai. Hal kya hai?",
   "opts": [
-   "Resource provider register karein (az provider register --namespace Microsoft.ContainerInstance)",
+   "Resource provider register karein",
    "License khareedein",
    "Management group banayen",
    "Policy hata dein"
@@ -2264,7 +2264,7 @@
   "opts": [
    "Billing alag karne, quotas aur access ki hudood lagane, aur environments (prod/dev) alag rakhne ke liye",
    "Subscriptions billing ke baghair muft banti hain",
-   "Har VM ko apni subscription chahiye",
+   "Azure ki is shart ke liye ke production VMs, storage accounts aur VNets alag subscriptions mein hon",
    "Zyada Entra tenants lene ke liye"
   ],
   "exp": "Subscriptions billing (har ek ki ek invoice), scale (quotas har subscription par lagte hain) aur management (RBAC aur policies har subscription par assign ho sakti hain) ki hudood hain. Is liye production ko development se alag rakhne ke liye achi hain. Subscriptions muft nahi, aur VMs ko apni subscription nahi chahiye."
@@ -2275,7 +2275,7 @@
    "Kai subscriptions par access, policy aur compliance manage karna",
    "VMs store karna",
    "DNS zones host karna",
-   "Licensing ke liye users group karna"
+   "Kai tenants mein licensing ke liye users aur devices ko group karna"
   ],
   "exp": "Management groups subscriptions se upar hote hain. Kisi ek par jo bhi assign karein — RBAC roles ya Azure Policy — woh us ke neeche har subscription mein inherit hota hai, is liye aap ek assignment se bohat si subscriptions govern kar sakte hain. In mein VMs, DNS zones ya users nahi hote."
  },
@@ -2292,7 +2292,7 @@
  "D1-191": {
   "q": "Default mein nayi subscriptions management group hierarchy mein kahan rakhi jati hain?",
   "opts": [
-   "Tenant root group ke neeche (jab tak default management group configure na ho)",
+   "Tenant root group ke neeche",
    "Kisi management group mein nahi",
    "Sab se naye management group ke neeche",
    "Default naam ke group mein"
@@ -2323,7 +2323,7 @@
   "q": "Jab asal kharcha monthly budget ke 90% tak pohanche to aap ko email aur webhook call chahiye. Aap kya configure karenge?",
   "opts": [
    "90% par alert condition wala budget jo action group use kare",
-   "Azure Policy",
+   "Azure Policy, mahana kharche ke 90% par Audit effect ke sath",
    "Resource lock",
    "Advisor"
   ],
@@ -2345,16 +2345,16 @@
    "Cost, Security, Reliability, Operational excellence, Performance",
    "Sirf Cost aur Security",
    "Sirf Networking",
-   "Identity aur Compliance"
+   "Identity, Compliance, Networking, Licensing aur Data protection"
   ],
   "exp": "Azure Advisor paanch categories mein recommendations deta hai: Reliability, Security, Performance, Cost aur Operational Excellence — jo Azure Well-Architected Framework ke pillars hain. Yeh sirf cost aur security tak mehdood nahi."
  },
  "D1-197": {
   "q": "Ek VM agle teen saal 24/7 ek hi size par chalegi. Kaun sa option compute cost sab se zyada kam karta hai?",
   "opts": [
-   "Azure Reserved VM Instances (3 saal)",
+   "Azure Reserved VM Instances",
    "Pay-as-you-go",
-   "Spot VM",
+   "Azure Spot VMs, deallocate eviction policy ke sath",
    "Bari VM size"
   ],
   "exp": "3 saal ka reserved instance hamesha ek size par chalne wali VM ke liye sab se bari discount deta hai. Pay-as-you-go sab se mehnga hai, Spot VMs kabhi bhi evict ho sakti hain (24/7 kaam ke liye munasib nahi), aur bari VM zyada mehngi hai."

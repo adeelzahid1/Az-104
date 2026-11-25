@@ -62,7 +62,7 @@
   "opts": [
    "Yes — the default AllowInternetOutBound rule allows it",
    "No",
-   "Only on port 80",
+   "No — the default DenyAllOutBound rule blocks it",
    "Only with a NAT gateway"
   ],
   "ans": [
@@ -78,15 +78,15 @@
   "diff": 2,
   "q": "Which CLI command creates an NSG rule allowing HTTPS from the internet?",
   "opts": [
-   "az network nsg rule create -g RG1 --nsg-name nsg1 -n AllowHttps --priority 200 --direction Inbound --access Allow --protocol Tcp --destination-port-ranges 443 --source-address-prefixes Internet",
+   "az network nsg rule create … --direction Inbound --destination-port-ranges 443 --source-address-prefixes Internet",
    "az nsg allow 443",
    "az network rule add https",
-   "az vm open-port --all"
+   "az network nsg rule create … --direction Outbound --destination-port-ranges 443 --destination-address-prefixes Internet"
   ],
   "ans": [
    0
   ],
-  "exp": "az network nsg rule create needs the NSG name, a rule name, a priority, a direction, an access type (Allow or Deny), a protocol, destination ports and a source. Here it allows inbound TCP 443 from the Internet service tag. az vm open-port opens ports through the VM, and the other commands don't exist.",
+  "exp": "az network nsg rule create needs the NSG name, a rule name, a priority, a direction, an access type (Allow or Deny), a protocol, destination ports and a source. Here it allows inbound TCP 443 from the Internet service tag. The Outbound rule covers traffic leaving the VNet instead, and the other commands don't exist.",
   "link": "https://learn.microsoft.com/en-us/cli/azure/network/nsg/rule"
  },
  {
@@ -99,7 +99,7 @@
    "az network vnet subnet update -g RG1 --vnet-name VNet1 -n Web --network-security-group nsg1",
    "az network nsg attach Web",
    "az nsg link subnet",
-   "az network vnet update --nsg nsg1"
+   "az network nsg attach -g RG1 --target-vnet VNet1 --target-subnet Web --nsg-name nsg1 --force"
   ],
   "ans": [
    0
@@ -115,7 +115,7 @@
   "q": "The subnet NSG allows inbound 443, but the NIC NSG has no custom rules. Can internet clients reach the VM on 443?",
   "opts": [
    "No — the NIC NSG's default DenyAllInBound blocks it; both NSGs must allow",
-   "Yes — the subnet NSG is enough",
+   "Yes — the subnet NSG is evaluated first, and once it allows the traffic the NIC NSG is skipped",
    "Yes, only for HTTPS",
    "Only from the VNet"
   ],
@@ -133,7 +133,7 @@
   "q": "A subnet NSG denies outbound port 25. The NIC NSG allows outbound 25. Can the VM send SMTP on 25?",
   "opts": [
    "No — outbound is evaluated NIC then subnet, and the subnet NSG denies it",
-   "Yes, the NIC wins",
+   "Yes — the NIC NSG is the closest to the VM, so its allow rule overrides the subnet",
    "Yes, allow always wins",
    "Depends on priority numbers across NSGs"
   ],
@@ -152,7 +152,7 @@
   "opts": [
    "No — but you can override them with higher-priority (lower number) custom rules",
    "Yes",
-   "Only DenyAll",
+   "Yes — but only DenyAllInBound, and only with the Owner or Network Contributor role",
    "Only with Owner"
   ],
   "ans": [
@@ -170,7 +170,7 @@
   "opts": [
    "Yes — augmented security rules allow multiple ports and IP ranges in one rule",
    "No, one port per rule",
-   "Only with ASGs",
+   "No — a rule takes one port, unless its destination is an ASG in that VNet",
    "Only outbound"
   ],
   "ans": [
@@ -207,7 +207,7 @@
   "opts": [
    "The service tag Sql.WestEurope",
    "Internet",
-   "VirtualNetwork",
+   "The service tag VirtualNetwork",
    "0.0.0.0/0"
   ],
   "ans": [
@@ -223,8 +223,8 @@
   "diff": 2,
   "q": "A rule is changed from Allow to Deny while connections are active. What happens to existing flows?",
   "opts": [
-   "Existing connections may continue until they end; new connections are blocked",
-   "All flows drop instantly",
+   "Existing connections may continue until they end",
+   "All existing flows are reset within a few seconds",
    "Nothing changes for 24 hours",
    "The VM restarts"
   ],
@@ -263,7 +263,7 @@
   "q": "Web VMs must accept 443 from the internet, and DB VMs must accept 1433 only from web VMs. Cleanest NSG design?",
   "opts": [
    "ASGs 'asg-web' and 'asg-db'; rule 1: Internet → asg-web 443; rule 2: asg-web → asg-db 1433",
-   "One rule per VM IP",
+   "One rule per VM IP: Internet → each web VM on 443; then each web VM IP → each DB VM IP on 1433",
    "Separate VNets for each VM",
    "Service endpoints"
   ],
@@ -282,7 +282,7 @@
   "opts": [
    "Associate the VM's NIC (IP configuration) with the ASG",
    "Tag the VM",
-   "Add the VM to a resource group",
+   "Add the VM's resource group to the ASG's member list",
    "Assign an RBAC role"
   ],
   "ans": [
@@ -337,7 +337,7 @@
   "diff": 3,
   "q": "Which subnet name does Azure Firewall require?",
   "opts": [
-   "AzureFirewallSubnet (/26 or larger)",
+   "AzureFirewallSubnet",
    "FirewallSubnet",
    "GatewaySubnet",
    "Any name"
@@ -356,7 +356,7 @@
   "q": "Which port must target VMs allow from AzureBastionSubnet for RDP through Bastion?",
   "opts": [
    "3389 (RDP) / 22 (SSH) from the Bastion subnet",
-   "443 from the internet",
+   "443 (HTTPS) from the internet and the portal",
    "445",
    "None"
   ],
@@ -374,7 +374,7 @@
   "q": "Can one Bastion host reach VMs in a peered VNet?",
   "opts": [
    "Yes — Bastion supports connecting to VMs in peered VNets",
-   "No, only its own VNet",
+   "No — every VNet needs a Bastion host of its own",
    "Only with global peering disabled",
    "Only with Premium SKU and VPN"
   ],
@@ -427,7 +427,7 @@
   "diff": 2,
   "q": "Can you upgrade Bastion Basic to Standard?",
   "opts": [
-   "Yes, upgrading is supported (downgrading isn't)",
+   "Yes, upgrading is supported",
    "No, you must redeploy",
    "Only via support",
    "Only downgrade"
@@ -445,7 +445,7 @@
   "diff": 3,
   "q": "RDP should be open only on request, for 3 hours, from the requester's IP. Which feature?",
   "opts": [
-   "Just-in-time VM access (Microsoft Defender for Cloud)",
+   "Just-in-time VM access",
    "Bastion Basic",
    "A permanent NSG rule",
    "Service endpoints"
@@ -463,7 +463,7 @@
   "diff": 2,
   "q": "Where do you enable a service endpoint?",
   "opts": [
-   "On the subnet (selecting services like Microsoft.Storage or Microsoft.Sql)",
+   "On the subnet",
    "On the VM",
    "On the storage account only",
    "In Entra ID"
@@ -500,7 +500,7 @@
   "q": "When a VM uses a storage service endpoint, what source IP does the storage account see?",
   "opts": [
    "The VM's private IP (subnet identity) instead of a public IP",
-   "The VM's public IP",
+   "The VM's public IP, or its NAT gateway's public IP address",
    "The gateway IP",
    "168.63.129.16"
   ],
@@ -519,7 +519,7 @@
   "opts": [
    "Traffic now arrives with the private source IP, so you need a VNet rule instead of an IP rule",
    "The firewall resets",
-   "The IP rule expires",
+   "The IP rule expires when a service endpoint is added, so it has to be created again",
    "Service endpoints block storage"
   ],
   "ans": [
@@ -571,8 +571,8 @@
   "diff": 3,
   "q": "On-premises clients must resolve a private endpoint's FQDN through a VPN. Recommended design?",
   "opts": [
-   "Forward the on-prem DNS zone for privatelink.* to Azure DNS Private Resolver (inbound endpoint) linked to the private DNS zone",
-   "Use public DNS",
+   "Forward the queries to an Azure DNS Private Resolver inbound endpoint",
+   "Publish the private endpoint's A record in a public Azure DNS zone",
    "Hosts files only",
    "Service endpoint"
   ],
@@ -591,7 +591,7 @@
   "opts": [
    "The resource owner must approve the connection",
    "Recreate the VNet",
-   "Enable a service endpoint",
+   "A service endpoint must be enabled on the subnet",
    "Change DNS"
   ],
   "ans": [
@@ -647,7 +647,7 @@
   "q": "Requirement: VNet VMs must reach a storage account with the least cost and no DNS changes, and the account's public endpoint can stay. Choose:",
   "opts": [
    "Service endpoint plus a VNet firewall rule",
-   "Private endpoint",
+   "Private endpoint plus a private DNS zone",
    "ExpressRoute",
    "Bastion"
   ],
@@ -664,9 +664,9 @@
   "diff": 3,
   "q": "A VM resolves mystorage.blob.core.windows.net to a public IP even though a private endpoint exists. What's the likely cause?",
   "opts": [
-   "The privatelink.blob.core.windows.net private DNS zone isn't linked to the VM's VNet (or the VNet uses a custom DNS server without forwarding)",
+   "The privatelink.blob.core.windows.net private DNS zone isn't linked to the VM's VNet",
    "The NSG blocks DNS",
-   "Storage firewall",
+   "The storage firewall has no VNet rule for the subnet that hosts the private endpoint",
    "Wrong redundancy"
   ],
   "ans": [
@@ -702,7 +702,7 @@
   "opts": [
    "The VM must be running to show effective rules",
    "There's no NSG",
-   "The VM is Linux",
+   "The view supports only Windows VMs with a public IP",
    "Bastion is enabled"
   ],
   "ans": [
@@ -719,7 +719,7 @@
   "q": "Which NSG flow log destination is used for analysis with Traffic Analytics?",
   "opts": [
    "A storage account, processed into a Log Analytics workspace",
-   "Event Hub only",
+   "An Event Hub, streamed into a Microsoft Sentinel workspace",
    "The NSG itself",
    "Azure DNS"
   ],
@@ -776,9 +776,9 @@
   "diff": 3,
   "q": "In the previous scenario, how do you block 203.0.113.0/24 while allowing everyone else on 443?",
   "opts": [
-   "Give the deny rule a lower priority number than the allow (for example, deny at 90)",
+   "Give the deny rule a lower priority number than the allow",
    "Delete the allow",
-   "Add the deny to the NIC only",
+   "Add the deny to the NIC NSG with a higher priority number",
    "Use a route"
   ],
   "ans": [

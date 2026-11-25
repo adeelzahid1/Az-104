@@ -164,9 +164,41 @@ for (const [id, ro] of Object.entries(romanCases)) {
   }
 }
 
+// The correct option must not be recognisable by its length, in English or in Roman Urdu.
+const MAX_STANDOUT_SHARE = 0.12;
+const romanById = Object.assign(
+  {},
+  ...[1, 2, 3, 4, 5].map((d) => JSON.parse(readFileSync(join(ROMAN, `d${d}.json`), 'utf8'))),
+);
+const mcqs = [...byId.values()].filter((q) => q.type === 'mcq');
+const standout = {};
+for (const [lang, optsOf] of [
+  ['English', (q) => q.opts],
+  ['Roman', (q) => romanById[q.id]?.opts],
+]) {
+  let checked = 0;
+  let noticeable = 0;
+  for (const q of mcqs) {
+    const opts = optsOf(q);
+    if (!opts) continue;
+    checked++;
+    const correct = opts[q.ans[0]].length;
+    const longestWrong = Math.max(...opts.filter((_, i) => i !== q.ans[0]).map((o) => o.length));
+    if (correct > longestWrong + 8 && correct > longestWrong * 1.25) noticeable++;
+    if (correct > longestWrong + 25 && correct > longestWrong * 1.6) {
+      errors.push(`${q.id} (${lang}): the correct option is far longer than the others`);
+    }
+  }
+  standout[lang] = `${noticeable}/${checked}`;
+  if (noticeable > checked * MAX_STANDOUT_SHARE) {
+    errors.push(`${lang}: the correct option is noticeably the longest in ${noticeable} of ${checked} mcqs`);
+  }
+}
+
 console.log(`Questions: ${counts.total}  Case studies: ${caseIds.size}`);
 console.log('Roman Urdu translated:', romanDone, `cases ${Object.keys(romanCases).length}/${caseIds.size}`);
 console.log('Study sections (excluding case studies):', sectionSizes);
+console.log('Correct option noticeably longest:', standout);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);
 if (errors.length) {

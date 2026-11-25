@@ -45,7 +45,7 @@
    "Nothing; peering will work",
    "Peering requires non-overlapping address spaces, and these overlap completely",
    "Peering only works across regions",
-   "A /16 is too large to peer"
+   "A /16 is too large to peer, so each VNet must first be reduced to a /24 range"
   ],
   "ans": [
    1
@@ -61,7 +61,7 @@
   "q": "VNet-A is peered with VNet-B, and VNet-B is peered with VNet-C. Can a VM in VNet-A reach a VM in VNet-C through these peerings alone?",
   "opts": [
    "Yes, automatically",
-   "No — peering is non-transitive; you need A–C peering or routing through an NVA or gateway",
+   "No — peering is non-transitive",
    "Yes, if they're in the same region",
    "Only with a Basic load balancer"
   ],
@@ -114,8 +114,8 @@
   "diff": 2,
   "q": "Which statement describes a Standard SKU public IP?",
   "opts": [
-   "Dynamic and open by default",
-   "Static allocation, secure by default (needs an NSG to allow traffic), with zone-redundancy support",
+   "Dynamic allocation, open to all inbound traffic until an NSG is added",
+   "Static allocation, secure by default, with zone-redundancy support",
    "Free and dynamic",
    "IPv6 only"
   ],
@@ -223,7 +223,7 @@
   "q": "VMs in the same VNet must resolve each other by hostname using Azure-provided DNS. This works:",
   "opts": [
    "Only with a custom DNS server",
-   "Automatically within the same VNet (168.63.129.16)",
+   "Automatically within the same VNet",
    "Never",
    "Only with public DNS zones"
   ],
@@ -261,7 +261,7 @@
   "opts": [
    "VMs",
    "Azure Bastion (AzureBastionSubnet) and VPN Gateway (GatewaySubnet)",
-   "Storage accounts",
+   "Storage accounts (StorageSubnet) and Azure SQL (SqlSubnet)",
    "NSGs"
   ],
   "ans": [
@@ -279,7 +279,7 @@
   "opts": [
    "Multiple regions",
    "A single region, including all its availability zones",
-   "One datacenter only",
+   "One datacenter only, unless zones are added to it",
    "One VNet per subscription"
   ],
   "ans": [
@@ -338,7 +338,7 @@
   "q": "In what order are NSG rules processed?",
   "opts": [
    "Alphabetically",
-   "By priority, lowest number first; processing stops at the first match",
+   "By priority, lowest number first",
    "Randomly",
    "Highest number first"
   ],
@@ -356,7 +356,7 @@
   "q": "A VM has NSGs on both its subnet and its NIC. What's the evaluation order for INBOUND traffic?",
   "opts": [
    "NIC NSG first, then subnet NSG",
-   "Subnet NSG first, then NIC NSG — both must allow",
+   "Subnet NSG first, then NIC NSG",
    "Only the NIC NSG applies",
    "Whichever has lower priorities"
   ],
@@ -374,7 +374,7 @@
   "q": "Which default NSG rule lets VMs in a VNet talk to each other with no custom rules?",
   "opts": [
    "AllowInternetInBound",
-   "AllowVnetInBound (priority 65000)",
+   "AllowVnetInBound",
    "DenyAllInBound",
    "AllowRDP"
   ],
@@ -391,7 +391,7 @@
   "diff": 3,
   "q": "An NSG has an inbound DENY for port 3389 at priority 200 and an ALLOW for 3389 from your office IP at priority 150. RDP from the office will:",
   "opts": [
-   "Be blocked; deny always wins",
+   "Be blocked; a deny rule always wins over any allow rule",
    "Work; the priority 150 allow matches first and processing stops",
    "Work only after a reboot",
    "Fail; office IPs can't be allowed"
@@ -427,7 +427,7 @@
   "diff": 1,
   "q": "Application security groups let you:",
   "opts": [
-   "Encrypt traffic between apps",
+   "Encrypt traffic between groups of apps and use those groups as backend pools for load balancing",
    "Group VM NICs by role and use those groups as the source or destination in NSG rules instead of IPs",
    "Replace NSGs entirely",
    "Scale applications"
@@ -448,7 +448,7 @@
    "It's never allowed",
    "All NICs in both ASGs must be in the SAME virtual network",
    "The ASGs must be in different regions",
-   "It requires the Premium SKU"
+   "All NICs in both ASGs must use Premium SKU public IP addresses"
   ],
   "ans": [
    1
@@ -464,9 +464,9 @@
   "q": "Which statement about service tags in NSG rules is true?",
   "opts": [
    "Service tags are deprecated",
-   "Service tags are Microsoft-managed groups of IP prefixes (for example, Storage or AzureLoadBalancer) that you can use instead of IP ranges",
+   "They are Microsoft-managed groups of IP prefixes",
    "Tags only work in Azure Firewall",
-   "You must update tag IPs manually"
+   "You must update the IP ranges in a tag manually"
   ],
   "ans": [
    1
@@ -481,7 +481,7 @@
   "diff": 1,
   "q": "Azure Bastion provides:",
   "opts": [
-   "VPN access to VNets",
+   "Point-to-site VPN access to VNets over TLS 443, without a VPN client on the device",
    "RDP/SSH to VMs through the portal over TLS 443, without public IPs on the VMs",
    "A web application firewall",
    "DNS resolution"
@@ -501,7 +501,7 @@
   "opts": [
    "A subnet named AzureBastionSubnet of at least /26, plus a Standard public IP for Bastion",
    "Any subnet name, a /29 is fine",
-   "Public IPs on all target VMs",
+   "A subnet named GatewaySubnet of at least /29, plus public IPs on all the target VMs",
    "An ExpressRoute circuit"
   ],
   "ans": [
@@ -517,8 +517,8 @@
   "diff": 3,
   "q": "Which capability requires the Bastion Standard SKU rather than Basic?",
   "opts": [
-   "RDP in the browser",
-   "Native client support (az network bastion rdp/ssh tunneling), shareable links, and IP-based connections",
+   "RDP in the browser, session timeouts, and Entra ID sign-in to portal",
+   "Native client support, shareable links, and IP-based connections",
    "SSH in the browser",
    "Connecting to one VM"
   ],
@@ -535,8 +535,8 @@
   "diff": 2,
   "q": "What happens when you enable a Microsoft.Storage service endpoint on a subnet?",
   "opts": [
-   "The storage account gets a private IP in the subnet",
-   "Traffic to Azure Storage from that subnet uses the backbone with the subnet's identity, so the storage firewall can allow it — but the service keeps its PUBLIC endpoint",
+   "The storage account gets a private IP address in the subnet and loses its public endpoint",
+   "The storage firewall can allow that subnet, and traffic uses the Azure backbone",
    "All internet access is blocked",
    "Storage becomes publicly readable"
   ],
@@ -554,9 +554,9 @@
   "q": "What's the key difference between a private endpoint and a service endpoint?",
   "opts": [
    "No difference",
-   "A private endpoint creates a NIC with a private IP in YOUR VNet for the PaaS resource, which is also reachable from on-premises over VPN",
+   "A private endpoint gives the PaaS resource a private IP in YOUR VNet",
    "Private endpoints are free; service endpoints cost money",
-   "Service endpoints work from on-premises"
+   "Service endpoints give the resource a private IP reachable from on-premises"
   ],
   "ans": [
    1
@@ -573,7 +573,7 @@
   "opts": [
    "Edit every client's hosts file",
    "A private DNS zone privatelink.blob.core.windows.net linked to the VNet, with the endpoint's A record",
-   "A public DNS CNAME",
+   "A public DNS CNAME record for contoso1 that points to the private endpoint's NIC resource ID",
    "Nothing; it's automatic in all cases"
   ],
   "ans": [
@@ -607,7 +607,7 @@
   "diff": 2,
   "q": "What does Network Watcher IP flow verify tell you?",
   "opts": [
-   "Link bandwidth",
+   "The bandwidth and round-trip time of a link between two VMs, and which hop adds the most delay",
    "Whether a specific 5-tuple flow to or from a VM is allowed or denied, and which NSG rule decided it",
    "DNS resolution results",
    "Traffic cost"
@@ -646,7 +646,7 @@
   "diff": 1,
   "q": "You bought contoso.com from a registrar and want Azure DNS to host the zone. What do you configure at the registrar?",
   "opts": [
-   "A records pointing to Azure",
+   "A records for each Azure name server, pointing to the four public IPs of your zone",
    "The domain's NS records, set to the four Azure DNS name servers of your zone",
    "MX records",
    "Nothing"
@@ -684,7 +684,7 @@
   "opts": [
    "Registers on-premises servers",
    "Creates and updates A records automatically for VMs in the linked VNet",
-   "Issues TLS certificates",
+   "Issues and renews TLS certificates for VMs in the linked VNet",
    "Blocks public DNS"
   ],
   "ans": [
@@ -703,7 +703,7 @@
    "Both are unlimited",
    "Registration links are more limited (100) than resolution links (1,000)",
    "One VNet total",
-   "Registration 1,000, resolution 100"
+   "Registration links are less limited (1,000) than resolution links (100)"
   ],
   "ans": [
    1
@@ -719,8 +719,8 @@
   "q": "Why is an alias record set useful in Azure DNS?",
   "opts": [
    "It's cheaper",
-   "It can point the zone apex (contoso.com) at an Azure resource such as a public IP and updates automatically if the IP changes",
-   "It replaces CNAMEs everywhere",
+   "It can point the zone apex at an Azure resource and follows IP changes",
+   "It replaces CNAME records everywhere, including at names outside Azure",
    "It works across DNS providers"
   ],
   "ans": [
@@ -756,7 +756,7 @@
   "opts": [
    "Basic; any IP",
    "Standard; its public IP must also be Standard SKU",
-   "Premium; Basic IP",
+   "Premium; its public IP can be either Basic or Standard",
    "Gateway; no IP"
   ],
   "ans": [
@@ -774,7 +774,7 @@
   "opts": [
    "Deletes the VM",
    "Stops sending NEW connections to that VM until the probe succeeds again",
-   "Restarts the VM",
+   "Restarts the VM and sends NEW connections once its agent reports as healthy",
    "Emails the owner automatically"
   ],
   "ans": [
@@ -791,9 +791,9 @@
   "q": "Users must always reach the SAME backend VM for their session (a legacy app with local session state). Configure:",
   "opts": [
    "Floating IP",
-   "Session persistence: Client IP (or Client IP and protocol)",
+   "Session persistence: Client IP",
    "HA ports",
-   "More probes"
+   "Health probes with a longer interval"
   ],
   "ans": [
    1
@@ -808,9 +808,9 @@
   "diff": 2,
   "q": "How does an internal Standard load balancer differ from a public one?",
   "opts": [
-   "It uses a private frontend IP from a VNet subnet and is reachable only from inside the network (VNet, VPN, peering)",
+   "It uses a private frontend IP from a VNet subnet",
    "It's Layer 7",
-   "It can't have health probes",
+   "It can't have health probes or backend VM pools",
    "It requires the Basic SKU"
   ],
   "ans": [
@@ -826,8 +826,8 @@
   "diff": 3,
   "q": "What is an HA ports rule (frontendPort=0, backendPort=0, protocol All) used for, and where is it available?",
   "opts": [
-   "Web apps; public LB",
-   "Load balancing ALL ports and protocols, typically for NVA clusters; INTERNAL Standard LB only",
+   "Load balancing web apps on ports 80 and 443 only; PUBLIC Standard LB",
+   "Load balancing ALL ports and protocols; INTERNAL Standard LB only",
    "DNS servers; Basic LB",
    "Port mirroring; any LB"
   ],
@@ -862,8 +862,8 @@
   "diff": 2,
   "q": "HTTP requests must be routed by URL path (/images → pool1, /video → pool2), with TLS termination and a WAF. Why is Azure Load Balancer the wrong choice?",
   "opts": [
-   "It can't scale",
-   "Path routing, TLS termination, and WAF are Layer 7 features — use Application Gateway with WAF",
+   "Azure Load Balancer can't scale to more than one backend pool",
+   "Path routing, TLS termination, and WAF are Layer 7 features",
    "It's too expensive",
    "It can't do health probes"
   ],
@@ -881,7 +881,7 @@
   "q": "Backend VMs behind a new Standard public LB receive no traffic. The VMs are healthy and the rules look right. A classic cause is:",
   "opts": [
    "Too many VMs",
-   "No NSG rule allows the traffic — Standard LB is secure by default",
+   "No NSG rule allows the traffic",
    "The LB needs a restart",
    "Port 445 is blocked by the ISP"
   ],
@@ -899,8 +899,8 @@
   "ctx": "The hub VNet (10.0.0.0/16) hosts a firewall NVA (10.0.1.4). Spokes VNet-App (10.1.0.0/16) and VNet-Db (10.2.0.0/16) are each peered to the hub only.",
   "q": "What lets App VMs reach Db VMs through the firewall?",
   "opts": [
-   "UDRs on the spoke subnets sending the other spoke's prefix to 10.0.1.4, plus forwarded traffic allowed on the peerings and IP forwarding on the NVA",
-   "Nothing — peering is transitive",
+   "UDRs to 10.0.1.4 on the spokes, forwarded traffic allowed, and IP forwarding on the NVA",
+   "Nothing more — peering is transitive when both spokes are peered with the same hub VNet",
    "A service endpoint",
    "A private DNS zone"
   ],

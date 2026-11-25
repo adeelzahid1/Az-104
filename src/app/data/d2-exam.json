@@ -65,7 +65,7 @@
    "An account SAS valid for 7 days",
    "A service SAS for the container, linked to a stored access policy",
    "The storage account access key",
-   "A user delegation SAS"
+   "A user delegation SAS for the container, valid for 60 days"
   ],
   "ans": [
    1
@@ -84,7 +84,7 @@
    "Object replication to a storage account in Lahore",
    "Azure File Sync with a server endpoint on the Lahore file server and cloud tiering",
    "Azure Data Box",
-   "Azure Storage Explorer installed on each client"
+   "Azure Storage Explorer on each Lahore client, with a scheduled download from the share"
   ],
   "ans": [
    1
@@ -124,7 +124,7 @@
   "opts": [
    "Blob soft delete with 7-year retention",
    "A time-based retention policy (immutable storage) on the container",
-   "A ReadOnly resource lock on the storage account",
+   "A ReadOnly resource lock on the storage account and its resource group",
    "Blob versioning"
   ],
   "ans": [
@@ -193,7 +193,7 @@
    "Reader on the storage account",
    "Storage Account Contributor",
    "Storage Blob Data Reader on the reports container",
-   "Owner on the resource group"
+   "Owner on the resource group of the storage account"
   ],
   "ans": [
    2
@@ -210,8 +210,8 @@
   "q": "What do you need for requirement 6?",
   "opts": [
    "Infrastructure encryption only",
-   "Customer-managed keys in a key vault with soft delete and purge protection, accessed by the storage account's managed identity",
-   "Client-side encryption in the reporting app only",
+   "Customer-managed keys in a key vault that has soft delete and purge protection",
+   "Client-side encryption in the reporting app, with keys kept in its app settings",
    "Microsoft-managed keys with a 90-day rotation"
   ],
   "ans": [
@@ -775,7 +775,7 @@
    "Copies all blobs in container \"data\" from the source account to the destination account, server to server",
    "Downloads the blobs to the local computer and then uploads them",
    "Moves the blobs and deletes them from the source",
-   "Creates a sync relationship that keeps running in the background"
+   "Creates a sync relationship between the two accounts that keeps running in the background until you delete it"
   ],
   "ans": [
    0
@@ -794,7 +794,7 @@
    "The blobs are listed",
    "The command fails with an authorisation error, because blob data access needs a Storage Blob Data role",
    "The blobs are listed, but downloads fail",
-   "PowerShell uses the account key automatically"
+   "The blobs are listed, because PowerShell falls back to the account key for any Reader"
   ],
   "ans": [
    1
@@ -832,7 +832,7 @@
   "code": "net use Z: \\\\st1.file.core.windows.net\\docs /user:localhost\\st1 <storage-key>",
   "q": "This command works from an Azure VM but fails from a laptop on a home internet connection with \"System error 53\". What is the most likely cause?",
   "opts": [
-   "The storage account key is wrong",
+   "The storage account key was rotated after the VM mounted it",
    "The ISP or home router blocks outbound TCP port 445",
    "Azure Files does not support Windows",
    "The share quota is full"
@@ -852,7 +852,7 @@
   "q": "What does this Bicep file deploy?",
   "opts": [
    "An account that survives a zone outage, with new blobs defaulting to cool, and HTTP requests rejected",
-   "An account that copies data to the paired region",
+   "An account that copies data to the paired region, with new blobs defaulting to archive",
    "An account whose blobs default to the archive tier",
    "An account always named exactly \"stapp\""
   ],
@@ -870,9 +870,9 @@
   "code": "StorageBlobLogs\n| where OperationName == \"DeleteBlob\"\n| project TimeGenerated, CallerIpAddress, Uri, AuthenticationType",
   "q": "What does this query show, and what must be configured first?",
   "opts": [
-   "Who deleted blobs, from which IP and how they authenticated; a diagnostic setting must send blob logs to the workspace",
+   "Who deleted blobs and from which IP; blob logs must be sent to the workspace",
    "Storage capacity per container; nothing needs configuring",
-   "Blob deletions from the Activity log; nothing needs configuring",
+   "Blob deletions recorded in the Activity log; the account needs soft delete enabled",
    "Failed sign-ins to the storage account; Entra ID P2 is required"
   ],
   "ans": [
@@ -890,7 +890,7 @@
   "q": "On 5 November you change this policy's Expiry to 2026-11-10. What happens to SAS tokens that reference it?",
   "opts": [
    "Nothing; existing tokens keep the original expiry",
-   "They now expire on 10 November (the change applies within about 30 seconds)",
+   "They now expire on 10 November",
    "They are revoked immediately",
    "They must be regenerated before the change applies"
   ],
@@ -931,7 +931,7 @@
   "q": "What kind of SAS does this command create?",
   "opts": [
    "An account SAS signed with the account key",
-   "A service SAS signed with the account key",
+   "A service SAS signed with the account key, valid until the stored access policy expires",
    "A user delegation SAS signed with Microsoft Entra credentials, valid for at most 7 days",
    "A stored access policy"
   ],

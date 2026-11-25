@@ -7,7 +7,7 @@
   "q": "What is Azure DNS?",
   "opts": [
    "A hosting service for DNS zones that resolves names using Microsoft's global name servers",
-   "A domain registrar",
+   "A domain registrar that sells domain names and renews them automatically each year",
    "A load balancer",
    "A VPN service"
   ],
@@ -26,7 +26,7 @@
   "opts": [
    "az network dns zone create -g RG1 -n contoso.com",
    "az dns create contoso.com",
-   "az network zone add contoso.com",
+   "az network zone add -g RG1 -n contoso.com --dns",
    "az domain create contoso.com"
   ],
   "ans": [
@@ -44,7 +44,7 @@
   "opts": [
    "az network dns record-set a add-record -g RG1 -z contoso.com -n www -a 20.1.2.3",
    "az dns a create www",
-   "az network dns add www A",
+   "az network dns add-record -g RG1 --zone contoso.com --type A --name www --value 20.1.2.3",
    "az record new www"
   ],
   "ans": [
@@ -97,7 +97,7 @@
   "q": "Can a CNAME record set contain more than one record?",
   "opts": [
    "No — CNAME record sets can hold only one record",
-   "Yes, up to 20",
+   "Yes — a CNAME record set can hold up to 20 records",
    "Yes, unlimited",
    "Only at the apex"
   ],
@@ -115,7 +115,7 @@
   "q": "You need to delegate subdomain dev.contoso.com to a separate Azure DNS zone. What do you add in the parent zone contoso.com?",
   "opts": [
    "An NS record set 'dev' with the child zone's name servers",
-   "A CNAME 'dev'",
+   "A CNAME record 'dev' that points to the child zone's SOA",
    "An A record 'dev'",
    "A TXT record"
   ],
@@ -132,9 +132,9 @@
   "diff": 2,
   "q": "What's the effect of a lower TTL on a DNS record?",
   "opts": [
-   "Resolvers cache the record for less time, so changes propagate faster but query volume rises",
+   "Changes propagate faster, but query volume rises",
    "Records become private",
-   "Records are deleted sooner",
+   "Records are deleted sooner, so zones stay smaller",
    "Nothing"
   ],
   "ans": [
@@ -150,8 +150,8 @@
   "diff": 3,
   "q": "How do you prevent accidental deletion of a production DNS zone and its records?",
   "opts": [
-   "Apply a CanNotDelete resource lock on the zone (record sets can also be protected)",
-   "Use Azure Policy Audit",
+   "Apply a CanNotDelete resource lock on the zone",
+   "Assign an Azure Policy with the Audit effect to the zone",
    "Lower the TTL",
    "Use a private zone"
   ],
@@ -188,8 +188,8 @@
   "opts": [
    "Run nslookup -type=SOA contoso.com and confirm Azure name servers answer",
    "Ping the zone",
-   "Check Azure Advisor",
-   "Use IP flow verify"
+   "Check the Azure Advisor reliability page for a delegation recommendation",
+   "Run IP flow verify against port 53 of the Azure name servers"
   ],
   "ans": [
    0
@@ -204,9 +204,9 @@
   "diff": 3,
   "q": "Which alias record target types does Azure DNS support?",
   "opts": [
-   "Public IP addresses, Traffic Manager profiles, Azure Front Door/CDN endpoints, and other record sets in the same zone",
+   "Public IPs, Traffic Manager, Front Door/CDN, and record sets in the same zone",
    "Any external IP",
-   "Storage accounts directly",
+   "Storage accounts, VMs, key vaults, SQL databases, and any external IP address",
    "Load balancer backend pools"
   ],
   "ans": [
@@ -225,7 +225,7 @@
    "az network private-dns link vnet create -g RG1 -z contoso.local -n link1 -v VNet1 -e true",
    "az network dns link VNet1",
    "az private-dns attach VNet1",
-   "az network vnet update --dns-zone"
+   "az network vnet update -g RG1 -n VNet1 --private-dns-zone contoso.local --register-vms true"
   ],
   "ans": [
    0
@@ -258,7 +258,7 @@
   "diff": 2,
   "q": "VMs in VNet1 and VNet2 (peered) must resolve each other's names through private zone corp.local. What do you do?",
   "opts": [
-   "Link corp.local to both VNets (registration enabled on each, if desired)",
+   "Link corp.local to both VNets",
    "Rely on peering alone",
    "Use Azure-provided DNS only",
    "Create two public zones"
@@ -276,7 +276,7 @@
   "diff": 3,
   "q": "On-premises servers must resolve names in an Azure private DNS zone without deploying DNS VMs. Which service?",
   "opts": [
-   "Azure DNS Private Resolver (inbound endpoint)",
+   "Azure DNS Private Resolver",
    "Public DNS zone",
    "Traffic Manager",
    "Bastion"
@@ -295,7 +295,7 @@
   "q": "Azure VMs must resolve names in an on-premises domain (corp.contoso.com). Which Private Resolver components?",
   "opts": [
    "An outbound endpoint plus a DNS forwarding ruleset linked to the VNet",
-   "An inbound endpoint only",
+   "An inbound endpoint plus a public DNS zone with the same domain name",
    "A public zone",
    "An NSG"
   ],
@@ -335,7 +335,7 @@
   "opts": [
    "Frontend IP, backend pool, health probe, load-balancing rules",
    "Listener, URL map, WAF",
-   "Profile, endpoints, routing method",
+   "Profile, endpoints, routing method, and endpoint monitor settings",
    "Gateway, connection, local gateway"
   ],
   "ans": [
@@ -351,9 +351,9 @@
   "diff": 2,
   "q": "Which CLI command creates a Standard public load balancer?",
   "opts": [
-   "az network lb create -g RG1 -n lb1 --sku Standard --public-ip-address pip1 --frontend-ip-name fe1 --backend-pool-name be1",
+   "az network lb create -g RG1 -n lb1 --sku Standard --public-ip-address pip1",
    "az lb new lb1",
-   "az network loadbalancer add",
+   "az network loadbalancer add -g RG1 -n lb1 --tier Standard --frontend-ip pip1",
    "az vm lb create"
   ],
   "ans": [
@@ -370,7 +370,7 @@
   "q": "What are the default health probe settings commonly used for an HTTP probe?",
   "opts": [
    "Interval 5 seconds, path such as /health on port 80",
-   "Interval 60 minutes",
+   "Interval 60 minutes, ICMP echo to the backend's port 80",
    "No interval",
    "Only ICMP"
   ],
@@ -388,7 +388,7 @@
   "q": "An HTTP health probe on /health returns 302 (redirect). What's the probe result?",
   "opts": [
    "Unhealthy — HTTP probes need a 200 status",
-   "Healthy",
+   "Healthy — any status from 200 to 399 passes",
    "Ignored",
    "Retry forever"
   ],
@@ -407,7 +407,7 @@
   "opts": [
    "TCP and UDP (or All with HA ports)",
    "HTTP only",
-   "HTTP/HTTPS only",
+   "HTTP and HTTPS (or WebSocket)",
    "ICMP only"
   ],
   "ans": [
@@ -424,7 +424,7 @@
   "q": "Which resources can be in a Standard load balancer's backend pool?",
   "opts": [
    "VMs or VMSS instances (by NIC or IP address) in a single VNet",
-   "VMs in any VNet worldwide",
+   "VMs in any VNet worldwide, as long as the VNets are globally peered",
    "App Service apps",
    "Storage accounts"
   ],
@@ -441,8 +441,8 @@
   "diff": 2,
   "q": "VMs behind a Standard internal load balancer have no outbound internet access. Why?",
   "opts": [
-   "Standard internal LBs don't provide outbound SNAT; add a NAT Gateway or another explicit outbound method",
-   "NSG default rules deny outbound",
+   "Standard internal LBs don't provide outbound SNAT",
+   "The NSG default rules deny outbound traffic to internet",
    "The LB is broken",
    "DNS"
   ],
@@ -459,9 +459,9 @@
   "diff": 3,
   "q": "What does the Floating IP (direct server return) option on a load-balancing rule do?",
   "opts": [
-   "Preserves the frontend IP as the destination in packets delivered to the backend, for scenarios like SQL Always On listeners",
+   "Keeps the frontend IP as the destination in packets sent to the backend",
    "Makes the IP dynamic",
-   "Moves the IP between regions",
+   "Moves the frontend IP to the paired region when all backends are unhealthy",
    "Adds a WAF"
   ],
   "ans": [
@@ -478,7 +478,7 @@
   "q": "What's the default idle timeout for TCP flows on Azure Load Balancer, and can it change?",
   "opts": [
    "4 minutes, configurable up to 100 minutes",
-   "30 seconds, fixed",
+   "30 seconds, configurable up to 4 minutes",
    "1 hour, fixed",
    "No timeout"
   ],
@@ -495,9 +495,9 @@
   "diff": 3,
   "q": "What's the purpose of an outbound rule on a public Standard load balancer?",
   "opts": [
-   "Explicitly configure outbound SNAT for backend VMs (public IPs, allocated ports)",
+   "Explicitly configure outbound SNAT for backend VMs",
    "Allow inbound RDP",
-   "Route to on-premises",
+   "Route traffic from backend VMs to on-premises networks",
    "Terminate TLS"
   ],
   "ans": [
@@ -514,7 +514,7 @@
   "q": "Which load balancer distributes traffic across regions at Layer 4 using a global frontend IP?",
   "opts": [
    "Cross-region (global) load balancer",
-   "Internal load balancer",
+   "Internal load balancer with global peering",
    "Application Gateway",
    "NAT Gateway"
   ],
@@ -571,9 +571,9 @@
   "diff": 3,
   "q": "The health probe shows all backends down, but the app works locally on the VMs. What should you check?",
   "opts": [
-   "That the app listens on the probe port/path and that the guest firewall or NSG doesn't block the AzureLoadBalancer source (168.63.129.16)",
+   "That the probe port/path responds and the probe source isn't blocked",
    "Storage tier",
-   "DNS TTL",
+   "That the DNS TTL is low and the frontend IP has been propagated",
    "Budget"
   ],
   "ans": [
@@ -589,9 +589,9 @@
   "diff": 3,
   "q": "A backend VM can't reach the load balancer's own frontend IP (hairpin), but external clients can. Why?",
   "opts": [
-   "A backend instance connecting to its own LB frontend isn't supported when the flow lands on itself (hairpinning)",
+   "A backend instance connecting to its own LB frontend isn't supported when the flow lands on itself",
    "An NSG blocks outbound traffic",
-   "A DNS issue",
+   "A DNS issue makes the frontend name resolve to the wrong address inside the VNet, so the flow is lost",
    "A wrong SKU"
   ],
   "ans": [
@@ -626,7 +626,7 @@
   "q": "Intermittent outbound connection failures appear from VMs behind a load balancer under heavy load. Likely cause and fix?",
   "opts": [
    "SNAT port exhaustion; use a NAT Gateway or allocate more outbound IPs/ports",
-   "DNS TTL too low",
+   "DNS throttling; lower the record TTL or deploy a second custom DNS server",
    "NSG priority",
    "Disk throttling"
   ],
@@ -661,7 +661,7 @@
   "diff": 2,
   "q": "Which Application Gateway feature routes requests for api.contoso.com and www.contoso.com to different backend pools?",
   "opts": [
-   "Multi-site listeners (host-based routing)",
+   "Multi-site listeners",
    "Path-based routing",
    "HA ports",
    "Inbound NAT"
@@ -680,7 +680,7 @@
   "q": "Application Gateway needs which subnet setup?",
   "opts": [
    "A dedicated subnet for the gateway",
-   "GatewaySubnet",
+   "The GatewaySubnet, shared with VPN",
    "AzureBastionSubnet",
    "No subnet"
   ],
@@ -699,7 +699,7 @@
   "opts": [
    "Web Application Firewall (WAF) with OWASP rule sets",
    "NSG",
-   "DDoS Basic",
+   "DDoS network protection with adaptive tuning rules",
    "Health probes"
   ],
   "ans": [
@@ -770,7 +770,7 @@
   "q": "Which combination gives zone-redundant Layer 4 load balancing for VMs spread across 3 zones?",
   "opts": [
    "Standard LB with a zone-redundant frontend and backend VMs in zones 1, 2, 3",
-   "Basic LB with an availability set",
+   "Basic LB with a zonal frontend and backend VMs in an availability set",
    "Traffic Manager only",
    "Application Gateway v1"
   ],
@@ -827,7 +827,7 @@
   "q": "An app needs TCP traffic on port 443 balanced to backend port 8443. Is that possible?",
   "opts": [
    "Yes — load-balancing rules map a frontend port to a different backend port",
-   "No, the ports must match",
+   "No — the frontend and backend ports of a rule must match, except for UDP",
    "Only with Application Gateway",
    "Only with HA ports"
   ],
@@ -866,7 +866,7 @@
   "q": "A VMSS behind a Standard LB should send each client to the same instance for 30 minutes. What do you use?",
   "opts": [
    "Session persistence (Client IP) on the rule plus a suitable idle timeout",
-   "Floating IP",
+   "Floating IP enabled on the rule plus a 30-minute health probe interval",
    "HA ports",
    "Outbound rules"
   ],
@@ -886,7 +886,7 @@
   "opts": [
    "Front Door (global L7, WAF) → regional Application Gateways (path routing) → internal Standard LB for the cache layer",
    "A single Basic LB",
-   "Traffic Manager only",
+   "Traffic Manager (global DNS) → regional NAT Gateways (path routing) → public Basic LB for the cache layer",
    "NAT Gateway plus NSGs"
   ],
   "ans": [

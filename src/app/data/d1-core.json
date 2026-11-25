@@ -207,7 +207,7 @@
   "opts": [
    "Entra ID Free + Entra Connect",
    "Entra ID P1 (or higher) and password writeback enabled in Entra Connect",
-   "Entra ID P2 only",
+   "Entra ID P2 only, with pass-through authentication enabled in Entra Connect",
    "Microsoft Identity Manager"
   ],
   "ans": [
@@ -247,7 +247,7 @@
    "Upload a CSV file using the Bulk create operation in the Users blade",
    "Upload a JSON file in the Users blade",
    "Paste the list into the New user form",
-   "Bulk create is only possible with PowerShell"
+   "Run a PowerShell script, because the portal can create only one user at a time"
   ],
   "ans": [
    0
@@ -265,7 +265,7 @@
    "Conditional Access policy",
    "Azure RBAC on the subscription",
    "Entra ID → Users → User settings → App registrations = No",
-   "Azure Policy assignment at tenant root"
+   "Azure Policy assignment at tenant root = Deny app registrations"
   ],
   "ans": [
    2
@@ -335,7 +335,7 @@
   "q": "A role assigned at the subscription scope applies to:",
   "opts": [
    "Only the subscription object itself",
-   "The subscription and all resource groups and resources within it (inherited)",
+   "The subscription and all resource groups and resources within it",
    "Only resource groups created after the assignment",
    "The whole management group"
   ],
@@ -371,7 +371,7 @@
   "q": "User1 has Reader on subscription Sub1 and Contributor on resource group RG1 (inside Sub1). What can User1 do in RG1?",
   "opts": [
    "Only read resources (Reader wins — most restrictive)",
-   "Create, modify, and delete resources (permissions are additive; Contributor applies in RG1)",
+   "Create, modify, and delete resources",
    "Nothing — conflicting assignments cancel out",
    "Only actions common to both roles"
   ],
@@ -388,7 +388,7 @@
   "diff": 2,
   "q": "The Global Administrator of the tenant cannot see any Azure resources in a subscription. Why?",
   "opts": [
-   "Entra ID roles and Azure RBAC roles are separate; Global Admin has no RBAC role by default",
+   "Entra ID roles and Azure RBAC roles are separate",
    "The subscription is disabled",
    "Global Admins are blocked from Azure resources",
    "They need an Entra ID P2 license"
@@ -407,8 +407,8 @@
   "q": "A Global Administrator needs temporary access to manage ALL subscriptions in the tenant to fix orphaned access. The supported mechanism is:",
   "opts": [
    "Assign Owner on each subscription one by one",
-   "Toggle \"Access management for Azure resources\" (elevate access) to get User Access Administrator at root scope (/)",
-   "Create a custom role at tenant scope",
+   "Turn on \"Access management for Azure resources\" (elevate access)",
+   "Create a custom role with Microsoft.Authorization/* and assign it at tenant scope",
    "Use Azure Policy to grant access"
   ],
   "ans": [
@@ -443,7 +443,7 @@
   "q": "A custom role must allow all read operations plus restarting VMs, nothing else. Which Actions block is correct?",
   "opts": [
    "\"Actions\": [\"*/read\", \"Microsoft.Compute/virtualMachines/restart/action\"]",
-   "\"Actions\": [\"*\"], \"NotActions\": [\"*/write\"]",
+   "\"Actions\": [\"*\"], \"NotActions\": [\"*/write\", \"*/delete\", \"Microsoft.Compute/virtualMachines/start/action\"]",
    "\"Actions\": [\"Microsoft.Compute/*\"]",
    "\"Actions\": [\"*/read\"], \"DataActions\": [\"restart\"]"
   ],
@@ -460,7 +460,7 @@
   "diff": 2,
   "q": "NotActions in a role definition:",
   "opts": [
-   "Creates an explicit deny that overrides other roles",
+   "Creates an explicit deny that overrides every other role the user holds",
    "Subtracts operations from the Actions of the SAME role definition only",
    "Blocks the user tenant-wide",
    "Is only valid in built-in roles"
@@ -498,7 +498,7 @@
   "q": "Which CLI command assigns the Reader role to user ali@contoso.com on resource group RG1?",
   "opts": [
    "az role assignment create --assignee ali@contoso.com --role Reader --resource-group RG1",
-   "az ad role create --user ali --role Reader",
+   "az ad role assignment create --user ali@contoso.com --role Reader --group RG1",
    "az rbac grant --role Reader --rg RG1",
    "az role definition create --role Reader"
   ],
@@ -536,7 +536,7 @@
   "diff": 2,
   "q": "A group \"Ops\" has Contributor at the management group \"Corp\". Sub1 is in \"Corp\". User2 is in group \"Ops\". What is User2's effective role on resource group RG5 in Sub1?",
   "opts": [
-   "No access until assigned directly",
+   "No access until the role is assigned directly on RG5",
    "Contributor (inherited: MG → subscription → RG)",
    "Reader",
    "Owner only on RG5"
@@ -595,7 +595,7 @@
   "opts": [
    "They are the same service",
    "Policy controls WHAT can be done with resources (properties/compliance); RBAC controls WHO can do actions",
-   "RBAC controls resource properties; Policy controls identities",
+   "RBAC controls the properties that resources may have; Policy controls which identities can sign in to the tenant",
    "Policy applies only to users; RBAC only to groups"
   ],
   "ans": [
@@ -614,7 +614,7 @@
    "A resource lock",
    "An Azure Policy with the \"Allowed locations\" definition assigned with a Deny effect",
    "An NSG",
-   "RBAC custom role"
+   "A custom RBAC role with the West Europe region in its AssignableScopes property"
   ],
   "ans": [
    1
@@ -632,7 +632,7 @@
    "It is deleted",
    "It is stopped",
    "Nothing — it is only marked non-compliant in compliance reports",
-   "It is automatically fixed"
+   "It is fixed automatically at the next 24-hour compliance evaluation"
   ],
   "ans": [
    2
@@ -650,7 +650,7 @@
    "Append; requires nothing extra",
    "DeployIfNotExists; remediation task using a managed identity",
    "Deny; requires Owner role",
-   "Modify; requires a service principal secret"
+   "Modify; remediation task using a service principal secret"
   ],
   "ans": [
    1
@@ -665,7 +665,7 @@
   "diff": 2,
   "q": "What is an Azure Policy initiative?",
   "opts": [
-   "A policy that cannot be changed",
+   "A policy definition that cannot be changed once it is assigned",
    "A group of policy definitions assigned together as one unit",
    "A policy assigned at tenant root",
    "A deny assignment"
@@ -686,7 +686,7 @@
    "Move RG-Lab to another tenant",
    "Add RG-Lab as an exclusion (or create a policy exemption) on the assignment",
    "Delete the policy",
-   "Assign a second policy allowing public IPs on RG-Lab"
+   "Assign a second policy at RG-Lab that allows public IPs, since the closest scope wins"
   ],
   "ans": [
    1
@@ -720,7 +720,7 @@
   "q": "Which lock type allows users to read and modify a resource but prevents deletion?",
   "opts": [
    "ReadOnly",
-   "CanNotDelete (Delete lock)",
+   "CanNotDelete",
    "NoDelete",
    "Protect"
   ],
@@ -737,7 +737,7 @@
   "diff": 3,
   "q": "A ReadOnly lock is applied to a storage account. Which unexpected side effect is commonly tested?",
   "opts": [
-   "Blobs can no longer be read",
+   "Blobs can no longer be read by users who have the Storage Blob Data Reader role",
    "Operations like listing storage account keys fail, because list keys is a POST action",
    "The account is deleted after 30 days",
    "The firewall is disabled"
@@ -774,7 +774,7 @@
   "q": "Which roles can create or delete management locks?",
   "opts": [
    "Any Contributor",
-   "Owner and User Access Administrator (Microsoft.Authorization/* access)",
+   "Owner and User Access Administrator",
    "Reader",
    "Only Global Administrator"
   ],
@@ -811,7 +811,7 @@
   "opts": [
    "A resource lock",
    "The built-in Azure Policy \"Inherit a tag from the resource group\" with the Modify effect",
-   "An ARM template",
+   "The built-in Azure Policy \"Require a tag on resources\" with the Audit effect enabled",
    "Azure Advisor"
   ],
   "ans": [
@@ -828,7 +828,7 @@
   "q": "You move a VM from RG1 to RG2 within the same subscription. Which statement is true?",
   "opts": [
    "The VM's region changes to RG2's region",
-   "The VM keeps its region; both resource groups are locked during the move",
+   "The VM keeps its region",
    "The VM restarts during the move",
    "Moving VMs between resource groups is not supported"
   ],
@@ -865,7 +865,7 @@
   "opts": [
    "Neither applies until manually linked",
    "Both are inherited: Sub9 gets the policy, Bob can read Sub9's resources",
-   "Only RBAC inherits, policies never inherit",
+   "Only RBAC is inherited: Bob can read Sub9, but the policy must be assigned again",
    "Only policy inherits, RBAC never inherits"
   ],
   "ans": [
@@ -884,7 +884,7 @@
    "All resources are deallocated automatically",
    "Nothing — budgets alert but never stop resources by themselves",
    "The subscription is cancelled",
-   "New deployments are blocked"
+   "New deployments are blocked until the next billing period starts"
   ],
   "ans": [
    1

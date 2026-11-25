@@ -4,7 +4,7 @@
   "opts": [
    "Private endpoint",
    "SubnetA par Microsoft.Storage service endpoint",
-   "Port 445 allow karne wala NSG rule",
+   "SubnetA par inbound port 445 allow karne wala NSG rule",
    "Har VM par public IP"
   ],
   "exp": "VNet subnet ka storage firewall rule tabhi kaam karta hai jab us subnet par Microsoft.Storage service endpoint ho, taa ke traffic subnet ki identity ke sath pohanche. Is ke baghair VMs ka traffic public IP se aata hai aur block ho jata hai. Private endpoint alag tareeqa hai, port 445 sirf SMB ke liye hai, aur public IPs ki zaroorat nahi."
@@ -13,7 +13,7 @@
   "q": "Storage firewall 'selected networks' ke sath enable karne ke baad Azure Backup aur kuch Microsoft services kaam karna band kar deti hain. Kaun si setting account ko internet par khole baghair yeh theek karti hai?",
   "opts": [
    "Allow trusted Microsoft services to access this storage account",
-   "IP rules mein 0.0.0.0/0 add karein",
+   "IP rules mein 0.0.0.0/0 add karein aur secure transfer lazmi karein",
    "Firewall disable karein",
    "Anonymous blob access enable karein"
   ],
@@ -22,7 +22,7 @@
  "D2-003": {
   "q": "Firewall enabled hone ke dauran aap apne office (public IP 203.0.113.10) se storage account administer karte hain. Aap kya add karenge?",
   "opts": [
-   "Office ke liye VNet rule",
+   "Aap ke office ke liye Microsoft.Storage service endpoint wala VNet rule",
    "Firewall ke IP address rules mein office ka public IP (ya range)",
    "Office mein private endpoint",
    "NSG mein port 443"
@@ -43,7 +43,7 @@
   "q": "Aap ne 1 saal ke liye valid ad-hoc service SAS tokens jari kiye. Ek token leak ho gaya. Usay revoke kaise karenge?",
   "opts": [
    "Container delete karein",
-   "Usay sign karne wali account key regenerate karein (is se us key se sign hue tamam SAS invalid ho jate hain)",
+   "Usay sign karne wali account key regenerate karein",
    "User ko Entra ID se hata dein",
    "Blob tier Archive par set karein"
   ],
@@ -55,7 +55,7 @@
    "Tokens kabhi expire nahi hote",
    "Aap baad mein policy badal ya revoke kar sakte hain, jis ka asar us se jure tamam SAS par foran hota hai",
    "Tokens signature ke baghair kaam karte hain",
-   "Tokens firewall ko bypass karte hain"
+   "Tokens storage firewall bypass karte hain, is liye partners ko apne IP rule ya private endpoint ki zaroorat nahi"
   ],
   "exp": "Stored access policy se jura SAS apna start time, expiry aur permissions policy se leta hai. Policy badlein ya delete karein, aur us ko use karne wala har SAS foran update ya revoke ho jata hai, account keys rotate kiye baghair. Policy-based SAS phir bhi expire hote hain, signature mangte hain, aur firewall maante hain."
  },
@@ -85,7 +85,7 @@
    "Sirf Blob storage (Data Lake samet)",
    "Blob (Data Lake samet), Queue, Table aur Azure Files",
    "Sirf Azure Files",
-   "Sirf Queue aur Table"
+   "Sirf Queue aur Table, jab account general-purpose v2 ho"
   ],
   "exp": "User delegation SAS Blob storage (Data Lake samet), Queue, Table aur Azure Files ke liye supported hai. Purana study material sirf Blob kehta hai, kyun ke doosri services ka support baad mein add hua."
  },
@@ -94,7 +94,7 @@
   "opts": [
    "1, saadgi ke liye",
    "2, taa ke ek key rotate karte waqt clients doosri use karein",
-   "3: primary, secondary, tertiary",
+   "3, taa ke primary, secondary aur tertiary region ki apni apni key ho",
    "5, har service ki ek"
   ],
   "exp": "Har storage account ki do access keys (key1 aur key2) hoti hain taa ke aap baghair downtime ke unhein rotate kar sakein: applications ko key2 par le jayen, key1 regenerate karein, unhein nayi key1 par wapas layen, phir key2 regenerate karein. Sirf ek key hoti to usay regenerate karte hi har client foran toot jata."
@@ -103,7 +103,7 @@
   "q": "Kaun si service applications ke liye storage keys mehfooz tareeqe se rakhti hai aur rotation automate karne mein madad kar sakti hai?",
   "opts": [
    "Azure Advisor",
-   "Azure Key Vault (sath mein storage account par key expiration policy)",
+   "Azure Key Vault",
    "Azure Monitor",
    "Network Watcher"
   ],
@@ -113,8 +113,8 @@
   "q": "Azure file share ke users ko SMB par apni on-premises AD DS identities se authenticate karna hai. Account par AD DS authentication enable karne ke ilawa users ko files tak access ke liye kya configure karna hoga?",
   "opts": [
    "Aur kuch nahi",
-   "Share-level permissions (Storage File Data SMB Share Contributor jaise RBAC roles) AUR files aur directories par NTFS permissions",
-   "Har user ke liye SAS token",
+   "Share-level RBAC permissions AUR files aur directories par NTFS permissions",
+   "Har user ke liye SAS token AUR share ki root directory par anonymous read access",
    "Share par anonymous access"
   ],
   "exp": "Azure Files ke identity-based access ki do tehain hain, aur user ko dono chahiye. Share-level permission share par Azure RBAC role hai, jaise Storage File Data SMB Share Contributor. File aur folder level permission Windows NTFS ACLs hain, jo files kholte waqt check hoti hain. SAS tokens se SMB shares mount nahi hote, aur Azure Files mein anonymous access supported nahi."
@@ -143,7 +143,7 @@
  "D2-015": {
   "q": "Storage account par Reader role wala user portal mein 'Microsoft Entra user account' authentication se blobs browse karta hai. Kya hota hai?",
   "opts": [
-   "Blobs parhne ka poora access",
+   "Poora blob read access, kyunke Reader mein har read data action shamil hai",
    "Blob data ka access deny hota hai, kyun ke Reader control-plane role hai",
    "Write access",
    "Sirf $logs ka access"
@@ -223,7 +223,7 @@
  "D2-023": {
   "q": "GRS account par primary region ke lambe outage ke dauran failover kaun shuru kar sakta hai, aur us ke baad redundancy kya hoti hai?",
   "opts": [
-   "Sirf Microsoft; GRS hi rehta hai",
+   "Sirf Microsoft isay shuru kar sakta hai; account GRS hi rehta hai aur regions aapas mein badal jate hain",
    "Customer shuru kar sakta hai; naye primary region mein account LRS ban jata hai",
    "1 ghante baad khud ho jata hai; ZRS",
    "Failover mumkin nahi"
@@ -245,7 +245,7 @@
   "opts": [
    "Kuch khaas nahi",
    "Source aur destination par blob versioning, aur source par change feed",
-   "Dono par soft delete",
+   "Source aur destination par blob soft delete, aur ek lifecycle rule",
    "Dono accounts ek hi region mein"
   ],
   "exp": "Object replication blob version history aur change log se kaam karta hai. Source aur destination dono accounts par blob versioning on honi chahiye, aur source par change feed enabled hona chahiye. Accounts alag regions ya subscriptions mein ho sakte hain, aur soft delete zaroori nahi."
@@ -253,7 +253,7 @@
  "D2-026": {
   "q": "Kaun si baat object replication ko behtareen tarah bayan karti hai?",
   "opts": [
-   "Tamam blob types ki synchronous copy",
+   "Ek hi Azure region ke andar tamam blob types ki synchronous copy, page aur append blobs samet",
    "Accounts ke darmiyan block blobs ki asynchronous copy, jo alag regions ya subscriptions mein ho sakte hain",
    "Sirf ek account ke andar kaam karta hai",
    "Archive tier zaroori hai"
@@ -295,7 +295,7 @@
   "opts": [
    "--overwrite=false ke sath azcopy copy",
    "azcopy sync \"C:\\data\" \"https://acct.blob.core.windows.net/container?<SAS>\"",
-   "azcopy move",
+   "azcopy move \"C:\\data\" \"https://acct.blob.core.windows.net/container?<SAS>\" --changed",
    "azcopy benchmark"
   ],
   "exp": "azcopy sync source aur destination ka (last-modified time se) muqabla karti hai aur sirf nayi ya badli hui files copy karti hai, is liye baar baar chalane par sirf farq transfer hota hai. azcopy copy jo kuch aap dein sab copy karti hai, azcopy move incremental sync ke liye nahi, aur benchmark sirf performance test karta hai."
@@ -305,7 +305,7 @@
   "opts": [
    "Sirf SAS tokens",
    "Entra ID (azcopy login) ya SAS tokens",
-   "Sirf account ka naam",
+   "Account ka naam aur SSH key pair",
    "SSH keys"
   ],
   "exp": "AzCopy Microsoft Entra ID (azcopy login, jo managed identities aur service principals bhi support karta hai — aap ko Storage Blob Data Contributor jaisa data role chahiye) se ya URL ke sath lagaye gaye SAS token se authenticate kar sakta hai. Yeh SSH keys ya sirf account ka naam use nahi karta."
@@ -313,7 +313,7 @@
  "D2-032": {
   "q": "Azure Storage Explorer ko behtareen tarah kaise bayan karenge?",
   "opts": [
-   "Sirf web wala monitoring dashboard",
+   "Sirf web par chalne wala monitoring dashboard jo storage capacity, latency aur availability dikhata hai",
    "Blobs, files, queues, tables aur Data Lake manage karne ki muft cross-platform desktop app",
    "Paid Visual Studio extension",
    "PowerShell module"
@@ -323,8 +323,8 @@
  "D2-033": {
   "q": "Aap ko bohat kam bandwidth wali jagah se 60 TB data Azure par copy karna hai. Amli option kya hai?",
   "opts": [
-   "Weekend par AzCopy",
-   "Azure Import/Export ya Azure Data Box (physical drives bhejein)",
+   "Weekend par parallel uploads ke sath AzCopy",
+   "Azure Import/Export ya Azure Data Box",
    "Storage Explorer upload",
    "VM par RDP file copy"
   ],
@@ -355,7 +355,7 @@
   "opts": [
    "HTTP par switch karein",
    "VPN/ExpressRoute (ya Azure File Sync) use karein taa ke SMB seedha internet par na jaye",
-   "Port 80 kholein",
+   "Account ko RA-GRS par switch karein taa ke users secondary region se share mount karein",
    "RA-GRS use karein"
   ],
   "exp": "Agar ISP TCP 445 block kare to SMB traffic site-to-site VPN ya ExpressRoute se bhejein (aam tor par private endpoint tak), taa ke woh kabhi seedha internet par na jaye. Doosra tareeqa: Azure File Sync share ko local Windows Server par cache karta hai jahan users LAN se pohanchte hain. SMB ke liye HTTP ya port 80 mumkin nahi, aur redundancy settings connectivity par asar nahi dalti."
@@ -386,7 +386,7 @@
    "Blobs ko archive tier mein le jati hai",
    "Aksar use hone wali files local server par rakhti hai jab ke kam use hone wali files pointers ban jati hain, aur poori copies Azure mein hoti hain",
    "Files ko locally compress karti hai",
-   "Do servers ke darmiyan files replicate karti hai"
+   "Do local servers ke darmiyan tamam files poori replicate karta hai, jab ke Azure sirf un ka metadata rakhta hai"
   ],
   "exp": "Cloud tiering aksar use hone wali files local server par rakhti hai aur kam use hone wali files ko chhote pointers (reparse points) se badal deti hai, jab ke poori copies Azure file share mein rehti hain. Jab koi tiered file kholta hai to woh zaroorat par download hoti hai. Yeh files compress nahi karti, blob tiers nahi badalti, ya servers ko seedha ek doosre se sync nahi karti."
  },
@@ -444,7 +444,7 @@
   "q": "Blobs ko badle baghair 30 din baad cool mein, 90 din baad archive mein jana chahiye, aur 365 din baad delete hona chahiye. Aap kya configure karenge?",
   "opts": [
    "Last modified time par based rules wali lifecycle management policy",
-   "Azure Policy",
+   "Modify effect wali Azure Policy jo access tier badal de",
    "Budget",
    "Object replication"
   ],
@@ -464,8 +464,8 @@
   "q": "Blob versioning aur blob snapshots mein asal farq kya hai?",
   "opts": [
    "Koi farq nahi",
-   "Versioning har write ya delete par khud version banati hai; snapshots manual point-in-time copies hain",
-   "Snapshots automatic hain; versions manual",
+   "Versioning har write ya delete par khud version banati hai",
+   "Snapshots har write par khud bante hain; versions manual hote hain",
    "Versioning ke liye archive tier chahiye"
   ],
   "exp": "Versioning on ho to Azure har baar blob overwrite ya delete hone par pichla version khud rakh leta hai, aap ko kuch nahi karna parta. Snapshot ek read-only copy hai jo aap khud kisi waqt banate hain. Dono pichla content restore kar sakte hain, lekin sirf versioning yeh khud karti hai, aur kisi ko archive tier nahi chahiye."
@@ -484,7 +484,7 @@
   "q": "Azure Files ke share snapshots kaise hote hain?",
   "opts": [
    "Poore share ki read-only point-in-time copies, storage mein incremental",
-   "Har baar 100% bill hone wali poori copies",
+   "Poore share ki full read-write copies, jo har dafa 100% bill hoti hain",
    "Har ghante automatic aur configure nahi ho sakte",
    "Sirf NFS ke sath available"
   ],
@@ -495,7 +495,7 @@
   "q": "Mahine 7–84 ke liye kaun si tier strategy sab se sasti hai?",
   "opts": [
    "Hot mein rakhein",
-   "Cool mein move karein",
+   "Lifecycle rule se cool mein move karein aur versioning on karein",
    "6 mahine baad lifecycle rule se archive mein move karein",
    "Delete kar dein aur zaroorat par dobara upload karein"
   ],
@@ -522,7 +522,7 @@
    "7 din ke liye valid account SAS",
    "Container ka service SAS, stored access policy se jura hua",
    "Storage account ki access key",
-   "User delegation SAS"
+   "Container ke liye user delegation SAS, 60 din ke liye valid"
   ],
   "exp": "Stored access policy se jura service SAS policy badal ya delete kar ke akele revoke ho sakta hai, doosre tokens par asar dale baghair. User delegation aur account SAS stored access policies use nahi kar sakte; unhein revoke karne ka matlab tamam user delegation keys revoke karna ya account keys rotate karna hai, jo doosre tokens bhi tor deta hai."
  },
@@ -532,7 +532,7 @@
    "Lahore ke storage account mein object replication",
    "Lahore file server par server endpoint aur cloud tiering ke sath Azure File Sync",
    "Azure Data Box",
-   "Har client par Azure Storage Explorer install karna"
+   "Har Lahore client par Azure Storage Explorer, share se scheduled download ke sath"
   ],
   "exp": "Azure File Sync ek central Azure file share rakhta hai aur files ko local Windows Server par cache karta hai. Cloud tiering local disk ka istemal kam rakhti hai, aur NTFS permissions baqi rehti hain."
  },
@@ -551,7 +551,7 @@
   "opts": [
    "7 saal retention wala blob soft delete",
    "Container par time-based retention policy (immutable storage)",
-   "Storage account par ReadOnly resource lock",
+   "Storage account aur us ke resource group par ReadOnly resource lock",
    "Blob versioning"
   ],
   "exp": "Time-based retention policies blobs ko set period ke liye WORM (write once, read many) bana deti hain. Soft delete ki retention zyada se zyada 365 din hai, aur resource locks blob data ko mehfooz nahi karte."
@@ -577,7 +577,7 @@
    "Storage account par Reader",
    "Storage Account Contributor",
    "Reports container par Storage Blob Data Reader",
-   "Resource group par Owner"
+   "Storage account ke resource group par Owner"
   ],
   "exp": "Storage Blob Data Reader blob data parhne ka access deta hai. Reader aur Storage Account Contributor control-plane roles hain jo khud data access nahi dete."
  },
@@ -585,8 +585,8 @@
   "q": "Requirement 6 ke liye aap ko kya chahiye?",
   "opts": [
    "Sirf infrastructure encryption",
-   "Soft delete aur purge protection wale key vault mein customer-managed keys, jinhein storage account ki managed identity access kare",
-   "Sirf reporting app mein client-side encryption",
+   "Aisi key vault mein customer-managed keys jis mein soft delete aur purge protection ho",
+   "Reporting app mein client-side encryption, jis ki keys us ki app settings mein hon",
    "90 din rotation wali Microsoft-managed keys"
   ],
   "exp": "Customer-managed keys Northwind ko key ka control aur usay revoke karne ki salahiyat deti hain. Vault mein soft delete aur purge protection honi chahiye, aur account key tak pohanchne ke liye managed identity use karta hai."
@@ -804,7 +804,7 @@
    "Container \"data\" ke tamam blobs source account se destination account mein server to server copy karti hai",
    "Blobs local computer par download kar ke phir upload karti hai",
    "Blobs move kar ke source se delete kar deti hai",
-   "Background mein chalta rehne wala sync relationship banati hai"
+   "Dono accounts ke darmiyan sync relationship banata hai jo delete karne tak background mein chalta rehta hai"
   ],
   "exp": "Jab source aur destination dono storage URLs hon to AzCopy server-to-server copy use karta hai, is liye data aap ke computer se nahi guzarta. Command blobs ek baar copy karti hai; unhein source se delete nahi karti ya background mein sync nahi chalati."
  },
@@ -814,7 +814,7 @@
    "Blobs list ho jate hain",
    "Command authorisation error ke sath fail hoti hai, kyun ke blob data access ke liye Storage Blob Data role chahiye",
    "Blobs list hote hain, lekin downloads fail hote hain",
-   "PowerShell khud account key use kar leta hai"
+   "Blobs list ho jate hain, kyunke PowerShell har Reader ke liye account key par chala jata hai"
   ],
   "exp": "-UseConnectedAccount data access ke liye user ki Entra ID identity use karta hai, jis ke liye Storage Blob Data Reader jaisa data-plane role chahiye. Reader control-plane role hai, is liye blobs list karna authorisation error ke sath fail hota hai. PowerShell chupke se account key par nahi jata."
  },
@@ -831,7 +831,7 @@
  "D2-235": {
   "q": "Yeh command Azure VM se kaam karti hai lekin ghar ke internet wale laptop se \"System error 53\" ke sath fail hoti hai. Sab se mumkin wajah kya hai?",
   "opts": [
-   "Storage account key ghalat hai",
+   "VM ke mount karne ke baad storage account key rotate ho gayi",
    "ISP ya ghar ka router outbound TCP port 445 block karta hai",
    "Azure Files Windows support nahi karta",
    "Share quota bhar gaya hai"
@@ -842,7 +842,7 @@
   "q": "Yeh Bicep file kya deploy karti hai?",
   "opts": [
    "Aisa account jo zone outage se bach jaye, naye blobs default mein cool hon, aur HTTP requests reject hon",
-   "Aisa account jo data paired region mein copy kare",
+   "Aisa account jo data paired region mein copy kare, aur naye blobs default archive mein hon",
    "Aisa account jis ke blobs default mein archive tier mein hon",
    "Aisa account jis ka naam hamesha bilkul \"stapp\" ho"
   ],
@@ -851,9 +851,9 @@
  "D2-237": {
   "q": "Yeh query kya dikhati hai, aur pehle kya configure karna zaroori hai?",
   "opts": [
-   "Kis ne blobs delete kiye, kis IP se aur kaise authenticate hua; diagnostic setting ko blob logs workspace mein bhejne hon",
+   "Kis ne aur kis IP se blobs delete kiye; blob logs workspace ko bhejne honge",
    "Har container ki storage capacity; kuch configure nahi karna",
-   "Activity log se blob deletions; kuch configure nahi karna",
+   "Activity log mein record hui blob deletions; account par soft delete enabled hona chahiye",
    "Storage account mein failed sign-ins; Entra ID P2 chahiye"
   ],
   "exp": "StorageBlobLogs mein data-plane operations hote hain. Yeh sirf tab bharta hai jab blob service par diagnostic setting logs Log Analytics mein bheje. Blob deletions Activity log mein nahi hote."
@@ -862,7 +862,7 @@
   "q": "5 November ko aap is policy ki Expiry 2026-11-10 kar dete hain. Is ko reference karne wale SAS tokens ka kya hota hai?",
   "opts": [
    "Kuch nahi; mojooda tokens purani expiry rakhte hain",
-   "Ab woh 10 November ko expire hote hain (change taqreeban 30 seconds mein apply hota hai)",
+   "Ab woh 10 November ko expire hote hain",
    "Foran revoke ho jate hain",
    "Change apply hone se pehle unhein regenerate karna hoga"
   ],
@@ -882,7 +882,7 @@
   "q": "Yeh command kis qisam ka SAS banati hai?",
   "opts": [
    "Account key se sign hua account SAS",
-   "Account key se sign hua service SAS",
+   "Account key se signed service SAS, jo stored access policy ke expire hone tak valid hai",
    "Microsoft Entra credentials se sign hua user delegation SAS, zyada se zyada 7 din valid",
    "Stored access policy"
   ],
@@ -891,7 +891,7 @@
  "D2-051": {
   "q": "Default mein naya bana storage account kahan se connections accept karta hai?",
   "opts": [
-   "Tamam networks se (public network access enabled)",
+   "Tamam networks se",
    "Sirf us VNet se jis mein bana",
    "Kisi network se nahi",
    "Sirf Microsoft services se"
@@ -902,7 +902,7 @@
   "q": "Kaun si CLI command storage account firewall mein VNet subnet rule add karti hai?",
   "opts": [
    "az storage account network-rule add --account-name st1 --vnet-name VNet1 --subnet SubnetA",
-   "az network vnet rule add --storage st1",
+   "az network vnet subnet rule add --storage-name st1 --vnet-name VNet1 --subnet SubnetA --allow",
    "az storage firewall add --subnet SubnetA",
    "az storage account update --allow-subnet SubnetA"
   ],
@@ -912,7 +912,7 @@
   "q": "Selected networks ke sath firewall enable karne ke baad ek admin ghar se portal mein containers browse nahi kar pata. Azure VMs se us ka data access chalta hai. Kyun?",
   "opts": [
    "Portal requests admin ke public IP se aati hain, jo IP rules mein nahi",
-   "Admin ko Owner chahiye",
+   "VNet ke bahar se browse karne ke liye admin ko Owner role chahiye",
    "Containers private hain",
    "Account premium hai"
   ],
@@ -922,9 +922,9 @@
   "q": "Kya on-premises clients ko allow karne ke liye storage firewall ke IP rules mein private IP range (maslan 10.0.0.0/8) add ho sakti hai?",
   "opts": [
    "Haan",
-   "Nahi — IP rules sirf public IP addresses lete hain; private ranges ke liye VNet rules ya private endpoints use karein",
+   "Nahi — IP rules sirf public IP addresses lete hain",
    "Sirf ZRS accounts ke liye",
-   "Sirf ExpressRoute Microsoft peering ke sath"
+   "Sirf ExpressRoute Microsoft peering on ho to"
   ],
   "exp": "Storage firewall IP rules sirf public internet addresses lete hain. 10.0.0.0/8 jaisi private ranges allowed nahi, kyun ke on-premises se requests public IP se Azure pohanchti hain. On-premises se private connectivity ke liye VPN ya ExpressRoute se pohanchne wala private endpoint use karein."
  },
@@ -983,7 +983,7 @@
   "opts": [
    "HTTP (aur baghair encryption wale SMB) par aane wali requests reject karta hai",
    "Data at rest encrypt karta hai",
-   "Private endpoints enable karta hai",
+   "Tamam traffic ko private endpoint se guzarne par majboor karta hai",
    "MFA require karta hai"
   ],
   "exp": "'Secure transfer required' account ko saade HTTP aur baghair encryption wale SMB connections ki requests reject karwata hai, is liye data transit mein hamesha encrypted rehta hai. Yeh encryption at rest (jo hamesha on hai), private endpoints ya MFA control nahi karta."
@@ -1034,7 +1034,7 @@
    "'Allow storage account key access' (shared key authorization) disable karein",
    "Rozana keys rotate karein",
    "Firewall enable karein",
-   "Stored access policies delete karein"
+   "Har stored access policy delete karein aur dono access keys rozana rotate karein"
   ],
   "exp": "'Allow storage account key access' (shared key authorization) band karne se account keys se sign hui requests block ho jati hain, account SAS aur service SAS samet. Entra ID access aur user delegation SAS chalte rehte hain, kyun ke woh keys use nahi karte. Keys rotate karna, firewalls aur policies delete karna key-based access block nahi karte."
  },
@@ -1043,7 +1043,7 @@
   "opts": [
    "1 ghanta",
    "7 din (user delegation key se mehdood)",
-   "30 din",
+   "30 din (account key rotation ki had)",
    "Unlimited"
   ],
   "exp": "User delegation SAS user delegation key se sign hota hai, jo zyada se zyada 7 din valid rehti hai. SAS key se zyada nahi chal sakta, is liye 7 din maximum hai. Account aur service SAS par yeh limit nahi, jo ek wajah hai ke woh zyada risky hain."
@@ -1063,7 +1063,7 @@
   "opts": [
    "SAS expire ho gaya (se guzar gaya) ya signing key rotate hui",
    "Storage account delete hua",
-   "Ghalat tier",
+   "Lifecycle policy rule ne blob ka tier cool kar diya",
    "Blob archive hua"
   ],
   "exp": "Jo SAS chalta tha aur baad mein 403 deta hai woh aksar expire ho chuka hota hai (us ka se waqt guzar gaya) ya invalid ho gaya kyun ke usay sign karne wali key regenerate hui. Doosri wajahen IP ya protocol limits aur firewall rules hain. Tier aur archiving valid SAS tokens par authorisation errors nahi dete."
@@ -1072,7 +1072,7 @@
   "q": "Kin levels par stored access policy ho sakti hai?",
   "opts": [
    "Container, file share, queue, table",
-   "Sirf storage account",
+   "Storage account, resource group",
    "Sirf blob",
    "Management group"
   ],
@@ -1083,7 +1083,7 @@
   "opts": [
    "Hamesha ke liye invalid",
    "Nayi p1 ki settings ke tehat dobara valid ho jata hai",
-   "30 din tak invalid rehta hai",
+   "Jab tak partner usay dobara sign na kare, invalid rehta hai",
    "Account SAS mein badal jata hai"
   ],
   "exp": "SAS tokens stored access policy ko us ke naam se point karte hain. Agar aap p1 delete kar ke usi naam ki nayi policy banayen to purane tokens nayi policy ki settings ke tehat dobara valid ho jate hain. Tokens hamesha ke liye revoke karne ke liye nayi policy ka naam alag rakhein."
@@ -1113,7 +1113,7 @@
   "opts": [
    "az storage account keys renew --account-name st1 --key primary",
    "az storage key regen st1",
-   "az storage account update --new-key",
+   "az storage account update --name st1 --new-key primary --force",
    "az keyvault key rotate"
   ],
   "exp": "az storage account keys renew --key primary (ya secondary) do account keys mein se ek regenerate karti hai. Purani key se sign hua koi bhi SAS kaam karna band kar deta hai. az keyvault key rotate Key Vault mein rakhi keys rotate karti hai, storage account keys nahi."
@@ -1122,8 +1122,8 @@
   "q": "Kaun sa role user ko storage account access keys list karne deta hai?",
   "opts": [
    "Reader",
-   "Storage Account Key Operator Service Role (ya Contributor/Owner)",
-   "Storage Blob Data Reader",
+   "Storage Account Key Operator Service Role",
+   "Delegation ke sath Storage Blob Data Reader",
    "Monitoring Reader"
   ],
   "exp": "Keys list karne ke liye Microsoft.Storage/storageAccounts/listkeys/action chahiye. Storage Account Key Operator Service Role, Contributor aur Owner mein yeh shamil hai. Reader, Storage Blob Data Reader aur Monitoring Reader mein nahi."
@@ -1131,8 +1131,8 @@
  "D2-075": {
   "q": "Storage account par key expiration policy kya karti hai?",
   "opts": [
-   "Keys khud rotate karti hai",
-   "Set waqfe se purani keys ko (Azure Policy/Advisor mein) flag karti hai taa ke aap rotate karna jaanein",
+   "Muqarrar waqfe par keys khud rotate karta hai",
+   "Muqarrar waqfe se purani keys ko flag karta hai",
    "Keys delete karti hai",
    "SAS block karti hai"
   ],
@@ -1161,7 +1161,7 @@
  "D2-078": {
   "q": "Ek app ko Entra ID se Azure Storage queue ke messages parhne hain. Kaun sa role?",
   "opts": [
-   "Storage Queue Data Message Processor (ya Queue Data Reader)",
+   "Storage Queue Data Message Processor",
    "Storage Blob Data Reader",
    "Reader",
    "Storage File Data SMB Share Reader"
@@ -1184,7 +1184,7 @@
    "Default to Microsoft Entra authorization in the Azure portal",
    "Secure transfer",
    "Hierarchical namespace",
-   "Allow blob anonymous access"
+   "Signed-in Azure portal users ke liye blob anonymous access allow karein"
   ],
   "exp": "Storage account ki setting 'Default to Microsoft Entra authorization in the Azure portal' portal ko blobs browse karte waqt account key ke bajaye aap ki Entra identity aur data roles use karwati hai. Baqi settings encryption, Data Lake ya anonymous access ke bare mein hain."
  },
@@ -1202,7 +1202,7 @@
   "q": "Administrators ko Azure file share ke folders par NTFS permissions badalni hain. Unhein kaun sa share-level role chahiye?",
   "opts": [
    "Storage File Data SMB Share Elevated Contributor",
-   "Storage File Data SMB Share Reader",
+   "Storage File Data SMB Share Contributor (Modify)",
    "Reader",
    "Storage Blob Data Owner"
   ],
@@ -1212,7 +1212,7 @@
   "q": "Tamam authenticated identities ko individual assignments ke baghair ek jaisi share-level permission milni chahiye. Aap kya use karenge?",
   "opts": [
    "Default share-level permission",
-   "Anonymous access",
+   "Share level par anonymous access",
    "Account SAS",
    "Lifecycle rule"
   ],
@@ -1221,8 +1221,8 @@
  "D2-084": {
   "q": "Azure Files ke liye on-premises AD DS authentication enable karne ke liye storage account ko kya hona chahiye?",
   "opts": [
-   "AD DS domain mein computer ya service logon account ke taur par joined/registered (maslan AzFilesHybrid module se)",
-   "Premium mein convert",
+   "AD DS domain mein computer ya service logon account ke taur par joined/registered",
+   "Premium FileStorage account mein convert aur domain controller ke VNet mein move kiya gaya",
    "Doosre tenant mein move",
    "RA-GRS ke sath configured"
   ],
@@ -1232,7 +1232,7 @@
   "q": "Azure Files ki AD DS authentication chalne ke liye users ke paas kaun si identities honi chahiye?",
   "opts": [
    "Entra Connect ke zariye Entra ID mein synced hybrid identities",
-   "Cloud-only accounts",
+   "Cloud-only accounts jin ke paas Entra ID P2 license ho",
    "Guest accounts",
    "Local accounts"
   ],
@@ -1264,7 +1264,7 @@
    "Blobs parh sakte hain aur container ke blobs list kar sakte hain",
    "Blobs likh sakte hain",
    "Container delete kar sakte hain",
-   "Sirf container metadata parh sakte hain"
+   "Sirf container ka metadata parh sakte hain, blobs nahi"
   ],
   "exp": "'Container' anonymous access level har kisi ko blobs parhne aur container ke blobs list karne deta hai. Anonymous users kabhi likh ya delete nahi kar sakte. 'Blob' level list kiye baghair parhne deta hai."
  },
@@ -1274,7 +1274,7 @@
   "opts": [
    "Haan, valid SAS hamesha kaam karta hai",
    "Nahi, firewall ab bhi allowed na hone wale networks ka traffic block karta hai",
-   "Haan, agar HTTPS ho",
+   "Haan, bas request HTTPS use kare aur SAS expire na hua ho",
    "Sirf reads ke liye"
   ],
   "exp": "Firewall SAS se pehle check hota hai. SubnetB ki request allowed network rule se match nahi karti, is liye reject hoti hai chahe SAS token valid ho. Authorisation (SAS, keys, Entra ID) aur network rules alag checks hain, aur dono paas hone chahiye."
@@ -1283,7 +1283,7 @@
   "q": "Azure par host apps se blob access ke liye Microsoft kaun sa authorization method recommend karta hai?",
   "opts": [
    "Managed identities ke sath Microsoft Entra ID",
-   "Config files mein account keys",
+   "Encrypted app settings mein rakhi account keys",
    "Anonymous access",
    "Code mein embed kiya account SAS"
   ],
@@ -1303,7 +1303,7 @@
   "q": "Tamam user delegation SAS tokens ko foran invalid kaise karein?",
   "opts": [
    "Account ki tamam user delegation keys revoke karein",
-   "Account keys rotate karein",
+   "Account ki dono access keys rotate karein",
    "Containers delete karein",
    "Soft delete disable karein"
   ],
@@ -1313,7 +1313,7 @@
   "q": "Storage account par CORS ke bare mein kaun si baat sahi hai?",
   "opts": [
    "CORS rules makhsoos origins ki browser apps ko storage endpoints call karne dete hain",
-   "CORS storage firewall control karta hai",
+   "CORS rules tay karte hain ke kaun se networks storage firewall se guzar sakte hain",
    "CORS SAS ki jagah leta hai",
    "CORS data encrypt karta hai"
   ],
@@ -1354,7 +1354,7 @@
   "opts": [
    "Key permissions wali managed identity (system- ya user-assigned)",
    "Account key",
-   "Guest user",
+   "Vault par Key Vault Administrator role wala guest user",
    "Subscription owner"
   ],
   "exp": "Storage account Key Vault se managed identity (system-assigned ya user-assigned) ke zariye authenticate karta hai jis ke paas key par get, wrap aur unwrap permissions hon. Yeh apni account key ya kisi shakhs ki identity use nahi karta."
@@ -1372,7 +1372,7 @@
  "D2-099": {
   "q": "Customer-managed keys mein kaun sa option Azure Storage ko rotation ke baad khud sab se naya key version use karne deta hai?",
   "opts": [
-   "Key URI version ke baghair dein (automatic key version updates)",
+   "Key URI version ke baghair dein",
    "Fixed version use karein",
    "Infrastructure encryption use karein",
    "SAS use karein"
@@ -1415,7 +1415,7 @@
   "opts": [
    "az storage account create -n st1 -g RG1 --sku Standard_ZRS --kind StorageV2",
    "az storage create st1 --zrs",
-   "az storage account new --redundancy zone",
+   "az storage account new -n st1 -g RG1 --redundancy zone --kind BlobStorage",
    "az group create --storage zrs"
   ],
   "exp": "az storage account create --sku se performance aur redundancy ek sath set karti hai, is liye Standard_ZRS ka matlab zone-redundant storage wala standard account hai. --kind StorageV2 isay general-purpose v2 banata hai. Baqi commands mojood nahi."
@@ -1423,7 +1423,7 @@
  "D2-104": {
   "q": "Aap ko asli directories, atomic directory renames aur POSIX ACLs wala data lake chahiye. Account banate waqt kya enable karenge?",
   "opts": [
-   "Hierarchical namespace (Data Lake Storage Gen2)",
+   "Hierarchical namespace",
    "Large file shares",
    "Sirf NFS 3.0",
    "Versioning"
@@ -1433,7 +1433,7 @@
  "D2-105": {
   "q": "Ek purane GPv1 account ko access tiers aur lifecycle management chahiye. Aap ko kya karna chahiye?",
   "opts": [
-   "Isay GPv2 mein upgrade karein (usi jagah, ek taraf)",
+   "Isay GPv2 mein upgrade karein",
    "Premium ke taur par dobara banayen",
    "Versioning enable karein",
    "Doosre region mein move karein"
@@ -1464,7 +1464,7 @@
   "q": "Aap ko storage se seedha static website (HTML/JS) host karni hai. Aap kya enable karenge?",
   "opts": [
    "Static website hosting, jo $web container serve karti hai",
-   "Anonymous container access",
+   "Anonymous access, jo $root container publish karta hai",
    "Azure Files",
    "Sirf CDN"
   ],
@@ -1525,7 +1525,7 @@
   "opts": [
    "Secondary mein replication asynchronous hai, is liye haal ki writes shayad copy na hui hon",
    "Failover data delete karta hai",
-   "GRS synchronous hai",
+   "GRS synchronous hai, is liye failover ke dauran chalne wali writes wapas le li jati hain",
    "Data compress hota hai"
   ],
   "exp": "Secondary region mein geo-replication asynchronous hai: writes primary region mein store hote hi acknowledge ho jati hain, aur thori der baad copy hoti hain. Agar aap failover karein to Last Sync Time ke baad likhi gayi cheezein secondary mein missing ho sakti hain. Failover jaan boojh kar data delete nahi karta, aur GRS synchronous nahi."
@@ -1533,8 +1533,8 @@
  "D2-115": {
   "q": "Aap account ko LRS se ZRS mein badalte hain. Yeh kaise hota hai?",
   "opts": [
-   "Conversion ke zariye (portal mein customer-initiated, ya migration) — yeh LRS→GRS jaisa foran toggle nahi",
-   "Dropdown se foran, baghair copying ke",
+   "Conversion ke zariye (portal mein customer-initiated, ya migration)",
+   "Redundancy dropdown se foran, koi data copy hue baghair",
    "Yeh mumkin nahi",
    "Sirf naya tenant bana kar"
   ],
@@ -1595,7 +1595,7 @@
   "opts": [
    "Haan",
    "Nahi — archive blobs replicate nahi hote",
-   "Sirf RA-GRS ke sath",
+   "Sirf jab account RA-GRS use kare",
    "Sirf 180 din baad"
   ],
   "exp": "Archive tier ke blobs object replication se replicate nahi hote, kyun ke archived data offline hota hai. Agar unhein replicate karna ho to pehle online tier mein rehydrate karein. Redundancy aur 180 din ka minimum is ko nahi badalte."
@@ -1603,7 +1603,7 @@
  "D2-122": {
   "q": "Object replication mein destination container kya ban jata hai?",
   "opts": [
-   "Clients ke liye read-only (sirf replication likhta hai)",
+   "Clients ke liye read-only",
    "Poori tarah writable",
    "Sync ke baad delete",
    "Archived"
@@ -1634,7 +1634,7 @@
   "q": "Azure Storage ki customer-managed key kahan store ho sakti hai?",
   "opts": [
    "Azure Key Vault ya Key Vault Managed HSM",
-   "Storage account",
+   "Usi storage account ka container",
    "App Service",
    "Entra ID"
   ],
@@ -1653,7 +1653,7 @@
  "D2-127": {
   "q": "Client ko upload karne se pehle apni taraf data encrypt karna hai, taa ke Azure kabhi plaintext na dekhe. Kaun sa tareeqa?",
   "opts": [
-   "Client-side encryption (Storage client libraries)",
+   "Client-side encryption",
    "MMK ke sath SSE",
    "Infrastructure encryption",
    "Secure transfer"
@@ -1665,7 +1665,7 @@
   "opts": [
    "azcopy copy \"https://src.blob.core.windows.net/c/f?<SAS>\" \"https://dst.blob.core.windows.net/c/f?<SAS>\"",
    "azcopy move src dst",
-   "azcopy sync --local",
+   "azcopy sync \"https://src.blob.core.windows.net/c/f\" \"https://dst.blob.core.windows.net/c/f\" --local --server",
    "azcopy transfer src dst"
   ],
   "exp": "Jab source aur destination dono storage URLs hon to azcopy copy server-to-server copy use karti hai: data aap ke computer se nahi balke seedha storage accounts ke darmiyan move hota hai. azcopy move aur azcopy transfer mojood nahi, aur --local ke sath sync valid nahi."
@@ -1694,7 +1694,7 @@
   "q": "--delete-destination=true ke sath azcopy sync kya karta hai?",
   "opts": [
    "Destination par woh files delete karta hai jo ab source par mojood nahi",
-   "Copy ke baad source delete karta hai",
+   "Files kamyabi se copy hone ke baad source se delete karta hai",
    "Poora container delete karta hai",
    "Koi asar nahi"
   ],
@@ -1713,7 +1713,7 @@
  "D2-133": {
   "q": "Aap azcopy login se sign in karte hain. Blobs upload karne ke liye aap ki identity ke paas kaun sa role hona chahiye?",
   "opts": [
-   "Storage Blob Data Contributor (ya Owner)",
+   "Storage Blob Data Contributor",
    "Reader",
    "Sirf Contributor",
    "Storage Account Contributor"
@@ -1724,7 +1724,7 @@
   "q": "Storage Explorer kin tareeqon se storage se connect ho sakta hai?",
   "opts": [
    "Entra sign-in, account name aur key, SAS URL, connection string",
-   "Sirf Entra sign-in",
+   "Sirf subscription par Owner role ke sath Entra sign-in",
    "Sirf SAS",
    "Sirf portal ke zariye"
   ],
@@ -1803,18 +1803,18 @@
  "D2-142": {
   "q": "Aap ko storage account West Europe se North Europe move karna hai. Supported tareeqa?",
   "opts": [
-   "North Europe mein naya account bana kar data copy karein (maslan AzCopy se), ya template export/redeploy karein",
+   "North Europe mein naya account banayen aur data us mein copy karein",
    "Region property badlein",
    "az storage account move --region",
-   "Failover ke sath object replication use karein"
+   "Object replication use karein aur phir account failover shuru karein"
   ],
   "exp": "Storage account ka region nahi badal sakta. Move karne ke liye North Europe mein naya account banayen (settings copy karne ke liye asal ka template export kar sakte hain), AzCopy waghera se data copy karein, applications ko naye account par point karein, aur phir purana delete karein. Koi region property ya move command nahi."
  },
  "D2-143": {
   "q": "Kaun sa metric storage account par throttling pakarne mein madad karta hai?",
   "opts": [
-   "ResponseType se filter kiya gaya Transactions (maslan ServerBusyError)",
-   "Used capacity",
+   "ResponseType se filter kiya gaya Transactions",
+   "Access tier se filter ki gayi used capacity",
    "Ingress",
    "Blob count"
   ],
@@ -1823,18 +1823,18 @@
  "D2-144": {
   "q": "Storage blob read, write aur delete logs Log Analytics mein kaise bhejte hain?",
   "opts": [
-   "Blob service par StorageRead/StorageWrite/StorageDelete categories ke sath diagnostic setting banayen",
+   "Blob service par diagnostic setting banayen",
    "Soft delete enable karein",
    "Versioning enable karein",
-   "Storage account par AMA install karein"
+   "Account par Azure Monitor Agent install karein"
   ],
   "exp": "Storage resource logs (StorageRead, StorageWrite, StorageDelete) makhsoos service, jaise blob, par bani diagnostic setting ke zariye bheje jate hain, Log Analytics workspace destination ke sath. Soft delete aur versioning data bachate hain, aur storage accounts par agent nahi chalta."
  },
  "D2-145": {
   "q": "Tier costs ke bare mein kaun si baat sahi hai?",
   "opts": [
-   "Hot ki storage cost sab se zyada aur access cost sab se kam; archive ki storage cost sab se kam aur access/rehydration cost sab se zyada",
-   "Archive store karna sab se mehnga hai",
+   "Hot ki storage cost sab se zyada aur access cost sab se kam",
+   "Archive ki storage cost sab se zyada aur access cost kuch nahi",
    "Tamam tiers ki cost ek jaisi hai",
    "Cool ki koi access cost nahi"
   ],
@@ -1844,7 +1844,7 @@
   "q": "Data 2 hafte tak aksar parha jata hai aur phir kam chhua jata hai lekin ek saal tak foran available rehna chahiye. Sab se sasta sahi tareeqa?",
   "opts": [
    "Hot mein upload karein, phir lifecycle rule 14 din baad cool (ya cold) mein le jaye",
-   "Seedha archive mein upload karein",
+   "Seedha archive mein upload karein, phir read hone par lifecycle rule usay hot mein le aaye",
    "Ek saal tak hot mein rakhein",
    "Premium block blob use karein"
   ],
@@ -1864,7 +1864,7 @@
   "q": "Aap 'Allow cross-tenant replication = false' enable karte hain. Kis par asar hota hai?",
   "opts": [
    "Object replication policies doosre Entra tenants ke accounts use nahi kar saktin",
-   "Geo-replication ruk jati hai",
+   "Doosri geography ke paired region mein geo-replication kaam karna chhor deti hai",
    "Private endpoints fail hote hain",
    "SAS ruk jata hai"
   ],
@@ -1918,7 +1918,7 @@
    "az storage container create --name images --account-name st1 --auth-mode login",
    "az storage blob create images",
    "az container create images",
-   "az storage share create images"
+   "az storage share create --name images --account-name st1 --auth-mode login --container"
   ],
   "exp": "az storage container create --name images blob container banati hai. --auth-mode login account key ke bajaye aap ki Entra identity use karta hai (aap ko Storage Blob Data role chahiye). az storage share create file share banati hai, aur az container create container instance (ACI) banati hai."
  },
@@ -1926,7 +1926,7 @@
   "q": "Kaun si CLI command local file ko container mein upload karti hai?",
   "opts": [
    "az storage blob upload --container-name images --file photo.jpg --name photo.jpg --account-name st1",
-   "az storage file upload",
+   "az storage file upload --share-name images --source photo.jpg --path photo.jpg --account-name st1",
    "az blob push photo.jpg",
    "az storage container upload"
   ],
@@ -1987,7 +1987,7 @@
   "opts": [
    "Baqi 20 din ka early deletion charge",
    "Koi charge nahi",
-   "180 din ka charge",
+   "Baqi 170 din ka early deletion charge",
    "Rehydration charge"
   ],
   "exp": "Cool tier ka 30 din ka minimum hai. 10 din baad blob delete karne par baqi 20 din ki cool storage ka early-deletion charge (prorated) lagta hai. Rehydration charge nahi kyun ke cool online hai, aur 180 din archive ka minimum hai."
@@ -1998,7 +1998,7 @@
    "Nahi, premium block blob accounts hot/cool/cold/archive tiering support nahi karte",
    "Haan",
    "Sirf RA-GRS ke sath",
-   "Sirf lifecycle se"
+   "Haan, lekin sirf base blobs par lagne wale lifecycle management rule se"
   ],
   "exp": "Premium block blob accounts hot, cool, cold ya archive access tiers support nahi karte; tamam data premium SSD storage par hota hai. Data archive karne ke liye usay standard GPv2 account mein copy kar ke wahan tier karein."
  },
@@ -2027,7 +2027,7 @@
   "opts": [
    "Last access time tracking",
    "Versioning",
-   "Change feed",
+   "Read events wala change feed",
    "Soft delete"
   ],
   "exp": "Blob ke aakhri baar parhe jane par based rules (daysAfterLastAccessTimeGreaterThan) ke liye account par last access time tracking enabled honi chahiye; warna Azure reads record nahi karta. Last modification par based rules ko is ki zaroorat nahi. Versioning, change feed aur soft delete shamil nahi."
@@ -2045,7 +2045,7 @@
  "D2-166": {
   "q": "Lifecycle management kaun se blob types ko hot, cool aur archive ke darmiyan tier kar sakta hai?",
   "opts": [
-   "Sirf block blobs (append blobs sirf delete support karte hain)",
+   "Sirf block blobs",
    "Page blobs",
    "Tamam types",
    "Sirf append blobs"
@@ -2067,7 +2067,7 @@
   "opts": [
    "Previous version ko current version bana dein (promote)",
    "Sirf snapshot se restore karein",
-   "Container undelete karein",
+   "Container undelete karein, jis se pichla content wapas aata hai",
    "Wapas nahi aa sakta"
   ],
   "exp": "Versioning on ho to har overwrite pichle content ko purane version ke taur par rakhta hai. Wapas lane ke liye us previous version ko promote (restore) karein taa ke woh dobara current blob ban jaye. Snapshot ki zaroorat nahi, aur container undelete poore containers ke liye hai."
@@ -2075,7 +2075,7 @@
  "D2-169": {
   "q": "Versioning enabled hai aur ek blob delete hota hai. Kya hota hai?",
   "opts": [
-   "Current version previous version ban jata hai; versions delete hone tak data rehta hai",
+   "Current version previous version ban jata hai",
    "Blob aur tamam versions delete ho jate hain",
    "Versioning deletes cover nahi karti",
    "Blob archive mein chala jata hai"
@@ -2085,7 +2085,7 @@
  "D2-170": {
   "q": "Aksar overwrite hone wale data par blob versioning enable karne mein cost ka kya pehlu hai?",
   "opts": [
-   "Har version bill hota hai, is liye storage cost barh sakti hai; purane versions delete karne ke liye lifecycle rules use karein",
+   "Har version bill hota hai, is liye storage cost barh sakti hai",
    "Versioning hamesha muft hai",
    "Versions alag account mein store hote hain",
    "Versioning tiers disable karti hai"
@@ -2117,7 +2117,7 @@
   "opts": [
    "Block blobs ke liye point-in-time restore",
    "Share snapshots",
-   "Object replication",
+   "Ulti simt mein object replication",
    "Rehydration"
   ],
   "exp": "Point-in-time restore container (ya account) ke block blobs ko pehle ke kisi waqt ki halat mein wapas le jata hai, jo kharab batch job ke baad behtareen hai. Is ke liye versioning, change feed aur blob soft delete enabled hone chahiye. Share snapshots Azure Files ke liye hain, object replication data copy karta hai, aur rehydration archive ke liye hai."
@@ -2138,7 +2138,7 @@
   "opts": [
    "Time-based retention policy ke sath immutable storage",
    "Soft delete",
-   "ReadOnly resource lock",
+   "Account par 7 saal ki expiry wala ReadOnly resource lock",
    "Versioning"
   ],
   "exp": "Time-based retention policy wali immutable storage blobs ko WORM halat (write once, read many) mein dal deti hai: retention period ke dauran koi, administrator bhi, unhein badal ya delete nahi kar sakta. Soft delete aur versioning phir bhi deletion allow karte hain, aur ReadOnly resource lock account ki settings bachata hai, blob data nahi."
@@ -2156,10 +2156,10 @@
  "D2-177": {
   "q": "Time-based retention policy lock karne se kya hota hai?",
   "opts": [
-   "Retention waqfa kam nahi ho sakta aur policy delete nahi ho sakti (sirf barhai ja sakti hai)",
+   "Retention waqfa kam nahi ho sakta aur policy delete nahi ho sakti",
    "Data delete ho jata hai",
    "Container public ho jata hai",
-   "Kisi bhi waqt undo ho sakta hai"
+   "Retention waqfa kam ho sakta hai, lekin policy barhayi nahi ja sakti"
   ],
   "exp": "Time-based retention policy lock hone ke baad hataayi nahi ja sakti aur us ka retention period kam nahi ho sakta; aap sirf usay barha sakte hain. Yeh SEC 17a-4 jaise regulations poore karta hai. Unlocked policy ab bhi badli ya delete ho sakti hai, isi liye compliance ke liye usay lock karte hain."
  },
@@ -2177,7 +2177,7 @@
   "q": "Kaun si CLI command 'docs' naam ka 100 GiB file share banati hai?",
   "opts": [
    "az storage share-rm create --storage-account st1 --name docs --quota 100",
-   "az storage container create docs",
+   "az storage container create --storage-account st1 --name docs --size 100",
    "az files create docs 100",
    "az storage blob share docs"
   ],
@@ -2189,7 +2189,7 @@
    "Transaction optimized, Hot, Cool",
    "Hot, Archive",
    "Sirf Premium",
-   "Cold, Archive"
+   "Transaction optimized, Cold, Archive"
   ],
   "exp": "Standard (HDD) file shares transaction optimized, hot ya cool ho sakte hain, jo is hisaab se chune jate hain ke files kitni baar access hoti hain. Premium (SSD) shares FileStorage accounts mein hote hain. File shares ke liye archive available nahi."
  },
@@ -2206,9 +2206,9 @@
  "D2-182": {
   "q": "Windows machine par Azure file share kaise mount karte hain?",
   "opts": [
-   "net use Z: \\\\st1.file.core.windows.net\\docs (ya New-PSDrive), SMB 445 par credentials ke sath",
+   "net use Z: \\\\st1.file.core.windows.net\\docs, SMB 445 par",
    "iSCSI LUN ki tarah map karein",
-   "azcopy mount use karein",
+   "azcopy mount Z: https://st1.blob.core.windows.net/docs",
    "FTP use karein"
   ],
   "exp": "Windows par aap Azure file share ko SMB par us ke UNC path se mount karte hain, maslan net use Z: \\\\st1.file.core.windows.net\\docs, ya New-PSDrive se. Portal ka Connect button script bana deta hai. Azure Files iSCSI target nahi, AzCopy shares mount nahi kar sakta, aur FTP supported nahi."
@@ -2228,7 +2228,7 @@
   "opts": [
    "File shares ke liye soft delete enable karein",
    "Blob soft delete",
-   "Container soft delete",
+   "Containers ke liye soft delete on karein",
    "Versioning"
   ],
   "exp": "File share soft delete delete hue file share ko retention period tak rakhta hai, taa ke aap usay undelete kar sakein. Blob aur container soft delete Blob storage ko bachate hain, Azure Files ko nahi."
@@ -2249,17 +2249,17 @@
    "File Explorer mein 'Previous Versions' tab use karein",
    "Share dobara banayen",
    "Microsoft se rabta karein",
-   "Sirf AzCopy use karein"
+   "File share par --undelete ke sath AzCopy chalayen"
   ],
   "exp": "Share snapshots Windows File Explorer mein Properties → Previous Versions ke neeche nazar aate hain, is liye users khud file ki purani copy khol ya restore kar sakte hain. Share dobara banane ya Microsoft se rabte ki zaroorat nahi."
  },
  "D2-187": {
   "q": "Kya share snapshots poora storage account delete hone par aap ko bacha sakte hain?",
   "opts": [
-   "Nahi — snapshots usi account mein rehte hain, is liye us ke sath delete ho jate hain; delete lock aur Azure Backup use karein",
+   "Nahi — snapshots usi account mein hote hain aur us ke sath delete ho jate hain",
    "Haan, hamesha",
    "Sirf premium ke liye",
-   "Sirf ZRS ke sath"
+   "Haan — ZRS mein snapshots 14 din doosre zone mein rehte hain"
   ],
   "exp": "Share snapshots share wale storage account ke andar hi store hote hain. Agar poora account delete ho to snapshots bhi sath chale jate hain. Account ko CanNotDelete lock se bachayen, aur Azure Backup use karein (jis ka vault-standard tier account ke bahar copies rakh sakta hai)."
  },
@@ -2267,7 +2267,7 @@
   "q": "Windows Server ko Azure Files se sync karne ke liye us par kya install hona chahiye?",
   "opts": [
    "Azure File Sync agent, aur server Storage Sync Service mein registered ho",
-   "MARS agent",
+   "MARS agent, aur server Recovery Services vault mein registered ho",
    "Azure Monitor Agent",
    "Kuch nahi"
   ],
@@ -2307,7 +2307,7 @@
   "q": "Ek branch office ko central Azure file share ka tez local access chahiye. Kaun sa hal?",
   "opts": [
    "Local Windows Server par server endpoint ke sath Azure File Sync",
-   "Object replication",
+   "Branch ke qareeb tareen region ke storage account tak object replication",
    "GRS",
    "Storage Explorer"
   ],
@@ -2346,8 +2346,8 @@
  "D2-196": {
   "q": "Bare block blobs ke liye AzCopy aur SDK kaun sa upload tareeqa use karte hain?",
   "opts": [
-   "Blocks parallel mein stage karein (Put Block) phir block list commit karein (Put Block List)",
-   "1 TB tak ek single PUT",
+   "Blocks parallel mein stage karein (Put Block) phir block list commit karein",
+   "1 TB tak ka ek hi PUT bhejein aur phir us ka MD5 hash verify karein",
    "Page writes",
    "Append operations"
   ],
@@ -2367,7 +2367,7 @@
   "q": "Partner ke liye Blob storage ka SFTP access chahiye. Kya enable hona chahiye?",
   "opts": [
    "Local users ke sath hierarchical namespace aur SFTP support",
-   "Static website",
+   "Static website hosting aur SFTP wala custom domain",
    "Azure Files NFS",
    "Anonymous access"
   ],
@@ -2389,7 +2389,7 @@
   "q": "Kaun sa hal behtareen hai?",
   "opts": [
    "Har branch server par cloud tiering ke sath Azure File Sync, ek Azure file share se sync",
-   "Object replication ke sath Blob storage",
+   "Blob storage, teen accounts ke darmiyan object replication ke sath, har branch ke liye ek",
    "GRS ke sath teen alag storage accounts",
    "Sirf branches ke darmiyan DFS-R"
   ],

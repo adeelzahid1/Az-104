@@ -7,7 +7,7 @@
   "q": "What is Azure Container Registry used for?",
   "opts": [
    "Storing and managing private container images and artifacts",
-   "Running containers",
+   "Running containers and scaling them based on demand",
    "Load balancing containers",
    "Monitoring containers"
   ],
@@ -26,7 +26,7 @@
   "opts": [
    "az acr create -g RG1 -n myacr --sku Standard",
    "az container registry new myacr",
-   "az acr new --standard",
+   "az acr new -g RG1 -n myacr --tier Standard --create",
    "az docker registry create"
   ],
   "ans": [
@@ -116,7 +116,7 @@
   "opts": [
    "ACR Tasks with base image update triggers",
    "Geo-replication",
-   "Webhooks only",
+   "ACR webhooks with a geo-replication trigger",
    "Content trust"
   ],
   "ans": [
@@ -151,7 +151,7 @@
   "q": "Why is the ACR admin account discouraged for production?",
   "opts": [
    "It's a single shared username and password with full push/pull rights and no per-user auditing",
-   "It's slower",
+   "It works only on the Premium SKU and its password can't be regenerated after creation",
    "It costs extra",
    "It only works with Premium"
   ],
@@ -171,7 +171,7 @@
    "az container create -g RG1 -n web --image mcr.microsoft.com/azuredocs/aci-helloworld --dns-name-label myweb --ports 80",
    "az aci new web",
    "az container run web",
-   "az webapp create --container"
+   "az webapp create -g RG1 -n web --container mcr.microsoft.com/azuredocs/aci-helloworld --public-dns-name myweb --port 80"
   ],
   "ans": [
    0
@@ -205,7 +205,7 @@
   "q": "You need an interactive shell inside a running container in ACI. Use:",
   "opts": [
    "az container exec -g RG1 -n web --exec-command /bin/sh",
-   "az container ssh",
+   "az container ssh -g RG1 -n web --interactive /bin/sh --tty",
    "Bastion",
    "Serial console"
   ],
@@ -240,8 +240,8 @@
   "diff": 2,
   "q": "How are CPU and memory assigned in ACI?",
   "opts": [
-   "You request vCPU and memory per container (for example, --cpu 1 --memory 1.5) and are billed per second",
-   "By choosing a VM size",
+   "You request vCPU and memory per container and are billed per second",
+   "By choosing a VM size that all containers in the subscription share",
    "Fixed at 1 vCPU / 1 GB",
    "Through an App Service plan"
   ],
@@ -261,7 +261,7 @@
    "Deploy the container group into a delegated subnet in VNet1",
    "Add a public IP",
    "Use VNet peering only",
-   "Use a service endpoint"
+   "Add a service endpoint for the container instance to VNet1"
   ],
   "ans": [
    0
@@ -276,7 +276,7 @@
   "diff": 2,
   "q": "How do you pass a database password to an ACI container so it isn't shown in the portal?",
   "opts": [
-   "Secure environment variables (--secure-environment-variables)",
+   "Secure environment variables",
    "Plain environment variables",
    "The image name",
    "Tags"
@@ -312,8 +312,8 @@
   "diff": 2,
   "q": "How do you scale an ACI deployment?",
   "opts": [
-   "ACI has no built-in autoscale; deploy more container groups or change resource requests (redeploy)",
-   "Autoscale rules",
+   "ACI has no built-in autoscale; deploy more container groups or change resource requests",
+   "Create autoscale rules on the container group's CPU metric and set a maximum of 10",
    "Scale sets",
    "Increase the App Service plan"
   ],
@@ -351,7 +351,7 @@
    "An immutable snapshot of a container app version",
    "A backup",
    "A resource lock",
-   "A scaling rule"
+   "A scaling rule tied to one container app"
   ],
   "ans": [
    0
@@ -367,7 +367,7 @@
   "q": "Send 20% of traffic to a new version of a container app and 80% to the old one. What do you configure?",
   "opts": [
    "Multiple revision mode with traffic splitting (weights)",
-   "Two separate environments",
+   "Two separate environments with a weighted DNS record",
    "An Application Gateway",
    "Manual DNS"
   ],
@@ -402,7 +402,7 @@
   "diff": 2,
   "q": "A container app should be reachable only from other apps in the same environment. Which ingress setting?",
   "opts": [
-   "Internal ingress (limited to the environment)",
+   "Internal ingress",
    "External ingress",
    "No ingress",
    "A public IP"
@@ -515,7 +515,7 @@
   "q": "An app needs full network isolation in a single-tenant environment inside your VNet with very high scale. Which tier?",
   "opts": [
    "Isolated v2 (App Service Environment v3)",
-   "Premium v3",
+   "Premium v3 with regional VNet integration",
    "Standard",
    "Basic"
   ],
@@ -550,9 +550,9 @@
   "diff": 2,
   "q": "Can you move a web app to an App Service plan in a different region?",
   "opts": [
-   "No — the plan must be in the same resource group and region (webspace); create the app in the new region instead",
+   "No — the plan must be in the same resource group and region",
    "Yes, anytime",
-   "Only with Premium",
+   "Yes — but only when both plans are in the Premium tier",
    "Only Linux apps"
   ],
   "ans": [
@@ -586,7 +586,7 @@
   "diff": 3,
   "q": "An app should scale out instantly based on HTTP traffic, without writing autoscale rules (Premium v2/v3). Which feature?",
   "opts": [
-   "Automatic scaling (platform-managed scale out)",
+   "Automatic scaling",
    "Manual scale",
    "Scheduled autoscale",
    "Deployment slots"
@@ -605,7 +605,7 @@
   "q": "Which CLI command creates a web app in an existing plan?",
   "opts": [
    "az webapp create -g RG1 -p plan1 -n myapp123 --runtime \"DOTNETCORE:8.0\"",
-   "az appservice create myapp",
+   "az appservice create -g RG1 -p plan1 -n myapp123 --stack \"DOTNETCORE:8.0\"",
    "az web new myapp",
    "az app create --plan plan1"
   ],
@@ -625,7 +625,7 @@
    "az appservice plan create -g RG1 -n plan1 --sku S1 --is-linux",
    "az webapp plan create S1",
    "az plan create --linux",
-   "az appservice create --tier S1"
+   "az appservice create -g RG1 -n plan1 --tier S1 --os linux --new-plan"
   ],
   "ans": [
    0
@@ -640,7 +640,7 @@
   "diff": 2,
   "q": "An app stores its database connection string. Where should non-secret settings and secret references go?",
   "opts": [
-   "App settings / connection strings (with Key Vault references for secrets)",
+   "App settings / connection strings",
    "Hard-coded in the code",
    "In tags",
    "In the plan"
@@ -658,9 +658,9 @@
   "diff": 3,
   "q": "A Key Vault reference in App Service settings fails to resolve. What's the most common missing piece?",
   "opts": [
-   "The app's managed identity lacks permission (for example, Key Vault Secrets User) on the vault",
+   "The app's managed identity lacks permission on the vault",
    "The app needs Premium tier",
-   "The vault must be in another region",
+   "The vault must be in a different region from the app",
    "Slots aren't enabled"
   ],
   "ans": [
@@ -694,7 +694,7 @@
   "diff": 2,
   "q": "A stateless app behind multiple instances has unbalanced load because users stick to one instance. What do you disable?",
   "opts": [
-   "ARR affinity (session affinity cookie)",
+   "ARR affinity",
    "Always On",
    "HTTPS Only",
    "Health check"
@@ -749,7 +749,7 @@
   "q": "Which CLI command swaps the staging slot with production?",
   "opts": [
    "az webapp deployment slot swap -g RG1 -n myapp --slot staging --target-slot production",
-   "az webapp swap staging",
+   "az webapp swap -g RG1 -n myapp --from-slot staging --to-slot production --preview",
    "az slot swap myapp",
    "az webapp deploy --swap"
   ],
@@ -766,7 +766,7 @@
   "diff": 3,
   "q": "You want 10% of production users to hit the staging slot for testing. Which feature?",
   "opts": [
-   "Traffic routing percentage (Testing in production)",
+   "Traffic routing percentage",
    "A swap with preview",
    "Access restrictions",
    "ARR affinity"
@@ -803,7 +803,7 @@
   "q": "To map the apex domain contoso.com (no www) to an App Service app, which DNS records are used?",
   "opts": [
    "An A record with the app's IP, plus a TXT record asuid for verification",
-   "A CNAME at the apex",
+   "A CNAME at the apex, plus an MX record for verification",
    "Only an MX record",
    "An NS record"
   ],
@@ -838,8 +838,8 @@
   "diff": 3,
   "q": "A wildcard certificate (*.contoso.com) must secure several App Service apps. What should you use?",
   "opts": [
-   "Import the certificate (from Key Vault or a PFX upload) — managed certificates don't support wildcards",
-   "A free managed certificate",
+   "Import the certificate (from Key Vault or a PFX upload)",
+   "A free App Service managed certificate for each app",
    "A Let's Encrypt cert via the portal",
    "Client certificates"
   ],
@@ -859,7 +859,7 @@
    "A private endpoint for the app (and disabling public access)",
    "VNet integration",
    "Hybrid connections",
-   "Access restrictions allowing Any"
+   "Access restrictions on the app that allow any source address"
   ],
   "ans": [
    0
@@ -875,7 +875,7 @@
   "q": "Where are custom (scheduled) App Service backups stored?",
   "opts": [
    "In a storage account container you choose",
-   "In a Recovery Services vault",
+   "In a Recovery Services vault with GRS",
    "In the App Service plan",
    "In Key Vault"
   ],

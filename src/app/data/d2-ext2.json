@@ -44,7 +44,7 @@
   "opts": [
    "az storage account create -n st1 -g RG1 --sku Standard_ZRS --kind StorageV2",
    "az storage create st1 --zrs",
-   "az storage account new --redundancy zone",
+   "az storage account new -n st1 -g RG1 --redundancy zone --kind BlobStorage",
    "az group create --storage zrs"
   ],
   "ans": [
@@ -60,7 +60,7 @@
   "diff": 3,
   "q": "You need a data lake with true directories, atomic directory renames, and POSIX ACLs. What do you enable when creating the account?",
   "opts": [
-   "Hierarchical namespace (Data Lake Storage Gen2)",
+   "Hierarchical namespace",
    "Large file shares",
    "NFS 3.0 only",
    "Versioning"
@@ -78,7 +78,7 @@
   "diff": 2,
   "q": "An old GPv1 account needs access tiers and lifecycle management. What should you do?",
   "opts": [
-   "Upgrade it to GPv2 (in-place, one-way)",
+   "Upgrade it to GPv2",
    "Recreate it as premium",
    "Enable versioning",
    "Move it to another region"
@@ -133,7 +133,7 @@
   "q": "You must host a static website (HTML/JS) directly from storage. What do you enable?",
   "opts": [
    "Static website hosting, which serves the $web container",
-   "Anonymous container access",
+   "Anonymous access, which publishes the $root container",
    "Azure Files",
    "CDN only"
   ],
@@ -242,7 +242,7 @@
   "opts": [
    "Replication to the secondary is asynchronous, so recent writes may not have been copied",
    "Failover deletes data",
-   "GRS is synchronous",
+   "GRS is synchronous, so writes that were in progress during the failover are rolled back",
    "Data is compressed"
   ],
   "ans": [
@@ -258,8 +258,8 @@
   "diff": 3,
   "q": "You change an account from LRS to ZRS. How is this done?",
   "opts": [
-   "Through a conversion (customer-initiated in the portal, or migration) — it isn't an instant toggle like LRS→GRS",
-   "Instantly from the dropdown with no copying",
+   "Through a conversion (customer-initiated in the portal, or migration)",
+   "Instantly from the redundancy dropdown, with no data being copied",
    "It isn't possible",
    "Only by creating a new tenant"
   ],
@@ -372,7 +372,7 @@
   "opts": [
    "Yes",
    "No — archive blobs aren't replicated",
-   "Only with RA-GRS",
+   "Only when the account uses RA-GRS",
    "Only after 180 days"
   ],
   "ans": [
@@ -388,7 +388,7 @@
   "diff": 2,
   "q": "In object replication, what does the destination container become?",
   "opts": [
-   "Read-only for clients (replication writes only)",
+   "Read-only for clients",
    "Fully writable",
    "Deleted after sync",
    "Archived"
@@ -446,7 +446,7 @@
   "q": "Where can a customer-managed key for Azure Storage be stored?",
   "opts": [
    "Azure Key Vault or Key Vault Managed HSM",
-   "A storage account",
+   "A container in the same storage account",
    "An App Service",
    "Entra ID"
   ],
@@ -481,7 +481,7 @@
   "diff": 3,
   "q": "A client must encrypt data on its side before uploading, so Azure never sees plaintext. Which approach?",
   "opts": [
-   "Client-side encryption (Storage client libraries)",
+   "Client-side encryption",
    "SSE with MMK",
    "Infrastructure encryption",
    "Secure transfer"
@@ -501,7 +501,7 @@
   "opts": [
    "azcopy copy \"https://src.blob.core.windows.net/c/f?<SAS>\" \"https://dst.blob.core.windows.net/c/f?<SAS>\"",
    "azcopy move src dst",
-   "azcopy sync --local",
+   "azcopy sync \"https://src.blob.core.windows.net/c/f\" \"https://dst.blob.core.windows.net/c/f\" --local --server",
    "azcopy transfer src dst"
   ],
   "ans": [
@@ -554,7 +554,7 @@
   "q": "azcopy sync with --delete-destination=true does what?",
   "opts": [
    "Deletes files at the destination that no longer exist at the source",
-   "Deletes the source after copying",
+   "Deletes files at the source after they have been copied successfully",
    "Deletes the whole container",
    "Has no effect"
   ],
@@ -589,7 +589,7 @@
   "diff": 2,
   "q": "You sign in with azcopy login. What role must your identity have to upload blobs?",
   "opts": [
-   "Storage Blob Data Contributor (or Owner)",
+   "Storage Blob Data Contributor",
    "Reader",
    "Contributor only",
    "Storage Account Contributor"
@@ -608,7 +608,7 @@
   "q": "Which ways can Storage Explorer connect to storage?",
   "opts": [
    "Entra sign-in, account name and key, SAS URL, connection string",
-   "Only Entra sign-in",
+   "Only Entra sign-in with the Owner role on the subscription",
    "Only SAS",
    "Only through the portal"
   ],
@@ -751,10 +751,10 @@
   "diff": 3,
   "q": "You must move a storage account from West Europe to North Europe. Supported approach?",
   "opts": [
-   "Create a new account in North Europe and copy data (for example with AzCopy), or export/redeploy the template",
+   "Create a new account in North Europe and copy the data to it",
    "Change the region property",
    "az storage account move --region",
-   "Use object replication with failover"
+   "Use object replication and then start an account failover"
   ],
   "ans": [
    0
@@ -769,8 +769,8 @@
   "diff": 2,
   "q": "Which metric helps detect throttling on a storage account?",
   "opts": [
-   "Transactions filtered by ResponseType (e.g., ServerBusyError)",
-   "Used capacity",
+   "Transactions filtered by ResponseType",
+   "Used capacity filtered by access tier",
    "Ingress",
    "Blob count"
   ],
@@ -787,10 +787,10 @@
   "diff": 2,
   "q": "How do you send storage blob read, write, and delete logs to Log Analytics?",
   "opts": [
-   "Create a diagnostic setting on the blob service with the StorageRead/StorageWrite/StorageDelete categories",
+   "Create a diagnostic setting on the blob service",
    "Enable soft delete",
    "Enable versioning",
-   "Install AMA on the storage account"
+   "Install the Azure Monitor Agent on the account"
   ],
   "ans": [
    0
@@ -805,8 +805,8 @@
   "diff": 2,
   "q": "Which statement about tier costs is correct?",
   "opts": [
-   "Hot has the highest storage cost and lowest access cost; archive has the lowest storage cost and highest access/rehydration cost",
-   "Archive is the most expensive to store",
+   "Hot has the highest storage cost and lowest access cost",
+   "Archive has the highest storage cost and no access cost",
    "All tiers cost the same",
    "Cool has no access cost"
   ],
@@ -824,7 +824,7 @@
   "q": "Data is read frequently for 2 weeks and then rarely touched but must stay instantly available for a year. Cheapest correct approach?",
   "opts": [
    "Upload to hot, then a lifecycle rule moves it to cool (or cold) after 14 days",
-   "Upload directly to archive",
+   "Upload directly to archive, then a lifecycle rule moves it to hot when it's read",
    "Keep in hot for a year",
    "Use premium block blob"
   ],
@@ -860,7 +860,7 @@
   "q": "You enable 'Allow cross-tenant replication = false'. What is affected?",
   "opts": [
    "Object replication policies can't use accounts in other Entra tenants",
-   "Geo-replication stops",
+   "Geo-replication to a paired region in another geography stops working",
    "Private endpoints fail",
    "SAS stops"
   ],

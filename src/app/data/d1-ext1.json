@@ -26,7 +26,7 @@
   "opts": [
    "A TXT (or MX) record with the value Entra provides",
    "An A record pointing to Entra ID",
-   "A CNAME to login.microsoftonline.com",
+   "A CNAME record that points to login.microsoftonline.com",
    "An SRV record"
   ],
   "ans": [
@@ -62,7 +62,7 @@
   "opts": [
    "AzureAD",
    "MSOnline",
-   "Microsoft Graph PowerShell (Microsoft.Graph)",
+   "Microsoft Graph PowerShell",
    "Az.Accounts only"
   ],
   "ans": [
@@ -115,7 +115,7 @@
   "q": "Users are synchronized from on-premises Active Directory with Entra Connect. Where must you change a synced user's job title?",
   "opts": [
    "In the Entra admin center",
-   "In on-premises Active Directory (the source of authority)",
+   "In on-premises Active Directory",
    "In Azure RBAC",
    "In Microsoft 365 admin center only"
   ],
@@ -153,7 +153,7 @@
   "opts": [
    "Remove their licenses",
    "Set 'Account enabled' (block sign-in) to No",
-   "Remove them from all groups",
+   "Remove them from all groups and directory roles",
    "Change their display name"
   ],
   "ans": [
@@ -206,9 +206,9 @@
   "q": "Where do you restrict which external domains your users may invite guests from?",
   "opts": [
    "Conditional Access",
-   "External collaboration settings (allow/deny list of domains)",
+   "External collaboration settings",
    "Azure Policy",
-   "Named locations"
+   "Conditional Access → Named locations settings"
   ],
   "ans": [
    1
@@ -225,7 +225,7 @@
   "opts": [
    "User settings → App registrations",
    "External collaboration settings → Guest invite settings",
-   "Password reset properties",
+   "Password reset properties → Guest invite restrictions",
    "Device settings"
   ],
   "ans": [
@@ -300,7 +300,7 @@
   "opts": [
    "Same as members",
    "Restricted — they can see limited properties of users and groups they belong to",
-   "Nothing at all, not even their own profile",
+   "Nothing at all — they can't see even their own profile or their own group memberships",
    "Everything including admin roles"
   ],
   "ans": [
@@ -371,7 +371,7 @@
   "q": "You change a group with 40 manually added members from Assigned to Dynamic user membership. What happens to those members?",
   "opts": [
    "They stay forever as static members",
-   "Membership is recalculated from the rule; members who don't match the rule are removed",
+   "Membership is recalculated from the rule",
    "The change is blocked while the group has members",
    "They are converted to guests"
   ],
@@ -389,7 +389,7 @@
   "q": "An owner of a dynamic security group tries to manually add a user. What happens?",
   "opts": [
    "The user is added",
-   "Manual adds are not allowed — membership comes only from the rule",
+   "Manual adds are not allowed",
    "The user is added for 24 hours",
    "The rule is disabled automatically"
   ],
@@ -426,7 +426,7 @@
   "opts": [
    "Azure Policy",
    "A group creation restriction setting (Graph/PowerShell directory setting) allowing only that group",
-   "Conditional Access",
+   "A Conditional Access policy that targets the Groups service and includes only GroupCreators",
    "Assign Groups Administrator role to everyone else"
   ],
   "ans": [
@@ -520,7 +520,7 @@
    "az ad group member add --group G1 --member-id <objectId>",
    "az group add-member",
    "az ad user join-group",
-   "az role assignment create --group"
+   "az role assignment create --assignee <objectId> --group G1"
   ],
   "ans": [
    0
@@ -554,7 +554,7 @@
   "q": "You have 100 P1 licenses and assign them to a group with 110 members. What happens?",
   "opts": [
    "All 110 get licenses",
-   "100 are licensed; 10 show an error for insufficient licenses",
+   "100 are licensed",
    "Nobody gets licenses",
    "Azure automatically buys 10 more licenses"
   ],
@@ -591,7 +591,7 @@
   "opts": [
    "It is impossible",
    "Edit the group's license assignment and turn off the specific service plan",
-   "Create a Conditional Access policy",
+   "Create a Conditional Access policy that blocks Exchange Online for the group",
    "Remove Exchange from the tenant"
   ],
   "ans": [
@@ -698,7 +698,7 @@
   "q": "SSPR is set to 'Selected'. How many groups can you choose?",
   "opts": [
    "One group (which may contain nested groups)",
-   "Up to 10 groups",
+   "Up to 10 groups (nested groups are not supported)",
    "Unlimited groups",
    "Only dynamic groups"
   ],
@@ -753,7 +753,7 @@
   "opts": [
    "Write back passwords to your on-premises directory is enabled under Password reset → On-premises integration",
    "A P2 license",
-   "A Conditional Access policy",
+   "A Conditional Access policy that allows password changes from domain-joined devices is assigned to all users",
    "Security questions are enabled"
   ],
   "ans": [
@@ -769,7 +769,7 @@
   "diff": 1,
   "q": "What URL do users visit to reset a forgotten password with SSPR?",
   "opts": [
-   "https://aka.ms/sspr (passwordreset.microsoftonline.com)",
+   "https://aka.ms/sspr",
    "https://portal.azure.com/reset",
    "https://myapps.microsoft.com/password",
    "https://login.windows.net/reset"
@@ -846,7 +846,7 @@
   "opts": [
    "Device settings → Users may join devices to Microsoft Entra = Selected",
    "User settings → App registrations",
-   "Conditional Access → Device platforms",
+   "Conditional Access → Device platforms → Users may join devices = Selected",
    "RBAC → Virtual Machine Contributor"
   ],
   "ans": [
@@ -882,7 +882,7 @@
   "opts": [
    "A management group",
    "An administrative unit containing Lahore users, with Helpdesk Administrator scoped to it",
-   "A resource group",
+   "A resource group for the Lahore office, with Helpdesk Administrator assigned in IAM",
    "A dynamic device group"
   ],
   "ans": [

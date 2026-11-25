@@ -6,7 +6,7 @@
   "diff": 1,
   "q": "Azure Monitor platform metrics are:",
   "opts": [
-   "Collected only after you install an agent",
+   "Collected only after you install the Azure Monitor Agent, and then kept for about 30 days",
    "Collected automatically for Azure resources with no extra setup, and kept about 93 days",
    "Stored forever",
    "Available only with P2 licenses"
@@ -25,9 +25,9 @@
   "q": "You need to keep VM CPU metrics for 2 years for trend analysis. What do you do?",
   "opts": [
    "Nothing; metrics are kept forever",
-   "Route metrics through diagnostic settings to a Log Analytics workspace (or storage) with suitable retention",
+   "Send metrics to a Log Analytics workspace with diagnostic settings",
    "Take monthly screenshots",
-   "Enable boot diagnostics"
+   "Enable boot diagnostics with a custom storage account for 2 years"
   ],
   "ans": [
    1
@@ -45,7 +45,7 @@
    "SQL",
    "KQL (Kusto Query Language)",
    "GraphQL",
-   "XPath"
+   "XPath (XML Path Language)"
   ],
   "ans": [
    1
@@ -62,7 +62,7 @@
   "opts": [
    "Heartbeat | where TimeGenerated > ago(1h) | summarize count() by Computer",
    "SELECT * FROM Heartbeat",
-   "Heartbeat | order by Computer",
+   "Heartbeat | order by Computer | extend Count = count(TimeGenerated, 1h) | take 1",
    "count Heartbeat GROUP Computer"
   ],
   "ans": [
@@ -80,7 +80,7 @@
   "opts": [
    "7 days; 30 max",
    "30 days; up to 730 days (2 years) interactive",
-   "1 year; 5 years",
+   "1 year; up to 1,825 days (5 years) interactive",
    "Unlimited by default"
   ],
   "ans": [
@@ -98,7 +98,7 @@
   "opts": [
    "Log Analytics workspace, storage account, event hub, partner solutions",
    "Only Log Analytics",
-   "Email and SMS",
+   "Email address, SMS number, webhook, Automation runbook",
    "Another subscription's activity log"
   ],
   "ans": [
@@ -115,8 +115,8 @@
   "q": "Which question does the Activity log answer?",
   "opts": [
    "A VM's CPU usage",
-   "WHO performed WHAT management (control-plane) operation on WHICH resource, and WHEN",
-   "Application exceptions",
+   "WHO performed WHAT management operation, and WHEN",
+   "WHICH exception an application threw, and on WHICH line",
    "Network latency"
   ],
   "ans": [
@@ -135,7 +135,7 @@
    "7 days; it can't be extended",
    "90 days; send them to a Log Analytics workspace or storage with a diagnostic setting",
    "1 year by default",
-   "30 days; upgrade the subscription"
+   "30 days; upgrade the subscription to a support plan that keeps them for one year"
   ],
   "ans": [
    1
@@ -152,7 +152,7 @@
   "opts": [
    "Scope (target resource), condition (signal logic), and action group, plus alert details",
    "User, password, email",
-   "Metric, log, trace",
+   "Workspace (data source), dashboard (visual), and budget, plus the owner's contact details",
    "Budget, threshold, invoice"
   ],
   "ans": [
@@ -168,9 +168,9 @@
   "diff": 2,
   "q": "What can an action group do?",
   "opts": [
-   "Send email, SMS, push, or voice notifications, and run actions like webhooks, Azure Functions, Logic Apps, runbooks, or ITSM",
+   "Send notifications and run actions such as webhooks, Functions, or runbooks",
    "Send email only",
-   "Show a portal popup only",
+   "Show portal notifications and change the severity or scope of the alert rule",
    "Send Teams messages only"
   ],
   "ans": [
@@ -186,9 +186,9 @@
   "diff": 2,
   "q": "One alert rule must fire on CPU > 90% for 5 minutes across 30 VMs, and must cover future VMs in the subscription too. Use:",
   "opts": [
-   "30 separate rules",
+   "30 separate metric alert rules that all share the same action group",
    "A metric alert rule scoped to the subscription or resource group, targeting multiple resources",
-   "A budget",
+   "A budget alert scoped to the subscription that covers all current and future VMs",
    "A Service Health alert"
   ],
   "ans": [
@@ -204,7 +204,7 @@
   "diff": 3,
   "q": "During a planned maintenance window, alert NOTIFICATIONS must stop without editing or disabling dozens of rules. Use:",
   "opts": [
-   "Delete the action groups",
+   "A resource lock on the action groups for that time window, so that they can't send anything",
    "An alert processing rule that suppresses notifications for that scope and time window",
    "Turn off Azure Monitor",
    "Remove role assignments"
@@ -222,7 +222,7 @@
   "diff": 2,
   "q": "What do dynamic thresholds in metric alerts do?",
   "opts": [
-   "They're set manually each week",
+   "They raise or lower the threshold by a fixed percentage that an administrator enters each week",
    "They use machine learning on the metric's history to learn normal patterns and alert on deviations",
    "They only work for CPU",
    "They're free-text rules"
@@ -258,8 +258,8 @@
   "diff": 2,
   "q": "Which agent is the current way to collect guest OS logs and performance data from VMs into Azure Monitor, and what does it pair with?",
   "opts": [
-   "The Log Analytics (MMA) agent alone",
-   "The Azure Monitor Agent (AMA) with Data Collection Rules (DCRs)",
+   "The Log Analytics (MMA) agent with workspace solutions",
+   "The Azure Monitor Agent (AMA) with Data Collection Rules",
    "Telegraf only",
    "No agent is needed for guest data"
   ],
@@ -278,7 +278,7 @@
   "opts": [
    "Billing data",
    "Performance charts and a dependency map of processes and connections for monitored VMs",
-   "RBAC reports",
+   "RBAC reports and a map of the users and groups that can sign in to monitored VMs",
    "Patching"
   ],
   "ans": [
@@ -297,7 +297,7 @@
    "Deletes old rows",
    "Groups records into fixed 1-hour time buckets for aggregation",
    "Rounds the CPU values",
-   "Limits output to one hour"
+   "Limits the output to records from the most recent hour only"
   ],
   "ans": [
    1
@@ -312,7 +312,7 @@
   "diff": 2,
   "q": "Where do you get ready-made storage account latency, availability, and capacity views with no extra setup?",
   "opts": [
-   "Storage insights (Azure Monitor Insights)",
+   "Storage insights",
    "Network Watcher",
    "Service Health",
    "Azure Advisor only"
@@ -352,7 +352,7 @@
   "q": "What's usually the biggest cost driver of a Log Analytics workspace?",
   "opts": [
    "Number of users",
-   "Data ingestion volume (GB per day)",
+   "Data ingestion volume",
    "Number of dashboards",
    "Number of alert rules"
   ],
@@ -371,7 +371,7 @@
   "opts": [
    "Per VM",
    "Per region (automatically when you create a VNet, in most cases)",
-   "Globally per subscription with one click only",
+   "Globally per subscription (once its resource provider is registered)",
    "Per NSG"
   ],
   "ans": [
@@ -424,8 +424,8 @@
   "q": "You must capture packets to and from a VM for deep analysis in Wireshark. Use:",
   "opts": [
    "Activity log",
-   "Network Watcher packet capture (saves a .cap file to storage or locally)",
-   "IP flow verify",
+   "Network Watcher packet capture",
+   "Network Watcher IP flow verify",
    "Effective routes"
   ],
   "ans": [
@@ -442,9 +442,9 @@
   "q": "What is Connection Monitor used for?",
   "opts": [
    "Monitoring billing connections",
-   "Continuously testing connectivity and latency between sources (VMs, on-prem agents) and destinations (VMs, FQDNs, IPs) over time",
+   "Continuously testing connectivity and latency between endpoints",
    "Replacing NSGs",
-   "Capturing packets"
+   "Capturing packets between endpoints and saving them as .cap files"
   ],
   "ans": [
    1
@@ -460,7 +460,7 @@
   "q": "Where are flow logs stored, and what visualizes them?",
   "opts": [
    "Log Analytics; Azure Advisor",
-   "A storage account; Traffic Analytics (which needs a Log Analytics workspace)",
+   "A storage account; Traffic Analytics",
    "Event Hub; Power BI only",
    "The NSG itself; portal charts"
   ],
@@ -570,7 +570,7 @@
   "diff": 3,
   "q": "When can you change a vault's storage redundancy (LRS/ZRS/GRS) for backups?",
   "opts": [
-   "Any time",
+   "At any time, as long as no job is running",
    "Only BEFORE the first item is protected",
    "Once per year",
    "Never; it's always GRS"
@@ -589,7 +589,7 @@
   "q": "How often can a Standard Azure VM backup policy back up?",
   "opts": [
    "Every 5 minutes",
-   "Once per day (the Enhanced policy allows multiple backups per day)",
+   "Once per day",
    "Hourly",
    "Weekly at minimum"
   ],
@@ -607,7 +607,7 @@
   "q": "How long are instant restore snapshots kept locally in Azure VM backup (Standard policy)?",
   "opts": [
    "1–5 days (default 2), for fast restores without transferring from the vault",
-   "30 days",
+   "30 days (fixed), because they are copied to the archive tier of the vault",
    "1 year",
    "12 hours"
   ],
@@ -625,7 +625,7 @@
   "q": "With soft delete for Azure Backup, deleted backup data is kept for:",
   "opts": [
    "14 more days at no cost, so it can be recovered",
-   "90 days, with charges",
+   "90 more days at the archive rate, so it can be restored",
    "24 hours",
    "It prevents deleting the VM itself"
   ],
@@ -643,9 +643,9 @@
   "q": "A user deleted one file inside a backed-up Azure VM. Fastest recovery?",
   "opts": [
    "Restore the whole VM",
-   "File-level recovery: mount the recovery point as a local drive with the provided script and copy the file",
+   "File-level recovery: mount the recovery point and copy the file",
    "Rebuild the VM from a template",
-   "Site Recovery failover"
+   "Run a Site Recovery test failover and copy the file from it"
   ],
   "ans": [
    1
@@ -660,10 +660,10 @@
   "diff": 2,
   "q": "Which restore options exist for an Azure VM backup?",
   "opts": [
-   "Create a new VM, restore disks only, replace existing disks, cross-region restore (if enabled)",
+   "Create a new VM, restore disks only, replace existing disks, cross-region restore",
    "Only in-place overwrite",
    "Only file recovery",
-   "Only export to on-premises"
+   "Export to on-premises VHDX, replace the NIC, file-level restore to Blob storage"
   ],
   "ans": [
    0
@@ -678,8 +678,8 @@
   "diff": 3,
   "q": "What does the MARS (Microsoft Azure Recovery Services) agent do?",
   "opts": [
-   "Backs up entire Hyper-V hosts",
-   "Backs up files, folders, and system state from on-premises Windows machines directly to Azure, up to 3 times a day",
+   "Backs up entire Hyper-V hosts and their running VMs to Azure Storage",
+   "Backs up files, folders, and system state from Windows machines to Azure",
    "Runs on Linux",
    "Backs up Azure SQL databases"
   ],
@@ -698,7 +698,7 @@
   "opts": [
    "Each vault separately",
    "Backup center (Business Continuity Center)",
-   "Azure Advisor",
+   "Azure Advisor (Reliability category)",
    "Cost Management"
   ],
   "ans": [
@@ -715,9 +715,9 @@
   "q": "Deleting a Recovery Services vault fails. What must you do?",
   "opts": [
    "Open a support ticket",
-   "Stop backup for all protected items (and delete their data, including soft-deleted items), unregister servers and infrastructure, then delete",
+   "Stop backup, delete the backup data, unregister servers, then delete the vault",
    "Wait 30 days",
-   "Delete the resource group instead to bypass checks"
+   "Delete the resource group instead, which skips the vault's dependency checks"
   ],
   "ans": [
    1
@@ -733,9 +733,9 @@
   "q": "How does Azure Site Recovery's purpose differ from Azure Backup's?",
   "opts": [
    "They're the same product",
-   "ASR is disaster recovery (replicate and fail over whole workloads with low RTO); Backup restores point-in-time data",
+   "ASR is disaster recovery (replicate and fail over whole workloads with low RTO)",
    "ASR only backs up files",
-   "Backup is for regions; ASR is for files"
+   "Backup is disaster recovery for regions; ASR restores single files from daily snapshots"
   ],
   "ans": [
    1
@@ -750,8 +750,8 @@
   "diff": 2,
   "q": "Azure-to-Azure VM replication with ASR replicates VMs:",
   "opts": [
-   "Only within one region",
-   "Continuously to another target region (typically for cross-region DR)",
+   "Weekly to another target region",
+   "Continuously to another target region",
    "Weekly",
    "Only to on-premises"
   ],
@@ -770,7 +770,7 @@
   "opts": [
    "Causes production downtime",
    "Starts replica VMs in an isolated network, with no impact on production or ongoing replication",
-   "Deletes replication",
+   "Moves the production workload to the target region and commits it once users confirm that it works",
    "It isn't supported"
   ],
   "ans": [
@@ -787,7 +787,7 @@
   "q": "A multi-tier app must fail over in order (database, then app, then web). Use:",
   "opts": [
    "Manual notes",
-   "A recovery plan with ordered groups (and optional scripts or runbooks)",
+   "A recovery plan with ordered groups",
    "Alphabetical failover",
    "Separate vaults per tier"
   ],
@@ -804,8 +804,8 @@
   "diff": 2,
   "q": "What do RPO and RTO mean?",
   "opts": [
-   "RPO = maximum acceptable data loss (time between recovery points); RTO = maximum acceptable downtime before you're running again",
-   "The reverse",
+   "RPO = maximum acceptable data loss; RTO = maximum acceptable downtime",
+   "RPO = maximum acceptable downtime; RTO = maximum acceptable data loss",
    "Both mean backup frequency",
    "They're marketing terms"
   ],
@@ -822,7 +822,7 @@
   "diff": 2,
   "q": "How does Azure Backup protect Azure file shares (standard snapshot tier)?",
   "opts": [
-   "Full-copy backups into the vault only",
+   "Full-copy backups of the share into the vault only, taken by an agent that mounts it over SMB port 445",
    "Share snapshots managed by the backup policy, stored in the storage account and orchestrated by the vault",
    "The MARS agent on a VM",
    "AzCopy scripts"
@@ -841,8 +841,8 @@
   "q": "What does cross-region restore (CRR) for VM backups let you do?",
   "opts": [
    "Restore only after Microsoft declares a disaster",
-   "Restore VMs in the secondary (paired) region yourself at any time — the vault needs GRS with CRR enabled",
-   "Restore to any region worldwide",
+   "Restore VMs in the secondary (paired) region yourself at any time",
+   "Restore VMs to any Azure region worldwide by choosing it in the restore blade",
    "Restore from LRS vaults"
   ],
   "ans": [
@@ -858,10 +858,10 @@
   "diff": 2,
   "q": "What does a VM backup policy define?",
   "opts": [
-   "Schedule (frequency and time) and retention (daily, weekly, monthly, yearly points)",
+   "Schedule (frequency and time) and retention",
    "The VM size",
    "NSG rules",
-   "Encryption keys only"
+   "Encryption keys and VM access permissions"
   ],
   "ans": [
    0
