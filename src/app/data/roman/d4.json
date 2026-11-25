@@ -2426,5 +2426,418 @@
    "VNet ka Activity log"
   ],
   "exp": "Virtual network flow logs VNet ke workloads ka traffic record karte hain, VPN gateways samet. Naye NSG flow logs ab nahi ban sakte, aur woh 30 September 2027 ko retire honge. Packet capture VMs par mukhtasar, tafseeli traces ke liye hai, aur Activity log management operations record karta hai."
+ },
+ "D4-244": {
+  "q": "Ek subnet mein 60 VMs honi hain. Sab se chota kaam karne wala prefix kaun sa hai?",
+  "opts": [
+   "/24",
+   "/25",
+   "/26",
+   "/27"
+  ],
+  "exp": "/26 mein 64 addresses hain, lekin Azure 5 reserve karta hai, is liye 59 bachte hain: ek kam. /25 mein 128 − 5 = 123 hain. /24 bhi chalega lekin sab se chota nahi."
+ },
+ "D4-245": {
+  "q": "VNet address space 10.0.0.0/22 mein kitne /24 subnets aate hain?",
+  "opts": [
+   "2",
+   "4",
+   "8",
+   "16"
+  ],
+  "exp": "Har ek bit par subnets dugne hote hain: /22 se /24 tak do bits hain, is liye 2² = 4 subnets. Woh hain 10.0.0.0/24, 10.0.1.0/24, 10.0.2.0/24 aur 10.0.3.0/24."
+ },
+ "D4-246": {
+  "q": "Aap 10.1.0.0/24 ko chaar barabar subnets mein baantte hain, har ek mein 50 VMs aani hain. Kaun sa prefix?",
+  "opts": [
+   "/25",
+   "/26",
+   "/27",
+   "/28"
+  ],
+  "exp": "/24 ke chaar barabar hisse /26 subnets hain: har ek mein 64 addresses, 59 qabil-e-istemal, is liye 50 VMs aa jati hain. /25 se range mein sirf do subnets bante hain, aur /27 mein sirf 27 bachte hain."
+ },
+ "D4-247": {
+  "q": "Subnet 10.0.5.64/26 mein Azure VM ko pehla IP address kaun sa de sakta hai?",
+  "opts": [
+   "10.0.5.64",
+   "10.0.5.65",
+   "10.0.5.68",
+   "10.0.5.70"
+  ],
+  "exp": "Azure is subnet ke pehle chaar addresses (.64 network, .65 gateway, .66 aur .67 DNS) aur aakhri (.127) reserve karta hai. Is liye VM ka pehla address 10.0.5.68 hai."
+ },
+ "D4-248": {
+  "q": "VNet1 10.0.0.0/16 use karta hai. Us se kaun sa VNet peer ho sakta hai?",
+  "opts": [
+   "VNet2: 10.0.128.0/17",
+   "VNet3: 10.1.0.0/16",
+   "VNet4: 10.0.5.0/24",
+   "VNet5: 10.0.0.0/8"
+  ],
+  "exp": "Peered VNets ki address spaces overlap nahi ho sakti. 10.1.0.0/16 poori tarah 10.0.0.0–10.0.255.255 se bahar hai. Baqi teen overlap karte hain: 10.0.128.0/17 aur 10.0.5.0/24 us ke andar hain, aur 10.0.0.0/8 usay shamil karta hai."
+ },
+ "D4-249": {
+  "q": "VNet mein subnets Web (10.0.1.0/25), App (10.0.1.128/26) aur Db (10.0.1.192/26) hain. Address 10.0.1.200 kis subnet mein hai?",
+  "opts": [
+   "Web",
+   "App",
+   "Db",
+   "Kisi mein nahi"
+  ],
+  "exp": "Web .0–.127, App .128–.191 aur Db .192–.255 cover karta hai. Is liye 10.0.1.200 Db ka hai. /26 mein hamesha 64 addresses hote hain aur 64 ke multiple se shuru hota hai."
+ },
+ "D4-250": {
+  "q": "Subnet ke routes: 10.0.0.0/8 → VPN gateway, 10.2.0.0/16 → VNet peering, 10.2.3.0/24 → virtual appliance. 10.2.3.9 ka traffic kahan jayega?",
+  "opts": [
+   "VPN gateway",
+   "VNet peering",
+   "Virtual appliance",
+   "Teenon mein bat jayega"
+  ],
+  "exp": "Azure destination se match hone wala sab se lamba prefix chunta hai. Teenon 10.2.3.9 se match hote hain, aur /24 sab se lamba hai, is liye traffic virtual appliance ko jata hai. Alag lambai ke routes mein traffic nahi bat-ta."
+ },
+ "D4-251": {
+  "q": "Subnet ke routes: 10.0.0.0/8 → VPN gateway, 10.2.0.0/16 → VNet peering, 0.0.0.0/0 → Internet. 10.9.1.1 ka traffic kahan jayega?",
+  "opts": [
+   "VPN gateway",
+   "VNet peering",
+   "Internet",
+   "Drop ho jayega"
+  ],
+  "exp": "10.9.1.1 10.2.0.0/16 mein nahi, lekin 10.0.0.0/8 mein hai, jo 0.0.0.0/0 se lamba hai. Is liye VPN gateway ko jata hai. Default route tabhi use hota hai jab koi zyada khaas match na ho."
+ },
+ "D4-252": {
+  "q": "VNet 10.0.0.0/24 mein AzureBastionSubnet 10.0.0.0/26, GatewaySubnet 10.0.0.64/27 aur App 10.0.0.128/25 hain. Haan ya Nahi:",
+  "stmts": [
+   "App subnet mein 123 qabil-e-istemal addresses hain",
+   "Abhi 10.0.0.96/27 subnet ban sakta hai",
+   "AzureBastionSubnet 10.0.0.0/27 bhi ho sakta tha",
+   "Abhi 10.0.0.160/27 subnet ban sakta hai"
+  ],
+  "exp": "/25 mein 128 − 5 = 123 hain. .96–.127 range khaali hai, is liye 10.0.0.96/27 mil sakta hai. Bastion ko /26 ya bara chahiye. 10.0.0.160/27 App (.128–.255) ke andar hai, is liye overlap hoga."
+ },
+ "D4-253": {
+  "q": "Theek 3 VMs ke liye subnet chahiye aur kam se kam addresses zaya hon. Kaun sa prefix?",
+  "opts": [
+   "/28",
+   "/29",
+   "/30",
+   "/31"
+  ],
+  "exp": "/29 mein 8 addresses hain, aur Azure ke 5 reserve karne ke baad 3 bachte hain: bilkul poora. /29 Azure ka sab se chota IPv4 subnet bhi hai, is liye /30 aur /31 nahi ban sakte."
+ },
+ "D4-254": {
+  "q": "Subnet ka NSG internet se inbound TCP 443 allow karta hai. VM ke NIC par NSG nahi. VM ka Standard public IP hai. Kya internet clients 443 par VM tak pahunch sakte hain?",
+  "opts": [
+   "Nahi, kyunke baghair NSG wala NIC sab deny karta hai",
+   "Haan, kyunke sirf subnet NSG evaluate hota hai",
+   "Nahi, kyunke Standard public IP hamesha band hota hai",
+   "Haan, lekin sirf load balancer ke zariye"
+  ],
+  "exp": "Traffic sirf maujood NSGs se check hota hai. NIC par koi nahi, is liye sirf subnet NSG lagta hai jo 443 allow karta hai. Standard public IP default mein band hai, lekin allow karne wala NSG rule usay khol deta hai."
+ },
+ "D4-255": {
+  "q": "VM1 public load balancer ke peeche hai. Aap us ke subnet par UDR 0.0.0.0/0 → firewall 10.0.1.4 lagate hain. Clients ab connect nahi hote, halanke NSG aur probe theek hain. Kyun?",
+  "opts": [
+   "Load balancer route table wale subnets ko traffic bhejna band kar deta hai",
+   "Jawab usi raaste ke bajaye firewall se nikalte hain (asymmetric routing)",
+   "UDR load balancer ka public IP address badal deti hai",
+   "Firewall ko application security group chahiye"
+  ],
+  "exp": "Request load balancer se aati hai, lekin naya default route jawab firewall ko bhejta hai, jis ne connection dekha hi nahi aur drop kar deta hai. App firewall ke zariye publish karein, ya dono simton ka raasta ek rakhein."
+ },
+ "D4-256": {
+  "q": "Spoke A aur Spoke B NVA wale hub se peered hain. Spoke A ke subnet par NVA ke zariye Spoke B ki UDR hai. Spoke B par route table nahi. A ke packets B tak pahunchte hain, lekin connection nahi banta. Kya kami hai?",
+  "opts": [
+   "Spoke B par NVA ke zariye Spoke A ki wapsi ki UDR",
+   "NVA par public IP address",
+   "Spoke B mein doosra NVA",
+   "Spoke A ki peering par Use remote gateways"
+  ],
+  "exp": "Peering transitive nahi, is liye B ke paas A ka wapsi ka raasta nahi. Wapsi ke traffic ke liye B ke subnet par bhi NVA ki UDR chahiye. Peerings forwarded traffic bhi allow karein, aur NVA par IP forwarding ho."
+ },
+ "D4-257": {
+  "q": "Nayi VM ka Standard public IP hai. NIC ya subnet par koi NSG nahi. Kya internet se SSH ho sakta hai?",
+  "opts": [
+   "Haan, kyunke koi NSG na ho to traffic bilkul filter nahi hota",
+   "Nahi, kyunke Standard public IP inbound ke liye default mein band hai",
+   "Haan, lekin sirf pehle ghante mein",
+   "Nahi, kyunke SSH ko hamesha Azure Bastion chahiye"
+  ],
+  "exp": "Standard public IP secure-by-default hai: jab tak NSG saaf allow na kare, inbound band hai. Apne address se TCP 22 allow karne wala NSG lagayen, ya baghair public IP Bastion use karein."
+ },
+ "D4-258": {
+  "q": "Subnet ke outbound NSG rules: priority 300 service tag Storage ko 443 par allow, priority 4000 service tag Internet ko deny. Kya VMs 443 par Azure Storage ke public endpoint tak pahunch sakti hain?",
+  "opts": [
+   "Haan, kyunke priority 300 wala rule pehle match hota hai",
+   "Nahi, kyunke deny rule tamam public addresses cover karta hai",
+   "Haan, kyunke AllowInternetOutBound pehle aata hai",
+   "Nahi, kyunke service tags sirf inbound rules mein chalte hain"
+  ],
+  "exp": "Rules sab se chote number se chalte hain aur pehle match par rukte hain. Azure Storage ka traffic priority 300 ke allow se 4000 ke deny se pehle match hota hai. Default AllowInternetOutBound (65001) tak baat nahi pahunchti."
+ },
+ "D4-259": {
+  "q": "VNet1 aur VNet2 peered hain. VNet2 ki VM2 par sirf default rules wala NSG hai. Kya VNet1 ki VM1 TCP 1433 par VM2 se connect kar sakti hai?",
+  "opts": [
+   "Haan, kyunke AllowVnetInBound mein peered address spaces shamil hain",
+   "Nahi, kyunke DenyAllInBound doosre VNets rokta hai",
+   "Haan, lekin sirf VPN gateway ke zariye",
+   "Nahi, jab tak VM1 application security group mein na ho"
+  ],
+  "exp": "VirtualNetwork service tag VNet ki apni aur peered ya connected networks ki address spaces cover karta hai. Is liye default rule AllowVnetInBound (65000) DenyAllInBound (65500) se pehle VM1 ko aane deta hai."
+ },
+ "D4-260": {
+  "q": "VNet1 VNet2 (10.5.0.0/16) se peered hai. Aap VNet1 ke ek subnet par 10.5.0.0/16 ki UDR next hop None ke sath lagate hain. Us subnet se VNet2 ke traffic ka kya hoga?",
+  "opts": [
+   "Peering hi use hogi, kyunke system routes jeette hain",
+   "Drop hoga, kyunke same prefix par UDR jeetti hai",
+   "Internet ko jayega, kyunke prefix takrata hai",
+   "Peering aur UDR mein bat jayega"
+  ],
+  "exp": "Same prefix ke routes mein user-defined route BGP aur system routes se behtar hai, peering route samet. Next hop None traffic drop karta hai. Peering dobara use karne ke liye UDR delete karein."
+ },
+ "D4-261": {
+  "q": "VM1 10.4.0.10 tak nahi pahunchti. IP flow verify kehta hai traffic allowed hai. Next hop None deta hai. Wajah kya hai?",
+  "opts": [
+   "VM1 ke NIC ya subnet par laga NSG rule",
+   "Traffic drop karne wala route, ya koi sahi route nahi",
+   "VNet par ghalat DNS server",
+   "Target par Windows Firewall"
+  ],
+  "exp": "IP flow verify VM1 ki taraf ke NSGs ko wajah se nikal deta hai. Next hop None ka matlab hai koi route traffic drop karta hai ya us address ka sahi route nahi, maslan peering nahi ya next hop None wali UDR. Packet target ki taraf nikalta hi nahi."
+ },
+ "D4-262": {
+  "q": "Public Standard load balancer ke probes healthy hain, lekin internet clients time out hote hain. Backend NSG mein ek custom inbound rule hai: AzureLoadBalancer se TCP 80 allow. Aap kya lagayenge?",
+  "opts": [
+   "Internet tag se TCP 80 ka allow rule",
+   "Load balancer ke public IP se TCP 80 ka allow rule",
+   "Doosre port par ek aur health probe",
+   "TCP 80 ka outbound rule"
+  ],
+  "exp": "Load Balancer client ka source IP waise hi rakhta hai, is liye NSG ko internet addresses nazar aate hain, load balancer nahi. AzureLoadBalancer tag sirf probes ke liye hai. Internet (ya client ranges) se TCP 80 allow karein."
+ },
+ "D4-263": {
+  "q": "Internet client public load balancer ke peeche web server se connect karta hai. Packet jis tarteeb se in se guzarta hai woh lagayen.",
+  "items": [
+   "Subnet NSG",
+   "Load-balancing rule healthy backend chunta hai",
+   "Guest OS firewall",
+   "NIC NSG"
+  ],
+  "exp": "Pehle load-balancing rule probe pass karne wala backend chunta hai. Phir inbound traffic subnet NSG, NIC NSG, aur aakhir mein guest OS ke firewall se guzar kar app tak jata hai. Masla bhi isi tarteeb se dhoondein."
+ },
+ "D4-264": {
+  "q": "Standard aur StandardV2 NAT gateway mein availability ka bunyadi farq kya hai?",
+  "opts": [
+   "StandardV2 default mein zone-redundant hai, aur Standard zonal",
+   "Standard default mein zone-redundant hai, aur StandardV2 zonal",
+   "Sirf Standard availability zones ke sath chalta hai",
+   "Dono paired region par fail over karte hain"
+  ],
+  "exp": "StandardV2 NAT gateway default mein apne region ke availability zones par phaila hota hai, jab ke Standard ek zone mein hota hai. StandardV2 zyada throughput aur IPv6 bhi deta hai. Dono regions ke darmiyan kaam nahi karte."
+ },
+ "D4-265": {
+  "q": "Standard NAT gateway ki jagah StandardV2 lana hai. Aap kya karenge?",
+  "opts": [
+   "Usi jagah SKU badlein aur public IP rakhein",
+   "StandardV2 public IPs ke sath naya StandardV2 NAT gateway deploy karein",
+   "Standard public IP upgrade karein aur SKU ke badalne ka intezar karein",
+   "Dono NAT gateways subnet se jorein"
+  ],
+  "exp": "Standard NAT gateway StandardV2 mein upgrade nahi hota, aur StandardV2 sirf StandardV2 public IPs ya prefixes ke sath chalta hai. Naya deploy kar ke subnets us par le jate hain. Subnet ek waqt mein ek hi NAT gateway use karta hai."
+ },
+ "D4-266": {
+  "q": "NAT gateways ke bare mein Haan ya Nahi:",
+  "stmts": [
+   "NAT gateway se internet clients VMs ki taraf connection shuru kar sakte hain",
+   "Subnet ki tamam VMs outbound ke liye isay use karti hain",
+   "StandardV2 NAT gateway Standard public IPs ke sath chalta hai",
+   "NAT gateway subnet se jurta hai, NIC se nahi"
+  ],
+  "exp": "NAT gateway sirf outbound ke liye hai: jawab wapas aate hain, lekin internet se is ke zariye connection shuru nahi hota. Yeh subnets se jurta hai aur un ki tamam VMs ko chalata hai. StandardV2 ko StandardV2 public IPs chahiye."
+ },
+ "D4-267": {
+  "q": "Har kaam ko Application Gateway ke component se match karein.",
+  "items": [
+   "Port aur protocol par requests leta hai",
+   "Tay karta hai request kis backend pool ko jaye",
+   "Backend ki taraf port, protocol, cookie affinity aur timeout",
+   "Dekhta hai ke backend server traffic le sakta hai"
+  ],
+  "targets": [
+   "HTTP settings",
+   "Listener",
+   "Health probe",
+   "Request routing rule"
+  ],
+  "exp": "Listener requests leta hai, request routing rule usay backend pool se jorta hai (zaroorat par path-based), HTTP settings tay karti hain ke gateway backend se kaise baat kare, aur health probes tay karte hain ke kaun se servers ko traffic mile."
+ },
+ "D4-268": {
+  "q": "Ek Application Gateway ko ek hi host name ke liye /images/* ek pool ko aur /api/* doosre ko bhejna hai. Kaun si rule type?",
+  "opts": [
+   "Basic",
+   "Path-based",
+   "Inbound NAT",
+   "Outbound"
+  ],
+  "exp": "Path-based rule URL path ke mutabiq requests alag backend pools ko bhejta hai, baqi ke liye default pool. Basic rule listener ki tamam requests ek pool ko bhejta hai. Inbound NAT aur outbound rules Azure Load Balancer ke hain."
+ },
+ "D4-269": {
+  "q": "Ek Application Gateway ko shop.contoso.com aur blog.contoso.com ek hi port par alag backend pools se chalane hain. Aap kya configure karenge?",
+  "opts": [
+   "Do frontend ports",
+   "Multi-site listeners",
+   "Cookie-based affinity",
+   "Ek basic rule mein do health probes"
+  ],
+  "exp": "Multi-site listeners ek hi port par host name se requests pehchante hain, aur har listener ka apna rule aur backend pool hota hai. Affinity user ko ek server par rakhti hai, aur probes sirf health dekhte hain."
+ },
+ "D4-270": {
+  "q": "Application Gateway ke default probe ko backend HTTP 302 jawab deta hai. Yeh kaisa samjha jayega?",
+  "opts": [
+   "Healthy, kyunke 200 se 399 healthy hai",
+   "Unhealthy, kyunke sirf 200 healthy hai",
+   "Healthy, kyunke har jawab healthy hai",
+   "Unhealthy, kyunke redirect ko custom listener chahiye"
+  ],
+  "exp": "Application Gateway ka default probe 200 se 399 tak ke status codes ko healthy samajhta hai. Azure Load Balancer ka HTTP probe is se alag hai, usay 200 chahiye. Custom probe doosre codes ya body ka text match kar sakta hai."
+ },
+ "D4-271": {
+  "q": "Application Gateway v2 ke subnet par NSG lagane ke baad us ki management fail hoti hai. Kaun sa inbound rule nahi hai?",
+  "opts": [
+   "VirtualNetwork se TCP 22",
+   "GatewayManager se TCP 65200-65535",
+   "AzureBastionSubnet se TCP 3389",
+   "Internet se UDP 53"
+  ],
+  "exp": "Application Gateway v2 ko infrastructure ke liye GatewayManager service tag se inbound TCP 65200–65535 chahiye (v1 mein 65503–65534). AzureLoadBalancer ka traffic aur clients ke listener ports bhi allow hone chahiye."
+ },
+ "D4-272": {
+  "q": "Client se Application Gateway tak aur gateway se backend servers tak traffic encrypt ho. Aap kya configure karenge?",
+  "opts": [
+   "HTTP backend settings ke sath TLS termination",
+   "HTTPS backend settings ke sath end-to-end TLS",
+   "Standard load balancer par TCP rule",
+   "WAF policy ke sath cookie-based affinity"
+  ],
+  "exp": "End-to-end TLS mein gateway client ka TLS session khatam kar ke apne rules laga sakta hai, aur backend se naya TLS connection kholta hai, kyunke backend HTTP settings HTTPS use karti hain. Sirf TLS termination mein backend tak traffic aam tor par encrypt nahi hota."
+ },
+ "D4-273": {
+  "q": "Health probe ka path aise page par badla gaya jo maujood nahi, aur users ko Application Gateway se 502 Bad Gateway aata hai. Kyun?",
+  "opts": [
+   "Probe path badalne ke waqt hi listener ka certificate expire ho gaya",
+   "Backend servers unhealthy mark hain, is liye koi server request nahi le sakta",
+   "WAF rule set mein na hone wala har path rokta hai",
+   "Gateway ke subnet ke IP addresses khatam ho gaye"
+  ],
+  "exp": "Ghalat custom probe path par servers 404 dete hain, is liye gateway unhein unhealthy mark karta hai. Koi healthy server nahi to clients ko 502 milta hai. Path theek karein, ya probe ke qabil-e-qubool status codes set karein."
+ },
+ "D4-274": {
+  "q": "Aap Application Gateway v2 ka subnet plan kar rahe hain jo apni poori had tak scale ho sake. Kya lagu hota hai?",
+  "opts": [
+   "Web VMs ke sath shared subnet, kam se kam /28",
+   "Dedicated subnet, kam se kam /24",
+   "VPN gateway ka GatewaySubnet, kam se kam /27",
+   "AzureAppGatewaySubnet naam ka dedicated subnet, kam se kam /26"
+  ],
+  "exp": "Application Gateway ko apna subnet chahiye jis mein koi doosra resource na ho, aur naam koi bhi ho sakta hai. v2 SKU ke liye Microsoft kam se kam /24 recommend karta hai, kyunke woh 125 instances tak scale hota hai aur har ek ko addresses chahiye."
+ },
+ "D4-275": {
+  "q": "Admins ko paanch VNets ki 100 VMs par RDP aur SSH chahiye, sab hub se peered hain. Kisi VM ka public IP na ho. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Har VNet mein ek Azure Bastion",
+   "Hub VNet mein ek Azure Bastion",
+   "Har VNet mein public IP wali jump VM",
+   "Har VNet mein point-to-site VPN"
+  ],
+  "exp": "Hub ka ek Bastion peered VNets ki VMs tak pahunchta hai, is liye ek hi host chalana hai aur VMs par public IP nahi. Har VNet mein Bastion, jump VM ya VPN paanch guna kaam aur kharcha hai."
+ },
+ "D4-276": {
+  "q": "Teen peered VNets mein VMs rozana banti aur delete hoti hain. Woh ek doosre ke naam sab se kam administrative mehnat mein resolve karein. Aap kya karenge?",
+  "opts": [
+   "Har ghante chalne wale script se public DNS zone mein A records dalein",
+   "Ek private DNS zone ko teenon VNets se auto-registration ke sath link karein",
+   "VM image ki hosts file edit karein",
+   "Har VNet mein DNS server VM lagayen"
+  ],
+  "exp": "Auto-registration VMs ke aane jane ke sath records add aur remove karta hai, aur links se har VNet zone resolve karta hai. VNet ka ek hi registration zone hota hai, lekin zone kai VNets se link ho sakta hai. Baqi mein baar baar kaam hai."
+ },
+ "D4-277": {
+  "q": "Web VMs aksar add aur remove hoti hain. Sirf web VMs 1433 par database VMs tak pahunchein. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Har web VM ke IP address ka ek NSG rule, jo VM add hone par badla jaye",
+   "Ek NSG rule mein web aur database VMs ke application security groups",
+   "Har web VM ke liye alag VNet",
+   "1433 ko database subnet bhejne wali UDR"
+  ],
+  "exp": "Application security groups se rule kehta hai \"asg-web se asg-db tak 1433\", aur nayi web VM ka NIC bas group mein dalna hota hai. IP wale rules har dafa badalne parte hain, aur routes ports allow ya deny nahi karte."
+ },
+ "D4-278": {
+  "ctx": "Spoke1 aur Spoke2 dono Hub se peered hain. Hub mein 10.0.1.4 par firewall VM (NVA) hai jis par IP forwarding on hai. Spoke1 ki VMs ko Spoke2 ki VMs tak pahunchna hai.",
+  "q": "Hal: Aap dono spoke subnets par UDRs lagate hain jo doosre spoke ki range 10.0.1.4 ko bhejti hain, aur peerings par forwarded traffic allow karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "UDRs dono simton ka traffic NVA ko bhejti hain, jo IP forwarding on hone ki wajah se agay bhejta hai. Peerings par forwarded traffic allow karne se spoke woh packets leta hai jo hub ke apne addresses ke nahi."
+ },
+ "D4-279": {
+  "ctx": "Spoke1 aur Spoke2 dono Hub se peered hain. Hub mein 10.0.1.4 par firewall VM (NVA) hai jis par IP forwarding on hai. Spoke1 ki VMs ko Spoke2 ki VMs tak pahunchna hai.",
+  "q": "Hal: Aap hub peerings par \"Allow gateway transit\" aur spoke peerings par \"Use remote gateways\" on karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Gateway transit se spokes hub ka VPN ya ExpressRoute gateway use karte hain. Is se peering transitive nahi hoti aur traffic NVA ko nahi jata, aur yahan hub mein gateway hai hi nahi."
+ },
+ "D4-280": {
+  "ctx": "Spoke1 aur Spoke2 dono Hub se peered hain. Hub mein 10.0.1.4 par firewall VM (NVA) hai jis par IP forwarding on hai. Spoke1 ki VMs ko Spoke2 ki VMs tak pahunchna hai.",
+  "q": "Hal: Aap Spoke1 aur Spoke2 ke darmiyan seedhi VNet peering dono simton mein banate hain. Un ki address spaces overlap nahi karti. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Seedhi peering dono VNets ke darmiyan system routes banati hai, is liye VMs hub ke baghair ek doosre tak pahunchti hain. Traffic NVA se nahi guzarta, jo is maqsad mein mana nahi. Inspection lazmi hoti to NVA ke zariye UDRs chahiye hoti."
+ },
+ "D4-281": {
+  "q": "NIC ke effective routes dekhein. Haan ya Nahi:",
+  "stmts": [
+   "10.1.4.20 ka traffic VNet ke andar rehta hai",
+   "10.2.7.5 ka traffic 10.0.1.4 se guzarta hai",
+   "52.1.2.3 ka traffic seedha internet jata hai",
+   "192.168.10.8 ka traffic VPN gateway use karta hai"
+  ],
+  "exp": "10.1.4.20 VNet ki apni range mein hai. 10.2.7.5 dono 10.2.0.0/16 routes se match hota hai, lekin peering route invalid hai kyunke UDR ne us ki jagah li. Default route appliance ki UDR hai. 192.168.0.0/16 VPN gateway se seekha gaya."
+ },
+ "D4-282": {
+  "q": "Web VM par lage wahid NSG ke yeh tamam inbound rules hain. Haan ya Nahi:",
+  "stmts": [
+   "203.0.113.50 TCP 443 par connect kar sakta hai",
+   "198.51.100.7 TCP 443 par connect kar sakta hai",
+   "198.51.100.7 TCP 22 par connect kar sakta hai",
+   "Usi VNet ki VM TCP 3389 par connect kar sakti hai"
+  ],
+  "exp": "Priority 100 ka deny sirf port 443 ke liye hai, is liye 198.51.100.7 443 par deny hai aur rule 300 se 22 par allow. Baqi internet clients ko rule 200 se 443 milta hai. VNet ka traffic default rule 65000 se allow hai."
+ },
+ "D4-283": {
+  "q": "Yeh internal Standard load balancer dekhein. NSGs traffic allow karte hain. Haan ya Nahi:",
+  "stmts": [
+   "Port 80 ke naye connections vm1 ko ja sakte hain",
+   "Port 80 ke naye connections vm3 ko ja sakte hain",
+   "Internet ke clients 10.0.2.10 use kar sakte hain",
+   "vm1 aur vm2 ko is load balancer se outbound internet milta hai"
+  ],
+  "exp": "vm1 ka probe healthy hai, is liye usay naye connections milte hain, jab ke vm3 ka probe fail hai. Frontend private address hai jo sirf VNet aur jure networks se pahunch mein hai. Internal Standard load balancer outbound SNAT nahi deta: NAT gateway use karein."
+ },
+ "D4-284": {
+  "q": "Application Gateway ki configuration dekhein. Haan ya Nahi:",
+  "stmts": [
+   "https://shop.contoso.com/images/a.png pool-static ko jata hai",
+   "https://shop.contoso.com/cart pool-web ko jata hai",
+   "https://shop.contoso.com/api/orders pool-static ko jata hai",
+   "Gateway se pool-web tak traffic encrypt hai"
+  ],
+  "exp": "Path-based rule /images/* ko pool-static aur /api/* ko pool-api bhejta hai. /cart kisi path se match nahi hota, is liye default pool-web ko jata hai. pool-web ki HTTP settings port 80 par HTTP hain, is liye woh traffic encrypt nahi."
  }
 }

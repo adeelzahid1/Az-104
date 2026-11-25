@@ -1,0 +1,378 @@
+[
+ {
+  "id": "D5-243",
+  "sub": "Backup policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A VM is backed up once a day at 23:00. Its disk is corrupted at 20:00 the next day. How much data can be lost with the backup alone?",
+  "opts": [
+   "Up to 3 hours",
+   "Up to 21 hours",
+   "Up to 24 minutes",
+   "None, because backup replicates continuously"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The last recovery point is from 23:00, and the failure comes 21 hours later, so changes from those 21 hours are lost. To lose less, use an Enhanced policy with several backups a day, or Site Recovery for continuous replication.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"
+ },
+ {
+  "id": "D5-244",
+  "sub": "Backup policy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A VM needs an RPO of 4 hours with Azure Backup. Which policy do you use?",
+  "opts": [
+   "A Standard policy with a daily schedule",
+   "An Enhanced policy with a schedule every 4 hours",
+   "A Standard policy with 5 days of instant restore",
+   "An Enhanced policy with a daily schedule"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The recovery point objective is the time between backups, so backups must run every 4 hours. Only the Enhanced policy supports several backups a day, with 4 hours as its shortest interval. Instant restore makes restores faster but doesn't add backups.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-support-matrix-iaas"
+ },
+ {
+  "id": "D5-245",
+  "sub": "Backup vs ASR",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An app may lose at most 15 minutes of data and must run again within 1 hour after a regional outage. Which solution fits?",
+  "opts": [
+   "A daily VM backup in a GRS vault with cross-region restore",
+   "Azure Site Recovery to another region with a recovery plan",
+   "Managed disk snapshots every hour",
+   "An availability set with three fault domains"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Site Recovery replicates continuously and creates crash-consistent points every 5 minutes, and a recovery plan starts the VMs in order, so both targets can be met. A daily backup and hourly snapshots lose more than 15 minutes, and an availability set doesn't survive a regional outage.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-common-questions"
+ },
+ {
+  "id": "D5-246",
+  "sub": "Backup policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Daily backups are kept 30 days and monthly backups 12 months. Today you need a file as it was exactly 45 days ago. What can you restore?",
+  "opts": [
+   "The daily backup from exactly 45 days ago",
+   "Only the monthly points that are older than 30 days",
+   "Any day of the past 12 months",
+   "Nothing older than 14 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Daily points older than 30 days have been deleted. For older dates only the monthly points are left, so you restore the monthly point closest to the date you need. Choose daily retention by how far back you need daily detail.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-introduction"
+ },
+ {
+  "id": "D5-247",
+  "sub": "Restore",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A VM must be restored fast after a bad update this morning. The last backup ran 8 hours ago, and instant restore is set to 2 days. Why is the restore quick?",
+  "opts": [
+   "It uses the snapshot that is still kept with the disks",
+   "It uses the archive tier of the vault",
+   "It copies only the changed files from the paired region",
+   "It uses the temporary disk of the VM"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Within the instant restore period the recovery point still exists as a local snapshot, so data doesn't have to be copied from the vault first. After that period restores come from the vault and take longer. Archive is the slowest.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-instant-restore-capability"
+ },
+ {
+  "id": "D5-248",
+  "sub": "Site Recovery",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After a ransomware attack at 09:00, you notice at 13:00 that all replicated VMs are encrypted in both regions. Site Recovery keeps recovery points for 24 hours. What is the best option there?",
+  "opts": [
+   "Fail over to the Latest recovery point",
+   "Fail over to a custom recovery point from before 09:00",
+   "Run a test failover to the Latest processed recovery point",
+   "Re-protect the VMs to the source region"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Replication also copies damaged data, so the latest points are encrypted. A custom recovery point from before the attack is still kept, because retention is 24 hours. For longer protection against such attacks, keep Azure Backup as well.",
+  "link": "https://learn.microsoft.com/en-us/azure/site-recovery/azure-to-azure-common-questions"
+ },
+ {
+  "id": "D5-249",
+  "sub": "Backup and ASR",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each requirement to the term.",
+  "items": [
+   "The app must run again within 2 hours",
+   "At most 15 minutes of data may be lost",
+   "Backups must be available for 7 years"
+  ],
+  "targets": [
+   "RPO",
+   "Retention",
+   "RTO"
+  ],
+  "ans": [
+   2,
+   0,
+   1
+  ],
+  "exp": "The recovery time objective (RTO) is how long you may be down, the recovery point objective (RPO) is how much data you may lose, and retention is how long recovery points are kept. Backup frequency sets the RPO, and retention is chosen separately.",
+  "link": "https://learn.microsoft.com/en-us/azure/reliability/concept-business-continuity-high-availability-disaster-recovery"
+ },
+ {
+  "id": "D5-250",
+  "sub": "Backup vaults",
+  "type": "yesno",
+  "diff": 3,
+  "q": "A Recovery Services vault in West Europe is GRS with cross-region restore. VM1 (West Europe) was backed up last night. The whole region fails at noon. Answer Yes or No:",
+  "stmts": [
+   "VM1 can be restored in North Europe, the paired region",
+   "Everything VM1 wrote since last night can be restored",
+   "Cross-region restore starts VM1 automatically",
+   "Site Recovery would have given a lower RTO"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "Cross-region restore lets you restore VM1 in the paired region yourself, from recovery points copied there. The secondary region can lag behind, and nothing after the last point can be restored. Site Recovery keeps replicated disks ready, so failing over is faster than restoring.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-create-recovery-services-vault"
+ },
+ {
+  "id": "D5-251",
+  "sub": "Log Analytics",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You change a Log Analytics table from the Analytics plan to the Auxiliary plan. What happens to alert rules that use the table?",
+  "opts": [
+   "They keep working but cost more for every query",
+   "They stop working for that table",
+   "They run once a day instead",
+   "They are converted to metric alerts"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "When a table is switched from Analytics to Auxiliary, alerts stop working for it. The cheaper plans are meant for data that's rarely queried. Keep tables that feed alerts in the Analytics plan.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-table-plans"
+ },
+ {
+  "id": "D5-252",
+  "sub": "Log Analytics",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How often can you switch the plan of one Log Analytics table?",
+  "opts": [
+   "Once per hour",
+   "Once per day",
+   "Once per week",
+   "Once per year"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "The plan of a table can be switched once a week, so choose with care. Before you switch a table, check what uses it: some features, such as alerts, don't work on every plan, and queries on the cheaper plans are billed separately.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-table-plans"
+ },
+ {
+  "id": "D5-253",
+  "sub": "Log Analytics",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A table with 90 days of analytics retention is switched to the Basic plan. Total retention stays the same. What happens to data that is older than 30 days?",
+  "opts": [
+   "It is deleted at once",
+   "It is treated as long-term retention",
+   "It moves to another workspace",
+   "It stays fully interactive for 90 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Total retention doesn't change, but under the Basic plan data older than 30 days counts as long-term retention. To query it you use a search job or similar, at extra cost. The data isn't lost.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-table-plans"
+ },
+ {
+  "id": "D5-254",
+  "sub": "Azure Files backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Snapshots of an Azure file share must survive even if someone deletes the storage account. Which kind of backup do you configure?",
+  "opts": [
+   "Snapshot backup only",
+   "Vaulted backup",
+   "Blob soft delete",
+   "Share snapshots by hand"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Snapshots live in the same storage account as the share, so they're lost with it. Vaulted backup copies the data to the vault, from where it can be restored to another location. Blob soft delete doesn't cover file shares.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"
+ },
+ {
+  "id": "D5-255",
+  "sub": "Azure Files backup",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No about backups of Azure file shares:",
+  "stmts": [
+   "With snapshot backup, the data is copied to the vault",
+   "Restoring from a snapshot is usually faster than from the vault",
+   "Vaulted backup transfers only blocks changed since the last backup after the first one",
+   "File shares are protected with a Recovery Services vault"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "In the snapshot tier only metadata is kept in the vault, and the snapshot stays with the share, which makes restores fast. The vaulted tier transfers changed blocks to the vault. Azure Files is protected with a Recovery Services vault.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/azure-file-share-backup-overview"
+ },
+ {
+  "id": "D5-256",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "q": "40 VMs in RG1, and any VM added later, must raise an alert at 90% CPU. Which option needs the least administrative effort?",
+  "opts": [
+   "One metric alert rule per VM, created by a script",
+   "One metric alert rule scoped to RG1 for virtual machines",
+   "One log search alert per VM with its own action group",
+   "One Service Health alert for the region"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A metric alert can target all VMs in a resource group or subscription and includes VMs that are added later, so there's one rule to maintain. A script has to run again for each new VM, and Service Health reports Azure problems, not CPU.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-types"
+ },
+ {
+  "id": "D5-257",
+  "sub": "Backup",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Every new VM with the tag backup=yes must be protected automatically, in every subscription. Which option needs the least administrative effort?",
+  "opts": [
+   "A weekly compliance report and manual backup configuration",
+   "An Azure Policy with DeployIfNotExists at a management group",
+   "A resource lock on every new VM",
+   "A budget alert that starts a runbook"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A built-in backup policy with DeployIfNotExists can configure backup on VMs with a given tag, and assigning it at a management group covers all subscriptions. Existing VMs need a remediation task. Locks and budgets don't configure backup.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-auto-enable-backup"
+ },
+ {
+  "id": "D5-258",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
+  "q": "Solution: You create an alert processing rule scoped to RG-Prod that suppresses notifications on a monthly schedule. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "An alert processing rule with \"suppress notifications\" stops action groups during the window, while alerts still fire and are recorded. The alert rules themselves aren't changed, and the schedule can recur.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ },
+ {
+  "id": "D5-259",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
+  "q": "Solution: You run a script that disables all alert rules in RG-Prod during the window and enables them afterwards. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Disabled rules don't fire, so alerts in the window aren't recorded, and the goal says that no alert rule may be changed. An alert processing rule stops only the notifications.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ },
+ {
+  "id": "D5-260",
+  "sub": "Backup policy",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Frequency:        Every 4 hours, start 08:00, duration 12 hours\nInstant restore:  keep snapshots 3 days\nDaily:            30 days\nWeekly:           Sunday, 12 weeks\nMonthly:          First Sunday, 12 months",
+  "q": "Review the backup policy of vm1. Answer Yes or No:",
+  "stmts": [
+   "A recovery point from 5 hours ago can be restored without reading from the vault",
+   "The policy can give an RPO of 4 hours all day and night",
+   "The backup of last Sunday is kept for 12 weeks",
+   "This is a Standard policy"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Snapshots are kept 3 days for instant restore. Backups run every 4 hours only from 08:00 for 12 hours, so at night the gap is longer than 4 hours. Weekly points (Sunday) are kept 12 weeks. Several backups a day need an Enhanced policy.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/backup-support-matrix-iaas"
+ },
+ {
+  "id": "D5-261",
+  "sub": "KQL",
+  "type": "mcq",
+  "diff": 3,
+  "code": "Heartbeat\n| where TimeGenerated > ago(24h)\n| summarize LastSeen = max(TimeGenerated) by Computer\n| where LastSeen < ago(10m)",
+  "q": "What does this query return?",
+  "opts": [
+   "Every computer that exists, with the time of its last heartbeat in the past 24 hours",
+   "Computers that sent a heartbeat in the past 24 hours, but none in the last 10 minutes",
+   "Computers that have never sent a heartbeat",
+   "The 10 computers with the most heartbeats"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The first line keeps heartbeats of the last 24 hours, summarize finds the latest one per computer, and the last line keeps computers whose latest heartbeat is older than 10 minutes. A computer with no heartbeat in 24 hours doesn't appear at all.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
+ },
+ {
+  "id": "D5-262",
+  "sub": "KQL",
+  "type": "mcq",
+  "diff": 3,
+  "code": "Event\n| where EventLevelName == \"Error\"\n| summarize Errors = count() by Computer, bin(TimeGenerated, 1h)\n| where Errors > 5",
+  "q": "What does the result of this query show?",
+  "opts": [
+   "One row per sign-in error",
+   "The number of errors per computer and hour, for computers with more than 5 in that hour",
+   "The five computers with the most errors in total over the whole time range",
+   "The hours in which no errors occurred"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "summarize counts errors for each computer and one-hour bucket, and the last line keeps only buckets with more than 5 errors. It doesn't pick a top five: that would need top 5 by Errors.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
+ }
+]

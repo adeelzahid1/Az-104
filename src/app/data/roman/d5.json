@@ -2410,5 +2410,207 @@
    "Network In Total"
   ],
   "exp": "Percentage CPU aur Network In Total jaise host metrics platform metrics hain, jo khud ba khud aur free collect hote hain. Disk ki khaali jagah aur Windows event logs sirf guest OS ke andar hote hain, is liye unhein data collection rule ke sath Azure Monitor Agent chahiye."
+ },
+ "D5-243": {
+  "q": "VM ka backup rozana 23:00 par hota hai. Agle din 20:00 par disk kharab hoti hai. Sirf backup se kitna data ja sakta hai?",
+  "opts": [
+   "3 ghante tak",
+   "21 ghante tak",
+   "24 minute tak",
+   "Kuch nahi, kyunke backup musalsal replicate karta hai"
+  ],
+  "exp": "Aakhri recovery point 23:00 ka hai, aur kharabi 21 ghante baad, is liye un 21 ghanton ki tabdeeliyan jati hain. Kam nuqsan ke liye din mein kai backups wali Enhanced policy, ya musalsal replication ke liye Site Recovery."
+ },
+ "D5-244": {
+  "q": "VM ko Azure Backup ke sath 4 ghante ka RPO chahiye. Kaun si policy?",
+  "opts": [
+   "Rozana schedule wali Standard policy",
+   "Har 4 ghante ke schedule wali Enhanced policy",
+   "5 din instant restore wali Standard policy",
+   "Rozana schedule wali Enhanced policy"
+  ],
+  "exp": "RPO backups ke darmiyan ka waqt hai, is liye har 4 ghante backup chahiye. Din mein kai backups sirf Enhanced policy deti hai, aur us ka sab se chota waqfa 4 ghante hai. Instant restore wapsi tez karta hai, backups nahi barhata."
+ },
+ "D5-245": {
+  "q": "App zyada se zyada 15 minute ka data kho sakti hai aur regional outage ke 1 ghante mein dobara chalni chahiye. Kaun sa hal?",
+  "opts": [
+   "GRS vault mein rozana VM backup, cross-region restore ke sath",
+   "Recovery plan ke sath doosre region tak Azure Site Recovery",
+   "Har ghante managed disk snapshots",
+   "Teen fault domains wala availability set"
+  ],
+  "exp": "Site Recovery musalsal replicate karta hai aur har 5 minute crash-consistent point banata hai, aur recovery plan VMs tarteeb se shuru karta hai, is liye dono hadein poori hoti hain. Rozana backup aur ghante ke snapshots 15 minute se zyada khote hain, aur availability set regional outage nahi jhelta."
+ },
+ "D5-246": {
+  "q": "Rozana backups 30 din aur mahana backups 12 mahine rakhe jate hain. Aaj aap ko theek 45 din pehle wali file chahiye. Kya restore ho sakta hai?",
+  "opts": [
+   "Theek 45 din pehle ka rozana backup",
+   "Sirf 30 din se purane mahana points",
+   "Pichle 12 mahinon ka koi bhi din",
+   "14 din se purana kuch nahi"
+  ],
+  "exp": "30 din se purane rozana points delete ho chuke. Purani tareekhon ke liye sirf mahana points bachte hain, is liye apni tareekh ke qareeb ka mahana point restore karein. Rozana retention is hisaab se rakhein ke kitne din pehle tak rozana tafseel chahiye."
+ },
+ "D5-247": {
+  "q": "Aaj subah ke kharab update ke baad VM jaldi restore karni hai. Aakhri backup 8 ghante pehle hua, aur instant restore 2 din hai. Restore tez kyun hai?",
+  "opts": [
+   "Woh snapshot use hota hai jo abhi disks ke sath rakha hai",
+   "Vault ka archive tier use hota hai",
+   "Paired region se sirf badli hui files copy hoti hain",
+   "VM ki temporary disk use hoti hai"
+  ],
+  "exp": "Instant restore ke arse mein recovery point local snapshot ki surat mein maujood hota hai, is liye data pehle vault se copy nahi karna parta. Us ke baad restore vault se hota hai aur zyada waqt leta hai. Archive sab se sust hai."
+ },
+ "D5-248": {
+  "q": "09:00 par ransomware hamla hua, 13:00 par pata chala ke replicated VMs dono regions mein encrypt hain. Site Recovery 24 ghante ke recovery points rakhta hai. Wahan sab se behtar kya hai?",
+  "opts": [
+   "Latest recovery point par fail over",
+   "09:00 se pehle ke custom recovery point par fail over",
+   "Latest processed recovery point par test failover",
+   "VMs ko source region ki taraf re-protect"
+  ],
+  "exp": "Replication kharab data bhi copy karti hai, is liye taza points encrypted hain. Hamle se pehle ka custom recovery point abhi maujood hai, kyunke retention 24 ghante hai. Aise hamlon se lambi hifazat ke liye Azure Backup bhi rakhein."
+ },
+ "D5-249": {
+  "q": "Har zaroorat ko term se match karein.",
+  "items": [
+   "App 2 ghante mein dobara chale",
+   "Zyada se zyada 15 minute ka data jaye",
+   "Backups 7 saal tak mil saken"
+  ],
+  "targets": [
+   "RPO",
+   "Retention",
+   "RTO"
+  ],
+  "exp": "RTO yeh hai ke kitni der band reh sakte hain, RPO yeh ke kitna data ja sakta hai, aur retention yeh ke recovery points kitna arsa rahein. Backup kitni dafa hota hai RPO tay karta hai, retention alag chuni jati hai."
+ },
+ "D5-250": {
+  "q": "West Europe ka Recovery Services vault GRS hai aur cross-region restore on hai. VM1 (West Europe) ka backup kal raat hua. Dopahar ko poora region band hota hai. Haan ya Nahi:",
+  "stmts": [
+   "VM1 paired region North Europe mein restore ho sakti hai",
+   "Kal raat ke baad VM1 ne jo likha sab restore ho sakta hai",
+   "Cross-region restore VM1 ko khud start karta hai",
+   "Site Recovery ka RTO kam hota"
+  ],
+  "exp": "Cross-region restore se aap khud VM1 ko paired region mein wahan copy hue recovery points se restore karte hain. Secondary region peeche ho sakta hai, aur aakhri point ke baad ka kuch restore nahi hota. Site Recovery replicated disks tayyar rakhta hai, is liye fail over restore se tez hai."
+ },
+ "D5-251": {
+  "q": "Aap Log Analytics table ko Analytics plan se Auxiliary plan par karte hain. Us table ke alert rules ka kya hoga?",
+  "opts": [
+   "Chalte rahenge lekin har query mehngi hogi",
+   "Us table ke liye kaam karna chhor denge",
+   "Din mein ek dafa chalenge",
+   "Metric alerts ban jayenge"
+  ],
+  "exp": "Table Analytics se Auxiliary par jane par us ke alerts kaam nahi karte. Saste plans us data ke liye hain jo kam query hota hai. Alerts wali tables Analytics plan mein rakhein."
+ },
+ "D5-252": {
+  "q": "Ek Log Analytics table ka plan kitni dafa badla ja sakta hai?",
+  "opts": [
+   "Ghante mein ek dafa",
+   "Din mein ek dafa",
+   "Hafte mein ek dafa",
+   "Saal mein ek dafa"
+  ],
+  "exp": "Table ka plan hafte mein ek dafa badla ja sakta hai, is liye soch kar chunein. Badalne se pehle dekhein table kaun use karta hai: kuch features, jaise alerts, har plan par nahi chalte, aur saste plans ki queries ka alag bill aata hai."
+ },
+ "D5-253": {
+  "q": "90 din analytics retention wali table Basic plan par ki jati hai. Total retention wahi rehti hai. 30 din se purane data ka kya hoga?",
+  "opts": [
+   "Foran delete",
+   "Long-term retention samjha jayega",
+   "Doosre workspace mein jayega",
+   "90 din tak poora interactive rahega"
+  ],
+  "exp": "Total retention nahi badalti, lekin Basic plan mein 30 din se purana data long-term retention gina jata hai. Us ki query search job waghera se hoti hai, extra kharche ke sath. Data gum nahi hota."
+ },
+ "D5-254": {
+  "q": "Azure file share ke backups storage account delete hone par bhi bachne chahiye. Kaun sa backup configure karenge?",
+  "opts": [
+   "Sirf snapshot backup",
+   "Vaulted backup",
+   "Blob soft delete",
+   "Haath se share snapshots"
+  ],
+  "exp": "Snapshots share wale storage account mein hi hote hain, is liye us ke sath jate hain. Vaulted backup data vault mein copy karta hai, jahan se doosri jagah restore ho sakta hai. Blob soft delete file shares ke liye nahi."
+ },
+ "D5-255": {
+  "q": "Azure file shares ke backups ke bare mein Haan ya Nahi:",
+  "stmts": [
+   "Snapshot backup mein data vault mein copy hota hai",
+   "Snapshot se restore aam tor par vault se tez hota hai",
+   "Vaulted backup pehle ke baad sirf badle hue blocks bhejta hai",
+   "File shares Recovery Services vault se protect hote hain"
+  ],
+  "exp": "Snapshot tier mein vault mein sirf metadata hota hai, aur snapshot share ke sath rehta hai, is liye restore tez hai. Vaulted tier badle hue blocks vault ko bhejta hai. Azure Files Recovery Services vault se protect hota hai."
+ },
+ "D5-256": {
+  "q": "RG1 ki 40 VMs, aur baad mein add hone wali har VM, 90% CPU par alert de. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Script se har VM ka ek metric alert rule",
+   "Virtual machines ke liye RG1 scope ka ek metric alert rule",
+   "Har VM ka log search alert, apne action group ke sath",
+   "Region ka ek Service Health alert"
+  ],
+  "exp": "Metric alert resource group ya subscription ki tamam VMs par lag sakta hai aur baad mein aane wali VMs bhi shamil hoti hain, is liye ek hi rule sambhalna hai. Script har nayi VM par dobara chalani parti hai, aur Service Health Azure ke masle batata hai, CPU nahi."
+ },
+ "D5-257": {
+  "q": "backup=yes tag wali har nayi VM, har subscription mein, khud protect ho. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Hafta-war compliance report aur haath se backup configure",
+   "Management group par DeployIfNotExists wali Azure Policy",
+   "Har nayi VM par resource lock",
+   "Budget alert jo runbook chalaye"
+  ],
+  "exp": "DeployIfNotExists wali built-in backup policy diye gaye tag ki VMs par backup configure karti hai, aur management group par assign karne se tamam subscriptions cover hoti hain. Mojooda VMs ko remediation task chahiye. Locks aur budgets backup configure nahi karte."
+ },
+ "D5-258": {
+  "ctx": "Mahana maintenance window mein RG-Prod ki tamam VMs ke alert notifications band hon. Alerts record hote rahein, aur koi alert rule na badle.",
+  "q": "Hal: Aap RG-Prod scope ka alert processing rule banate hain jo mahana schedule par notifications rokta hai. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "\"Suppress notifications\" wala alert processing rule window mein action groups rokta hai, jab ke alerts fire aur record hote rehte hain. Alert rules khud nahi badalte, aur schedule dohraya ja sakta hai."
+ },
+ "D5-259": {
+  "ctx": "Mahana maintenance window mein RG-Prod ki tamam VMs ke alert notifications band hon. Alerts record hote rahein, aur koi alert rule na badle.",
+  "q": "Hal: Aap window mein RG-Prod ke tamam alert rules band aur baad mein on karne wala script chalate hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Band rules fire nahi hote, is liye window ke alerts record nahi hote, aur maqsad mein hai ke koi alert rule na badle. Alert processing rule sirf notifications rokta hai."
+ },
+ "D5-260": {
+  "q": "vm1 ki backup policy dekhein. Haan ya Nahi:",
+  "stmts": [
+   "5 ghante pehle ka recovery point vault se parhe baghair restore ho sakta hai",
+   "Policy din raat 4 ghante ka RPO de sakti hai",
+   "Pichle Sunday ka backup 12 hafte rakha jata hai",
+   "Yeh Standard policy hai"
+  ],
+  "exp": "Instant restore ke liye snapshots 3 din rakhe jate hain. Backups 08:00 se 12 ghante tak har 4 ghante chalte hain, is liye raat ka waqfa 4 ghante se zyada hai. Weekly points (Sunday) 12 hafte rehte hain. Din mein kai backups ke liye Enhanced policy chahiye."
+ },
+ "D5-261": {
+  "q": "Yeh query kya deti hai?",
+  "opts": [
+   "Har maujood computer, pichle 24 ghante mein us ke aakhri heartbeat ke waqt ke sath",
+   "Woh computers jinhon ne pichle 24 ghante mein heartbeat bheja, lekin aakhri 10 minute mein nahi",
+   "Woh computers jinhon ne kabhi heartbeat nahi bheja",
+   "Sab se zyada heartbeats wale 10 computers"
+  ],
+  "exp": "Pehli line pichle 24 ghante ke heartbeats rakhti hai, summarize har computer ka aakhri nikalta hai, aur aakhri line woh computers rakhti hai jin ka aakhri heartbeat 10 minute se purana hai. 24 ghante mein koi heartbeat na ho to computer aata hi nahi."
+ },
+ "D5-262": {
+  "q": "Is query ka nateeja kya dikhata hai?",
+  "opts": [
+   "Har sign-in error ki ek row",
+   "Har computer aur ghante ke errors, jahan us ghante mein 5 se zyada hon",
+   "Poore arse mein kul errors ke hisaab se sab se upar ke paanch computers",
+   "Woh ghante jin mein koi error nahi hua"
+  ],
+  "exp": "summarize har computer aur ek ghante ke hisse ke errors ginta hai, aur aakhri line sirf 5 se zyada errors wale hisse rakhti hai. Yeh top five nahi chunta: us ke liye top 5 by Errors chahiye."
  }
 }

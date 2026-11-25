@@ -1,0 +1,355 @@
+[
+ {
+  "id": "D3-253",
+  "sub": "VM sizing",
+  "type": "mcq",
+  "diff": 1,
+  "q": "A database VM needs more memory. You change its size from D4s_v5 to E8s_v5. What kind of scaling is this?",
+  "opts": [
+   "Horizontal scaling (out)",
+   "Vertical scaling (up)",
+   "Geographic scaling",
+   "Predictive autoscale"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Vertical scaling gives one machine more or fewer resources, and it usually restarts the VM. Horizontal scaling changes the number of instances, as a scale set does. Predictive autoscale is a way to scale out ahead of expected load.",
+  "link": "https://learn.microsoft.com/en-us/azure/architecture/best-practices/auto-scaling"
+ },
+ {
+  "id": "D3-254",
+  "sub": "VMSS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A stateless web tier has unpredictable peaks, and users must not notice when capacity changes. Which approach fits best?",
+  "opts": [
+   "Scale up one large VM during peaks",
+   "Scale out a VM scale set behind a load balancer",
+   "Scale up two VMs, one after the other, by hand",
+   "Scale out by restoring VMs from backup"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Scaling out adds instances behind the load balancer without interrupting the running ones, and autoscale rules react to load. Scaling up a VM restarts it and has a size limit. Restoring from backup is recovery, not scaling.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview"
+ },
+ {
+  "id": "D3-255",
+  "sub": "VM operations",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Test VMs are used on weekdays from 08:00 to 18:00. You want to cut their cost with the least effort and keep their disks and settings. What do you do?",
+  "opts": [
+   "Delete them every evening and recreate them every morning with a template",
+   "Use auto-shutdown to deallocate them, and start them each morning with a schedule",
+   "Shut them down from inside Windows each evening",
+   "Buy a three-year reservation for them"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Auto-shutdown deallocates the VMs, so compute billing stops while disks and settings stay. A start schedule (for example an Automation runbook) brings them back. Shutting down inside the OS leaves them allocated and billed, and a reservation suits VMs that run all the time.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/auto-shutdown-vm"
+ },
+ {
+  "id": "D3-256",
+  "sub": "App Service",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A small public website needs a custom domain with TLS and no autoscale or slots. Which App Service tier is the cheapest that fits?",
+  "opts": [
+   "Free",
+   "Shared",
+   "Basic",
+   "Standard"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "TLS for custom domains, including free managed certificates, starts at the Basic tier. Free has no custom domains, Shared has custom domains but no custom domain TLS, and Standard costs more for features you don't need.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-app-service-limits"
+ },
+ {
+  "id": "D3-257",
+  "sub": "Containers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A container processes queue messages that arrive a few times a day. It should cost nothing when idle, and you don't want to manage servers. What do you use?",
+  "opts": [
+   "A VM scale set with a minimum of one instance",
+   "Azure Container Apps with a queue scale rule and minimum replicas 0",
+   "Azure Container Instances with the restart policy Always",
+   "An App Service plan in the Basic tier with a container"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Container Apps can scale to zero and start replicas when messages arrive, and there are no usage charges at zero. A container instance with Always keeps running, and a scale set or App Service plan is billed while it exists.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/scale-app"
+ },
+ {
+  "id": "D3-258",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What does a deployment stack add compared with a normal Bicep deployment?",
+  "opts": [
+   "It deploys resources faster by running all of them in parallel, without dependencies",
+   "It tracks the deployed resources as one unit that can be protected and cleaned up",
+   "It converts Bicep files to Terraform files",
+   "It lets a template deploy without any permissions"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A deployment stack is a resource that manages the resources in a template as a unit. When a resource is removed from the template, the stack can detach or delete it, and deny settings can protect the managed resources from changes.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-stacks"
+ },
+ {
+  "id": "D3-259",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You remove a storage account from a Bicep file and update its deployment stack with --action-on-unmanage detachAll. What happens to the account?",
+  "opts": [
+   "It is deleted with its data",
+   "It stays in Azure, but the stack no longer manages it",
+   "It is stopped until it is added again",
+   "The update fails because resources can't be removed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "With detachAll, a resource that's no longer in the template becomes unmanaged: it stays in Azure and the stack forgets it. To delete such resources, use deleteResources or deleteAll.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-stacks"
+ },
+ {
+  "id": "D3-260",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A deployment stack must let administrators change its resources but stop them from deleting them. Which deny settings mode do you use?",
+  "opts": [
+   "none",
+   "denyDelete",
+   "denyWriteAndDelete",
+   "detachAll"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "denyDelete blocks deletion of the managed resources and still allows updates. denyWriteAndDelete blocks both, none protects nothing, and detachAll is a value for action-on-unmanage, not a deny mode.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-stacks"
+ },
+ {
+  "id": "D3-261",
+  "sub": "Bicep",
+  "type": "yesno",
+  "diff": 3,
+  "q": "A deployment stack uses denyWriteAndDelete. It manages storage account st1. Answer Yes or No:",
+  "stmts": [
+   "An Owner who isn't an excluded principal can delete st1 in the portal",
+   "A user with Storage Blob Data Contributor can still delete a blob in st1",
+   "The deny settings protect resources that aren't in the template",
+   "The stack's protection is applied with deny assignments"
+  ],
+  "ans": [
+   false,
+   true,
+   false,
+   true
+  ],
+  "exp": "Deny settings create deny assignments, which beat role assignments, so even an Owner is blocked unless excluded. They cover control-plane operations only, so data actions such as deleting a blob still work. Only resources that are explicitly declared in the template are protected.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-stacks"
+ },
+ {
+  "id": "D3-262",
+  "sub": "VM creation",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the default security type for a new Generation 2 VM created in the portal from an image that supports it?",
+  "opts": [
+   "Standard",
+   "Trusted launch",
+   "Confidential",
+   "None, you must register a feature first"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Trusted launch, with Secure Boot and vTPM, is the default for new Gen2 VMs and scale sets when the image, disk and size support it. Confidential VMs are a separate choice with special sizes.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch"
+ },
+ {
+  "id": "D3-263",
+  "sub": "VM sizing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A Trusted launch VM must be resized to a family that doesn't support Trusted launch. The resize isn't offered. What is the reason?",
+  "opts": [
+   "Resizing needs an availability set",
+   "The target size must support the VM's security type",
+   "Trusted launch VMs can never be resized after creation",
+   "The OS disk has to be ephemeral first"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A Trusted launch VM can be resized only to sizes that support Trusted launch. To use another family, the VM has to be deallocated and its security type set to Standard, which removes the protection of Secure Boot and vTPM.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch"
+ },
+ {
+  "id": "D3-264",
+  "sub": "VM availability",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A company must be sure that 20 VMs of one size can be started in a region at any time, even when capacity is tight. What do you create?",
+  "opts": [
+   "A reserved VM instance for three years",
+   "An on-demand capacity reservation",
+   "A proximity placement group",
+   "A Spot VM scale set"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "An on-demand capacity reservation holds compute capacity for a VM size in a region or zone. A reserved instance is a price discount and doesn't hold capacity. A proximity placement group is about latency, and Spot capacity can be taken back.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/capacity-reservation-overview"
+ },
+ {
+  "id": "D3-265",
+  "sub": "VM availability",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No about on-demand capacity reservations:",
+  "stmts": [
+   "You pay for the reserved capacity even when no VM uses it",
+   "A VM uses the reservation only if it refers to it",
+   "Spot VMs can use the reservation",
+   "You can change the VM size of an existing reservation"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "Reserved capacity is billed at the VM size's rate whether it's used or not. A VM has to reference the capacity reservation group to consume it. Spot VMs aren't supported, and after creation only the quantity can be changed.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/capacity-reservation-overview"
+ },
+ {
+  "id": "D3-266",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
+  "q": "Solution: You scale the plan up to Standard, create a staging slot, deploy to it and swap. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Slots start at Standard. The new version is deployed and warmed up in the staging slot, the swap needs no downtime, and swapping again brings back the previous version.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
+ },
+ {
+  "id": "D3-267",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
+  "q": "Solution: You keep the Basic plan, scale out to three instances and deploy to the app directly. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "More instances don't give a separate place to deploy and warm up the new version, and there's no quick way back to the old one. Deployment slots are made for this, and they need the Standard tier or higher.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
+ },
+ {
+  "id": "D3-268",
+  "sub": "VMSS",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Profile: Weekdays (Mon-Fri)    min 2   max 10   default 4\n  Scale out: avg CPU > 75% for 10 min   -> increase count by 2\n  Scale in:  avg CPU < 25% for 10 min   -> decrease count by 1\nProfile: Weekend (Sat-Sun)     min 1   max 3    default 1",
+  "q": "Review the autoscale settings of a VM scale set. It has 4 instances now, and today is a Tuesday. Answer Yes or No:",
+  "stmts": [
+   "At 80% average CPU for 10 minutes, it grows to 6 instances",
+   "At 20% average CPU for 10 minutes, it shrinks to 3 instances",
+   "At 95% average CPU it can grow to 12 instances",
+   "On Saturday the schedule sets the minimum to 1"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "The scale-out rule adds 2 instances, so 4 becomes 6. The scale-in rule removes 1, so 4 becomes 3, which is still above the weekday minimum of 2. The maximum of 10 is never passed. The weekend profile has a minimum of 1.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/autoscale/autoscale-understanding-settings"
+ },
+ {
+  "id": "D3-269",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 3,
+  "code": "@allowed(['test', 'prod'])\nparam env string\n\nresource st 'Microsoft.Storage/storageAccounts@2023-05-01' = {\n  name: 'st${uniqueString(resourceGroup().id)}'\n  location: resourceGroup().location\n  kind: 'StorageV2'\n  sku: { name: env == 'prod' ? 'Standard_GRS' : 'Standard_LRS' }\n}",
+  "q": "What does this Bicep file deploy when it's run with env = 'test'?",
+  "opts": [
+   "One storage account with Standard_GRS",
+   "One storage account with Standard_LRS",
+   "Two storage accounts, one per SKU",
+   "Nothing, because the condition is false"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The SKU expression is a conditional: when env is 'prod' it returns Standard_GRS, otherwise Standard_LRS. The resource itself has no \"if\", so it's always deployed, and @allowed accepts 'test'.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/operators-logical"
+ },
+ {
+  "id": "D3-270",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 3,
+  "code": "resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {\n  name: 'vm1'\n  location: location\n  properties: {\n    // ...\n    networkProfile: { networkInterfaces: [ { id: nic.id } ] }\n  }\n}\n\nresource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = {\n  name: 'vm1-nic'\n  // ...\n}",
+  "q": "How does this Bicep file make sure the NIC is created before the VM?",
+  "opts": [
+   "With dependsOn, which every Bicep resource has to declare",
+   "It doesn't: the order is random",
+   "Through the reference nic.id, which creates an implicit dependency",
+   "Through the order of the resources in the file"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Using a resource's symbolic name in another resource creates an implicit dependency, so Resource Manager deploys the NIC first. The order in the file doesn't matter, and dependsOn is needed only when there's no reference.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/resource-dependencies"
+ },
+ {
+  "id": "D3-271",
+  "sub": "VM operations",
+  "type": "mcq",
+  "diff": 3,
+  "code": "Stop-AzVM -ResourceGroupName RG1 -Name vm1 -Force\n$vm = Get-AzVM -ResourceGroupName RG1 -Name vm1\n$vm.HardwareProfile.VmSize = 'Standard_E8s_v5'\nUpdate-AzVM -ResourceGroupName RG1 -VM $vm\nStart-AzVM -ResourceGroupName RG1 -Name vm1",
+  "q": "What does this PowerShell script do?",
+  "opts": [
+   "Resizes vm1 and starts it again",
+   "Deletes vm1 and creates it with a new size",
+   "Creates a copy of vm1 with a new size",
+   "Resizes vm1 but leaves it stopped"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Stop-AzVM deallocates the VM, the script changes the size in the VM object, Update-AzVM applies it, and Start-AzVM starts the VM. Nothing is deleted or copied. Deallocating first allows sizes that the current hardware doesn't offer.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/resize-vm"
+ }
+]

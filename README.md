@@ -1,6 +1,6 @@
 # AZ-104 Prep
 
-An Angular study app for the **AZ-104 Microsoft Azure Administrator** exam: 1,222 original practice
+An Angular study app for the **AZ-104 Microsoft Azure Administrator** exam: 1,372 original practice
 questions in real exam formats, timed mock exams weighted like the real exam, and weak-area tracking.
 
 Questions are written from Microsoft Learn documentation against the official skills outline

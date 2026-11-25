@@ -147,6 +147,8 @@
 }
 
 .code {
+  /* Tables keep their columns; long lines scroll inside the box. */
+  white-space: pre;
   margin: 0 0 14px;
 }
 

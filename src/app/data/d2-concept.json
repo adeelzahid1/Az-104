@@ -1,0 +1,481 @@
+[
+ {
+  "id": "D2-246",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An account must use the archive tier and let an app read from a second region at any time. Which redundancy do you choose?",
+  "opts": [
+   "RA-GZRS",
+   "RA-GRS",
+   "GZRS",
+   "ZRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Archive isn't supported on ZRS, GZRS or RA-GZRS accounts, so only LRS, GRS and RA-GRS are left. Reading from the secondary at any time needs a read-access option, which makes RA-GRS the answer.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-247",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "One account must survive a zone outage without failover, be readable in a second region, and store blobs in the archive tier. What do you tell the team?",
+  "opts": [
+   "RA-GZRS meets all three needs",
+   "RA-GRS meets all three needs",
+   "No single account meets all three needs",
+   "Premium block blobs with ZRS meet all three needs"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "RA-GZRS covers the zone outage and the second region but doesn't support archive. RA-GRS supports archive and the second region but not a zone outage. Premium accounts have neither geo-redundancy nor archive. The data has to be split over two accounts, or one need dropped.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-248",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "By law, data may not leave one Azure region, but the account must keep working when one availability zone fails. Which redundancy do you choose?",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "GZRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "ZRS copies data synchronously across availability zones in one region, so it survives a zone outage and nothing leaves the region. GRS and GZRS copy data to another region, and LRS doesn't protect against a zone outage.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-249",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 1,
+  "q": "Build servers write temporary files that can be recreated at any time. Cost matters most. Which redundancy do you choose?",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "RA-GRS"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "LRS is the cheapest option and protects against disk and rack failures in one datacenter. Because the files can be recreated, paying for zone or geo copies brings nothing.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-250",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You start an unplanned customer-managed failover of a GRS account. What is true after it completes?",
+  "opts": [
+   "The account is GRS and the original region is the new secondary",
+   "The account is LRS in the new primary region",
+   "The account is ZRS in the new primary region",
+   "The account is RA-GRS and both regions accept writes"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "In an unplanned failover the secondary becomes the primary, the copy in the original primary region is deleted, and the account is converted to LRS, so geo-redundancy is lost until you turn it on again. Some data may be lost, because replication is asynchronous.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"
+ },
+ {
+  "id": "D2-251",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "The primary region of a GRS account fails at 10:30. The account's Last Sync Time is 10:12. Which writes could be lost after an unplanned failover?",
+  "opts": [
+   "Writes before 10:12",
+   "Writes after 10:12",
+   "All writes since the last full hour",
+   "No writes, because GRS is synchronous"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Last Sync Time is the most recent time at which everything written to the primary was also written to the secondary. Writes after 10:12 may not have been copied yet, so they could be lost. GRS copies to the second region asynchronously.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-disaster-recovery-guidance"
+ },
+ {
+  "id": "D2-252",
+  "sub": "Storage design",
+  "type": "mcq",
+  "diff": 2,
+  "q": "An app needs very low latency for block blobs and must survive a zone outage in its region. Which account do you create?",
+  "opts": [
+   "Standard GPv2 with GRS",
+   "Premium block blob with ZRS",
+   "Premium block blob with GRS",
+   "Standard GPv2 with LRS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Premium block blob accounts use SSDs for low latency and support LRS and ZRS only. ZRS covers the zone outage. Premium accounts can't be geo-redundant, and standard accounts don't give the same latency.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-253",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An account with GZRS holds an Azure file share. Users ask to read the share from the secondary region during normal operation. What do you answer?",
+  "opts": [
+   "Change the account to RA-GZRS, which makes the share readable",
+   "It isn't possible: the share is readable there only after a failover",
+   "Mount the share with the \"-secondary\" name and port 445",
+   "Enable large file shares on the secondary region"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure Files supports LRS, ZRS, GRS and GZRS but no read-access (RA) options. The secondary copy becomes usable only after a failover. For local reads elsewhere, use Azure File Sync or a second share.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-254",
+  "sub": "Redundancy",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No about storage redundancy:",
+  "stmts": [
+   "RA-GRS lets an app read the secondary without a failover",
+   "ZRS protects against the loss of a whole region",
+   "A premium file share account can use GRS",
+   "GZRS keeps zone-redundant copies in the primary region"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "Read-access options expose a readable secondary endpoint at all times. ZRS stays in one region, so a regional disaster affects it. Premium accounts support only LRS and ZRS. GZRS combines zone-redundant copies in the primary region with a copy in the paired region.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy"
+ },
+ {
+  "id": "D2-255",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You upload a blob straight to archive and delete it 100 days later. What do you pay on top of the storage used?",
+  "opts": [
+   "Nothing, because archive has no minimum",
+   "An early deletion charge for 80 days",
+   "An early deletion charge for 180 days",
+   "A rehydration charge for 100 days"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Archive has a minimum of 180 days. Deleting after 100 days means you're charged for the remaining 80 days. Deleting a blob doesn't need rehydration. The minimum is 30 days for cool and 90 days for cold.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-256",
+  "sub": "Storage pricing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Scans are read once a month at most, must open within seconds, and are kept for 120 days. Which tier costs least?",
+  "opts": [
+   "Hot",
+   "Cold",
+   "Archive",
+   "Premium"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Cold is online, so blobs open at once, its storage price is below hot and cool, and the 120 days are past its 90-day minimum. Archive is cheaper per GB but needs hours to rehydrate and has a 180-day minimum.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-overview"
+ },
+ {
+  "id": "D2-257",
+  "sub": "SAS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A partner needs to read one blob for 24 hours. You must not use an account key, and the access must be as small as possible. What do you give them?",
+  "opts": [
+   "An account SAS for the blob service with read and list permissions",
+   "Storage Blob Data Reader on the account",
+   "A user delegation SAS for that blob with read permission",
+   "Access key 2 of the account for one day"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "A user delegation SAS is signed with Entra ID credentials instead of an account key, and it can be limited to one blob, read permission and 24 hours. An account SAS is signed with the account key and is wider, and the role and the key give access to much more.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-sas-overview"
+ },
+ {
+  "id": "D2-258",
+  "sub": "File Sync",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A branch file server is running out of disk. Users must keep the same UNC path and fast access to recent files, and you want little ongoing work. What do you do?",
+  "opts": [
+   "Copy old files to Blob storage with AzCopy every month",
+   "Install Azure File Sync on the server and enable cloud tiering",
+   "Map every client to an Azure file share over the internet",
+   "Add object replication between the server and a storage account"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure File Sync keeps the server and its UNC path, and cloud tiering replaces cold files with pointers while recent files stay local. AzCopy jobs are ongoing work and move files away, mapping clients changes the path, and object replication works between storage accounts.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-cloud-tiering-overview"
+ },
+ {
+  "id": "D2-259",
+  "sub": "Azure Files identity",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How many identity sources can one storage account use for identity-based access to Azure Files?",
+  "opts": [
+   "One",
+   "Two, if one is AD DS",
+   "Three, one per share",
+   "As many as there are shares"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A storage account can use only one identity source for Azure Files: AD DS, Microsoft Entra Domain Services or Microsoft Entra Kerberos. If different shares need different sources, put them in different storage accounts.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable"
+ },
+ {
+  "id": "D2-260",
+  "sub": "Azure Files identity",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A company has only cloud-only Microsoft Entra users and no Active Directory. They must sign in to an Azure file share over SMB with their own identity. What do you enable?",
+  "opts": [
+   "AD DS authentication",
+   "Microsoft Entra Kerberos authentication",
+   "Anonymous access with a SAS",
+   "Account key authentication for each user"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Microsoft Entra Kerberos supports cloud-only identities in the Azure public cloud, from supported clients that are Entra joined or hybrid joined. AD DS needs on-premises identities that are synced. Keys and SAS don't identify the user.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable"
+ },
+ {
+  "id": "D2-261",
+  "sub": "Azure Files identity",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You enabled Microsoft Entra Kerberos for a file share. Users with the right roles still can't connect. A Conditional Access policy requires MFA for all cloud apps. What do you do?",
+  "opts": [
+   "Exclude the storage account's Entra app from the MFA policy",
+   "Give the users Owner on the storage account",
+   "Open TCP port 88 to the internet in the NSG of every client subnet",
+   "Turn off secure transfer on the storage account"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The storage account is represented by an app in Entra ID, and MFA isn't supported when a share is mounted with Entra Kerberos. Exclude that app from Conditional Access policies that require MFA. Roles, ports and secure transfer aren't the cause here.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable"
+ },
+ {
+  "id": "D2-262",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You raised the provisioned IOPS of a provisioned v2 file share at 09:00 and want to lower it again. What applies?",
+  "opts": [
+   "You can lower it at once, as often as you like, at no extra cost",
+   "You can lower it only after 24 hours since the last increase",
+   "You can lower it only after 30 days",
+   "You can't lower it without a new share"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "In the provisioned v2 model you set storage, IOPS and throughput separately. A value can be raised at any time but decreased only 24 hours after its last increase. Provisioned v2 is the model Microsoft recommends for new file shares.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/understanding-billing"
+ },
+ {
+  "id": "D2-263",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "For a disaster recovery drill you must fail over a GZRS account without losing data and keep its geo-redundancy. Both regions are healthy. What do you use?",
+  "opts": [
+   "Unplanned failover",
+   "Planned failover",
+   "Object replication",
+   "A redundancy change to LRS and back"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A customer-managed planned failover finishes replication before the endpoints switch, so no data loss is expected, and geo-redundancy is retained. An unplanned failover can lose data and leaves the account with LRS.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-failover-customer-managed-planned"
+ },
+ {
+  "id": "D2-264",
+  "sub": "Redundancy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "The primary region of a GRS account has been down for hours. Why can't you use a planned failover?",
+  "opts": [
+   "It works only for premium accounts",
+   "It needs both regions to be available",
+   "It needs RA-GRS instead of GRS",
+   "It must be requested 24 hours ahead"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A planned failover has to finish replicating from the primary first, so both regions must be available. When the primary is down, the choice is an unplanned failover, which can lose recent writes, or waiting for the region to recover.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-failover-customer-managed-planned"
+ },
+ {
+  "id": "D2-265",
+  "sub": "Redundancy",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No about a planned customer-managed failover of a GZRS account:",
+  "stmts": [
+   "Clients can write to the account during the failover",
+   "After failing back, the account is GZRS again",
+   "Data loss is expected, as with an unplanned failover",
+   "Azure Files clients may have to remount shares"
+  ],
+  "ans": [
+   false,
+   true,
+   false,
+   true
+  ],
+  "exp": "Read and write access is lost while a planned failover runs. Replication completes before the switch, so no data loss is expected, and after a failback the original redundancy (GZRS) is restored. File share clients may have to remount.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-failover-customer-managed-planned"
+ },
+ {
+  "id": "D2-266",
+  "sub": "Storage network",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A storage account and a key vault are associated with a network security perimeter in Transition mode. Security wants public traffic that no rule allows to be blocked. What do you do?",
+  "opts": [
+   "Delete all private endpoints of both resources",
+   "Change the association to Enforced mode",
+   "Add an NSG to the perimeter",
+   "Disable the storage firewall"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Transition mode is the default and is meant for learning which traffic exists, with the resource's own firewall rules still used. Enforced mode denies public traffic except traffic inside the perimeter and what access rules allow. NSGs apply to subnets and NICs, not to perimeters.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/network-security-perimeter-concepts"
+ },
+ {
+  "id": "D2-267",
+  "sub": "Storage network",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the main purpose of a network security perimeter?",
+  "opts": [
+   "To filter traffic between the subnets of a virtual network",
+   "To control public network access to a group of PaaS resources",
+   "To give VMs a private IP address in another VNet",
+   "To encrypt traffic between two peered VNets"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A network security perimeter is a logical boundary around PaaS resources such as storage accounts and key vaults: members can talk to each other, and public access from or to the outside needs an access rule. Subnets are filtered with NSGs, and private IPs come from private endpoints.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/network-security-perimeter-concepts"
+ },
+ {
+  "id": "D2-268",
+  "sub": "Storage network",
+  "type": "yesno",
+  "diff": 3,
+  "q": "A storage account is in a network security perimeter in Enforced mode. Answer Yes or No:",
+  "stmts": [
+   "Traffic through a private endpoint needs an inbound access rule",
+   "Another storage account in the same perimeter can be reached without an access rule",
+   "Inbound rules can be based on IP ranges or subscriptions",
+   "Outbound rules are based on FQDNs"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "Private endpoint traffic is allowed without access rules, and members of the same perimeter can communicate. For other public traffic, inbound rules use IP ranges or subscriptions (or service tags), and outbound rules use fully qualified domain names.",
+  "link": "https://learn.microsoft.com/en-us/azure/private-link/network-security-perimeter-concepts"
+ },
+ {
+  "id": "D2-269",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
+  "q": "Solution: You enable the Microsoft.Storage service endpoint on the VMs' subnet and add a VNet rule to st1. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "With a service endpoint, the VMs still use the public endpoint of st1, and on-premises servers can't use it at all. The goal needs a private IP address, which means a private endpoint.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"
+ },
+ {
+  "id": "D2-270",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
+  "q": "Solution: You create a private endpoint for st1 in VNet1, link the privatelink DNS zone to VNet1, and forward on-premises DNS queries for the zone to a DNS Private Resolver. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The private endpoint gives st1 a private IP in VNet1 that on-premises servers reach over the VPN. The linked zone resolves the name for VMs, and the resolver does the same for on-premises servers, so both use the private IP.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"
+ },
+ {
+  "id": "D2-271",
+  "sub": "Storage firewall",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Public network access:   Enabled from selected networks\nVirtual networks:        VNet1/SubnetA\nIP rules:                203.0.113.0/24\nExceptions:              [x] Allow trusted Microsoft services\nPrivate endpoints:       none",
+  "q": "Review the networking settings of storage account st1. Answer Yes or No:",
+  "stmts": [
+   "A VM in SubnetA (with the Microsoft.Storage service endpoint) can reach st1",
+   "A VM in SubnetB can reach st1",
+   "A laptop with the public IP 203.0.113.25 can reach st1",
+   "Azure Backup is blocked by the firewall"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "SubnetA has a VNet rule and the service endpoint. SubnetB has no rule, so its VMs are blocked. 203.0.113.25 is inside the allowed range 203.0.113.0/24. The trusted services exception lets services such as Azure Backup through. Callers still need authorization.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
+ }
+]

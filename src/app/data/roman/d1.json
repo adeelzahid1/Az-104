@@ -2389,5 +2389,446 @@
    "Sub-Prod ko doosre MG ke neeche move karne se us ke resources se inherited policy hat jati hai"
   ],
   "exp": "ReadOnly lock RG-Web mein nayi App Service banana block karta hai, is liye kuch tag nahi hota; Reader root se inherit hota hai; ReadOnly Owner ke liye bhi writes block karta hai; policy hierarchy mein jagah ke sath chalti hai, is liye subscription ko MG-Prod se bahar le jane se woh hat jati hai."
+ },
+ "D1-241": {
+  "q": "User1 ke paas RG1 par Contributor hai. RG1 ki VM1 par ReadOnly lock hai. Kya User1 VM1 restart kar sakta hai?",
+  "opts": [
+   "Haan, kyunke Contributor mein restart action shamil hai",
+   "Haan, kyunke locks sirf delete aur resize rokte hain",
+   "Nahi, kyunke restart POST action hai jisay lock rokta hai",
+   "Nahi, kyunke sirf Owner VM restart kar sakta hai"
+  ],
+  "exp": "Contributor restart action deta hai, lekin ReadOnly lock control plane par sirf read operations allow karta hai. Restart POST action hai, is liye lock hatne tak sab ke liye, Owner samet, band hai."
+ },
+ "D1-242": {
+  "q": "User1 RG1 ka Owner hai. Ek deployment stack ne RG1 ki VM1 par write actions wala deny assignment banaya hai. User1 VM1 resize karta hai. Kya hoga?",
+  "opts": [
+   "Resize ho jayega, kyunke Owner deny assignments par bhari hai",
+   "Resize fail hoga, kyunke deny assignments pehle dekhe jate hain",
+   "Resize ho jayega, kyunke deny assignments sirf data actions par hain",
+   "Resize fail hoga jab tak User1 ko Contributor bhi na mile"
+  ],
+  "exp": "Azure role assignments se pehle deny assignments dekhta hai. Koi lagta ho to access band hai, user ke roles jo bhi hon. Doosra role dene se faida nahi: deny assignment (yahan stack ki deny settings) badalna hoga."
+ },
+ "D1-243": {
+  "q": "User1 ke paas RG1 par custom role hai: Actions \"Microsoft.Compute/*\", NotActions \"Microsoft.Compute/virtualMachines/delete\". User1 ke paas subscription par Virtual Machine Contributor bhi hai. Kya User1 RG1 ki VM1 delete kar sakta hai?",
+  "opts": [
+   "Nahi, kyunke qareebi scope ka NotActions jeetta hai",
+   "Nahi, kyunke NotActions us user ke liye deny hai",
+   "Haan, kyunke doosra role delete action deta hai",
+   "Haan, lekin sirf subscription ke page se"
+  ],
+  "exp": "Azure RBAC additive hai: effective permissions tamam role assignments ka majmua hain. NotActions sirf usi ek role se action nikalta hai. Virtual Machine Contributor delete deta hai aur RG1 ko inherit hota hai, is liye delete allowed hai."
+ },
+ "D1-244": {
+  "q": "User1 ko Azure portal mein Entra ID se sign in kar ke ek container mein blobs upload karne hain. User1 ko kaun se assignments chahiye?",
+  "opts": [
+   "Storage account par Contributor",
+   "Container par Storage Blob Data Contributor, aur account tak jane ke liye Reader",
+   "Account par Storage Account Contributor, aur list keys ki permission",
+   "Resource group aur account par Reader"
+  ],
+  "exp": "Blob upload data action hai, is liye Storage Blob Data Contributor jaisa data role chahiye, least privilege ke liye container scope par. Portal ko account dikhana bhi hota hai, jis ke liye Reader chahiye. Contributor aur Storage Account Contributor mein blob data actions nahi."
+ },
+ "D1-245": {
+  "q": "GroupA ke paas management group MG1 par Contributor hai. User1 GroupA mein hai aur MG1 ke neeche RG1 par seedha Reader bhi hai. User1 ko GroupA se nikal diya jata hai. Kya access bachta hai?",
+  "opts": [
+   "Sirf RG1 par Contributor",
+   "Sirf RG1 par Reader",
+   "MG1 ke har resource par Reader",
+   "Agle sign-in tak koi access nahi"
+  ],
+  "exp": "Group ki permissions sirf membership tak rehti hain. Nikalne ke baad sirf RG1 par seedha Reader bachta hai, aur woh doosre resource groups tak nahi jata. Role ki tabdeeli mein chand minute lag sakte hain."
+ },
+ "D1-246": {
+  "q": "User1 ke paas sirf yeh assignments hain: Sub1 par Reader, aur RG1 (Sub1 mein) par Virtual Machine Contributor. Haan ya Nahi:",
+  "stmts": [
+   "User1 RG1 ki VM start kar sakta hai",
+   "User1 RG2 ki VM start kar sakta hai",
+   "User1 RG2 ka storage account dekh sakta hai",
+   "User1 User2 ko RG1 par Reader role de sakta hai"
+  ],
+  "exp": "Virtual Machine Contributor se VMs start hoti hain, lekin sirf RG1 mein. Subscription ka Reader har resource group ko inherit hota hai, is liye RG2 ke resources dikhte hain, badalte nahi. Dono roles role assign nahi kar sakte: us ke liye Owner ya User Access Administrator chahiye."
+ },
+ "D1-247": {
+  "q": "Global Administrator, jis ke paas koi Azure role nahi, \"Access management for Azure resources\" on karta hai. Woh foran har subscription mein kya kar sakta hai?",
+  "opts": [
+   "Koi bhi resource bana aur delete kar sakta hai",
+   "Azure roles assign kar sakta hai, khud ko bhi",
+   "Kisi bhi storage account ka blob data parh sakta hai",
+   "Subscription Owner ki approval tak kuch nahi"
+  ],
+  "exp": "Elevate access root scope (/) par User Access Administrator role deta hai. Is se woh tamam subscriptions mein resources dekh aur roles assign kar sakta hai, lekin munasib role khud ko diye baghair resources nahi bana sakta. Kaam ke baad setting band karni chahiye."
+ },
+ "D1-248": {
+  "q": "GroupA ke paas RG1 par Reader hai. GroupB GroupA ka member hai. User1 sirf GroupB ka member hai. User1 kya kar sakta hai?",
+  "opts": [
+   "RG1 ke resources dekh sakta hai, kyunke role assignments groups mein transitive hain",
+   "Kuch nahi, kyunke role assignments nested groups ke members tak nahi jate",
+   "RG1 tab dekhega jab GroupB ko seedha Reader mile",
+   "RG1 tab dekhega jab dono groups dynamic hon"
+  ],
+  "exp": "Role assignments groups ke liye transitive hain: nested group ke member ko parent group ki permissions milti hain. Isay group-based licensing se na milayen, jo nested groups tak nahi jati."
+ },
+ "D1-249": {
+  "q": "st1 par storage account key access (shared key) band hai. User1 ke paas st1 par Contributor hai aur woh portal mein container kholta hai. Kya hoga?",
+  "opts": [
+   "Blobs account key se list ho jayenge",
+   "Blob data ka access deny hoga",
+   "Blobs list honge, lekin download fail hoga",
+   "Portal user delegation SAS banayega"
+  ],
+  "exp": "Contributor aam tor par portal ko account keys lene deta hai jin se data parha jata hai. Shared key access band ho to keys kaam nahi karti, aur Contributor mein blob data actions nahi, is liye access deny hota hai. User1 ko Storage Blob Data Reader jaisa role chahiye."
+ },
+ "D1-250": {
+  "q": "VM1 RG1 mein hai, RG1 Sub1 mein, aur Sub1 MG1 ke neeche. Kaun se DO assignments akele hi User1 ko VM1 restart karne dete hain?",
+  "opts": [
+   "MG1 par Virtual Machine Contributor",
+   "RG2 par Virtual Machine Contributor",
+   "Sub1 par Reader",
+   "VM1 par Contributor"
+  ],
+  "exp": "Assignment apne scope aur us se neeche kaam karta hai, is liye MG1 par Virtual Machine Contributor VM1 tak pahunchta hai, aur VM1 par seedha Contributor bhi. RG2 ka role RG1 tak nahi jata, aur Reader VM restart nahi kar sakta."
+ },
+ "D1-251": {
+  "q": "PIM ke sath eligible Azure role assignment kis scope par NAHI ban sakta?",
+  "opts": [
+   "Management group",
+   "Subscription",
+   "Resource group",
+   "Ek akela resource"
+  ],
+  "exp": "Eligible assignments management group, subscription aur resource group scope par bante hain, resource scope par nahi. Un ke liye Microsoft Entra ID P2 ya Entra ID Governance license chahiye."
+ },
+ "D1-252": {
+  "q": "Ek automation service principal aur ek administrator dono ko RG1 par Contributor chahiye. Administrator ko sirf zaroorat par mile. Aap kya banayenge?",
+  "opts": [
+   "Dono ke liye eligible assignment",
+   "Administrator ke liye eligible aur service principal ke liye active assignment",
+   "Administrator ke liye active aur service principal ke liye eligible assignment",
+   "Dono ke liye time-bound deny assignment"
+  ],
+  "exp": "Eligible assignments sirf users ke liye hain: service principal ya managed identity role activate nahi kar sakti. Is liye administrator ko eligible milta hai jisay woh zaroorat par activate kare, aur service principal ko active."
+ },
+ "D1-253": {
+  "q": "User1 ke paas RG1 par eligible Contributor assignment hai aur koi doosra role nahi. User1 RG1 ki VM stop karta hai aur authorization error aata hai. Kyun?",
+  "opts": [
+   "Eligible users sirf resources parh sakte hain",
+   "User1 ne abhi role activate nahi kiya",
+   "Contributor VM stop nahi kar sakta",
+   "Eligible assignments sirf VM scope par chalte hain"
+  ],
+  "exp": "Eligible assignment activate hone tak koi permission nahi deta, aur activate karne mein MFA, wajah ya approval lag sakti hai. Activate hone par access active Contributor jaisa hi hota hai, activation khatam hone tak."
+ },
+ "D1-254": {
+  "q": "Users sirf woh blobs parhein jin par blob index tag Project=Alpha ho. Aap kya use karenge?",
+  "opts": [
+   "Audit effect wali Azure Policy",
+   "Doosre tags ke liye NotDataActions wala custom role",
+   "Storage Blob Data Reader par role assignment condition",
+   "Baqi blobs par ReadOnly lock"
+  ],
+  "exp": "Azure ABAC se blob data actions wale role assignment par condition lagti hai, maslan \"sirf tab read allow ho jab blob index tag Project Alpha ho\". NotDataActions tags nahi dekhta, aur Policy aur locks tay nahi karte ke blob data kaun parhe."
+ },
+ "D1-255": {
+  "q": "User1 ke paas st1 par Storage Blob Data Reader hai, sirf Project=Alpha blobs ki condition ke sath. User1 ko st1 par baghair condition ke bhi Storage Blob Data Reader mil jata hai. User1 kya parh sakta hai?",
+  "opts": [
+   "Sirf Project=Alpha blobs, kyunke condition jeetti hai",
+   "Koi blob nahi, kyunke assignments takrate hain",
+   "Tamam blobs, kyunke role assignments jama hote hain",
+   "Sirf woh blobs jin par index tags nahi"
+  ],
+  "exp": "Condition sirf apne assignment ko mehdood karti hai. Woh access deny nahi kar sakti, is liye usi scope par baghair condition wala assignment sab kuch deta hai. Filter lagane ke liye woh assignment hatayen."
+ },
+ "D1-256": {
+  "q": "In mein se kis role assignment par ABAC condition lag sakti hai?",
+  "opts": [
+   "RG1 par Virtual Machine Contributor",
+   "VNet1 par Network Contributor",
+   "st1 par Storage Blob Data Contributor",
+   "kv1 par Key Vault Contributor"
+  ],
+  "exp": "Conditions sirf un role assignments par lagti hain jin ke role mein blob ya queue data actions hon, jaise Storage Blob Data Contributor. Baqi teen roles control plane par resources manage karte hain."
+ },
+ "D1-257": {
+  "q": "Har subscription mein env=prod tag wale resources koi delete na kar sake, lekin admins unhein badal saken. Kam mehnat mein sab se munasib kya hai?",
+  "opts": [
+   "Har subscription par CanNotDelete lock",
+   "Management group par denyAction effect wali Azure Policy",
+   "Management group par Deny effect wali Azure Policy",
+   "Har admin ke liye delete actions ke baghair custom role"
+  ],
+  "exp": "denyAction effect policy rule (jaise tag) se match hone wale resources ki delete calls rokta hai, aur management group par ek assignment tamam subscriptions cover karta hai. Subscription lock har delete rokega, Deny create aur update par hai, aur custom roles Owners ko nahi rokte."
+ },
+ "D1-258": {
+  "q": "denyAction effect wali policy VM1 ki hifazat karti hai. Owner Azure CLI se VM1 delete karta hai. Nateeja kya hai?",
+  "opts": [
+   "VM1 delete ho kar non-compliant mark hoti hai",
+   "Request 403 Forbidden ke sath fail hoti hai",
+   "VM1 band ho kar 14 din rakhi jati hai",
+   "Request approval ka intezar karti hai"
+  ],
+  "exp": "denyAction delete request rok kar 403 Forbidden deta hai, caller ka role jo bhi ho. Audit delete hone deta aur sirf record karta. Policy mein soft delete ya approval ka step nahi."
+ },
+ "D1-259": {
+  "q": "denyAction policy effect ke bare mein kaun se DO statements sahi hain?",
+  "opts": [
+   "Yeh sirf delete action rok sakta hai",
+   "Yeh matching resources ki tabdeeliyan bhi rokta hai",
+   "Yeh subscription ka delete nahi rokta",
+   "Yeh mojooda role assignments hatata hai"
+  ],
+  "exp": "denyAction sirf delete action support karta hai, aur subscription delete karna is se nahi rukta. Resource ki tabdeeli allowed rehti hai: us ke liye Deny effect ya ReadOnly lock. Policy role assignments nahi badalti."
+ },
+ "D1-260": {
+  "q": "MG1 par Allowed locations policy hai (Deny, sirf West Europe), jis mein RG1 excluded hai. Owner RG1 mein East US ka storage account deploy karta hai. Kya hoga?",
+  "opts": [
+   "Deployment kamyab hogi, kyunke RG1 excluded hai",
+   "Deployment fail hogi, kyunke exclusions Owners par nahi lagti",
+   "Deployment kamyab hogi, aur account West Europe mein move hoga",
+   "Deployment fail hogi, kyunke management group ki policy mein exclusion nahi hoti"
+  ],
+  "exp": "Excluded scope evaluate nahi hota, is liye RG1 mein Allowed locations policy nahi lagti aur sahi role wale ki deployment ho jati hai. RG1 ke bahar yeh policy Owner ko bhi rokti. Policy resources move nahi karti."
+ },
+ "D1-261": {
+  "q": "RG1 par ReadOnly lock hai. Modify policy ki remediation task ko RG1 ke resources par tag lagana hai. Kya hoga?",
+  "opts": [
+   "Tags lag jayenge, kyunke policy locks se bahar chalti hai",
+   "Task fail hogi, kyunke lock write operations rokta hai",
+   "Lock ke CanNotDelete banne ke baad tags lag jayenge",
+   "Task lock delete kar ke tags lagati hai"
+  ],
+  "exp": "Remediation assignment ki managed identity se resources par likhti hai, aur ReadOnly lock har identity ki control-plane write rokta hai. Task chalane se pehle lock hatayen (ya CanNotDelete karein, jo update allow karta hai)."
+ },
+ "D1-262": {
+  "q": "Aaj aap \"Inherit a tag from the resource group\" policy (Modify) assign karte hain. VM1 pehle se RG1 mein us tag ke baghair hai. RG1 par tag hai. VM1 ko tag kab milega?",
+  "opts": [
+   "Policy assign hote hi",
+   "Remediation task chalne ya VM1 update hone par",
+   "Agli 24 ghante wali evaluation par, baghair task",
+   "Kabhi nahi, kyunke Modify sirf naye resources par hai"
+  ],
+  "exp": "Modify resources ko create ya update hone par badalta hai. Pehle se mojood resources ke liye remediation task chalate hain. Rozana evaluation sirf compliance batati hai, kuch badalti nahi."
+ },
+ "D1-263": {
+  "q": "RG1 ki VM1 par CanNotDelete lock hai. RG1 par khud koi lock nahi. Owner RG1 delete karta hai. Kya hoga?",
+  "opts": [
+   "RG1 aur us ka sab kuch delete ho jata hai",
+   "VM1 ke siwa sab delete ho kar RG1 ka naam badal jata hai",
+   "Locked resource ki wajah se RG1 ka delete fail hota hai",
+   "VM1 pehle doosre resource group mein move hoti hai"
+  ],
+  "exp": "Resource group delete karne mein us ka har resource delete hota hai. Ek par CanNotDelete lock yeh rok deta hai, is liye lock hatne tak group delete nahi hota. Locks Owner par bhi lagte hain."
+ },
+ "D1-264": {
+  "q": "Sub1 par do policies hain: Modify jo costcenter=100 tag lagati hai, aur Deny jo costcenter tag lazmi karti hai. User baghair tag VM banata hai. Kya hoga?",
+  "opts": [
+   "Banana deny hoga, kyunke Deny pehle chalta hai",
+   "VM costcenter=100 ke sath ban jayegi",
+   "VM baghair tag banegi aur audit hogi",
+   "Policies takrati hain, is liye koi nahi lagti"
+  ],
+  "exp": "Create request mein Modify aur Append Deny se pehle evaluate hote hain. Request mein tag lag jata hai, is liye Deny policy ko tag wali VM nazar aati hai aur woh guzarne deti hai. Policies ka takrao nazar-andaz nahi hota: nateeja cumulative hota hai."
+ },
+ "D1-265": {
+  "q": "VM1 ki policy exemption ki expiration date aa jati hai. Policy ka effect Audit hai. VM1 ka kya hoga?",
+  "opts": [
+   "Agli evaluation par delete hogi",
+   "Dobara evaluate hogi aur non-compliant dikh sakti hai",
+   "Jab tak koi exemption delete na kare Exempt rahegi",
+   "Theek hone tak band rahegi"
+  ],
+  "exp": "Expiration ke baad exemption nahi mani jati, halanke object record ke liye rehta hai. VM1 baqi resources ki tarah evaluate hoti hai aur rule tore to non-compliant dikhti hai. Audit kuch band ya delete nahi karta."
+ },
+ "D1-266": {
+  "q": "Sub1 par public IP addresses deny karne wali policy hai, RG1 excluded hai. RG2 mein pehle se ek public IP hai. Haan ya Nahi:",
+  "stmts": [
+   "Contributor RG1 mein public IP bana sakta hai",
+   "Owner RG2 mein public IP bana sakta hai",
+   "RG2 ka mojooda public IP delete hota hai",
+   "RG2 ka mojooda public IP non-compliant dikhta hai"
+  ],
+  "exp": "RG1 excluded hai, is liye wahan policy nahi lagti. RG2 mein Deny sab ke liye banana rokta hai, Owner samet. Deny mojooda cheezon ko nahi chherta: purana public IP chalta rehta hai aur non-compliant dikhta hai."
+ },
+ "D1-267": {
+  "q": "Aap VM1 ko RG1 se RG2 mein move karte hain. RG1 par ReadOnly lock hai. Aap dono ke Owner hain. Kya hoga?",
+  "opts": [
+   "Move kamyab, kyunke aap dono ke Owner hain",
+   "Move fail, kyunke source ka lock rokta hai",
+   "Move kamyab, aur lock VM1 ke sath chala jata hai",
+   "Move fail, kyunke VMs resource group nahi badalti"
+  ],
+  "exp": "Move source group ko badalta hai, aur ReadOnly lock sirf read allow karta hai, is liye Owner ke liye bhi band hai. Lock hatayen, VM aur us ke dependent resources move karein, phir lock lagayen. Aam halat mein VM groups ke darmiyan move hoti hai."
+ },
+ "D1-268": {
+  "q": "Storage account st1 par ReadOnly lock hai. User1 ke paas Storage Blob Data Contributor hai aur woh Entra ID sign-in se blob upload karta hai. Kya hoga?",
+  "opts": [
+   "Upload fail, kyunke lock writes rokta hai",
+   "Upload ho jayega, kyunke locks sirf control plane par hain",
+   "Upload ho jayega, lekin blob read-only ban jayega",
+   "Upload fail, kyunke keys list nahi ho sakti"
+  ],
+  "exp": "Locks control-plane operations par lagte hain, data par nahi. Entra ID se authorized upload data-plane hai, is liye chalta hai. Account keys mangne wale tools fail honge, kyunke keys list karna control-plane POST action hai."
+ },
+ "D1-269": {
+  "q": "MG1 par Deny policy aur GroupA ka Reader assignment hai. MG2 par dono nahi. Aap Sub1 ko MG1 se MG2 mein move karte hain. Baad mein kya sahi hai?",
+  "opts": [
+   "Policy aur Reader access Sub1 ke sath rehte hain",
+   "Na policy na Reader access Sub1 par lagta hai",
+   "Sirf policy rehti hai, kyunke evaluate ho chuki thi",
+   "Sirf Reader access rehta hai, kyunke roles copy hote hain"
+  ],
+  "exp": "Policy aur role assignments mojooda parent management group se inherit hote hain. Woh subscription mein copy nahi hote, is liye move ke baad Sub1 ko sirf MG2 aur us se upar walon ka milta hai."
+ },
+ "D1-270": {
+  "q": "Aap purani apps Azure VMs par le ja rahe hain. Unhein domain join, LDAP aur Kerberos chahiye. Domain controllers chalana ya patch karna nahi chahte. Kya use karenge?",
+  "opts": [
+   "Entra join ke sath Microsoft Entra ID",
+   "Microsoft Entra Domain Services",
+   "Do Azure VMs par AD DS",
+   "Sirf Microsoft Entra Connect"
+  ],
+  "exp": "Microsoft Entra Domain Services managed domain hai: domain join, group policy, LDAP aur Kerberos/NTLM, aur domain controllers Microsoft chalata hai. Entra ID mein LDAP ya Kerberos domain join nahi, VMs par AD DS mein controllers khud sambhalne parte hain, aur Entra Connect sirf identities sync karta hai."
+ },
+ "D1-271": {
+  "q": "Khud chalaye AD DS ke muqable mein Microsoft Entra Domain Services ki kaun si DO hadein hain?",
+  "opts": [
+   "Schema extend nahi ho sakta",
+   "VMs domain join nahi kar sakti",
+   "Domain administrator ke haq nahi milte",
+   "Group policy supported nahi"
+  ],
+  "exp": "Managed domain AD DS ka ek hissa deta hai: domain join, group policy, LDAP aur Kerberos chalte hain, lekin schema extension nahi aur Domain Admin ya Enterprise Admin haq nahi, kyunke controllers Microsoft chalata hai."
+ },
+ "D1-272": {
+  "q": "Har description ko identity service se match karein.",
+  "items": [
+   "Domain controllers aap khud deploy aur patch karte hain",
+   "Microsoft 365 aur SaaS apps ka sign-in",
+   "VMs ke liye group policy aur Kerberos wala managed domain"
+  ],
+  "targets": [
+   "Microsoft Entra Domain Services",
+   "AD DS",
+   "Microsoft Entra ID"
+  ],
+  "exp": "Entra Domain Services managed domain hai. AD DS woh directory hai jo aap apne servers ya VMs par chalate hain. Microsoft Entra ID Microsoft 365, SaaS apps aur Azure portal ki cloud identity service hai."
+ },
+ "D1-273": {
+  "q": "Employees ke accounts on-premises AD DS mein hain. Unhein Microsoft 365 ke liye wahi identity chahiye, aur accounts on-premises hi banenge. Aap kya set karenge?",
+  "opts": [
+   "Cloud-only accounts ka doosra set",
+   "AD DS se Microsoft Entra ID tak synchronization",
+   "VNet mein Microsoft Entra Domain Services",
+   "Tenant tak site-to-site VPN"
+  ],
+  "exp": "AD DS ko Microsoft Entra ID se sync karne par har employee ki ek hybrid identity hoti hai jis ka asal source on-premises rehta hai. Cloud-only accounts alag identities hote, Domain Services Azure ke domain-joined workloads ke liye hai, aur tenant tak VPN se nahi jate."
+ },
+ "D1-274": {
+  "q": "Microsoft Entra ID ke bare mein Haan ya Nahi:",
+  "stmts": [
+   "AD DS ki tarah OUs aur group policy use karta hai",
+   "Apps isay OAuth 2.0 aur SAML jaise protocols se use kar sakti hain",
+   "Isay LDAP se query kiya ja sakta hai",
+   "Yeh on-premises AD DS se sync ho sakta hai"
+  ],
+  "exp": "Entra ID flat, web-based identity service hai: OAuth 2.0, OpenID Connect aur SAML jaise HTTP protocols, aur LDAP ki jagah Microsoft Graph. Is mein OUs ya group policy nahi. Yeh on-premises AD DS se sync ho sakta hai."
+ },
+ "D1-275": {
+  "q": "60 subscriptions, aur aane wali har subscription, mein sirf approved VM sizes allow hon. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Script se har subscription par policy assign karein",
+   "Policy aise management group par assign karein jis mein nayi subscriptions default aati hain",
+   "Har subscription mein har VM admin ko custom role dein",
+   "Har resource group par policy assign karein aur har template mein dalein"
+  ],
+  "exp": "Management group ki policy us ki tamam subscriptions ko inherit hoti hai, aur usay nayi subscriptions ka default banane se aane wali bhi cover hoti hain. Script har nayi subscription par dobara chalani parti hai, aur roles VM size mehdood nahi karte."
+ },
+ "D1-276": {
+  "q": "Helpdesk staff RG1 ki VMs dekh aur restart kar sake, is se zyada kuch nahi. Least privilege kis assignment mein hai?",
+  "opts": [
+   "RG1 par Virtual Machine Contributor",
+   "RG1 par Contributor",
+   "Read aur restart actions wala custom role, RG1 par assign",
+   "Microsoft.Compute/* wala custom role, subscription par assign"
+  ],
+  "exp": "Virtual Machine Contributor se woh VMs bana, resize aur delete bhi kar sakte. Sirf Microsoft.Compute/virtualMachines/read aur .../restart/action (aur group par read) wala custom role, RG1 par, theek utna hi deta hai, sab se chhote scope par."
+ },
+ "D1-277": {
+  "q": "Sales department mein aane jane wale users ke sath licenses khud lagein aur hatein. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Department rule wale dynamic group ko licenses dein",
+   "Mahana script se har user ko licenses dein",
+   "Assigned group ko licenses dein aur members haath se badlein",
+   "Azure subscription ke IAM page mein licenses dein"
+  ],
+  "exp": "Dynamic group department attribute se users add aur remove karta hai, aur group-based licensing membership ke sath license deti ya leti hai. Scripts aur haath ke groups mein baar baar kaam hai, aur licenses Azure IAM mein nahi lagte. Dynamic groups ko Entra ID P1 chahiye."
+ },
+ "D1-278": {
+  "q": "Development subscription ka kharcha budget ke 100% par pahunche to us ki VMs khud deallocate hon. Sab se kam administrative mehnat kis mein hai?",
+  "opts": [
+   "Sirf budget, kyunke kharcha 100% hone par woh tamam resources band karta hai",
+   "Budget alert, jis ka action group Automation runbook chalaye",
+   "VM banane par Deny effect wali Azure Policy",
+   "ReadOnly lock jo Cost Management 100% par lagaye"
+  ],
+  "exp": "Budget sirf khabar deta hai. Us ka alert aise action group se jorein jo VMs deallocate karne wala runbook (ya function) chalaye, to haath ka kaam nahi. Deny policy chalti VMs ko nahi chherti, aur Cost Management locks nahi lagata."
+ },
+ "D1-279": {
+  "ctx": "Aap ki subscription mein development VMs hain. Koi bhi, subscription Owners samet, Standard_B2ms se bari VM na bana sake.",
+  "q": "Hal: Aap subscription par ReadOnly lock lagate hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "ReadOnly lock subscription mein har tabdeeli rokega, allowed choti VMs banana aur VMs start ya stop karna bhi, is liye sirf size mehdood karne ka maqsad poora nahi hota. Allowed virtual machine size SKUs policy karti hai."
+ },
+ "D1-280": {
+  "ctx": "Aap ki subscription mein development VMs hain. Koi bhi, subscription Owners samet, Standard_B2ms se bari VM na bana sake.",
+  "q": "Hal: Aap subscription par built-in policy \"Allowed virtual machine size SKUs\" approved sizes ke sath assign karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Policy un VMs ko deny karti hai jin ka size approved list mein nahi, aur Azure Policy sab par lagti hai, Owner samet, role jo bhi ho. Mojooda bari VMs nahi hatti, lekin non-compliant dikhti hain."
+ },
+ "D1-281": {
+  "ctx": "Aap ki subscription mein development VMs hain. Koi bhi, subscription Owners samet, Standard_B2ms se bari VM na bana sake.",
+  "q": "Hal: Aap developers ke liye VM banane ki ijazat wala custom role banate aur subscription par assign karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Role tay karta hai ke shakhs kaun se actions kare, VM ka size nahi, aur Owners ko to bilkul mehdood nahi karta. Resources kaise hon, yeh Azure Policy ka kaam hai."
+ },
+ "D1-282": {
+  "q": "Role assignments dekhein. RG1 aur RG2 Sub1 mein hain. Haan ya Nahi:",
+  "stmts": [
+   "Ali RG1 ki VM restart kar sakta hai",
+   "Ali RG2 ke resources dekh sakta hai",
+   "Sara RG2 mein VM bana sakti hai",
+   "Sara khud ko RG2 par Contributor bana sakti hai"
+  ],
+  "exp": "Ali GroupOps ke zariye RG1 ki VMs restart karta hai aur Sub1 ke Reader se RG2 dekhta hai. User Access Administrator se Sara RG2 ka access manage karti hai, wahan resources nahi banati. Access manage kar sakti hai to khud ko Contributor bhi de sakti hai, is liye yeh role ehtiyat se dein."
+ },
+ "D1-283": {
+  "q": "Policy compliance page dekhein. Haan ya Nahi:",
+  "stmts": [
+   "10 non-compliant resources chalte rehte hain",
+   "RG-App mein baghair tag VM banana block hai",
+   "RG-Lab mein baghair tag VM banana block hai",
+   "Owner RG-App mein baghair tag VM bana sakta hai"
+  ],
+  "exp": "Deny sirf naye aur update hone wale resources par hai, is liye 10 mojooda chalte rehte aur report hote hain. RG-App mein baghair tag VM sab ke liye block hai. RG-Lab excluded hai, is liye evaluate nahi hota."
+ },
+ "D1-284": {
+  "q": "vm1 aur vm2 RG1 mein hain. Locks dekhein. Haan ya Nahi:",
+  "stmts": [
+   "Aap vm2 resize kar sakte hain",
+   "Aap vm2 delete kar sakte hain",
+   "Aap vm1 start kar sakte hain",
+   "RG1 ka Contributor locks hata sakta hai"
+  ],
+  "exp": "vm2 ko sirf CanNotDelete inherit hota hai, is liye badal sakti hai, delete nahi. vm1 par ReadOnly bhi hai, aur sab se sakht lock jeetta hai, is liye start (POST action) band hai. Locks ke liye Owner ya User Access Administrator chahiye."
  }
 }

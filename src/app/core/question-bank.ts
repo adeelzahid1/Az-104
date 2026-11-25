@@ -15,6 +15,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d1-ext2.json'),
       import('../data/d1-ext3.json'),
       import('../data/d1-exam.json'),
+      import('../data/d1-concept.json'),
     ]).then(toQuestions),
   2: () =>
     Promise.all([
@@ -23,6 +24,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d2-ext2.json'),
       import('../data/d2-ext3.json'),
       import('../data/d2-exam.json'),
+      import('../data/d2-concept.json'),
     ]).then(toQuestions),
   3: () =>
     Promise.all([
@@ -31,6 +33,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d3-ext2.json'),
       import('../data/d3-ext3.json'),
       import('../data/d3-exam.json'),
+      import('../data/d3-concept.json'),
     ]).then(toQuestions),
   4: () =>
     Promise.all([
@@ -39,6 +42,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d4-ext2.json'),
       import('../data/d4-ext3.json'),
       import('../data/d4-exam.json'),
+      import('../data/d4-concept.json'),
     ]).then(toQuestions),
   5: () =>
     Promise.all([
@@ -47,6 +51,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
       import('../data/d5-ext2.json'),
       import('../data/d5-ext3.json'),
       import('../data/d5-exam.json'),
+      import('../data/d5-concept.json'),
     ]).then(toQuestions),
 };
 

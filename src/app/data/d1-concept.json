@@ -1,0 +1,821 @@
+[
+ {
+  "id": "D1-241",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "User1 has Contributor on RG1. VM1 in RG1 has a ReadOnly lock. Can User1 restart VM1?",
+  "opts": [
+   "Yes, because Contributor includes the restart action",
+   "Yes, because locks only block deletion and resizing",
+   "No, because restart is a POST action that the lock blocks",
+   "No, because only an Owner can restart a VM"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Contributor allows the restart action, but a ReadOnly lock permits only read operations on the control plane. Restart is a POST action, so it's blocked for everyone, Owners included, until the lock is removed.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-242",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "User1 is Owner of RG1. A deployment stack has created a deny assignment on VM1 in RG1 that covers write actions. User1 tries to resize VM1. What happens?",
+  "opts": [
+   "The resize works, because Owner overrides deny assignments",
+   "The resize fails, because deny assignments are evaluated first",
+   "The resize works, because deny assignments cover only data actions",
+   "The resize fails until User1 is given Contributor as well"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Azure checks deny assignments before role assignments. If one applies, access is blocked, whatever roles the user has. Adding another role doesn't help: the deny assignment (here, the stack's deny settings) has to change.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-243",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "User1 has a custom role on RG1 with Actions \"Microsoft.Compute/*\" and NotActions \"Microsoft.Compute/virtualMachines/delete\". User1 also has Virtual Machine Contributor on the subscription. Can User1 delete VM1 in RG1?",
+  "opts": [
+   "No, because NotActions at the closer scope wins",
+   "No, because NotActions is a deny for that user",
+   "Yes, because the other role grants the delete action",
+   "Yes, but only from the subscription's own page"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Azure RBAC is additive: effective permissions are the sum of all role assignments. NotActions only removes an action from that one role. Virtual Machine Contributor grants delete and is inherited by RG1, so the delete is allowed.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-244",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "User1 must upload blobs to one container in the Azure portal by signing in with Entra ID. Which assignments does User1 need?",
+  "opts": [
+   "Contributor on the storage account",
+   "Storage Blob Data Contributor on the container, and Reader to browse to the account",
+   "Storage Account Contributor on the account, and the list keys permission",
+   "Reader on the resource group and on the account"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Uploading a blob is a data action, so User1 needs a data role such as Storage Blob Data Contributor, at container scope for least privilege. The portal also has to show the account, which needs Reader. Contributor and Storage Account Contributor have no blob data actions.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/assign-azure-role-data-access"
+ },
+ {
+  "id": "D1-245",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "GroupA has Contributor on management group MG1. User1 is in GroupA and also has Reader directly on RG1, which is under MG1. User1 is removed from GroupA. What access is left?",
+  "opts": [
+   "Contributor on RG1 only",
+   "Reader on RG1 only",
+   "Reader on every resource in MG1",
+   "No access until the next sign-in"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Permissions through a group last only while the user is a member. After removal, only the direct Reader assignment on RG1 is left, and it doesn't reach other resource groups. Role changes can take a few minutes to take effect.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-246",
+  "sub": "RBAC",
+  "type": "yesno",
+  "diff": 3,
+  "q": "User1 has exactly these assignments: Reader on Sub1, and Virtual Machine Contributor on RG1 (in Sub1). Answer Yes or No:",
+  "stmts": [
+   "User1 can start a VM in RG1",
+   "User1 can start a VM in RG2",
+   "User1 can see a storage account in RG2",
+   "User1 can give User2 the Reader role on RG1"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   false
+  ],
+  "exp": "Virtual Machine Contributor lets User1 start VMs, but only in RG1. Reader on the subscription is inherited by every resource group, so User1 can see RG2's resources without changing them. Neither role can assign roles: that needs Owner or User Access Administrator.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-247",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A Global Administrator with no Azure roles turns on \"Access management for Azure resources\". What can they do right away in every subscription?",
+  "opts": [
+   "Create and delete any resource",
+   "Assign Azure roles, including to themselves",
+   "Read blob data in any storage account",
+   "Nothing, until a subscription Owner approves it"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Elevating access gives the User Access Administrator role at root scope (/). It lets them view resources and assign roles in all subscriptions, but not create resources until they assign themselves a suitable role. They should turn the setting off when they're done.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin"
+ },
+ {
+  "id": "D1-248",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "GroupA has Reader on RG1. GroupB is a member of GroupA. User1 is a member of GroupB only. What can User1 do?",
+  "opts": [
+   "View the resources in RG1, because role assignments are transitive for groups",
+   "Nothing, because role assignments don't reach the members of nested groups",
+   "View RG1 only after GroupB is given Reader directly",
+   "View RG1 only if both groups are dynamic groups"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Role assignments are transitive for groups: a member of a nested group gets the permissions of the parent group. Don't mix this up with group-based licensing, which doesn't reach nested groups.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-249",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Storage account key access (shared key) is disabled on st1. User1 has Contributor on st1 and opens a container in the portal. What happens?",
+  "opts": [
+   "The blobs are listed with the account key",
+   "Access to the blob data is denied",
+   "The blobs are listed, but downloads fail",
+   "The portal creates a user delegation SAS"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Contributor normally lets the portal fetch the account keys and use them to read data. With shared key access disabled, the keys no longer work, and Contributor has no blob data actions, so access is denied. User1 needs a role such as Storage Blob Data Reader.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/shared-key-authorization-prevent"
+ },
+ {
+  "id": "D1-250",
+  "sub": "RBAC",
+  "type": "multi",
+  "diff": 2,
+  "q": "VM1 is in RG1, RG1 is in Sub1, and Sub1 is under MG1. Which TWO assignments on their own let User1 restart VM1?",
+  "opts": [
+   "Virtual Machine Contributor on MG1",
+   "Virtual Machine Contributor on RG2",
+   "Reader on Sub1",
+   "Contributor on VM1"
+  ],
+  "ans": [
+   0,
+   3
+  ],
+  "exp": "An assignment works at its scope and everything below it, so Virtual Machine Contributor on MG1 reaches VM1, and Contributor directly on VM1 works too. A role on RG2 doesn't reach RG1, and Reader can't restart a VM.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/scope-overview"
+ },
+ {
+  "id": "D1-251",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "At which scope can you NOT create an eligible Azure role assignment with PIM?",
+  "opts": [
+   "Management group",
+   "Subscription",
+   "Resource group",
+   "A single resource"
+  ],
+  "ans": [
+   3
+  ],
+  "exp": "Eligible assignments can be created at management group, subscription and resource group scope, but not at resource scope. They need a Microsoft Entra ID P2 or Entra ID Governance license.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/pim-integration"
+ },
+ {
+  "id": "D1-252",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "An automation service principal and an administrator both need Contributor on RG1. The administrator should have it only when needed. What do you create?",
+  "opts": [
+   "An eligible assignment for both",
+   "An eligible assignment for the administrator and an active one for the service principal",
+   "An active assignment for the administrator and an eligible one for the service principal",
+   "A time-bound deny assignment for both"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Eligible assignments are only for users: a service principal or managed identity can't activate a role. So the administrator gets an eligible assignment and activates it when needed, and the service principal gets an active assignment.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/pim-integration"
+ },
+ {
+  "id": "D1-253",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "User1 has an eligible Contributor assignment on RG1 and no other roles. User1 tries to stop a VM in RG1 and gets an authorization error. Why?",
+  "opts": [
+   "Eligible users can only read resources",
+   "User1 hasn't activated the role yet",
+   "Contributor can't stop a VM",
+   "Eligible assignments work only at VM scope"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "An eligible assignment gives no permissions until the user activates it, which may need MFA, a reason or approval. Once activated, the access is the same as an active Contributor assignment until the activation ends.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/pim-integration"
+ },
+ {
+  "id": "D1-254",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Users may read only blobs that have the blob index tag Project=Alpha. What do you use?",
+  "opts": [
+   "An Azure Policy with the Audit effect",
+   "A custom role with NotDataActions for other tags",
+   "A role assignment condition on Storage Blob Data Reader",
+   "A ReadOnly lock on the other blobs"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Azure ABAC lets you add a condition to a role assignment with blob data actions, for example \"allow read only if the blob index tag Project equals Alpha\". NotDataActions can't look at tags, and Policy and locks don't control who reads blob data.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-overview"
+ },
+ {
+  "id": "D1-255",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 3,
+  "q": "User1 has Storage Blob Data Reader on st1 with a condition that allows only Project=Alpha blobs. User1 also gets Storage Blob Data Reader on st1 without a condition. What can User1 read?",
+  "opts": [
+   "Only the Project=Alpha blobs, because the condition wins",
+   "No blobs, because the assignments conflict",
+   "All blobs, because role assignments add up",
+   "Only blobs that have no index tags"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "A condition narrows only the assignment it's on. It can't deny access, so an unconditional assignment at the same scope still grants everything. To enforce the filter, remove the unconditional assignment.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-overview"
+ },
+ {
+  "id": "D1-256",
+  "sub": "RBAC",
+  "type": "mcq",
+  "diff": 2,
+  "q": "To which of these role assignments can you add an ABAC condition?",
+  "opts": [
+   "Virtual Machine Contributor on RG1",
+   "Network Contributor on VNet1",
+   "Storage Blob Data Contributor on st1",
+   "Key Vault Contributor on kv1"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Conditions can be added only to role assignments whose role has blob or queue data actions, such as Storage Blob Data Contributor. The other three roles manage resources on the control plane.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/conditions-overview"
+ },
+ {
+  "id": "D1-257",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "In every subscription, resources tagged env=prod must not be deleted by anyone, but administrators must still be able to change them. What fits best with the least effort?",
+  "opts": [
+   "A CanNotDelete lock on every subscription",
+   "An Azure Policy with the denyAction effect at the management group",
+   "An Azure Policy with the Deny effect at the management group",
+   "A custom role without delete actions for every administrator"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The denyAction effect blocks delete calls on resources that match the policy rule, such as a tag, and one assignment at a management group covers all its subscriptions. A subscription lock would block every deletion, Deny controls create and update rather than delete, and custom roles don't stop Owners.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deny-action"
+ },
+ {
+  "id": "D1-258",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A policy with the denyAction effect protects VM1. An Owner deletes VM1 with Azure CLI. What is the result?",
+  "opts": [
+   "VM1 is deleted and marked non-compliant",
+   "The request fails with 403 Forbidden",
+   "VM1 is stopped and kept for 14 days",
+   "The request waits for approval"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "denyAction blocks the delete request and returns 403 Forbidden, whatever role the caller has. Audit would allow the delete and only record it. Policy has no soft delete or approval step.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deny-action"
+ },
+ {
+  "id": "D1-259",
+  "sub": "Policy",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO statements about the denyAction policy effect are true?",
+  "opts": [
+   "Delete is the only action it can block",
+   "It also blocks changes to matching resources",
+   "It doesn't block the deletion of a subscription",
+   "It removes existing role assignments"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "The only action denyAction supports is delete, and deleting a subscription isn't blocked by it. Changes to a resource are still allowed: to block those, use the Deny effect or a ReadOnly lock. Policy never changes role assignments.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-deny-action"
+ },
+ {
+  "id": "D1-260",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Management group MG1 has an Allowed locations policy (Deny, West Europe only) with RG1 excluded. An Owner deploys a storage account to RG1 in East US. What happens?",
+  "opts": [
+   "The deployment succeeds, because RG1 is excluded",
+   "The deployment fails, because exclusions don't apply to Owners",
+   "The deployment succeeds, and the account is moved to West Europe",
+   "The deployment fails, because a policy at a management group can't be excluded"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "An excluded scope isn't evaluated, so the Allowed locations policy doesn't apply in RG1 and the deployment works for anyone with the right role. Outside RG1 the policy would block even an Owner. Policy never moves resources.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure"
+ },
+ {
+  "id": "D1-261",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 3,
+  "q": "RG1 has a ReadOnly lock. A remediation task of a Modify policy must add a tag to the resources in RG1. What happens?",
+  "opts": [
+   "The tags are added, because policy runs outside locks",
+   "The task fails, because the lock blocks write operations",
+   "The tags are added after the lock is converted to CanNotDelete",
+   "The task deletes the lock and adds the tags"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Remediation writes to the resources with the assignment's managed identity, and a ReadOnly lock blocks control-plane writes for every identity. Remove the lock (or change it to CanNotDelete, which allows updates) before you run the task.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-262",
+  "sub": "Tags",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Today you assign the policy \"Inherit a tag from the resource group\" (Modify). VM1 already exists in RG1 without the tag. RG1 has the tag. When does VM1 get it?",
+  "opts": [
+   "At once, when the policy is assigned",
+   "When a remediation task runs or VM1 is updated",
+   "At the next 24-hour evaluation, without any task",
+   "Never, because Modify works only on new resources"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Modify changes resources when they're created or updated. For resources that already exist, you run a remediation task. The daily evaluation only reports compliance and doesn't change anything.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources"
+ },
+ {
+  "id": "D1-263",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VM1 in RG1 has a CanNotDelete lock. RG1 itself has no lock. An Owner deletes RG1. What happens?",
+  "opts": [
+   "RG1 and everything in it is deleted",
+   "Everything except VM1 is deleted and RG1 is renamed",
+   "The deletion of RG1 fails because of the locked resource",
+   "VM1 is moved to another resource group first"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Deleting a resource group has to delete every resource in it. A CanNotDelete lock on one of them blocks that, so the group can't be deleted until the lock is removed. Locks apply to Owners too.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-264",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Two policies are assigned to Sub1: a Modify policy that adds the tag costcenter=100, and a Deny policy that requires the costcenter tag. A user creates a VM without the tag. What happens?",
+  "opts": [
+   "The creation is denied, because Deny runs first",
+   "The VM is created with costcenter=100",
+   "The VM is created without the tag and audited",
+   "The policies conflict, so neither is applied"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "For a create request, Modify and Append are evaluated before Deny. The tag is added to the request, so the Deny policy sees a VM that has the tag and lets it through. Conflicts between policies aren't ignored: the result is cumulative.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"
+ },
+ {
+  "id": "D1-265",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A policy exemption for VM1 reaches its expiration date. The policy has the Audit effect. What happens to VM1?",
+  "opts": [
+   "It is deleted at the next evaluation",
+   "It is evaluated again and can show as non-compliant",
+   "It stays Exempt until somebody deletes the exemption",
+   "It is stopped until it is fixed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "After the expiration date the exemption is no longer honored, although the object is kept for the record. VM1 is evaluated like any other resource and shows as non-compliant if it breaks the rule. Audit never stops or deletes anything.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/exemption-structure"
+ },
+ {
+  "id": "D1-266",
+  "sub": "Policy",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Sub1 has a policy that denies public IP addresses, with RG1 excluded. A public IP already exists in RG2. Answer Yes or No:",
+  "stmts": [
+   "A Contributor can create a public IP in RG1",
+   "An Owner can create a public IP in RG2",
+   "The existing public IP in RG2 is deleted",
+   "The existing public IP in RG2 shows as non-compliant"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   true
+  ],
+  "exp": "RG1 is excluded, so the policy doesn't apply there. In RG2 the Deny effect blocks creation for everyone, Owners included. Deny doesn't touch what already exists: the old public IP keeps working and is reported as non-compliant.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"
+ },
+ {
+  "id": "D1-267",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You move VM1 from RG1 to RG2. RG1 has a ReadOnly lock. You are Owner of both groups. What happens?",
+  "opts": [
+   "The move succeeds, because you are Owner of both",
+   "The move fails, because the lock on the source blocks it",
+   "The move succeeds, and the lock moves with VM1",
+   "The move fails, because VMs can't change resource group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A move changes the source group, and a ReadOnly lock allows only reads, so it's blocked even for an Owner. Remove the lock, move the VM with its dependent resources, then set the lock again. VMs can normally be moved between groups.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-268",
+  "sub": "Locks",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Storage account st1 has a ReadOnly lock. User1 has Storage Blob Data Contributor and uploads a blob with Entra ID sign-in. What happens?",
+  "opts": [
+   "The upload fails, because the lock blocks writes",
+   "The upload works, because locks cover only the control plane",
+   "The upload works, but the blob becomes read-only",
+   "The upload fails, because the keys can't be listed"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Locks apply to control-plane operations, not to data. An upload authorized with Entra ID is a data-plane operation, so it works. Tools that need the account keys would fail, because listing keys is a control-plane POST action.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-269",
+  "sub": "Management groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "MG1 has a Deny policy and a Reader assignment for GroupA. MG2 has neither. You move Sub1 from MG1 to MG2. What is true afterwards?",
+  "opts": [
+   "The policy and the Reader access stay with Sub1",
+   "Neither the policy nor the Reader access applies to Sub1",
+   "Only the policy stays, because it was already evaluated",
+   "Only the Reader access stays, because roles are copied"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Policy assignments and role assignments are inherited from the current parent management group. They aren't copied to the subscription, so after the move Sub1 inherits only what MG2 and the groups above it have.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-270",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You move legacy apps to Azure VMs. They need domain join, LDAP and Kerberos. You don't want to run or patch domain controllers. What do you use?",
+  "opts": [
+   "Microsoft Entra ID with Entra join",
+   "Microsoft Entra Domain Services",
+   "AD DS on two Azure VMs",
+   "Microsoft Entra Connect only"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Microsoft Entra Domain Services is a managed domain with domain join, group policy, LDAP and Kerberos/NTLM, and Microsoft runs the domain controllers. Entra ID itself has no LDAP or Kerberos domain join, AD DS on VMs means managing the controllers yourself, and Entra Connect only syncs identities.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/domain-services/compare-identity-solutions"
+ },
+ {
+  "id": "D1-271",
+  "sub": "Entra users",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO are limits of Microsoft Entra Domain Services compared with self-managed AD DS?",
+  "opts": [
+   "You can't extend the schema",
+   "VMs can't join the domain",
+   "You don't get domain administrator rights",
+   "Group policy isn't supported"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "A managed domain offers a subset of AD DS: domain join, group policy, LDAP and Kerberos work, but there are no schema extensions and no Domain Admin or Enterprise Admin rights, because Microsoft manages the controllers.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/domain-services/compare-identity-solutions"
+ },
+ {
+  "id": "D1-272",
+  "sub": "Entra users",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each description to the identity service.",
+  "items": [
+   "You deploy and patch the domain controllers yourself",
+   "Sign-in for Microsoft 365 and SaaS apps",
+   "Managed domain with group policy and Kerberos for VMs"
+  ],
+  "targets": [
+   "Microsoft Entra Domain Services",
+   "AD DS",
+   "Microsoft Entra ID"
+  ],
+  "ans": [
+   1,
+   2,
+   0
+  ],
+  "exp": "Entra Domain Services is the managed domain. AD DS is the directory you run on your own servers or VMs. Microsoft Entra ID is the cloud identity service for Microsoft 365, SaaS apps and the Azure portal.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/domain-services/compare-identity-solutions"
+ },
+ {
+  "id": "D1-273",
+  "sub": "Entra users",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Employees have accounts in on-premises AD DS. They must use the same identity for Microsoft 365, and accounts must still be created on-premises. What do you set up?",
+  "opts": [
+   "A second set of cloud-only accounts",
+   "Synchronization from AD DS to Microsoft Entra ID",
+   "Microsoft Entra Domain Services in a VNet",
+   "A site-to-site VPN to the tenant"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Synchronizing AD DS to Microsoft Entra ID gives each employee one hybrid identity whose source of authority stays on-premises. Cloud-only accounts would be separate identities, Domain Services is for domain-joined workloads in Azure, and a tenant isn't reached over a VPN.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/hybrid/whatis-hybrid-identity"
+ },
+ {
+  "id": "D1-274",
+  "sub": "Entra users",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No about Microsoft Entra ID:",
+  "stmts": [
+   "It uses organizational units (OUs) and group policy like AD DS",
+   "Apps can use it with protocols such as OAuth 2.0 and SAML",
+   "It can be queried with LDAP",
+   "It can be synchronized with on-premises AD DS"
+  ],
+  "ans": [
+   false,
+   true,
+   false,
+   true
+  ],
+  "exp": "Entra ID is a flat, web-based identity service: it uses HTTP-based protocols such as OAuth 2.0, OpenID Connect and SAML, and Microsoft Graph instead of LDAP. It has no OUs or group policy. It can be synchronized with on-premises AD DS.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/domain-services/compare-identity-solutions"
+ },
+ {
+  "id": "D1-275",
+  "sub": "Management groups",
+  "type": "mcq",
+  "diff": 2,
+  "q": "60 subscriptions, and every future one, must allow only approved VM sizes. Which option needs the least administrative effort?",
+  "opts": [
+   "Assign the policy to each subscription with a script",
+   "Assign the policy to a management group that new subscriptions join by default",
+   "Assign a custom role to every VM administrator in each subscription",
+   "Assign the policy to each resource group and add it to every template"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A policy at a management group is inherited by all subscriptions in it, and setting that group as the default for new subscriptions covers future ones. A script has to be run again for every new subscription, and roles don't limit VM sizes.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/management-groups/overview"
+ },
+ {
+  "id": "D1-276",
+  "sub": "Custom roles",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Helpdesk staff must be able to view and restart the VMs in RG1, and nothing more. Which assignment follows least privilege?",
+  "opts": [
+   "Virtual Machine Contributor on RG1",
+   "Contributor on RG1",
+   "A custom role with read and restart actions, assigned on RG1",
+   "A custom role with Microsoft.Compute/*, assigned on the subscription"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Virtual Machine Contributor would also let them create, resize and delete VMs. A custom role with only Microsoft.Compute/virtualMachines/read and .../restart/action (plus read on the group), assigned on RG1, gives exactly what's needed at the smallest scope.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+ },
+ {
+  "id": "D1-277",
+  "sub": "Licenses",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Licenses must follow users as they join and leave the Sales department. Which option needs the least administrative effort?",
+  "opts": [
+   "Assign licenses to a dynamic group with a department rule",
+   "Assign licenses to each user with a monthly script",
+   "Assign licenses to an assigned group and update its members by hand",
+   "Assign licenses in the Azure subscription's IAM page"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A dynamic group adds and removes users by their department attribute, and group-based licensing gives or removes the license with the membership. Scripts and manual groups need regular work, and licenses aren't assigned in Azure IAM. Dynamic groups need Entra ID P1.",
+  "link": "https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-membership"
+ },
+ {
+  "id": "D1-278",
+  "sub": "Cost management",
+  "type": "mcq",
+  "diff": 3,
+  "q": "When spending on the development subscription reaches 100% of its budget, its VMs must be deallocated automatically. Which option needs the least administrative effort?",
+  "opts": [
+   "A budget alone, because it stops all resources when spending reaches 100%",
+   "A budget alert with an action group that runs an Automation runbook",
+   "An Azure Policy with the Deny effect on VM creation",
+   "A ReadOnly lock that Cost Management adds at 100%"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A budget only notifies. Linking its alert to an action group that starts a runbook (or function) which deallocates the VMs does the job without manual work. A Deny policy doesn't touch running VMs, and Cost Management doesn't add locks.",
+  "link": "https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/cost-management-budget-scenario"
+ },
+ {
+  "id": "D1-279",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
+  "q": "Solution: You put a ReadOnly lock on the subscription. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A ReadOnly lock would block every change in the subscription, including creating allowed small VMs and stopping or starting VMs, so it doesn't meet the goal of limiting the size only. An Allowed virtual machine size SKUs policy does.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ },
+ {
+  "id": "D1-280",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
+  "q": "Solution: You assign the built-in policy \"Allowed virtual machine size SKUs\" to the subscription with the approved sizes. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The policy denies VMs whose size isn't on the approved list, and Azure Policy applies to everyone, Owners included, whatever their role. Existing larger VMs aren't removed, but they're reported as non-compliant.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"
+ },
+ {
+  "id": "D1-281",
+  "sub": "Policy",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
+  "q": "Solution: You create a custom role for the developers that allows VM creation and assign it on the subscription. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A role controls which actions a person may take, not which VM size they choose, and it wouldn't limit Owners at all. Limiting what resources may look like is a job for Azure Policy.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-282",
+  "sub": "RBAC",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Principal                Role                          Scope\n-----------------------  ----------------------------  -----\nGroupOps (Ali, Sara)     Virtual Machine Contributor   RG1\nAli                      Reader                        Sub1\nSara                     User Access Administrator     RG2",
+  "q": "Review the role assignments. RG1 and RG2 are in Sub1. Answer Yes or No:",
+  "stmts": [
+   "Ali can restart a VM in RG1",
+   "Ali can view the resources in RG2",
+   "Sara can create a VM in RG2",
+   "Sara can make herself Contributor on RG2"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "Ali restarts VMs in RG1 through GroupOps and views RG2 through Reader on Sub1. User Access Administrator lets Sara manage access on RG2 but not create resources there. Because she can manage access, she can assign herself Contributor, so give that role with care.",
+  "link": "https://learn.microsoft.com/en-us/azure/role-based-access-control/overview"
+ },
+ {
+  "id": "D1-283",
+  "sub": "Policy",
+  "type": "yesno",
+  "diff": 2,
+  "code": "Assignment:   Require tag \"env\"\nEffect:       Deny\nScope:        Sub1\nExclusions:   Sub1/RG-Lab\nCompliance:   40 of 50 resources compliant",
+  "q": "Review the policy compliance page. Answer Yes or No:",
+  "stmts": [
+   "The 10 non-compliant resources keep running",
+   "Creating an untagged VM in RG-App is blocked",
+   "Creating an untagged VM in RG-Lab is blocked",
+   "An Owner can create an untagged VM in RG-App"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "Deny affects only new and updated resources, so the 10 existing ones keep running and are reported. In RG-App an untagged VM is blocked for everyone. RG-Lab is excluded, so it isn't evaluated.",
+  "link": "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics"
+ },
+ {
+  "id": "D1-284",
+  "sub": "Locks",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Scope     Lock name   Type\n--------  ----------  ------------\nRG1       keep-all    CanNotDelete\nRG1/vm1   freeze-vm1  ReadOnly",
+  "q": "vm1 and vm2 are in RG1. Review the locks. Answer Yes or No:",
+  "stmts": [
+   "You can resize vm2",
+   "You can delete vm2",
+   "You can start vm1",
+   "A Contributor on RG1 can remove the locks"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   false
+  ],
+  "exp": "vm2 inherits only CanNotDelete, so it can be changed but not deleted. vm1 also has ReadOnly, and the most restrictive lock wins, so a start (a POST action) is blocked. Managing locks needs Owner or User Access Administrator.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources"
+ }
+]

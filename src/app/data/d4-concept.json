@@ -1,0 +1,771 @@
+[
+ {
+  "id": "D4-244",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A subnet must hold 60 VMs. What is the smallest prefix that works?",
+  "opts": [
+   "/24",
+   "/25",
+   "/26",
+   "/27"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A /26 has 64 addresses, but Azure reserves 5, so only 59 are usable: one too few. A /25 has 128 − 5 = 123 usable addresses. A /24 works too but isn't the smallest.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-245",
+  "sub": "IP addressing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "How many /24 subnets fit in the VNet address space 10.0.0.0/22?",
+  "opts": [
+   "2",
+   "4",
+   "8",
+   "16"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Each step of one bit doubles the number of subnets: from /22 to /24 is two bits, so 2² = 4 subnets. They are 10.0.0.0/24, 10.0.1.0/24, 10.0.2.0/24 and 10.0.3.0/24.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-246",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You split 10.1.0.0/24 into four equal subnets, each of which must hold 50 VMs. Which prefix do you use?",
+  "opts": [
+   "/25",
+   "/26",
+   "/27",
+   "/28"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Four equal parts of a /24 are /26 subnets with 64 addresses each, 59 of them usable, so 50 VMs fit. With /25 only two subnets fit in the range, and a /27 has only 27 usable addresses.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-247",
+  "sub": "IP addressing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the first IP address Azure can assign to a VM in the subnet 10.0.5.64/26?",
+  "opts": [
+   "10.0.5.64",
+   "10.0.5.65",
+   "10.0.5.68",
+   "10.0.5.70"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Azure reserves the first four addresses (.64 network, .65 gateway, .66 and .67 for DNS) and the last one (.127) of this subnet. The first one for a VM is therefore 10.0.5.68.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-248",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VNet1 uses 10.0.0.0/16. Which VNet can be peered with it?",
+  "opts": [
+   "VNet2: 10.0.128.0/17",
+   "VNet3: 10.1.0.0/16",
+   "VNet4: 10.0.5.0/24",
+   "VNet5: 10.0.0.0/8"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Peered VNets can't have overlapping address spaces. 10.1.0.0/16 lies completely outside 10.0.0.0–10.0.255.255. The other three overlap: 10.0.128.0/17 and 10.0.5.0/24 are inside it, and 10.0.0.0/8 contains it.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+ },
+ {
+  "id": "D4-249",
+  "sub": "IP addressing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A VNet has subnets Web (10.0.1.0/25), App (10.0.1.128/26) and Db (10.0.1.192/26). In which subnet is the address 10.0.1.200?",
+  "opts": [
+   "Web",
+   "App",
+   "Db",
+   "None of them"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Web covers .0–.127, App covers .128–.191 and Db covers .192–.255. So the address 10.0.1.200 belongs to the subnet Db. A /26 always holds 64 addresses and starts at a multiple of 64.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-250",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A subnet has these routes: 10.0.0.0/8 → VPN gateway, 10.2.0.0/16 → VNet peering, 10.2.3.0/24 → virtual appliance. Where does traffic to 10.2.3.9 go?",
+  "opts": [
+   "VPN gateway",
+   "VNet peering",
+   "Virtual appliance",
+   "It is split over all three"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Azure picks the route with the longest prefix that matches the destination. All three match 10.2.3.9, and /24 is the longest, so the traffic goes to the virtual appliance. Traffic is never split over routes of different lengths.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-251",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A subnet has these routes: 10.0.0.0/8 → VPN gateway, 10.2.0.0/16 → VNet peering, 0.0.0.0/0 → Internet. Where does traffic to 10.9.1.1 go?",
+  "opts": [
+   "VPN gateway",
+   "VNet peering",
+   "Internet",
+   "It is dropped"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "10.9.1.1 isn't in 10.2.0.0/16, but it's in 10.0.0.0/8, which is longer than 0.0.0.0/0. So it goes to the VPN gateway. The default route is used only when nothing more specific matches.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-252",
+  "sub": "Subnets",
+  "type": "yesno",
+  "diff": 3,
+  "q": "VNet 10.0.0.0/24 has AzureBastionSubnet 10.0.0.0/26, GatewaySubnet 10.0.0.64/27 and App 10.0.0.128/25. Answer Yes or No:",
+  "stmts": [
+   "The App subnet has 123 usable addresses",
+   "You can still create a subnet 10.0.0.96/27",
+   "AzureBastionSubnet could be 10.0.0.0/27 instead",
+   "You can still create a subnet 10.0.0.160/27"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "A /25 has 128 − 5 = 123 usable addresses. The range .96–.127 isn't used, so 10.0.0.96/27 is free. Bastion needs /26 or larger. 10.0.0.160/27 lies inside App (.128–.255), so it would overlap.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-253",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You need a subnet for exactly 3 VMs and want to waste as few addresses as possible. Which prefix do you use?",
+  "opts": [
+   "/28",
+   "/29",
+   "/30",
+   "/31"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A /29 has 8 addresses, and after the 5 that Azure reserves, 3 are usable: an exact fit. /29 is also the smallest IPv4 subnet Azure allows, so /30 and /31 can't be created.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq"
+ },
+ {
+  "id": "D4-254",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A subnet's NSG allows inbound TCP 443 from the internet. The VM's NIC has no NSG. The VM has a Standard public IP. Can internet clients reach the VM on 443?",
+  "opts": [
+   "No, because a NIC without an NSG denies everything",
+   "Yes, because only the subnet NSG is evaluated",
+   "No, because a Standard public IP is always closed",
+   "Yes, but only through a load balancer"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Traffic is checked against the NSGs that exist. With none on the NIC, only the subnet NSG applies, and it allows 443. A Standard public IP is closed by default, but an NSG rule that allows the traffic opens it.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"
+ },
+ {
+  "id": "D4-255",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "VM1 is behind a public load balancer. You add the UDR 0.0.0.0/0 → firewall 10.0.1.4 to its subnet. Clients can no longer connect, although the NSG and probe are fine. Why?",
+  "opts": [
+   "The load balancer stops sending traffic to subnets that have a route table",
+   "Replies leave through the firewall instead of returning the way they came (asymmetric routing)",
+   "The UDR changes the public IP address of the load balancer",
+   "The firewall needs an application security group"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "The request arrives through the load balancer, but the new default route sends the reply to the firewall, which never saw the connection and drops it. Publish the app through the firewall, or route so that both directions take the same path.",
+  "link": "https://learn.microsoft.com/en-us/azure/firewall/integrate-lb"
+ },
+ {
+  "id": "D4-256",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Spoke A and Spoke B are peered with a hub that has an NVA. Spoke A's subnet has a UDR to Spoke B through the NVA. Spoke B has no route table. Packets from A reach B, but connections fail. What is missing?",
+  "opts": [
+   "A UDR on Spoke B back to Spoke A through the NVA",
+   "A public IP address on the NVA",
+   "A second NVA in Spoke B",
+   "Use remote gateways on the peering of Spoke A"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Peering isn't transitive, so B has no route back to A. Return traffic needs a UDR on B's subnet that points to the NVA as well. The peerings must also allow forwarded traffic, and the NVA needs IP forwarding.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-257",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A new VM has a Standard public IP. There is no NSG on its NIC or subnet. Can you connect with SSH from the internet?",
+  "opts": [
+   "Yes, because traffic isn't filtered when there is no NSG at all",
+   "No, because Standard public IPs are closed to inbound traffic by default",
+   "Yes, but only during the first hour",
+   "No, because SSH always needs Azure Bastion"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Standard public IPs follow a secure-by-default model: inbound traffic is blocked until an NSG explicitly allows it. Add an NSG that allows TCP 22 from your address, or use Bastion without a public IP.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses"
+ },
+ {
+  "id": "D4-258",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 3,
+  "q": "Outbound NSG rules on a subnet: priority 300 allow to service tag Storage on 443, priority 4000 deny to service tag Internet. Can VMs reach a public endpoint of Azure Storage on 443?",
+  "opts": [
+   "Yes, because the rule with priority 300 matches first",
+   "No, because the deny rule covers all public addresses",
+   "Yes, because AllowInternetOutBound comes first",
+   "No, because service tags work only for inbound rules"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Rules are processed from the lowest number, and processing stops at the first match. Traffic to Azure Storage matches the allow rule with priority 300 before the deny with 4000. The default rule AllowInternetOutBound (65001) is never reached.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-259",
+  "sub": "NSG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VNet1 and VNet2 are peered. VM2 in VNet2 has an NSG with only default rules. Can VM1 in VNet1 connect to VM2 on TCP 1433?",
+  "opts": [
+   "Yes, because AllowVnetInBound includes peered address spaces",
+   "No, because DenyAllInBound blocks other VNets",
+   "Yes, but only through a VPN gateway",
+   "No, until VM1 is added to an application security group"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The VirtualNetwork service tag covers the VNet's own address space and the address spaces of peered and connected networks. So the default rule AllowVnetInBound (65000) lets VM1 in before DenyAllInBound (65500).",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-260",
+  "sub": "Routing",
+  "type": "mcq",
+  "diff": 3,
+  "q": "VNet1 is peered with VNet2 (10.5.0.0/16). You add a UDR for 10.5.0.0/16 with next hop None to a subnet in VNet1. What happens to traffic from that subnet to VNet2?",
+  "opts": [
+   "It still uses the peering, because system routes win",
+   "It is dropped, because the UDR wins for the same prefix",
+   "It goes to the internet, because the prefix is in conflict",
+   "It is shared between the peering and the UDR"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "For routes with the same prefix, a user-defined route is preferred over BGP and system routes, including the peering route. Next hop None drops the traffic. Delete the UDR to use the peering again.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-261",
+  "sub": "Troubleshooting",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VM1 can't reach 10.4.0.10. IP flow verify says the traffic is allowed. Next hop returns None. What is the cause?",
+  "opts": [
+   "An NSG rule on the NIC or the subnet of VM1",
+   "A route that drops the traffic, or no valid route",
+   "A wrong DNS server on the VNet",
+   "The Windows Firewall on the target"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "IP flow verify rules out the NSGs on VM1's side. Next hop None means that a route drops the traffic or that there's no valid route to the address, for example a missing peering or a UDR with next hop None. The packet never leaves toward the target.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/next-hop-overview"
+ },
+ {
+  "id": "D4-262",
+  "sub": "Troubleshoot LB",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A public Standard load balancer shows healthy probes, but internet clients time out. The backend NSG has one custom inbound rule: allow TCP 80 from AzureLoadBalancer. What do you add?",
+  "opts": [
+   "An allow rule for TCP 80 from the Internet tag",
+   "An allow rule for TCP 80 from the load balancer's public IP",
+   "A second health probe on another port",
+   "An outbound rule for TCP 80"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Load Balancer keeps the client's source IP, so the NSG sees internet addresses, not the load balancer. The AzureLoadBalancer tag covers only the probes. Allow TCP 80 from Internet (or the client ranges).",
+  "link": "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-troubleshoot-backend-traffic"
+ },
+ {
+  "id": "D4-263",
+  "sub": "Troubleshooting",
+  "type": "order",
+  "diff": 2,
+  "q": "An internet client connects to a web server behind a public load balancer. Put the checks in the order in which the packet meets them.",
+  "items": [
+   "Subnet NSG",
+   "Load-balancing rule picks a healthy backend",
+   "Guest OS firewall",
+   "NIC NSG"
+  ],
+  "ans": [
+   1,
+   0,
+   3,
+   2
+  ],
+  "exp": "The load-balancing rule first picks a backend that passes its probe. Inbound traffic then meets the subnet NSG, the NIC NSG, and finally the firewall in the guest OS before the app gets it. Troubleshoot in the same order.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-group-how-it-works"
+ },
+ {
+  "id": "D4-264",
+  "sub": "NAT Gateway",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is the main availability difference between a Standard and a StandardV2 NAT gateway?",
+  "opts": [
+   "StandardV2 is zone-redundant by default, and Standard is zonal",
+   "Standard is zone-redundant by default, and StandardV2 is zonal",
+   "Only Standard can be used with availability zones",
+   "Both fail over to the paired region"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A StandardV2 NAT gateway spans the availability zones of its region by default, while a Standard NAT gateway sits in a single zone. StandardV2 also offers higher throughput and IPv6. Neither works across regions.",
+  "link": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-sku"
+ },
+ {
+  "id": "D4-265",
+  "sub": "NAT Gateway",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You want to replace a Standard NAT gateway with StandardV2. What do you do?",
+  "opts": [
+   "Change the SKU in place and keep the public IP",
+   "Deploy a new StandardV2 NAT gateway with StandardV2 public IPs",
+   "Upgrade the Standard public IP and wait for the SKU to follow",
+   "Attach both NAT gateways to the subnet"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A Standard NAT gateway can't be upgraded to StandardV2, and StandardV2 works only with StandardV2 public IPs or prefixes. You deploy a new one and move the subnets to it. A subnet can use only one NAT gateway at a time.",
+  "link": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-sku"
+ },
+ {
+  "id": "D4-266",
+  "sub": "NAT Gateway",
+  "type": "yesno",
+  "diff": 2,
+  "q": "Answer Yes or No about NAT gateways:",
+  "stmts": [
+   "A NAT gateway lets internet clients start connections to VMs",
+   "All VMs in the subnet use it for outbound connections",
+   "A StandardV2 NAT gateway works with Standard public IPs",
+   "A NAT gateway is associated with a subnet, not with a NIC"
+  ],
+  "ans": [
+   false,
+   true,
+   false,
+   true
+  ],
+  "exp": "A NAT gateway is for outbound connections only: replies come back, but nobody can start a connection from the internet through it. It's associated with subnets and serves all their VMs. StandardV2 needs StandardV2 public IPs.",
+  "link": "https://learn.microsoft.com/en-us/azure/nat-gateway/nat-sku"
+ },
+ {
+  "id": "D4-267",
+  "sub": "Application Gateway",
+  "type": "match",
+  "diff": 2,
+  "q": "Match each job to the Application Gateway component.",
+  "items": [
+   "Receives requests on a port and protocol",
+   "Decides which backend pool gets a request",
+   "Sets port, protocol, cookie affinity and timeout toward the backend",
+   "Checks whether a backend server can take traffic"
+  ],
+  "targets": [
+   "HTTP settings",
+   "Listener",
+   "Health probe",
+   "Request routing rule"
+  ],
+  "ans": [
+   1,
+   3,
+   0,
+   2
+  ],
+  "exp": "The listener receives requests, a request routing rule connects it to a backend pool (with path-based rules if needed), the HTTP settings define how the gateway talks to the backend, and health probes decide which servers get traffic.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-components"
+ },
+ {
+  "id": "D4-268",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 2,
+  "q": "One Application Gateway must send /images/* to one pool and /api/* to another for the same host name. Which rule type do you use?",
+  "opts": [
+   "Basic",
+   "Path-based",
+   "Inbound NAT",
+   "Outbound"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A path-based rule sends requests to different backend pools according to the URL path, with a default pool for the rest. A basic rule sends all requests of a listener to one pool. Inbound NAT and outbound rules belong to Azure Load Balancer.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-components"
+ },
+ {
+  "id": "D4-269",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 2,
+  "q": "One Application Gateway must serve shop.contoso.com and blog.contoso.com from different backend pools on the same port. What do you configure?",
+  "opts": [
+   "Two frontend ports",
+   "Multi-site listeners",
+   "Cookie-based affinity",
+   "Two health probes in one basic rule"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Multi-site listeners tell requests apart by host name on the same port, and each listener has its own rule and backend pool. Affinity keeps a user on one server, and probes only check health.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-components"
+ },
+ {
+  "id": "D4-270",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 3,
+  "q": "With the default Application Gateway probe, a backend answers with HTTP 302. How is it treated?",
+  "opts": [
+   "Healthy, because 200 to 399 counts as healthy",
+   "Unhealthy, because only 200 counts as healthy",
+   "Healthy, because any answer counts as healthy",
+   "Unhealthy, because redirects need a custom listener"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The default probe of Application Gateway treats status codes from 200 to 399 as healthy. This differs from an Azure Load Balancer HTTP probe, which needs a 200. A custom probe can match other codes or text in the body.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-probe-overview"
+ },
+ {
+  "id": "D4-271",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 3,
+  "q": "After you add an NSG to the subnet of an Application Gateway v2, its management fails. Which inbound rule is missing?",
+  "opts": [
+   "TCP 22 from VirtualNetwork",
+   "TCP 65200-65535 from GatewayManager",
+   "TCP 3389 from AzureBastionSubnet",
+   "UDP 53 from Internet"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "An Application Gateway v2 needs inbound TCP 65200–65535 from the GatewayManager service tag for its infrastructure (v1 uses 65503–65534). Traffic from AzureLoadBalancer and the listener ports for clients must be allowed as well.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure"
+ },
+ {
+  "id": "D4-272",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Traffic must be encrypted from the client to Application Gateway and from the gateway to the backend servers. What do you configure?",
+  "opts": [
+   "TLS termination with HTTP backend settings",
+   "End-to-end TLS with HTTPS backend settings",
+   "A TCP rule on a Standard load balancer",
+   "Cookie-based affinity with a WAF policy"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "With end-to-end TLS the gateway ends the client's TLS session, can apply its rules, and opens a new TLS connection to the backend, because the backend HTTP settings use HTTPS. With TLS termination alone, traffic to the backend is normally unencrypted.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/ssl-overview"
+ },
+ {
+  "id": "D4-273",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Users get 502 Bad Gateway from an Application Gateway after the health probe path was changed to a page that doesn't exist. Why?",
+  "opts": [
+   "The listener's certificate expired at the moment the probe path was changed",
+   "The backend servers are marked unhealthy, so no server can take the request",
+   "The WAF blocks every path that isn't in the rule set",
+   "The gateway's subnet has run out of IP addresses"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A wrong custom probe path makes the servers answer with 404, so the gateway marks them unhealthy. With no healthy server, clients get 502. Fix the path, or set the status codes that the probe accepts.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-probe-overview"
+ },
+ {
+  "id": "D4-274",
+  "sub": "Application Gateway",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You plan the subnet for an Application Gateway v2 that must be able to scale to its maximum. What applies?",
+  "opts": [
+   "A shared subnet with the web VMs, at least /28",
+   "A dedicated subnet, at least /24",
+   "The GatewaySubnet of the VPN gateway, at least /27",
+   "A dedicated subnet named AzureAppGatewaySubnet, at least /26"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Application Gateway needs its own subnet, with no other resources in it, and any name works. Microsoft recommends at least a /24 for the v2 SKU, which can scale to 125 instances that each need addresses.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/configuration-infrastructure"
+ },
+ {
+  "id": "D4-275",
+  "sub": "Bastion",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Admins need RDP and SSH to 100 VMs in five VNets that are all peered with a hub. No VM may have a public IP. Which option needs the least administrative effort?",
+  "opts": [
+   "One Azure Bastion in each VNet",
+   "One Azure Bastion in the hub VNet",
+   "A jump VM with a public IP in each VNet",
+   "A point-to-site VPN in each VNet"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "One Bastion in the hub reaches VMs in peered VNets, so there's one host to run and no public IPs on the VMs. A Bastion, jump VM or VPN in every VNet means five times the work and cost.",
+  "link": "https://learn.microsoft.com/en-us/azure/bastion/vnet-peering"
+ },
+ {
+  "id": "D4-276",
+  "sub": "Private DNS",
+  "type": "mcq",
+  "diff": 2,
+  "q": "VMs are created and deleted every day in three peered VNets. They must resolve each other's names with the least administrative effort. What do you do?",
+  "opts": [
+   "Add A records to a public DNS zone with a script that runs every hour",
+   "Link one private DNS zone to the three VNets with auto-registration",
+   "Edit the hosts file in the VM image",
+   "Deploy a DNS server VM in each VNet"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Auto-registration adds and removes records as VMs come and go, and the links let every VNet resolve the zone. A VNet can have only one registration zone, but a zone can be linked to many VNets. The other options need regular work.",
+  "link": "https://learn.microsoft.com/en-us/azure/dns/private-dns-autoregistration"
+ },
+ {
+  "id": "D4-277",
+  "sub": "ASG",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Web VMs are added and removed often. Only web VMs may reach the database VMs on 1433. Which option needs the least administrative effort?",
+  "opts": [
+   "One NSG rule per web VM's IP address, updated whenever a VM is added",
+   "Application security groups for the web and database VMs in one NSG rule",
+   "A separate VNet for each web VM",
+   "A UDR that sends 1433 to the database subnet"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "With application security groups the rule says \"from asg-web to asg-db on 1433\", and a new web VM only needs its NIC added to the group. Rules by IP must be edited every time, and routes don't allow or deny ports.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/application-security-groups"
+ },
+ {
+  "id": "D4-278",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
+  "q": "Solution: You add UDRs on both spoke subnets that send the other spoke's range to 10.0.1.4, and allow forwarded traffic on the peerings. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "The UDRs send traffic in both directions to the NVA, which forwards it because IP forwarding is on. Allowing forwarded traffic on the peerings lets each spoke accept packets that don't come from the hub's own addresses.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview"
+ },
+ {
+  "id": "D4-279",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 3,
+  "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
+  "q": "Solution: You enable \"Allow gateway transit\" on the hub peerings and \"Use remote gateways\" on the spoke peerings. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Gateway transit lets spokes use a VPN or ExpressRoute gateway in the hub. It doesn't make the peerings transitive or send traffic to the NVA, and the hub here has no gateway at all.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+ },
+ {
+  "id": "D4-280",
+  "sub": "VNet peering",
+  "type": "mcq",
+  "diff": 2,
+  "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
+  "q": "Solution: You create a VNet peering directly between Spoke1 and Spoke2, in both directions. Their address spaces don't overlap. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "A direct peering adds system routes between the two VNets, so their VMs can reach each other without the hub. The traffic then bypasses the NVA, which this goal doesn't forbid. If inspection were required, UDRs through the NVA would be needed.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview"
+ },
+ {
+  "id": "D4-281",
+  "sub": "Routing",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Source                  State    Prefix          Next hop type            Next hop IP\n----------------------  -------  --------------  -----------------------  -----------\nDefault                 Active   10.1.0.0/16     Virtual network          -\nDefault                 Invalid  10.2.0.0/16     VNet peering             -\nUser                    Active   10.2.0.0/16     Virtual appliance        10.0.1.4\nVirtual network gateway Active   192.168.0.0/16  Virtual network gateway  -\nUser                    Active   0.0.0.0/0       Virtual appliance        10.0.1.4\nDefault                 Invalid  0.0.0.0/0       Internet                 -",
+  "q": "Review the effective routes of a NIC. Answer Yes or No:",
+  "stmts": [
+   "Traffic to 10.1.4.20 stays inside the VNet",
+   "Traffic to 10.2.7.5 goes through 10.0.1.4",
+   "Traffic to 52.1.2.3 goes straight to the internet",
+   "Traffic to 192.168.10.8 uses the VPN gateway"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   true
+  ],
+  "exp": "10.1.4.20 matches the VNet's own range. 10.2.7.5 matches both 10.2.0.0/16 routes, but the peering route is invalid because the UDR replaces it. The default route is a UDR to the appliance. 192.168.0.0/16 was learned from the VPN gateway.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/diagnose-network-routing-problem"
+ },
+ {
+  "id": "D4-282",
+  "sub": "NSG",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Priority  Name                   Port  Source            Action\n--------  ---------------------  ----  ----------------  ------\n100       DenyBadHost            443   198.51.100.0/24   Deny\n200       AllowHttps             443   Internet          Allow\n300       AllowSsh               22    198.51.100.7      Allow\n65000     AllowVnetInBound       Any   VirtualNetwork    Allow\n65001     AllowAzureLBInBound    Any   AzureLoadBalancer Allow\n65500     DenyAllInBound         Any   Any               Deny",
+  "q": "These are all the inbound rules of the only NSG on a web VM. Answer Yes or No:",
+  "stmts": [
+   "203.0.113.50 can connect on TCP 443",
+   "198.51.100.7 can connect on TCP 443",
+   "198.51.100.7 can connect on TCP 22",
+   "A VM in the same VNet can connect on TCP 3389"
+  ],
+  "ans": [
+   true,
+   false,
+   true,
+   true
+  ],
+  "exp": "The deny at priority 100 covers only port 443, so 198.51.100.7 is denied on 443 but allowed on 22 by rule 300. Other internet clients get 443 through rule 200. VNet traffic is allowed by the default rule 65000.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview"
+ },
+ {
+  "id": "D4-283",
+  "sub": "Load balancer",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Frontend:     10.0.2.10 (private)\nRule:         TCP 80 -> TCP 80, session persistence: None\nProbe:        HTTP /health on port 80\nBackend pool: vm1  probe: 200  up\n              vm2  probe: 200  up\n              vm3  probe: 503  down",
+  "q": "Review this internal Standard load balancer. The NSGs allow the traffic. Answer Yes or No:",
+  "stmts": [
+   "New connections on port 80 can go to vm1",
+   "New connections on port 80 can go to vm3",
+   "Clients on the internet can use 10.0.2.10",
+   "vm1 and vm2 get outbound internet access from this load balancer"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   false
+  ],
+  "exp": "vm1's probe is healthy, so it gets new connections, while vm3's probe fails. The frontend is a private address that can be reached only from the VNet and connected networks. An internal Standard load balancer gives no outbound SNAT: use a NAT gateway.",
+  "link": "https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-custom-probe-overview"
+ },
+ {
+  "id": "D4-284",
+  "sub": "Application Gateway",
+  "type": "yesno",
+  "diff": 3,
+  "code": "Listener:  HTTPS 443, host shop.contoso.com\nRule:      path-based\n  /images/*   -> pool-static   (HTTPS 443)\n  /api/*      -> pool-api      (HTTPS 443)\n  default     -> pool-web      (HTTP 80)",
+  "q": "Review the Application Gateway configuration. Answer Yes or No:",
+  "stmts": [
+   "https://shop.contoso.com/images/a.png goes to pool-static",
+   "https://shop.contoso.com/cart goes to pool-web",
+   "https://shop.contoso.com/api/orders goes to pool-static",
+   "Traffic from the gateway to pool-web is encrypted"
+  ],
+  "ans": [
+   true,
+   true,
+   false,
+   false
+  ],
+  "exp": "The path-based rule sends /images/* to pool-static and /api/* to pool-api. /cart matches no path, so it goes to the default pool, pool-web. The HTTP settings for pool-web use HTTP on port 80, so that traffic isn't encrypted.",
+  "link": "https://learn.microsoft.com/en-us/azure/application-gateway/application-gateway-components"
+ }
+]

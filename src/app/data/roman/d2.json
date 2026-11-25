@@ -2444,5 +2444,263 @@
    "Usi account par blobs ki versioning"
   ],
   "exp": "Azure Files ka soft delete sirf poore shares ko bachata hai, is liye ek file delete hone par kaam nahi aata. Deletion se pehle liya gaya share snapshot (ya Azure Files backup) mein file maujood hoti hai, aur aap usay wapas copy kar sakte hain. Blob soft delete aur versioning file shares par lagu nahi."
+ },
+ "D2-246": {
+  "q": "Account mein archive tier use hona hai aur app doosre region se kabhi bhi parh sake. Kaun si redundancy chunenge?",
+  "opts": [
+   "RA-GZRS",
+   "RA-GRS",
+   "GZRS",
+   "ZRS"
+  ],
+  "exp": "Archive ZRS, GZRS ya RA-GZRS accounts par supported nahi, is liye LRS, GRS aur RA-GRS bachte hain. Secondary se kabhi bhi parhne ke liye read-access option chahiye, is liye jawab RA-GRS."
+ },
+ "D2-247": {
+  "q": "Ek account zone outage mein baghair failover chale, doosre region se parha ja sake, aur archive tier mein blobs rakhe. Aap team ko kya batayenge?",
+  "opts": [
+   "RA-GZRS teenon zarooratein poori karta hai",
+   "RA-GRS teenon zarooratein poori karta hai",
+   "Koi ek account teenon zarooratein poori nahi karta",
+   "ZRS wale premium block blobs teenon zarooratein poori karte hain"
+  ],
+  "exp": "RA-GZRS zone outage aur doosra region cover karta hai lekin archive support nahi karta. RA-GRS archive aur doosra region deta hai lekin zone outage nahi. Premium accounts mein na geo-redundancy hai na archive. Data do accounts mein baantna hoga, ya ek zaroorat chhorni hogi."
+ },
+ "D2-248": {
+  "q": "Qanoonan data ek Azure region se bahar nahi ja sakta, lekin ek availability zone band hone par bhi account chalna chahiye. Kaun si redundancy?",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "GZRS"
+  ],
+  "exp": "ZRS ek hi region ke availability zones mein data synchronously copy karta hai, is liye zone outage mein chalta hai aur kuch region se bahar nahi jata. GRS aur GZRS doosre region mein copy karte hain, aur LRS zone outage se nahi bachata."
+ },
+ "D2-249": {
+  "q": "Build servers temporary files likhte hain jo kabhi bhi dobara ban sakti hain. Kharcha sab se ahem hai. Kaun si redundancy?",
+  "opts": [
+   "LRS",
+   "ZRS",
+   "GRS",
+   "RA-GRS"
+  ],
+  "exp": "LRS sab se sasta hai aur ek datacenter mein disk aur rack ki kharabi se bachata hai. Files dobara ban sakti hain, is liye zone ya geo copies ka paisa dene ka faida nahi."
+ },
+ "D2-250": {
+  "q": "Aap GRS account ka unplanned customer-managed failover shuru karte hain. Mukammal hone ke baad kya sahi hai?",
+  "opts": [
+   "Account GRS hai aur asal region naya secondary hai",
+   "Account naye primary region mein LRS hai",
+   "Account naye primary region mein ZRS hai",
+   "Account RA-GRS hai aur dono regions writes lete hain"
+  ],
+  "exp": "Unplanned failover mein secondary primary banta hai, asal primary region ki copy delete hoti hai, aur account LRS ban jata hai, is liye dobara on karne tak geo-redundancy nahi. Kuch data ja sakta hai, kyunke replication asynchronous hai."
+ },
+ "D2-251": {
+  "q": "GRS account ka primary region 10:30 par band hota hai. Account ka Last Sync Time 10:12 hai. Unplanned failover ke baad kaun si writes ja sakti hain?",
+  "opts": [
+   "10:12 se pehle ki writes",
+   "10:12 ke baad ki writes",
+   "Pichle poore ghante se tamam writes",
+   "Koi nahi, kyunke GRS synchronous hai"
+  ],
+  "exp": "Last Sync Time woh aakhri waqt hai jab tak primary par likha sab kuch secondary par bhi likha ja chuka tha. 10:12 ke baad ki writes shayad copy na hui hon, is liye ja sakti hain. GRS doosre region mein asynchronously copy karta hai."
+ },
+ "D2-252": {
+  "q": "App ko block blobs ke liye bohat kam latency chahiye aur apne region ki zone outage mein chalna chahiye. Kaun sa account banayenge?",
+  "opts": [
+   "GRS wala Standard GPv2",
+   "ZRS wala Premium block blob",
+   "GRS wala Premium block blob",
+   "LRS wala Standard GPv2"
+  ],
+  "exp": "Premium block blob accounts kam latency ke liye SSD use karte hain aur sirf LRS aur ZRS support karte hain. ZRS zone outage cover karta hai. Premium geo-redundant nahi ho sakta, aur standard mein itni kam latency nahi."
+ },
+ "D2-253": {
+  "q": "GZRS account mein Azure file share hai. Users aam halat mein secondary region se share parhna chahte hain. Aap kya jawab denge?",
+  "opts": [
+   "Account RA-GZRS karein, jis se share parha ja sakega",
+   "Mumkin nahi: share wahan sirf failover ke baad parha jata hai",
+   "Share ko \"-secondary\" naam aur port 445 se mount karein",
+   "Secondary region par large file shares on karein"
+  ],
+  "exp": "Azure Files LRS, ZRS, GRS aur GZRS support karta hai, read-access (RA) options nahi. Secondary copy sirf failover ke baad kaam aati hai. Doosri jagah parhne ke liye Azure File Sync ya doosra share use karein."
+ },
+ "D2-254": {
+  "q": "Storage redundancy ke bare mein Haan ya Nahi:",
+  "stmts": [
+   "RA-GRS se app baghair failover secondary parh sakti hai",
+   "ZRS poore region ke nuqsan se bachata hai",
+   "Premium file share account GRS use kar sakta hai",
+   "GZRS primary region mein zone-redundant copies rakhta hai"
+  ],
+  "exp": "Read-access options har waqt secondary ka readable endpoint dete hain. ZRS ek region mein rehta hai, is liye region ki tabahi ka asar hota hai. Premium sirf LRS aur ZRS support karta hai. GZRS primary region mein zone-redundant copies aur paired region mein copy dono rakhta hai."
+ },
+ "D2-255": {
+  "q": "Aap blob seedha archive mein upload karte hain aur 100 din baad delete. Istemal hui storage ke alawa kya paisa lagega?",
+  "opts": [
+   "Kuch nahi, kyunke archive ka minimum nahi",
+   "80 din ka early deletion charge",
+   "180 din ka early deletion charge",
+   "100 din ka rehydration charge"
+  ],
+  "exp": "Archive ka minimum 180 din hai. 100 din baad delete karne par baqi 80 din ka charge lagta hai. Delete karne ke liye rehydrate nahi karna parta. Cool ka minimum 30 aur cold ka 90 din hai."
+ },
+ "D2-256": {
+  "q": "Scans mahine mein zyada se zyada ek dafa parhe jate hain, chand second mein khulne chahiye, aur 120 din rakhe jate hain. Kaun si tier sab se sasti hai?",
+  "opts": [
+   "Hot",
+   "Cold",
+   "Archive",
+   "Premium"
+  ],
+  "exp": "Cold online hai, is liye blobs foran khulte hain, storage ki qeemat hot aur cool se kam hai, aur 120 din us ke 90 din ke minimum se zyada hain. Archive per GB sasta hai lekin rehydrate mein ghante lagte hain aur minimum 180 din hai."
+ },
+ "D2-257": {
+  "q": "Partner ko 24 ghante ke liye ek blob parhna hai. Account key use nahi karni, aur access kam se kam ho. Aap kya denge?",
+  "opts": [
+   "Blob service ka account SAS, read aur list permissions ke sath",
+   "Account par Storage Blob Data Reader",
+   "Us blob ka read permission wala user delegation SAS",
+   "Account ki access key 2, ek din ke liye"
+  ],
+  "exp": "User delegation SAS account key ki jagah Entra ID credentials se signed hota hai, aur ek blob, read permission aur 24 ghante tak mehdood ho sakta hai. Account SAS account key se signed aur wasee hai, aur role aur key us se kahin zyada access dete hain."
+ },
+ "D2-258": {
+  "q": "Branch file server ki disk bhar rahi hai. Users ka UNC path wahi rahe aur taza files tez khulein, aur baad ka kaam kam ho. Aap kya karenge?",
+  "opts": [
+   "Har mahine AzCopy se purani files Blob storage mein copy karein",
+   "Server par Azure File Sync lagayen aur cloud tiering on karein",
+   "Har client ko internet par Azure file share se map karein",
+   "Server aur storage account ke darmiyan object replication lagayen"
+  ],
+  "exp": "Azure File Sync server aur us ka UNC path rakhta hai, aur cloud tiering thandi files ki jagah pointers rakhta hai jab ke taza files local rehti hain. AzCopy baar baar ka kaam hai aur files hata deta hai, clients map karne se path badalta hai, aur object replication storage accounts ke darmiyan hoti hai."
+ },
+ "D2-259": {
+  "q": "Azure Files ke identity-based access ke liye ek storage account kitne identity sources use kar sakta hai?",
+  "opts": [
+   "Ek",
+   "Do, agar ek AD DS ho",
+   "Teen, har share ka ek",
+   "Jitne shares hon"
+  ],
+  "exp": "Storage account Azure Files ke liye sirf ek identity source use kar sakta hai: AD DS, Microsoft Entra Domain Services ya Microsoft Entra Kerberos. Alag shares ko alag sources chahiye to unhein alag storage accounts mein rakhein."
+ },
+ "D2-260": {
+  "q": "Company mein sirf cloud-only Microsoft Entra users hain, Active Directory nahi. Woh apni identity se SMB par Azure file share khol saken. Aap kya enable karenge?",
+  "opts": [
+   "AD DS authentication",
+   "Microsoft Entra Kerberos authentication",
+   "SAS ke sath anonymous access",
+   "Har user ke liye account key authentication"
+  ],
+  "exp": "Microsoft Entra Kerberos Azure public cloud mein cloud-only identities support karta hai, aise supported clients se jo Entra joined ya hybrid joined hon. AD DS ko synced on-premises identities chahiye. Keys aur SAS user ki pehchan nahi karte."
+ },
+ "D2-261": {
+  "q": "Aap ne file share ke liye Microsoft Entra Kerberos on kiya. Sahi roles wale users phir bhi connect nahi hote. Ek Conditional Access policy tamam cloud apps ke liye MFA mangti hai. Aap kya karenge?",
+  "opts": [
+   "Storage account ki Entra app ko MFA policy se exclude karein",
+   "Users ko storage account par Owner dein",
+   "Har client subnet ke NSG mein TCP port 88 internet ke liye kholein",
+   "Storage account par secure transfer band karein"
+  ],
+  "exp": "Storage account Entra ID mein ek app ke taur par hota hai, aur Entra Kerberos se share mount karte waqt MFA supported nahi. Us app ko MFA mangne wali Conditional Access policies se exclude karein. Roles, ports aur secure transfer yahan wajah nahi."
+ },
+ "D2-262": {
+  "q": "Aap ne 09:00 par provisioned v2 file share ki IOPS barhayi aur ab wapas kam karna chahte hain. Kya lagu hota hai?",
+  "opts": [
+   "Foran kam kar sakte hain, jitni dafa chahein, baghair extra kharche",
+   "Aakhri izafe ke 24 ghante baad hi kam kar sakte hain",
+   "30 din baad hi kam kar sakte hain",
+   "Naye share ke baghair kam nahi kar sakte"
+  ],
+  "exp": "Provisioned v2 model mein storage, IOPS aur throughput alag alag set hote hain. Value kabhi bhi barh sakti hai lekin aakhri izafe ke 24 ghante baad hi kam hoti hai. Naye file shares ke liye Microsoft provisioned v2 recommend karta hai."
+ },
+ "D2-263": {
+  "q": "Disaster recovery drill mein GZRS account ko data khoye baghair fail over karna hai aur geo-redundancy rakhni hai. Dono regions theek hain. Aap kya use karenge?",
+  "opts": [
+   "Unplanned failover",
+   "Planned failover",
+   "Object replication",
+   "Redundancy LRS kar ke wapas badalna"
+  ],
+  "exp": "Customer-managed planned failover endpoints badalne se pehle replication mukammal karta hai, is liye data ka nuqsan nahi hona chahiye, aur geo-redundancy rehti hai. Unplanned failover mein data ja sakta hai aur account LRS reh jata hai."
+ },
+ "D2-264": {
+  "q": "GRS account ka primary region ghanton se band hai. Planned failover kyun use nahi ho sakta?",
+  "opts": [
+   "Woh sirf premium accounts ke liye hai",
+   "Us ke liye dono regions available hone chahiye",
+   "Us ke liye GRS nahi, RA-GRS chahiye",
+   "Woh 24 ghante pehle mangna parta hai"
+  ],
+  "exp": "Planned failover ko pehle primary se replication mukammal karni hoti hai, is liye dono regions available hone chahiye. Primary band ho to unplanned failover hai, jis mein taza writes ja sakti hain, ya region theek hone ka intezar."
+ },
+ "D2-265": {
+  "q": "GZRS account ke planned customer-managed failover ke bare mein Haan ya Nahi:",
+  "stmts": [
+   "Failover ke dauran clients account mein likh sakte hain",
+   "Fail back ke baad account phir GZRS hota hai",
+   "Unplanned failover ki tarah data ka nuqsan mutawaqqe hai",
+   "Azure Files clients ko shares dobara mount karne par sakte hain"
+  ],
+  "exp": "Planned failover chalte waqt read aur write access band hota hai. Switch se pehle replication mukammal hoti hai, is liye data ka nuqsan mutawaqqe nahi, aur failback ke baad asal redundancy (GZRS) wapas aati hai. File share clients ko dobara mount karna par sakta hai."
+ },
+ "D2-266": {
+  "q": "Storage account aur key vault Transition mode mein network security perimeter se jure hain. Security chahti hai ke jo public traffic kisi rule se allowed nahi woh block ho. Aap kya karenge?",
+  "opts": [
+   "Dono resources ke tamam private endpoints delete karein",
+   "Association ko Enforced mode karein",
+   "Perimeter par NSG lagayen",
+   "Storage firewall band karein"
+  ],
+  "exp": "Transition mode default hai aur yeh samajhne ke liye hai ke kaun sa traffic hai, jab ke resource ke apne firewall rules chalte rehte hain. Enforced mode public traffic deny karta hai, siwaye perimeter ke andar ke traffic aur access rules ke. NSG subnets aur NICs par lagta hai, perimeter par nahi."
+ },
+ "D2-267": {
+  "q": "Network security perimeter ka bunyadi maqsad kya hai?",
+  "opts": [
+   "Ek virtual network ke subnets ke darmiyan traffic filter karna",
+   "PaaS resources ke group tak public network access control karna",
+   "VMs ko doosre VNet mein private IP dena",
+   "Do peered VNets ka traffic encrypt karna"
+  ],
+  "exp": "Network security perimeter storage accounts aur key vaults jaise PaaS resources ke gird hadd hai: members aapas mein baat kar sakte hain, aur bahar se ya bahar ki taraf public access ke liye access rule chahiye. Subnets NSG se filter hote hain, aur private IPs private endpoints se milte hain."
+ },
+ "D2-268": {
+  "q": "Storage account Enforced mode ke network security perimeter mein hai. Haan ya Nahi:",
+  "stmts": [
+   "Private endpoint ke traffic ko inbound access rule chahiye",
+   "Usi perimeter ka doosra storage account baghair access rule pahunch mein hai",
+   "Inbound rules IP ranges ya subscriptions par ho sakte hain",
+   "Outbound rules FQDN par hote hain"
+  ],
+  "exp": "Private endpoint ka traffic baghair access rules allowed hai, aur ek hi perimeter ke members baat kar sakte hain. Baqi public traffic ke liye inbound rules IP ranges ya subscriptions (ya service tags) par, aur outbound rules FQDN par hote hain."
+ },
+ "D2-269": {
+  "ctx": "VNet1 ki VMs aur on-premises servers (site-to-site VPN se jure) ko storage account st1 tak private IP par pahunchna hai.",
+  "q": "Hal: Aap VMs ke subnet par Microsoft.Storage service endpoint on karte hain aur st1 mein VNet rule lagate hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Service endpoint ke sath VMs st1 ka public endpoint hi use karti hain, aur on-premises servers isay use hi nahi kar sakte. Maqsad ko private IP chahiye, yani private endpoint."
+ },
+ "D2-270": {
+  "ctx": "VNet1 ki VMs aur on-premises servers (site-to-site VPN se jure) ko storage account st1 tak private IP par pahunchna hai.",
+  "q": "Hal: Aap VNet1 mein st1 ka private endpoint banate hain, privatelink DNS zone ko VNet1 se link karte hain, aur zone ki on-premises DNS queries DNS Private Resolver ko forward karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Private endpoint st1 ko VNet1 mein private IP deta hai jahan on-premises servers VPN se pahunchte hain. Linked zone VMs ke liye naam resolve karta hai, aur resolver on-premises servers ke liye, is liye dono private IP use karte hain."
+ },
+ "D2-271": {
+  "q": "Storage account st1 ki networking settings dekhein. Haan ya Nahi:",
+  "stmts": [
+   "SubnetA ki VM (Microsoft.Storage service endpoint ke sath) st1 tak pahunch sakti hai",
+   "SubnetB ki VM st1 tak pahunch sakti hai",
+   "Public IP 203.0.113.25 wala laptop st1 tak pahunch sakta hai",
+   "Azure Backup ko firewall rokta hai"
+  ],
+  "exp": "SubnetA ka VNet rule aur service endpoint hai. SubnetB ka rule nahi, is liye us ki VMs block hain. 203.0.113.25 allowed range 203.0.113.0/24 mein hai. Trusted services exception Azure Backup jaisi services ko guzarne deta hai. Caller ko authorization phir bhi chahiye."
  }
 }

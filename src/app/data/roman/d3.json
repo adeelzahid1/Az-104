@@ -2508,5 +2508,193 @@
    "Custom backups din mein zyada se zyada 12 dafa chal sakte hain"
   ],
   "exp": "Automatic backups ko na storage account chahiye na setup, woh har ghante hote hain aur 30 din rehte hain. Custom backups ko storage account chahiye, har ek 10 GB tak ho sakta hai, aur woh kam se kam 2 ghante ke waqfe par, yani din mein 12 tak, chal sakte hain."
+ },
+ "D3-253": {
+  "q": "Database VM ko zyada memory chahiye. Aap us ka size D4s_v5 se E8s_v5 karte hain. Yeh kaun si scaling hai?",
+  "opts": [
+   "Horizontal scaling (out)",
+   "Vertical scaling (up)",
+   "Geographic scaling",
+   "Predictive autoscale"
+  ],
+  "exp": "Vertical scaling ek machine ko zyada ya kam resources deti hai, aur aam tor par VM restart hoti hai. Horizontal scaling instances ki tadaad badalti hai, jaise scale set. Predictive autoscale mutawaqqe load se pehle scale out karne ka tareeqa hai."
+ },
+ "D3-254": {
+  "q": "Stateless web tier ka load achanak barhta hai, aur capacity badalne par users ko pata na chale. Sab se munasib kya hai?",
+  "opts": [
+   "Peak mein ek bari VM ko scale up karna",
+   "Load balancer ke peeche VM scale set ko scale out karna",
+   "Do VMs ko baari baari haath se scale up karna",
+   "Backup se VMs restore kar ke scale out karna"
+  ],
+  "exp": "Scale out load balancer ke peeche instances barhata hai aur chalti instances nahi rukti, aur autoscale rules load par amal karte hain. VM scale up karne se restart hoti hai aur size ki had hai. Backup se restore recovery hai, scaling nahi."
+ },
+ "D3-255": {
+  "q": "Test VMs hafte ke dinon mein 08:00 se 18:00 tak use hoti hain. Kam mehnat mein kharcha kam karna hai, disks aur settings rahein. Aap kya karenge?",
+  "opts": [
+   "Har shaam delete karein aur har subah template se dobara banayen",
+   "Auto-shutdown se deallocate karein, aur subah schedule se start karein",
+   "Har shaam Windows ke andar se band karein",
+   "Un ke liye teen saal ki reservation lein"
+  ],
+  "exp": "Auto-shutdown VMs ko deallocate karta hai, is liye compute ka bill rukta hai aur disks aur settings rehti hain. Start schedule (maslan Automation runbook) unhein wapas lata hai. OS ke andar se band karne par woh allocated rehti hain aur bill aata hai, aur reservation har waqt chalne wali VMs ke liye hai."
+ },
+ "D3-256": {
+  "q": "Choti public website ko TLS ke sath custom domain chahiye, autoscale ya slots nahi. Sab se sasta munasib App Service tier kaun sa hai?",
+  "opts": [
+   "Free",
+   "Shared",
+   "Basic",
+   "Standard"
+  ],
+  "exp": "Custom domain ka TLS, free managed certificates samet, Basic tier se shuru hota hai. Free mein custom domain nahi, Shared mein custom domain hai lekin us ka TLS nahi, aur Standard un features ka zyada paisa leta hai jo aap ko nahi chahiye."
+ },
+ "D3-257": {
+  "q": "Container queue messages process karta hai jo din mein chand dafa aate hain. Khaali waqt mein kharcha na ho, aur servers sambhalne na paren. Aap kya use karenge?",
+  "opts": [
+   "Kam se kam ek instance wala VM scale set",
+   "Queue scale rule aur minimum replicas 0 wala Azure Container Apps",
+   "Restart policy Always wala Azure Container Instances",
+   "Container ke sath Basic tier ka App Service plan"
+  ],
+  "exp": "Container Apps zero tak scale hota hai aur messages aane par replicas shuru karta hai, aur zero par usage charges nahi. Always wala container instance chalta rehta hai, aur scale set ya App Service plan maujood hone tak bill hota hai."
+ },
+ "D3-258": {
+  "q": "Aam Bicep deployment ke muqable mein deployment stack kya izafa karta hai?",
+  "opts": [
+   "Tamam resources ko dependencies ke baghair parallel chala kar jaldi deploy karta hai",
+   "Deploy kiye resources ko ek unit rakhta hai jisay mehfooz aur saaf kiya ja sake",
+   "Bicep files ko Terraform files mein badalta hai",
+   "Template ko baghair permissions deploy karne deta hai"
+  ],
+  "exp": "Deployment stack ek resource hai jo template ke resources ko ek unit ki tarah manage karta hai. Template se resource hatane par stack usay detach ya delete kar sakta hai, aur deny settings managed resources ko tabdeeli se bachati hain."
+ },
+ "D3-259": {
+  "q": "Aap Bicep file se storage account hatate hain aur deployment stack ko --action-on-unmanage detachAll ke sath update karte hain. Account ka kya hoga?",
+  "opts": [
+   "Apne data ke sath delete ho jayega",
+   "Azure mein rahega, lekin stack usay manage nahi karega",
+   "Dobara add hone tak band rahega",
+   "Update fail hoga kyunke resources hataye nahi ja sakte"
+  ],
+  "exp": "detachAll ke sath jo resource template mein na rahe woh unmanaged ho jata hai: Azure mein rehta hai aur stack usay bhool jata hai. Aise resources delete karne ke liye deleteResources ya deleteAll use karein."
+ },
+ "D3-260": {
+  "q": "Deployment stack ke resources admins badal saken lekin delete na kar saken. Kaun sa deny settings mode use karenge?",
+  "opts": [
+   "none",
+   "denyDelete",
+   "denyWriteAndDelete",
+   "detachAll"
+  ],
+  "exp": "denyDelete managed resources ka delete rokta hai aur updates allow karta hai. denyWriteAndDelete dono rokta hai, none kuch nahi bachata, aur detachAll action-on-unmanage ki value hai, deny mode nahi."
+ },
+ "D3-261": {
+  "q": "Deployment stack denyWriteAndDelete use karta hai. Woh storage account st1 manage karta hai. Haan ya Nahi:",
+  "stmts": [
+   "Owner, jo excluded principal nahi, portal mein st1 delete kar sakta hai",
+   "Storage Blob Data Contributor wala user st1 ka blob phir bhi delete kar sakta hai",
+   "Deny settings un resources ko bachati hain jo template mein nahi",
+   "Stack ki hifazat deny assignments se lagti hai"
+  ],
+  "exp": "Deny settings deny assignments banati hain, jo role assignments par bhari hain, is liye exclude na ho to Owner bhi ruk jata hai. Yeh sirf control-plane par hain, is liye blob delete jaise data actions chalte hain. Sirf template mein saaf likhe resources mehfooz hote hain."
+ },
+ "D3-262": {
+  "q": "Portal mein supported image se bani nayi Generation 2 VM ka default security type kya hai?",
+  "opts": [
+   "Standard",
+   "Trusted launch",
+   "Confidential",
+   "Koi nahi, pehle feature register karna hoga"
+  ],
+  "exp": "Secure Boot aur vTPM wala Trusted launch nayi Gen2 VMs aur scale sets ka default hai, jab image, disk aur size support karein. Confidential VMs khaas sizes ke sath alag option hai."
+ },
+ "D3-263": {
+  "q": "Trusted launch VM ko aisi family mein resize karna hai jo Trusted launch support nahi karti. Resize ka option nahi milta. Wajah kya hai?",
+  "opts": [
+   "Resize ke liye availability set chahiye",
+   "Target size VM ka security type support kare",
+   "Trusted launch VMs banne ke baad kabhi resize nahi hoti",
+   "Pehle OS disk ephemeral honi chahiye"
+  ],
+  "exp": "Trusted launch VM sirf un sizes mein resize hoti hai jo Trusted launch support karein. Doosri family ke liye VM deallocate kar ke security type Standard karni parti hai, jis se Secure Boot aur vTPM ki hifazat khatam ho jati hai."
+ },
+ "D3-264": {
+  "q": "Company ko yaqeen chahiye ke ek size ki 20 VMs kisi bhi waqt region mein start ho saken, capacity kam ho tab bhi. Aap kya banayenge?",
+  "opts": [
+   "Teen saal ki reserved VM instance",
+   "On-demand capacity reservation",
+   "Proximity placement group",
+   "Spot VM scale set"
+  ],
+  "exp": "On-demand capacity reservation region ya zone mein ek VM size ki compute capacity rok kar rakhta hai. Reserved instance qeemat ki chhoot hai, capacity nahi rokti. Proximity placement group latency ke liye hai, aur Spot capacity wapas li ja sakti hai."
+ },
+ "D3-265": {
+  "q": "On-demand capacity reservations ke bare mein Haan ya Nahi:",
+  "stmts": [
+   "Koi VM use na kare tab bhi reserved capacity ka paisa lagta hai",
+   "VM reservation tab use karti hai jab us ka hawala de",
+   "Spot VMs reservation use kar sakti hain",
+   "Mojooda reservation ka VM size badla ja sakta hai"
+  ],
+  "exp": "Reserved capacity ka bill VM size ki qeemat par aata hai, use ho ya na ho. VM ko use karne ke liye capacity reservation group ka hawala dena hota hai. Spot VMs supported nahi, aur banne ke baad sirf tadaad badalti hai."
+ },
+ "D3-266": {
+  "ctx": "Ek web app Basic (B1) tier ke App Service plan par chalti hai. Naye versions baghair downtime release karne hain aur pichle version par jaldi wapas aana hai.",
+  "q": "Hal: Aap plan ko Standard par scale up karte hain, staging slot banate hain, us mein deploy kar ke swap karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Slots Standard se shuru hote hain. Naya version staging slot mein deploy aur warm up hota hai, swap mein downtime nahi, aur dobara swap karne se pichla version wapas aa jata hai."
+ },
+ "D3-267": {
+  "ctx": "Ek web app Basic (B1) tier ke App Service plan par chalti hai. Naye versions baghair downtime release karne hain aur pichle version par jaldi wapas aana hai.",
+  "q": "Hal: Aap Basic plan rakhte hain, teen instances tak scale out karte hain aur seedha app par deploy karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Zyada instances naye version ko alag jagah deploy aur warm up karne nahi deti, aur purane version par jaldi wapsi nahi hoti. Deployment slots isi ke liye hain, aur unhein Standard ya us se upar ka tier chahiye."
+ },
+ "D3-268": {
+  "q": "VM scale set ki autoscale settings dekhein. Abhi 4 instances hain, aur aaj Tuesday hai. Haan ya Nahi:",
+  "stmts": [
+   "10 minute 80% average CPU par 6 instances ho jati hain",
+   "10 minute 20% average CPU par 3 instances reh jati hain",
+   "95% average CPU par 12 instances tak barh sakta hai",
+   "Saturday ko schedule minimum 1 karta hai"
+  ],
+  "exp": "Scale-out rule 2 instances barhata hai, is liye 4 se 6. Scale-in rule 1 kam karta hai, is liye 4 se 3, jo weekday minimum 2 se upar hai. Maximum 10 se kabhi nahi barhta. Weekend profile ka minimum 1 hai."
+ },
+ "D3-269": {
+  "q": "Yeh Bicep file env = 'test' ke sath chalane par kya deploy karti hai?",
+  "opts": [
+   "Standard_GRS wala ek storage account",
+   "Standard_LRS wala ek storage account",
+   "Do storage accounts, har SKU ka ek",
+   "Kuch nahi, kyunke condition false hai"
+  ],
+  "exp": "SKU ka expression conditional hai: env 'prod' ho to Standard_GRS, warna Standard_LRS. Resource par khud \"if\" nahi, is liye hamesha deploy hota hai, aur @allowed 'test' qubool karta hai."
+ },
+ "D3-270": {
+  "q": "Yeh Bicep file kaise yaqeeni banati hai ke NIC VM se pehle bane?",
+  "opts": [
+   "dependsOn se, jo har Bicep resource mein likhna lazmi hai",
+   "Nahi banati: tarteeb random hai",
+   "nic.id ke hawale se, jo implicit dependency banata hai",
+   "File mein resources ki tarteeb se"
+  ],
+  "exp": "Ek resource ka symbolic name doosre mein use karne se implicit dependency banti hai, is liye Resource Manager pehle NIC deploy karta hai. File mein tarteeb ki ahmiyat nahi, aur dependsOn sirf tab chahiye jab hawala na ho."
+ },
+ "D3-271": {
+  "q": "Yeh PowerShell script kya karta hai?",
+  "opts": [
+   "vm1 ko resize kar ke dobara start karta hai",
+   "vm1 delete kar ke naye size mein banata hai",
+   "Naye size mein vm1 ki copy banata hai",
+   "vm1 resize karta hai lekin band chhorta hai"
+  ],
+  "exp": "Stop-AzVM VM ko deallocate karta hai, script VM object mein size badalta hai, Update-AzVM lagu karta hai, aur Start-AzVM VM start karta hai. Kuch delete ya copy nahi hota. Pehle deallocate karne se woh sizes bhi milte hain jo mojooda hardware par nahi."
  }
 }
