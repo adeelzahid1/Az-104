@@ -1,0 +1,113 @@
+.warn {
+  border-left: 4px solid var(--warn);
+  background: var(--warn-soft);
+}
+
+.warn ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+  cursor: pointer;
+}
+
+.id {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.name {
+  font-weight: 700;
+  margin-right: auto;
+}
+
+.cost,
+.count {
+  font-size: 0.85rem;
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.cost.free,
+.count.ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.cost.hourly {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+ol {
+  padding-left: 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+li {
+  min-width: 0;
+}
+
+label {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  cursor: pointer;
+}
+
+li.done label span {
+  color: var(--muted);
+}
+
+input {
+  accent-color: var(--ok);
+}
+
+.code {
+  position: relative;
+  margin-top: 8px;
+}
+
+pre {
+  margin: 0;
+  padding: 12px 96px 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+
+.code .btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+h3 {
+  margin: 18px 0 4px;
+  font-size: 1rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 14px 0 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  pre {
+    padding: 44px 12px 12px;
+  }
+}

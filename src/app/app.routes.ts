@@ -19,6 +19,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/plan/plan').then((m) => m.Plan),
   },
   {
+    path: 'labs',
+    title: 'Labs · AZ-104 Prep',
+    loadComponent: () => import('./features/labs/labs').then((m) => m.Labs),
+  },
+  {
     path: 'cheat-sheet',
     title: 'Cheat sheet · AZ-104 Prep',
     loadComponent: () => import('./features/cheatsheet/cheatsheet').then((m) => m.Cheatsheet),

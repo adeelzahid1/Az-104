@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { LabProgress } from './lab-progress';
 import { MockHistory } from './mock-history';
 import { Plan } from './plan';
 import { Progress } from './progress';
@@ -15,6 +16,7 @@ export interface Backup {
   /** Missing in backups made before these existed. */
   plan?: unknown;
   mocks?: unknown;
+  labs?: unknown;
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
@@ -39,6 +41,7 @@ export class BackupService {
   private readonly study = inject(StudyProgress);
   private readonly plan = inject(Plan);
   private readonly mocks = inject(MockHistory);
+  private readonly labs = inject(LabProgress);
 
   create(now = new Date()): Backup {
     return {
@@ -49,6 +52,7 @@ export class BackupService {
       study: this.study.snapshot(),
       plan: this.plan.snapshot(),
       mocks: this.mocks.results(),
+      labs: this.labs.snapshot(),
     };
   }
 
@@ -57,6 +61,7 @@ export class BackupService {
     this.progress.restore(backup.progress);
     this.study.restore(backup.study);
     if (backup.mocks) this.mocks.replace(backup.mocks);
+    if (backup.labs) this.labs.restore(backup.labs);
     if (backup.plan) this.plan.restore(backup.plan);
   }
 }

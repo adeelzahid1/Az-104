@@ -19,6 +19,7 @@ export class App {
     { path: '/', key: 'dashboard', exact: true },
     { path: '/plan', key: 'plan', exact: false },
     { path: '/study', key: 'study', exact: false },
+    { path: '/labs', key: 'labs', exact: false },
     { path: '/cheat-sheet', key: 'cheat', exact: false },
     { path: '/practice', key: 'practice', exact: false },
     { path: '/mock', key: 'mock', exact: false },

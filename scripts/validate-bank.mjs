@@ -199,6 +199,27 @@ for (const g of cheat) {
 }
 for (const s of sections) if (!covered.has(s.id)) errors.push(`cheatsheet: section ${s.id} has no card`);
 
+// Labs: known sections and skills, text in both languages, own resource groups only.
+const labs = JSON.parse(readFileSync(join(DATA, 'labs.json'), 'utf8'));
+const allSkills = new Set(sections.flatMap((s) => s.skills));
+const pair = (x) => Array.isArray(x) && x.length === 2 && x.every((s) => typeof s === 'string' && s.trim());
+const labSkills = new Set();
+labs.forEach((l, i) => {
+  const fail = (msg) => errors.push(`labs ${l.id}: ${msg}`);
+  if (l.id !== `L${String(i + 1).padStart(2, '0')}`) fail('ids must be L01, L02, … in order');
+  if (!sections.some((s) => s.id === l.section)) fail(`unknown section ${l.section}`);
+  if (!['free', 'low', 'hourly'].includes(l.cost) || !(l.minutes > 0)) fail('cost or minutes');
+  if (![l.t, l.goal, ...l.steps.map((s) => s.t), ...l.remember].every(pair)) fail('text must be [English, Roman]');
+  for (const k of l.skills) {
+    labSkills.add(k);
+    if (!allSkills.has(k)) fail(`unknown skill "${k}"`);
+  }
+  const groups = [...l.steps.map((s) => s.cli ?? '').join('\n').matchAll(/\b(?:V?RG)=(\S+)/g)].map((m) => m[1]);
+  const own = new RegExp(`^az104-lab${l.id.slice(1)}(-vault)?$`);
+  if (!groups.length || !groups.every((g) => own.test(g))) fail('must use its own az104-labNN resource group');
+  if (!l.cleanup.includes('az group delete -n $RG')) fail('cleanup must delete the resource group');
+});
+
 // The correct option must not be recognisable by its length, in English or in Roman Urdu.
 const MAX_STANDOUT_SHARE = 0.12;
 const romanById = Object.assign(
@@ -234,6 +255,7 @@ console.log(`Questions: ${counts.total}  Case studies: ${caseIds.size}`);
 console.log('Roman Urdu translated:', romanDone, `cases ${Object.keys(romanCases).length}/${caseIds.size}`);
 console.log('Study sections (excluding case studies):', sectionSizes);
 console.log(`Cheat sheet: ${cheat.reduce((n, g) => n + g.cards.length, 0)} cards, ${cheatFacts} entries`);
+console.log(`Labs: ${labs.length}, practising ${labSkills.size} of ${allSkills.size} official skills`);
 console.log('Correct option noticeably longest:', standout);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);

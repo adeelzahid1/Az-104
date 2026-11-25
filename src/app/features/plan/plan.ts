@@ -5,11 +5,17 @@ import { Plan as PlanService, SkillMarks } from '../../core/plan';
 import { Minutes, dayKey } from '../../core/plan-logic';
 import { MIN_MOCK, mockShare } from '../../core/readiness';
 import { SECTIONS } from '../../core/sections';
+import labsJson from '../../data/labs.json';
 import { DOMAINS } from '../../data/schema';
 import { Language } from '../../i18n/language';
 import { TodayCard } from './today-card';
 
 const SHOWN_MOCKS = 10;
+
+/** The labs that practise a skill of each section. */
+const LABS_OF = new Map(
+  SECTIONS.map((s) => [s.id, labsJson.filter((l) => l.skills.some((k) => s.skills.includes(k))).map((l) => l.id)]),
+);
 
 @Component({
   selector: 'app-plan',
@@ -51,6 +57,7 @@ export class Plan {
         id: s.id,
         name: roman ? s.ro : s.en,
         strong: strong.has(s.id),
+        labs: LABS_OF.get(s.id) ?? [],
         skills: s.skills.map((name) => ({ name, marks: marks[name] ?? ({} as SkillMarks) })),
       }));
       const skills = sections.flatMap((s) => s.skills);

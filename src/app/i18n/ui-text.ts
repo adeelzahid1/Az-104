@@ -11,7 +11,7 @@ export const EN = {
   skip: 'Skip to content',
   footer:
     'Original practice questions written from Microsoft Learn documentation. Not affiliated with Microsoft. Your progress is saved only in this browser.',
-  nav: { dashboard: 'Dashboard', plan: 'Plan', study: 'Study', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Weak areas' },
+  nav: { dashboard: 'Dashboard', plan: 'Plan', study: 'Study', labs: 'Labs', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Weak areas' },
   domains: {
     1: 'Manage Azure identities and governance',
     2: 'Implement and manage storage',
@@ -270,8 +270,32 @@ export const EN = {
     checklistTitle: 'Official skills checklist',
     checklistLead: (done: number, total: number) => `${done} of ${total} skills understood. "80%+" is set automatically for a section with at least 10 answers.`,
     strong: '80%+',
+    lab: (id: string) => `Lab ${id}`,
     skill: 'Skill',
     marks: { read: 'Read', understood: 'Understood', lab: 'Lab done' } as Record<string, string>,
+  },
+
+  labs: {
+    title: 'Hands-on labs',
+    lead: (done: number, total: number) => `${done} of ${total} labs finished. Every lab uses its own resource group in Azure Cloud Shell (Bash).`,
+    beforeTitle: 'Before you start',
+    before: [
+      'Use your own test subscription, never one that belongs to work. Open Cloud Shell in the portal (the >_ icon) and choose Bash.',
+      'Run one step at a time and read its output. The variables ($RG, $SA…) last only for the Cloud Shell session: after a break, run the lines that set them again.',
+      'Free = normally no cost. Low = a small VM or container for an hour or two, often covered by the free account. By the hour = services that cost money while they exist. Clean up the same day.',
+      'Set a budget alert first: Cost Management → Budgets.',
+      'If a VM size or region has no capacity, change SIZE or westeurope and repeat the step.',
+      'Commands follow Microsoft Learn but were not run for you. If one fails, read the error: finding the cause is exam practice.',
+    ],
+    minutes: (n: number) => `${n} min`,
+    cost: { free: 'Free', low: 'Low cost', hourly: 'Billed by the hour' } as Record<string, string>,
+    goal: 'Goal:',
+    copy: 'Copy',
+    copied: 'Copied ✓',
+    cleanup: 'Clean up',
+    cleanupNote: 'Do this last. It deletes only what this lab made. Check in the portal that the resource group is gone.',
+    remember: 'For the exam',
+    checklist: 'Skills checklist →',
   },
 
   cheat: {
@@ -350,7 +374,7 @@ export const ROMAN: UiText = {
   skip: 'Content par jayen',
   footer:
     'Yeh original practice sawal Microsoft Learn documentation se likhe gaye hain. Microsoft se koi taluq nahi. Aap ki progress sirf isi browser mein save hoti hai.',
-  nav: { dashboard: 'Dashboard', plan: 'Plan', study: 'Study', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Kamzor areas' },
+  nav: { dashboard: 'Dashboard', plan: 'Plan', study: 'Study', labs: 'Labs', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Kamzor areas' },
   domains: {
     1: 'Azure identities aur governance manage karna',
     2: 'Storage implement aur manage karna',
@@ -611,8 +635,32 @@ export const ROMAN: UiText = {
     checklistTitle: 'Official skills ki checklist',
     checklistLead: (done: number, total: number) => `${total} mein se ${done} skills samajh aaye. "80%+" khud lagta hai jab section mein kam az kam 10 jawab hon.`,
     strong: '80%+',
+    lab: (id: string) => `Lab ${id}`,
     skill: 'Skill',
     marks: { read: 'Parha', understood: 'Samjha', lab: 'Lab ki' },
+  },
+
+  labs: {
+    title: 'Hands-on labs',
+    lead: (done: number, total: number) => `${total} mein se ${done} labs mukammal. Har lab Azure Cloud Shell (Bash) mein apna resource group use karti hai.`,
+    beforeTitle: 'Shuru karne se pehle',
+    before: [
+      'Apni test subscription use karein, office wali kabhi nahi. Portal mein Cloud Shell (>_ icon) kholein aur Bash chunein.',
+      'Ek waqt mein ek step chalayen aur output parhein. Variables ($RG, $SA…) sirf Cloud Shell session tak rehte hain: waqfe ke baad unhein set karne wali lines dobara chalayen.',
+      'Free = aam tor par koi kharcha nahi. Kam kharcha = ek do ghante ki choti VM ya container, aksar free account mein shamil. Per hour = jab tak service maujood hai paisa lagta hai. Usi din cleanup karein.',
+      'Pehle budget alert lagayen: Cost Management → Budgets.',
+      'VM size ya region mein capacity na ho to SIZE ya westeurope badal kar step dohrayen.',
+      'Commands Microsoft Learn ke mutabiq hain lekin aap ke liye chala kar nahi dekhi gayin. Fail ho to error parhein: wajah dhoondna exam ki practice hai.',
+    ],
+    minutes: (n: number) => `${n} min`,
+    cost: { free: 'Free', low: 'Kam kharcha', hourly: 'Per hour bill' },
+    goal: 'Maqsad:',
+    copy: 'Copy',
+    copied: 'Copy ho gaya ✓',
+    cleanup: 'Cleanup',
+    cleanupNote: 'Aakhir mein karein. Sirf is lab ki banayi cheezein delete hoti hain. Portal mein dekhein ke resource group khatam ho gaya.',
+    remember: 'Exam ke liye',
+    checklist: 'Skills ki checklist →',
   },
 
   cheat: {

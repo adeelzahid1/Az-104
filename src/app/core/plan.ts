@@ -196,6 +196,15 @@ export class Plan {
     });
   }
 
+  /** Ticks "lab done" for these skills. */
+  markLab(names: readonly string[]): void {
+    this.update((s) => {
+      const skills = { ...s.skills };
+      for (const name of names) skills[name] = { ...skills[name], lab: true };
+      return { ...s, skills };
+    });
+  }
+
   snapshot(): Record<string, unknown> {
     const { exam, minutes, skills } = this.state();
     return { exam, minutes, skills };

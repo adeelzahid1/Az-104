@@ -1,0 +1,69 @@
+@let tl = t().labs;
+
+<h1>{{ tl.title }}</h1>
+<p class="muted">{{ tl.lead(finished(), labs().length) }}</p>
+
+<section class="card warn">
+  <h2>{{ tl.beforeTitle }}</h2>
+  <ul>
+    @for (x of tl.before; track $index) {
+      <li>{{ x }}</li>
+    }
+  </ul>
+</section>
+
+@for (l of labs(); track l.id) {
+  <details class="card" [open]="lab() === l.id">
+    <summary>
+      <span class="id">{{ l.id }}</span>
+      <span class="name">{{ l.title }}</span>
+      <span class="muted">{{ tl.minutes(l.minutes) }}</span>
+      <span class="cost" [class]="'cost ' + l.cost">{{ tl.cost[l.cost] }}</span>
+      <span class="count" [class.ok]="l.complete">{{ l.complete ? '✓ ' : '' }}{{ l.doneCount }}/{{ l.rows.length }}</span>
+    </summary>
+
+    <p>
+      <strong>{{ tl.goal }}</strong> {{ l.goalText }}
+    </p>
+
+    <ol>
+      @for (s of l.rows; track $index) {
+        <li [class.done]="s.done">
+          <label>
+            <input type="checkbox" [checked]="s.done" (change)="toggle(l.id, $index)" />
+            <span>{{ s.text }}</span>
+          </label>
+          @if (s.cli; as cli) {
+            <div class="code">
+              <pre tabindex="0"><code>{{ cli }}</code></pre>
+              <button type="button" class="btn small" (click)="copy(cli)">
+                {{ copied() === cli ? tl.copied : tl.copy }}
+              </button>
+            </div>
+          }
+        </li>
+      }
+    </ol>
+
+    <h3>{{ tl.cleanup }}</h3>
+    <p class="muted">{{ tl.cleanupNote }}</p>
+    <div class="code">
+      <pre tabindex="0"><code>{{ l.cleanup }}</code></pre>
+      <button type="button" class="btn small" (click)="copy(l.cleanup)">
+        {{ copied() === l.cleanup ? tl.copied : tl.copy }}
+      </button>
+    </div>
+
+    <h3>{{ tl.remember }}</h3>
+    <ul>
+      @for (x of l.notes; track $index) {
+        <li>{{ x }}</li>
+      }
+    </ul>
+
+    <p class="links">
+      <a routerLink="/study" [queryParams]="{ s: l.section }">{{ t().cheat.practise(l.section) }}</a>
+      <a routerLink="/plan">{{ tl.checklist }}</a>
+    </p>
+  </details>
+}
