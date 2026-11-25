@@ -1,6 +1,7 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { CaseStudy, Question } from '../data/schema';
 import { QuizService } from '../core/quiz';
+import { withRetry } from '../core/retry';
 import { domainOf } from '../core/quiz-logic';
 import { Language } from './language';
 
@@ -95,7 +96,7 @@ export class RomanContent {
     const loader = LOADERS[domain];
     if (!loader || this.requested.has(domain)) return;
     this.requested.add(domain);
-    loader().then(
+    withRetry(loader).then(
       (set) => this.texts.update((all) => ({ ...all, ...set })),
       () => this.requested.delete(domain),
     );
@@ -104,7 +105,7 @@ export class RomanContent {
   private loadCases(): void {
     if (this.requested.has('cases')) return;
     this.requested.add('cases');
-    import('../data/roman/cases.json').then(
+    withRetry(() => import('../data/roman/cases.json')).then(
       (m) => this.caseTexts.set(m.default as Record<string, RomanCase>),
       () => this.requested.delete('cases'),
     );

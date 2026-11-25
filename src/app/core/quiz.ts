@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { CaseStudy, DOMAINS, Question } from '../data/schema';
 import { Progress } from './progress';
 import { QuestionBank } from './question-bank';
+import { readSession, writeSession } from './session-store';
 import {
   Answer,
   QuizConfig,
@@ -45,12 +46,19 @@ export const PASS_MARK = 700;
 export class QuizService {
   private readonly bank = inject(QuestionBank);
   private readonly progress = inject(Progress);
-  private readonly state = signal<Session | null>(null);
-  private readonly caseStudies = signal<Record<string, CaseStudy>>({});
+  private readonly saved = readSession();
+  private readonly state = signal<Session | null>(this.saved?.session ?? null);
+  private readonly caseStudies = signal<Record<string, CaseStudy>>(this.saved?.cases ?? {});
 
   readonly session = this.state.asReadonly();
   /** Case study texts for the questions in the current session. */
   readonly cases = this.caseStudies.asReadonly();
+
+  /** A quiz that was started but not finished; it survives a page refresh. */
+  readonly unfinished = computed(() => {
+    const s = this.state();
+    return s && s.finishedAt === null ? s : null;
+  });
 
   readonly result = computed<QuizResult | null>(() => {
     const s = this.state();
@@ -93,7 +101,8 @@ export class QuizService {
       shuffleOptions(q),
     );
     if (!questions.length) return 0;
-    this.caseStudies.set(cases);
+    const used = new Set(questions.map((q) => q.caseId));
+    this.caseStudies.set(Object.fromEntries(Object.entries(cases).filter(([id]) => used.has(id))));
     const now = Date.now();
     this.state.set({
       config,
@@ -108,6 +117,7 @@ export class QuizService {
           : null,
       finishedAt: null,
     });
+    this.save();
     return questions.length;
   }
 
@@ -144,10 +154,18 @@ export class QuizService {
       .map((q, i) => ({ q, a: s.answers[i], i }))
       .filter((x) => !s.checked[x.i] && (s.config.mode === 'exam' || isAnswered(x.q, x.a)));
     this.progress.record(unrecorded.map((x) => ({ q: x.q, correct: isCorrect(x.q, x.a) })));
-    this.patch((cur) => ({ ...cur, finishedAt: Date.now() }));
+    // When the time ran out while the page was closed, the exam ended at the deadline.
+    const finishedAt = Math.min(Date.now(), s.deadline ?? Infinity);
+    this.patch((cur) => ({ ...cur, finishedAt }));
   }
 
   private patch(fn: (s: Session) => Session): void {
     this.state.update((s) => (s ? fn(s) : s));
+    this.save();
+  }
+
+  private save(): void {
+    const session = this.state();
+    if (session) writeSession({ session, cases: this.caseStudies() });
   }
 }

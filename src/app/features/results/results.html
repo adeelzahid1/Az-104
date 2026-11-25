@@ -56,6 +56,10 @@
     <a class="btn" routerLink="/mock">{{ tr.newMock }}</a>
   </div>
 
+  @if (loadFailed()) {
+    <app-load-error />
+  }
+
   <section class="review">
     <div class="review-head">
       <h2>{{ tr.review }}</h2>

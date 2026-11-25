@@ -19,6 +19,8 @@ export interface QuizConfig {
   type: TypeFilter;
   mistakesOnly: boolean;
   timed: boolean;
+  /** Practice only: a single subtopic of the chosen domains. */
+  sub?: string;
 }
 
 /** Mock exams of at least this many questions include one case study, like the real exam. */
@@ -131,10 +133,23 @@ export function pickQuestions(
         inDomains(q) &&
         diffOk(q) &&
         mistakes.has(q.id) &&
+        (!config.sub || q.sub === config.sub) &&
         (config.type === 'all' ||
           (config.type === 'case' ? !!q.caseId : q.type === config.type)),
     );
     return shuffle(missed, rnd).slice(0, config.count);
+  }
+
+  if (config.sub) {
+    // Case study parts stand alone here; the case text is shown with each of them.
+    const matching = pool.filter(
+      (q) =>
+        inDomains(q) &&
+        diffOk(q) &&
+        q.sub === config.sub &&
+        (config.type === 'all' || (config.type === 'case' ? !!q.caseId : q.type === config.type)),
+    );
+    return shuffle(matching, rnd).slice(0, config.count);
   }
 
   const units = toUnits(pool).filter((u) => u.every(inDomains));

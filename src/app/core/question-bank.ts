@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CaseStudy, Question } from '../data/schema';
+import { withRetry } from './retry';
 
 type JsonModule = { default: unknown };
 
@@ -59,8 +60,10 @@ export class QuestionBank {
     let pending = this.cache.get(id);
     if (!pending) {
       const loader = LOADERS[id];
-      pending = loader ? loader() : Promise.resolve([]);
+      pending = loader ? withRetry(loader) : Promise.resolve([]);
       this.cache.set(id, pending);
+      // A failed download must not be remembered, so the next call can try again.
+      pending.catch(() => this.cache.delete(id));
     }
     return pending;
   }
@@ -72,9 +75,12 @@ export class QuestionBank {
 
   /** Case study texts, keyed by id. */
   cases(): Promise<Record<string, CaseStudy>> {
-    this.casesPromise ??= import('../data/cases.json').then((m) =>
-      Object.fromEntries((m.default as CaseStudy[]).map((c) => [c.id, c])),
-    );
+    if (!this.casesPromise) {
+      this.casesPromise = withRetry(() => import('../data/cases.json')).then((m) =>
+        Object.fromEntries((m.default as CaseStudy[]).map((c) => [c.id, c])),
+      );
+      this.casesPromise.catch(() => (this.casesPromise = null));
+    }
     return this.casesPromise;
   }
 }

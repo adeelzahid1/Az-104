@@ -11,18 +11,24 @@ import { DOMAINS } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuestionBank } from '../../core/question-bank';
 import { StudyProgress } from '../../core/study-progress';
+import { QuizService } from '../../core/quiz';
 import { Language } from '../../i18n/language';
+import { BackupPanel } from './backup-panel';
 
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, BackupPanel],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
   private readonly progress = inject(Progress);
   private readonly bank = inject(QuestionBank);
+  private readonly quiz = inject(QuizService);
+  /** False on the server and during hydration, where saved data isn't known. */
+  private readonly inBrowser = signal(false);
+  protected readonly unfinished = computed(() => (this.inBrowser() ? this.quiz.unfinished() : null));
   private readonly sizes = signal<Record<number, number>>({});
 
   protected readonly t = inject(Language).t;
@@ -55,11 +61,15 @@ export class Dashboard {
   });
 
   constructor() {
-    afterNextRender(async () => {
-      const entries = await Promise.all(
-        DOMAINS.map(async (d) => [d.id, (await this.bank.domain(d.id)).length] as const),
-      );
-      this.sizes.set(Object.fromEntries(entries));
+    afterNextRender(() => {
+      this.inBrowser.set(true);
+      // A domain that can't be downloaded keeps showing "…".
+      for (const d of DOMAINS) {
+        this.bank.domain(d.id).then(
+          (questions) => this.sizes.update((all) => ({ ...all, [d.id]: questions.length })),
+          () => undefined,
+        );
+      }
     });
   }
 }

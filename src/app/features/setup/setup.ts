@@ -6,15 +6,17 @@ import {
   computed,
   inject,
   input,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DOMAINS, Difficulty } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuizService } from '../../core/quiz';
 import { Language } from '../../i18n/language';
+import { LoadError } from '../../shared/load-error';
 import { CASE_STUDY_MIN_EXAM_SIZE, TypeFilter, domainQuotas } from '../../core/quiz-logic';
 
 /** Every case study in the bank has this many questions (checked by the bank validation script). */
@@ -23,7 +25,7 @@ const CASE_STUDY_PARTS = 5;
 @Component({
   selector: 'app-setup',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink, LoadError],
   templateUrl: './setup.html',
   styleUrl: './setup.css',
 })
@@ -34,6 +36,8 @@ export class Setup implements OnInit {
   readonly domain = input<string>();
   /** Optional ?mistakes=1 query parameter. */
   readonly mistakes = input<string>();
+  /** Optional ?sub=RBAC query parameter: practise one subtopic of the chosen domain. */
+  readonly sub = input<string>();
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly quiz = inject(QuizService);
@@ -44,6 +48,9 @@ export class Setup implements OnInit {
   protected readonly domains = DOMAINS;
   protected readonly mistakeCount = computed(() => this.progress.mistakeIds().length);
   protected readonly busy = signal(false);
+  protected readonly loadFailed = signal(false);
+  protected readonly unfinished = this.quiz.unfinished;
+  protected readonly subtopic = linkedSignal(() => (this.mode() === 'practice' ? (this.sub() ?? '') : ''));
   protected readonly t = inject(Language).t;
   protected readonly error = signal<'' | 'noDomain' | 'noMistakes' | 'noMatch'>('');
 
@@ -106,6 +113,7 @@ export class Setup implements OnInit {
     }
     const v = this.form.getRawValue();
     this.error.set('');
+    this.loadFailed.set(false);
     this.busy.set(true);
     try {
       const count = await this.quiz.start({
@@ -116,6 +124,7 @@ export class Setup implements OnInit {
         type: v.type,
         mistakesOnly: this.mode() === 'practice' && v.mistakesOnly,
         timed: this.mode() === 'exam' && v.timed,
+        sub: this.subtopic() || undefined,
       });
       if (count === 0) {
         this.error.set(
@@ -124,6 +133,8 @@ export class Setup implements OnInit {
         return;
       }
       await this.router.navigate(['/quiz']);
+    } catch {
+      this.loadFailed.set(true);
     } finally {
       this.busy.set(false);
     }

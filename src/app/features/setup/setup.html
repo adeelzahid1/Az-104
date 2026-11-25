@@ -5,6 +5,13 @@
 <h1>{{ exam ? ts.examTitle : ts.practiceTitle }}</h1>
 <p class="muted lead">{{ exam ? ts.examLead : ts.practiceLead }}</p>
 
+@if (unfinished(); as u) {
+  <section class="card">
+    <p>{{ ts.unfinished(u.config.mode === 'exam', u.current + 1, u.questions.length) }}</p>
+    <a class="btn primary" routerLink="/quiz">{{ ts.resume }}</a>
+  </section>
+}
+
 <form class="card" [formGroup]="form" (ngSubmit)="start()">
   <fieldset formGroupName="domains">
     <legend>{{ ts.domains }}</legend>
@@ -18,6 +25,13 @@
       </label>
     }
   </fieldset>
+
+  @if (subtopic()) {
+    <p class="row">
+      <strong>{{ ts.subtopic(subtopic()) }}</strong>
+      <button type="button" class="btn small" (click)="subtopic.set('')">{{ ts.clearSubtopic }}</button>
+    </p>
+  }
 
   <div class="grid">
     <label class="field">
@@ -81,6 +95,10 @@
 
   @if (error()) {
     <p class="error" role="alert">{{ ts.errors[error()] }}</p>
+  }
+
+  @if (loadFailed()) {
+    <app-load-error />
   }
 
   <div class="row end">

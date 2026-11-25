@@ -10,6 +10,29 @@
     <a class="side-btn" routerLink="/weak-areas">📊 {{ tx.nav.weak }}</a>
 
     <nav [attr.aria-label]="ts.sectionsNav">
+      <p class="side-head">{{ ts.allSections }}</p>
+      <button
+        type="button"
+        class="side-item"
+        [class.active]="selected() === allSections && filter() === 'all'"
+        (click)="choose(allSections, 'all')"
+      >
+        <span class="num">∗</span>
+        <span class="name">{{ ts.allQuestions }}</span>
+        <span class="badge">{{ stats().get(allSections) ?? '…' }}</span>
+      </button>
+      @for (name of quickFilters; track name) {
+        <button
+          type="button"
+          class="side-item"
+          [class.active]="selected() === allSections && filter() === name"
+          (click)="choose(allSections, name)"
+        >
+          <span class="num">∗</span>
+          <span class="name">{{ ts.filters[name] }}</span>
+          <span class="badge">{{ quickCounts()?.[name] ?? '…' }}</span>
+        </button>
+      }
       @for (d of domains; track d.id) {
         <p class="side-head">{{ ts.sectionLabel(d.id) }}: {{ tx.domains[d.id] }}</p>
         <p class="side-weight">{{ ts.weight(d.weightLabel) }}</p>
@@ -46,6 +69,9 @@
     <label class="field mobile-pick">
       <span>{{ ts.chooseSection }}</span>
       <select #pick (change)="choose(pick.value)">
+        <option [value]="allSections" [selected]="selected() === allSections">
+          {{ ts.allSections }} ({{ stats().get(allSections) ?? '…' }})
+        </option>
         @for (d of domains; track d.id) {
           <optgroup [label]="ts.sectionLabel(d.id) + ': ' + tx.domains[d.id]">
             @for (s of d.sections; track s.id) {
@@ -98,16 +124,18 @@
         }
       </select>
       <div class="seg" role="group" [attr.aria-label]="ts.modeLabel">
-        <button type="button" [class.on]="mode() === 'list'" [attr.aria-pressed]="mode() === 'list'" (click)="mode.set('list')">
+        <button type="button" [class.on]="mode() === 'list'" [attr.aria-pressed]="mode() === 'list'" (click)="setMode('list')">
           {{ ts.list }}
         </button>
-        <button type="button" [class.on]="mode() === 'cards'" [attr.aria-pressed]="mode() === 'cards'" (click)="mode.set('cards')">
+        <button type="button" [class.on]="mode() === 'cards'" [attr.aria-pressed]="mode() === 'cards'" (click)="setMode('cards')">
           {{ ts.cards }}
         </button>
       </div>
     </div>
 
-    @if (all() === null) {
+    @if (loadFailed()) {
+      <app-load-error />
+    } @else if (all() === null) {
       <p class="card">{{ ts.loading }}</p>
     } @else if (mode() === 'list') {
       <p class="muted count">{{ ts.count(visible().length, filtered().length) }}</p>

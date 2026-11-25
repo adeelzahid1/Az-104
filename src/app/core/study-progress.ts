@@ -78,6 +78,28 @@ export class StudyProgress {
     this.patch(id, (e) => ({ ...e, c: schedule(e.c, rating, now) }));
   }
 
+  snapshot(): Record<string, unknown> {
+    return { ...this.state() };
+  }
+
+  /** Replaces all study progress. Entries that aren't valid are left out. */
+  restore(data: Record<string, unknown>): void {
+    const next: StudyState = {};
+    for (const [id, value] of Object.entries(data)) {
+      const e = value as StudyEntry | null;
+      if (!/^D[1-5]-\d{3}$/.test(id) || !e) continue;
+      const entry: StudyEntry = {};
+      if (e.u === true) entry.u = true;
+      if (e.b === true) entry.b = true;
+      if ([e.c?.due, e.c?.ivl, e.c?.reps].every((n) => Number.isFinite(n))) {
+        entry.c = { due: e.c!.due, ivl: e.c!.ivl, reps: e.c!.reps };
+      }
+      if (Object.keys(entry).length) next[id] = entry;
+    }
+    this.state.set(next);
+    writeStorage(next);
+  }
+
   private patch(id: string, fn: (entry: StudyEntry) => StudyEntry): void {
     this.state.update((all) => {
       const entry = JSON.parse(JSON.stringify(fn(all[id] ?? {}))) as StudyEntry;

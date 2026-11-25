@@ -12,6 +12,13 @@
   </div>
 </section>
 
+@if (unfinished(); as u) {
+  <section class="card">
+    <p>{{ tx.setup.unfinished(u.config.mode === 'exam', u.current + 1, u.questions.length) }}</p>
+    <a class="btn primary" routerLink="/quiz">{{ tx.setup.resume }}</a>
+  </section>
+}
+
 <section class="summary">
   <div class="card stat">
     <p class="muted">{{ td.bank }}</p>
@@ -40,14 +47,16 @@
     <p class="muted">{{ td.studyUnderstood }}</p>
     <p class="big">{{ studyUnderstood() }}<span class="muted small"> / {{ totalQuestions() || '…' }}</span></p>
   </div>
-  <div class="card stat">
+  <a class="card stat link-card" routerLink="/study" [queryParams]="{ s: 'all', f: 'due', m: 'cards' }">
     <p class="muted">{{ td.studyDue }}</p>
     <p class="big">{{ studyDue() }}</p>
-  </div>
-  <div class="card stat">
+    <p class="muted small">{{ td.reviewDue }}</p>
+  </a>
+  <a class="card stat link-card" routerLink="/study" [queryParams]="{ s: 'all', f: 'bookmarked' }">
     <p class="muted">{{ td.studyBookmarked }}</p>
     <p class="big">{{ studyBookmarked() }}</p>
-  </div>
+    <p class="muted small">{{ td.reviewBookmarked }}</p>
+  </a>
   <a class="card stat link-card" routerLink="/study">
     <p class="muted">{{ tx.nav.study }}</p>
     <p class="muted small">{{ td.openStudy }}</p>
@@ -73,6 +82,8 @@
     </article>
   }
 </div>
+
+<app-backup-panel />
 
 <section class="card tips">
   <h2>{{ td.howTitle }}</h2>

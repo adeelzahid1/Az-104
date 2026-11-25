@@ -43,7 +43,32 @@ export const EN = {
     caseStudy: 'Case study',
   },
 
+  loadError: {
+    text: "The questions couldn't be downloaded. Check your connection and try again. Your progress is safe.",
+    retry: 'Try again',
+  },
+
+  backup: {
+    title: 'Back up your progress',
+    lead: 'Your progress is saved only in this browser. Export it to a file to keep it safe, or to move it to another device.',
+    export: 'Export progress',
+    import: 'Import progress',
+    confirm: (answered: number, studied: number, date: string) =>
+      `This file from ${date} has ${answered} answered and ${studied} studied questions. Importing it replaces your current progress in this browser.`,
+    replace: 'Replace my progress',
+    cancel: 'Cancel',
+    messages: {
+      invalid: "That file isn't an AZ-104 Prep backup.",
+      done: 'Progress imported.',
+    } as Record<string, string>,
+  },
+
   setup: {
+    unfinished: (exam: boolean, n: number, total: number) =>
+      `You have an unfinished ${exam ? 'mock exam' : 'practice set'} (question ${n} of ${total}). Starting a new one replaces it.`,
+    resume: 'Resume',
+    subtopic: (name: string) => `Subtopic: ${name}`,
+    clearSubtopic: 'Practise all subtopics',
     practiceTitle: 'Practice',
     examTitle: 'Mock exam',
     examLead:
@@ -132,6 +157,8 @@ export const EN = {
   },
 
   study: {
+    allSections: 'All sections',
+    allQuestions: 'All questions',
     title: 'Study',
     skillsTitle: 'Official exam skills (April 17, 2026)',
     howToLabel: 'How to study:',
@@ -178,6 +205,8 @@ export const EN = {
   },
 
   dashboard: {
+    reviewDue: 'Review now →',
+    reviewBookmarked: 'See them →',
     title: 'AZ-104 Microsoft Azure Administrator',
     lead: 'Original practice questions built from the official skills outline (skills measured as of April 17, 2026). Pass mark: 700/1000.',
     takeMock: 'Take a mock exam',
@@ -204,6 +233,7 @@ export const EN = {
   },
 
   weak: {
+    practiceSub: (name: string) => `Practice ${name}`,
     title: 'Weak areas',
     lead: "Built from every answer you've given in this browser. A question stays in your mistakes until you answer it correctly, so revisiting them is built-in spaced revision.",
     noneTitle: 'No answers recorded yet',
@@ -270,7 +300,32 @@ export const ROMAN: UiText = {
     caseStudy: 'Case study',
   },
 
+  loadError: {
+    text: 'Sawal download nahi ho sake. Apna connection check kar ke dobara koshish karein. Aap ki progress mehfooz hai.',
+    retry: 'Dobara koshish karein',
+  },
+
+  backup: {
+    title: 'Apni progress ka backup',
+    lead: 'Aap ki progress sirf isi browser mein save hai. Mehfooz rakhne ya doosre device par le jane ke liye file mein export karein.',
+    export: 'Progress export karein',
+    import: 'Progress import karein',
+    confirm: (answered: number, studied: number, date: string) =>
+      `${date} ki is file mein ${answered} hal kiye aur ${studied} parhe hue sawal hain. Import karne se is browser ki mojooda progress is se badal jayegi.`,
+    replace: 'Meri progress badal dein',
+    cancel: 'Cancel',
+    messages: {
+      invalid: 'Yeh file AZ-104 Prep ka backup nahi.',
+      done: 'Progress import ho gayi.',
+    },
+  },
+
   setup: {
+    unfinished: (exam: boolean, n: number, total: number) =>
+      `Aap ka ${exam ? 'mock exam' : 'practice set'} adhoora hai (sawal ${n} / ${total}). Naya shuru karne se yeh khatam ho jayega.`,
+    resume: 'Wahin se jari rakhein',
+    subtopic: (name: string) => `Subtopic: ${name}`,
+    clearSubtopic: 'Tamam subtopics ki practice',
     practiceTitle: 'Practice',
     examTitle: 'Mock exam',
     examLead:
@@ -360,6 +415,8 @@ export const ROMAN: UiText = {
   },
 
   study: {
+    allSections: 'Tamam sections',
+    allQuestions: 'Tamam sawal',
     title: 'Study',
     skillsTitle: 'Official exam skills (17 April 2026)',
     howToLabel: 'Kaise parhein:',
@@ -406,6 +463,8 @@ export const ROMAN: UiText = {
   },
 
   dashboard: {
+    reviewDue: 'Abhi dohrayen →',
+    reviewBookmarked: 'Dekhein →',
     title: 'AZ-104 Microsoft Azure Administrator',
     lead: 'Official skills outline (17 April 2026 ke skills measured) se banaye gaye original practice sawal. Pass mark: 700/1000.',
     takeMock: 'Mock exam dein',
@@ -432,6 +491,7 @@ export const ROMAN: UiText = {
   },
 
   weak: {
+    practiceSub: (name: string) => `${name} ki practice`,
     title: 'Kamzor areas',
     lead: 'Yeh is browser mein diye gaye har jawab se banta hai. Koi sawal tab tak aap ki ghaltiyon mein rehta hai jab tak aap us ka sahi jawab na dein, is tarah revision khud ba khud hoti rehti hai.',
     noneTitle: 'Abhi koi jawab record nahi hua',

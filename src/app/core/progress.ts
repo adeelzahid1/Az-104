@@ -113,6 +113,29 @@ export class Progress {
     });
   }
 
+  snapshot(): Record<string, unknown> {
+    return { ...this.state() };
+  }
+
+  /** Replaces all progress. Entries that aren't valid are left out. */
+  restore(data: Record<string, unknown>): void {
+    const next: ProgressState = {};
+    for (const [id, value] of Object.entries(data)) {
+      const s = value as Partial<QuestionStat> | null;
+      if (
+        /^D[1-5]-\d{3}$/.test(id) &&
+        typeof s?.sub === 'string' &&
+        Number.isInteger(s.seen) &&
+        Number.isInteger(s.correct) &&
+        typeof s.last === 'boolean'
+      ) {
+        next[id] = { sub: s.sub, seen: s.seen!, correct: s.correct!, last: s.last };
+      }
+    }
+    this.state.set(next);
+    writeStorage(next);
+  }
+
   reset(): void {
     this.state.set({});
     writeStorage({});

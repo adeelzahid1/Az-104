@@ -77,7 +77,13 @@
             >
             <span class="weak"
               >{{ pct(s.accuracy) }}
-              <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span
+              <span class="muted">({{ s.correct }}/{{ s.attempts }})</span>
+              <a
+                routerLink="/practice"
+                [queryParams]="{ domain: s.domain, sub: s.sub }"
+                [attr.aria-label]="tw.practiceSub(s.sub)"
+                >{{ tw.practice }}</a
+              ></span
             >
           </li>
         }
@@ -98,7 +104,13 @@
             >
             <span
               >{{ pct(s.accuracy) }}
-              <span class="muted">({{ s.correct }}/{{ s.attempts }})</span></span
+              <span class="muted">({{ s.correct }}/{{ s.attempts }})</span>
+              <a
+                routerLink="/practice"
+                [queryParams]="{ domain: s.domain, sub: s.sub }"
+                [attr.aria-label]="tw.practiceSub(s.sub)"
+                >{{ tw.practice }}</a
+              ></span
             >
           </li>
         }
