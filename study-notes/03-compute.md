@@ -32,6 +32,7 @@ Exam-focused cheat sheet. Pair with `question-bank/03-compute.md`.
 - Snapshots = point-in-time copy of a disk; images = generalized template for new VMs (Sysprep for Windows → **Azure Compute Gallery** for sharing).
 
 ### Encryption
+- ⚠️ **ADE retires 15 Sep 2028** — use **encryption at host** for new VMs (no in-place migration: disable ADE, upload new disks, new VM).
 - **SSE** (platform, always on) vs **ADE** (in-guest BitLocker/dm-crypt; needs **Key Vault same region+subscription**, enabled-for-disk-encryption) vs **Encryption at host** (hypervisor-level, agentless, covers temp/cache; enable subscription feature first).
 
 ### Operations

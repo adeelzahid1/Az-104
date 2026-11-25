@@ -58,7 +58,7 @@ Perf
 | **Packet capture** | record .cap for Wireshark (needs NW VM extension) |
 | **VPN troubleshoot** | gateway/connection diagnostic report |
 | **Topology** | visual map of network resources |
-| **NSG flow logs** | traffic records → storage account; visualize with **Traffic Analytics** (needs Log Analytics) |
+| **VNet flow logs** (NSG flow logs: no new ones, retire 30 Sep 2027) | traffic records → storage account; visualize with **Traffic Analytics** (needs Log Analytics) |
 
 ## 6. Azure Backup
 
@@ -79,7 +79,8 @@ Perf
 ### Agents
 - **MARS:** on-prem **Windows** files/folders/system state direct to vault; up to **3/day**; no Linux, no app-awareness.
 - **MABS/DPM:** app-aware on-prem backups (SQL, Exchange, Hyper-V/VMware) → vault.
-- **Backup center:** single pane across vaults/subscriptions.
+- **Resiliency (Azure Business Continuity Center):** single pane across vaults/subscriptions; replaces Backup center.
+- **Soft delete:** default 14 days (free), up to 180; can't be disabled in public regions.
 
 ## 7. Azure Site Recovery (ASR)
 

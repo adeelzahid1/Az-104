@@ -3,6 +3,9 @@
 Original practice questions based on the official Microsoft AZ-104 study guide
 (skills measured as of **October 26, 2023** — [official study guide](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-104)).
 
+> This folder is the original snapshot and is not updated. The app's bank in `src/app/data/`
+> follows the outline of April 17, 2026, with corrected facts.
+
 Pass mark: **700 / 1000** · Typical exam: ~40–60 questions in ~100 minutes.
 
 | File | Domain | Exam weight | Questions |

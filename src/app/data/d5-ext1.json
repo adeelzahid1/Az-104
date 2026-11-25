@@ -130,17 +130,17 @@
   "sub": "Metrics",
   "type": "mcq",
   "diff": 3,
-  "q": "Can you collect guest OS performance counters (like memory available) as metrics without an agent?",
+  "q": "Can you collect guest OS data such as free disk space or Windows events without an agent?",
   "opts": [
    "No — guest OS data needs the Azure Monitor Agent",
-   "Yes — platform metrics always include guest counters",
+   "Yes — platform metrics include all guest OS data",
    "Only for Linux",
    "Only with Premium SSD"
   ],
   "ans": [
    0
   ],
-  "exp": "Platform metrics only cover what the host can see from outside the VM, such as CPU, disk and network. Guest OS counters such as available memory need the Azure Monitor Agent with a data collection rule. That's the same for Windows and Linux, whatever the disk type.",
+  "exp": "Platform metrics cover what Azure collects for the VM by itself, such as CPU, network, disk operations and available memory. Guest OS data such as free space on a disk or Windows events needs the Azure Monitor Agent with a data collection rule. That's the same for Windows and Linux, whatever the disk type.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/agents/agents-overview"
  },
  {
@@ -647,7 +647,7 @@
   "ans": [
    0
   ],
-  "exp": "Enabling VM insights installs the Azure Monitor Agent (and optionally the Dependency agent for the Map feature) and creates a data collection rule that sends performance data to a Log Analytics workspace. It doesn't turn on backup or encryption or add a public IP.",
+  "exp": "Enabling VM insights installs the Azure Monitor Agent (the older Dependency agent and Map feature are deprecated) and creates a data collection rule that sends performance data to a Log Analytics workspace. It doesn't turn on backup or encryption or add a public IP.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/vminsights-enable-overview"
  },
  {
@@ -655,7 +655,7 @@
   "sub": "VM insights",
   "type": "mcq",
   "diff": 3,
-  "q": "Which VM insights feature shows which servers a VM connects to and which processes listen on which ports?",
+  "q": "An existing deployment uses the deprecated Dependency agent. Which VM insights feature shows which servers a VM connects to and which processes listen on which ports?",
   "opts": [
    "Map (dependency agent)",
    "Performance",
@@ -665,7 +665,7 @@
   "ans": [
    0
   ],
-  "exp": "The Map feature of VM insights, which uses the Dependency agent, shows the processes running on each VM, the ports they listen on, and the inbound and outbound connections to other machines. Performance only shows charts, and workbooks are reports.",
+  "exp": "The Map feature of VM insights, which uses the Dependency agent, shows the processes running on each VM, the ports they listen on, and the inbound and outbound connections to other machines. Performance only shows charts, and workbooks are reports. Map and the Dependency agent retire on 30 June 2028, so don't enable them for new deployments.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/vminsights-maps"
  },
  {

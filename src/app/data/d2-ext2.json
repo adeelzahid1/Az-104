@@ -716,7 +716,7 @@
   "q": "Which setting can ONLY be chosen when a storage account is created?",
   "opts": [
    "Infrastructure encryption",
-   "Default access tier (hot/cool)",
+   "Default access tier of the account",
    "Firewall rules",
    "Minimum TLS version"
   ],
@@ -741,7 +741,7 @@
   "ans": [
    2
   ],
-  "exp": "You can switch the default access tier between hot, cool and cold at any time. The performance tier (Standard or Premium), the premium account kind and the account name are fixed once the account is created — you'd need a new account and to copy the data.",
+  "exp": "You can switch the default access tier between hot, cool and cold at any time (and smart on zone-redundant accounts). The performance tier (Standard or Premium), the premium account kind and the account name are fixed once the account is created — you'd need a new account and to copy the data.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview"
  },
  {

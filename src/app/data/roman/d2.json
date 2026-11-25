@@ -336,7 +336,7 @@
    "Storage account ka naam globally unique, 3–24 characters, sirf lowercase letters aur numbers hona chahiye",
    "Standard GPv2 account ko dobara banaye baghair LRS se GRS kiya ja sakta hai",
    "Storage account ko doosre resource group mein move kiya ja sakta hai",
-   "Account ka default access tier (hot/cool) Azure file shares par apply hota hai"
+   "Account ka default access tier Azure file shares par apply hota hai"
   ],
   "exp": "Storage account ke naam globally unique, 3–24 characters, sirf lowercase letters aur numbers hone chahiye. Standard GPv2 account ko usi jagah LRS se GRS kiya ja sakta hai, aur account doosre resource group mein move ho sakta hai. Default access tier sirf blobs par apply hota hai, Azure file shares par nahi, jin ke apne tiers hain."
  },
@@ -1784,7 +1784,7 @@
   "q": "Kaun si setting SIRF storage account banate waqt chuni ja sakti hai?",
   "opts": [
    "Infrastructure encryption",
-   "Default access tier (hot/cool)",
+   "Account ka default access tier",
    "Firewall rules",
    "Minimum TLS version"
   ],
@@ -1798,7 +1798,7 @@
    "Default access tier (hot ↔ cool)",
    "Account ka naam"
   ],
-  "exp": "Aap default access tier ko kisi bhi waqt hot, cool aur cold ke darmiyan badal sakte hain. Performance tier (Standard ya Premium), premium account kind aur account ka naam banne ke baad fixed hote hain — is ke liye naya account bana kar data copy karna hoga."
+  "exp": "Aap default access tier ko kisi bhi waqt hot, cool aur cold (aur zone-redundant accounts par smart) ke darmiyan badal sakte hain. Performance tier (Standard ya Premium), premium account kind aur account ka naam banne ke baad fixed hote hain — is ke liye naya account bana kar data copy karna hoga."
  },
  "D2-142": {
   "q": "Aap ko storage account West Europe se North Europe move karna hai. Supported tareeqa?",
@@ -2394,5 +2394,55 @@
    "Sirf branches ke darmiyan DFS-R"
   ],
   "exp": "Azure File Sync ek central Azure file share ko har branch ke servers se sync rakhta hai. Cloud tiering aksar use hone wali files chhoti local disks par rakhti hai aur baqi Azure mein tier karti hai, is liye local reads tez rehte hain. NTFS ACLs, aur is tarah on-premises AD permissions, baqi rehti hain. Blob replication, alag GRS accounts aur akela DFS-R yeh sab nahi kar sakte."
+ },
+ "D2-241": {
+  "q": "Ek standard GPv2 account ZRS use karta hai. Naye blobs ka access pattern pehle se maloom nahi, aur aap chahte hain ke Azure har blob ko khud hot, cool aur cold ke darmiyan move kare, bina rules sambhale. Aap kya configure karenge?",
+  "opts": [
+   "Har container ke liye last-access condition wali lifecycle policy",
+   "Account ki default access tier Smart",
+   "Account ki default access tier Cold",
+   "Cool tier wale account tak object replication"
+  ],
+  "exp": "Smart tier blobs ko un ke istemal ke mutabiq khud hot, cool aur cold ke darmiyan move karta hai, aur kisi rule ki zaroorat nahi. Isay on karne ke liye account ki default access tier Smart set karein. Lifecycle policy bhi tier badal sakti hai, lekin rules aap ko likhne aur sambhalne parte hain. Replication data copy karti hai, tier nahi karti."
+ },
+ "D2-242": {
+  "q": "Blob storage ke smart tier ke bare mein kaun se DO statements sahi hain?",
+  "opts": [
+   "Is ke liye zone-redundant account (ZRS, GZRS ya RA-GZRS) chahiye",
+   "Yeh 180 din access na hone par blobs ko archive mein move karta hai",
+   "Smart tier ke cool hisse ka blob parhne se woh wapas hot mein aa jata hai",
+   "Yeh premium block blob accounts par kaam karta hai"
+  ],
+  "exp": "Smart tier zone redundancy (ZRS, GZRS ya RA-GZRS) wale standard GPv2 accounts par milta hai. Blob 30 din access na hone par cool aur 90 din par cold mein jata hai, aur koi bhi access usay wapas hot mein le aata hai. Archive smart tier ka hissa nahi, aur premium accounts supported nahi."
+ },
+ "D2-243": {
+  "q": "Account ki default access tier Smart hai. Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Lifecycle rule smart tier wale blobs delete kar sakta hai",
+   "Lifecycle rule smart tier wale blobs ko archive mein move kar sakta hai",
+   "Smart tier ka 50-KiB blob 30 din baad cool mein jata hai",
+   "Jis blob ki tier tabdeeli se pehle explicit set thi, woh smart tier mein chala jata hai"
+  ],
+  "exp": "Lifecycle management smart tier ke blobs ko tier nahi kar sakti, lekin us ke delete actions lagu hote hain. 128 KiB se chhote objects hot mein rehte hain. Jin blobs ki explicit tier nahi thi woh default badalne par smart tier mein aate hain, jab ke explicit tier wale wahin rehte hain."
+ },
+ "D2-244": {
+  "q": "Classic Azure file shares ke soft delete ke bare mein kaun se DO statements sahi hain?",
+  "opts": [
+   "Yeh poore storage account ke liye configure hota hai",
+   "Yeh share se user ki delete ki hui ek file wapas lata hai",
+   "Retention period 1 se 365 din ho sakta hai",
+   "Is ke liye Recovery Services vault chahiye"
+  ],
+  "exp": "File shares ka soft delete storage account level par set hota hai, 1 se 365 din ki retention ke sath (default 7). Yeh sirf poore share ke liye kaam karta hai: ek file wapas lane ke liye share snapshot ya Azure Files backup use karein. Soft delete ke liye vault ki zaroorat nahi."
+ },
+ "D2-245": {
+  "q": "File shares ka soft delete on hai. User share se ek spreadsheet delete kar deta hai, lekin share maujood hai. Kaun sa feature file wapas la sakta hai?",
+  "opts": [
+   "File shares ka soft delete",
+   "Blobs ka soft delete",
+   "Deletion se pehle liya gaya share snapshot",
+   "Usi account par blobs ki versioning"
+  ],
+  "exp": "Azure Files ka soft delete sirf poore shares ko bachata hai, is liye ek file delete hone par kaam nahi aata. Deletion se pehle liya gaya share snapshot (ya Azure Files backup) mein file maujood hoti hai, aur aap usay wapas copy kar sakte hain. Blob soft delete aur versioning file shares par lagu nahi."
  }
 }

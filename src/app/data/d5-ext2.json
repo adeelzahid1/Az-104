@@ -389,7 +389,7 @@
   "sub": "Backup vaults",
   "type": "mcq",
   "diff": 3,
-  "q": "Which vault security feature requires a second user's approval (via Resource Guard) before critical operations like disabling soft delete?",
+  "q": "Which vault security feature requires a second user's approval (via Resource Guard) before critical operations like stopping protection and deleting backup data?",
   "opts": [
    "Multi-user authorization",
    "Soft delete",
@@ -399,7 +399,7 @@
   "ans": [
    0
   ],
-  "exp": "Multi-user authorization (MUA) uses a Resource Guard, usually owned by a different team or tenant, so critical vault operations — such as disabling soft delete or reducing retention — need that second person's approval. Soft delete keeps deleted data for 14 days, immutability blocks early deletion, and private endpoints secure network access.",
+  "exp": "Multi-user authorization (MUA) uses a Resource Guard, usually owned by a different team or tenant, so critical vault operations — such as deleting backup data or reducing retention — need that second person's approval. Soft delete keeps deleted data for 14 days, immutability blocks early deletion, and private endpoints secure network access.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/multi-user-authorization-concept"
  },
  {
@@ -849,7 +849,7 @@
   "ans": [
    0
   ],
-  "exp": "Each vault has a Backup jobs page showing completed, failed and running jobs, and Backup center (Business Continuity Center) shows jobs across all vaults. The Activity log shows Azure operations, not job details, and metrics and VM insights don't track backup jobs.",
+  "exp": "Each vault has a Backup jobs page showing completed, failed and running jobs, and Resiliency (Azure Business Continuity Center) shows jobs across all vaults. The Activity log shows Azure operations, not job details, and metrics and VM insights don't track backup jobs.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-monitoring-built-in-monitor"
  },
  {

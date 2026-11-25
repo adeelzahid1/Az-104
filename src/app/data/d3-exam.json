@@ -142,7 +142,7 @@
   "ans": [
    1
   ],
-  "exp": "Azure Disk Encryption uses BitLocker inside Windows. The key vault must be in the same region and subscription as the VM, with the disk encryption access policy enabled.",
+  "exp": "Azure Disk Encryption uses BitLocker inside Windows. The key vault must be in the same region and subscription as the VM, with the disk encryption access policy enabled. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-key-vault"
  },
  {
@@ -621,7 +621,7 @@
    0,
    1
   ],
-  "exp": "Server-side encryption (SSE) always encrypts managed disks in Azure storage. Azure Disk Encryption encrypts inside the guest OS with BitLocker or dm-crypt. Encryption at host encrypts at the hypervisor, covering temp disks and caches too, with no agent in the VM.",
+  "exp": "Server-side encryption (SSE) always encrypts managed disks in Azure storage. Azure Disk Encryption encrypts inside the guest OS with BitLocker or dm-crypt. Encryption at host encrypts at the hypervisor, covering temp disks and caches too, with no agent in the VM. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {

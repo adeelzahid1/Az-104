@@ -133,6 +133,7 @@ export const EN = {
 
   study: {
     title: 'Study',
+    skillsTitle: 'Official exam skills (April 17, 2026)',
     howToLabel: 'How to study:',
     howTo:
       'pick a section, read each question and think first, then press "Show answer". When it makes sense, tick "I understand this". Bookmark hard ones with ☆ and revise them with the "Bookmarked" filter. For revision use Flashcards: rate each card Again / Hard / Good, and it comes back when it is due (filter "Due for review").',
@@ -178,7 +179,7 @@ export const EN = {
 
   dashboard: {
     title: 'AZ-104 Microsoft Azure Administrator',
-    lead: 'Original practice questions built from the official skills outline (skills measured as of October 26, 2023). Pass mark: 700/1000.',
+    lead: 'Original practice questions built from the official skills outline (skills measured as of April 17, 2026). Pass mark: 700/1000.',
     takeMock: 'Take a mock exam',
     bank: 'Question bank',
     answered: "You've answered",
@@ -360,6 +361,7 @@ export const ROMAN: UiText = {
 
   study: {
     title: 'Study',
+    skillsTitle: 'Official exam skills (17 April 2026)',
     howToLabel: 'Kaise parhein:',
     howTo:
       'koi section chunein, har sawal parhein aur pehle khud sochein, phir "Jawab dikhayen" dabayen. Jab samajh aa jaye to "Mujhe samajh aa gaya" par tick karein. Mushkil sawal ☆ se bookmark karein aur "Bookmarked" filter se dohrayen. Revision ke liye Flashcards use karein: har card ko Again / Hard / Good rate karein, aur woh waqt aane par wapas aata hai (filter "Review ke liye due").',
@@ -405,7 +407,7 @@ export const ROMAN: UiText = {
 
   dashboard: {
     title: 'AZ-104 Microsoft Azure Administrator',
-    lead: 'Official skills outline (October 26, 2023 tak ke skills measured) se banaye gaye original practice sawal. Pass mark: 700/1000.',
+    lead: 'Official skills outline (17 April 2026 ke skills measured) se banaye gaye original practice sawal. Pass mark: 700/1000.',
     takeMock: 'Mock exam dein',
     bank: 'Question bank',
     answered: 'Aap ne hal kiye',

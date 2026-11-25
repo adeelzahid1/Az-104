@@ -102,6 +102,7 @@ for (const id of caseIds) {
 const sections = JSON.parse(readFileSync(join(DATA, 'study-sections.json'), 'utf8'));
 const sectionOf = new Map();
 for (const s of sections) {
+  if (!s.skills?.length) errors.push(`study-sections: ${s.id} lists no official skills`);
   for (const sub of s.subs) {
     const key = `${s.domain}|${sub}`;
     if (sectionOf.has(key)) errors.push(`study-sections: "${sub}" is in both ${sectionOf.get(key)} and ${s.id}`);

@@ -187,7 +187,7 @@
    "Sirf EFS aur LUKS2",
    "Always Encrypted"
   ],
-  "exp": "Azure Disk Encryption VM ke andar kaam karta hai: Windows par BitLocker aur Linux par dm-crypt use karta hai, keys Azure Key Vault mein hoti hain. SSE storage service ki platform encryption hai, TDE SQL databases ke liye hai, aur Always Encrypted SQL feature hai."
+  "exp": "Azure Disk Encryption VM ke andar kaam karta hai: Windows par BitLocker aur Linux par dm-crypt use karta hai, keys Azure Key Vault mein hoti hain. SSE storage service ki platform encryption hai, TDE SQL databases ke liye hai, aur Always Encrypted SQL feature hai. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-020": {
   "q": "Azure Disk Encryption ko kaun sa supporting resource chahiye, aur kis shart ke sath?",
@@ -197,7 +197,7 @@
    "Log Analytics workspace",
    "On-premises HSM"
   ],
-  "exp": "Azure Disk Encryption apni keys aur secrets Azure Key Vault mein rakhta hai. Vault VM wale region aur subscription mein hona chahiye, aur us ki access policy mein 'Azure Disk Encryption for volume encryption' enabled hona chahiye. Storage accounts, Log Analytics aur on-premises HSMs is ke liye use nahi hote."
+  "exp": "Azure Disk Encryption apni keys aur secrets Azure Key Vault mein rakhta hai. Vault VM wale region aur subscription mein hona chahiye, aur us ki access policy mein 'Azure Disk Encryption for volume encryption' enabled hona chahiye. Storage accounts, Log Analytics aur on-premises HSMs is ke liye use nahi hote. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-021": {
   "q": "Encryption at host Azure Disk Encryption se kaise mukhtalif hai?",
@@ -207,7 +207,7 @@
    "Sirf OS disk ko BitLocker se encrypt karta hai aur keys guest registry mein rakhta hai",
    "Yeh sirf unmanaged disks ke sath chalti hai"
   ],
-  "exp": "Encryption at host VM chalane wale physical host par data encrypt karti hai — temp disks aur OS aur data disk caches samet — storage tak pohanchne se pehle. VM ke andar kuch nahi chalta. Is ke muqable Azure Disk Encryption guest OS ke andar BitLocker ya dm-crypt chalata hai. Encryption at host managed disks ke sath Windows aur Linux dono ke liye chalti hai."
+  "exp": "Encryption at host VM chalane wale physical host par data encrypt karti hai — temp disks aur OS aur data disk caches samet — storage tak pohanchne se pehle. VM ke andar kuch nahi chalta. Is ke muqable Azure Disk Encryption guest OS ke andar BitLocker ya dm-crypt chalata hai. Encryption at host managed disks ke sath Windows aur Linux dono ke liye chalti hai. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-022": {
   "q": "Aap VM ko aise size par resize karte hain jo us ke mojooda hardware cluster par available nahi. Kya zaroori hai?",
@@ -297,7 +297,7 @@
    "Vault mein KEK banayen",
    "Target VM banayen ya pehchanein"
   ],
-  "exp": "Pehle 'enabled for disk encryption' ke sath key vault banayen, kyun ke encryption extension secrets wahan rakhta hai. Phir us vault mein key encryption key (KEK) banayen. Target VM tayyar hone par vault aur KEK ki taraf point karte hue Set-AzVMDiskEncryptionExtension chalayen taa ke BitLocker ya dm-crypt on ho."
+  "exp": "Pehle 'enabled for disk encryption' ke sath key vault banayen, kyun ke encryption extension secrets wahan rakhta hai. Phir us vault mein key encryption key (KEK) banayen. Target VM tayyar hone par vault aur KEK ki taraf point karte hue Set-AzVMDiskEncryptionExtension chalayen taa ke BitLocker ya dm-crypt on ho. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-031": {
   "q": "Azure Container Registry ki kaun si SKU geo-replication support karti hai?",
@@ -563,7 +563,7 @@
    "Woh usi region ka storage account ho jis mein customer-managed keys hon",
    "Paired region mein ho"
   ],
-  "exp": "Azure Disk Encryption Windows ke andar BitLocker use karta hai. Key vault VM wale region aur subscription mein hona chahiye, disk encryption access policy enabled ke sath."
+  "exp": "Azure Disk Encryption Windows ke andar BitLocker use karta hai. Key vault VM wale region aur subscription mein hona chahiye, disk encryption access policy enabled ke sath. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-208": {
   "q": "Requirement 3 ke liye aap ko kya use karna chahiye?",
@@ -732,7 +732,7 @@
    "Server-side encryption (SSE)",
    "Transparent Data Encryption"
   ],
-  "exp": "Server-side encryption (SSE) Azure storage mein managed disks ko hamesha encrypt karti hai. Azure Disk Encryption guest OS ke andar BitLocker ya dm-crypt se encrypt karti hai. Encryption at host hypervisor par encrypt karti hai, temp disks aur caches bhi cover karti hai, VM mein koi agent nahi."
+  "exp": "Server-side encryption (SSE) Azure storage mein managed disks ko hamesha encrypt karti hai. Azure Disk Encryption guest OS ke andar BitLocker ya dm-crypt se encrypt karti hai. Encryption at host hypervisor par encrypt karti hai, temp disks aur caches bhi cover karti hai, VM mein koi agent nahi. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-227": {
   "q": "Har maqsad ko Bicep keyword se match karein.",
@@ -1685,7 +1685,7 @@
    "Sirf purge protection",
    "Public network access disabled"
   ],
-  "exp": "Azure Disk Encryption ko key vault ki 'Azure Disk Encryption for volume encryption' access setting (enabledForDiskEncryption) on chahiye, taa ke Azure platform BitLocker ya dm-crypt secrets store aur parh sake. Template deployment, purge protection aur network settings alag options hain."
+  "exp": "Azure Disk Encryption ko key vault ki 'Azure Disk Encryption for volume encryption' access setting (enabledForDiskEncryption) on chahiye, taa ke Azure platform BitLocker ya dm-crypt secrets store aur parh sake. Template deployment, purge protection aur network settings alag options hain. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-131": {
   "q": "Kaun si CLI command VM par Azure Disk Encryption enable karti hai?",
@@ -1695,7 +1695,7 @@
    "az vm update -g RG1 -n VM1 --encrypt-disks all --keyvault kv1 --ade",
    "az keyvault encrypt-vm"
   ],
-  "exp": "az vm encryption enable VM ke liye Azure Disk Encryption on karti hai, --disk-encryption-keyvault vault ki taraf point karta hai (aur KEK ke liye optionally --key-encryption-key). Yeh encryption extension install karti hai, jo BitLocker ya dm-crypt chalata hai. Baqi commands mojood nahi."
+  "exp": "az vm encryption enable VM ke liye Azure Disk Encryption on karti hai, --disk-encryption-keyvault vault ki taraf point karta hai (aur KEK ke liye optionally --key-encryption-key). Yeh encryption extension install karti hai, jo BitLocker ya dm-crypt chalata hai. Baqi commands mojood nahi. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-132": {
   "q": "Kaun se DO options VM ki temp disk encrypt karte hain?",
@@ -1705,7 +1705,7 @@
    "Akeli platform-managed keys wali SSE",
    "Storage account encryption scopes"
   ],
-  "exp": "Encryption at host VM ke host par temp disk aur caches encrypt karti hai. Volume type All ke sath Azure Disk Encryption guest OS ke andar temp disk encrypt karti hai. Server-side encryption sirf Azure storage mein rakhi disks cover karti hai, aur encryption scopes blobs ke liye hain."
+  "exp": "Encryption at host VM ke host par temp disk aur caches encrypt karti hai. Volume type All ke sath Azure Disk Encryption guest OS ke andar temp disk encrypt karti hai. Server-side encryption sirf Azure storage mein rakhi disks cover karti hai, aur encryption scopes blobs ke liye hain. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-133": {
   "q": "Kaun si CLI command 2 instances wala scale set banati hai?",
@@ -1845,7 +1845,7 @@
    "Move ke dauran encryption khud hat jati hai aur target region mein dobara on karni hoti hai",
    "Kuch khaas nahi"
   ],
-  "exp": "Azure Disk Encryption use karne wali VM ko apni keys aur secrets VM wale region ke key vault mein chahiye. Doosre region mein move karne ke liye target region mein key vault chahiye aur move ke hisse ke taur par encryption keys aur secrets wahan copy karne honge. Encrypted VMs move ho sakti hain, lekin encryption khud nahi hatti."
+  "exp": "Azure Disk Encryption use karne wali VM ko apni keys aur secrets VM wale region ke key vault mein chahiye. Doosre region mein move karne ke liye target region mein key vault chahiye aur move ke hisse ke taur par encryption keys aur secrets wahan copy karne honge. Encrypted VMs move ho sakti hain, lekin encryption khud nahi hatti. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-147": {
   "q": "Windows VM ka koi public IP nahi hona chahiye lekin internet se RDP par mehfooz tareeqe se manage ho sake. Behtareen option?",
@@ -1886,7 +1886,7 @@
    "VM1 ko alag hardware wale size par resize karne ke liye AS1 ki tamam VMs stop karni par sakti hain",
    "KV1 VM1 se alag region mein ho sakta hai"
   ],
-  "exp": "Zone placement ke liye dobara banana hota hai; Standard public IP static hai, is liye deallocation ke baad address rakhta hai; availability set ke andar resize ke liye tamam VMs stop karni par sakti hain; ADE vault usi region mein hona chahiye."
+  "exp": "Zone placement ke liye dobara banana hota hai; Standard public IP static hai, is liye deallocation ke baad address rakhta hai; availability set ke andar resize ke liye tamam VMs stop karni par sakti hain; ADE vault usi region mein hona chahiye. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D3-151": {
   "q": "Azure Container Registry kis liye use hota hai?",
@@ -2388,5 +2388,125 @@
    "B1 par regional VNet integration available hai"
   ],
   "exp": "Basic B1 deployment slots ya rule-based autoscale support nahi karta — dono ko Standard ya upar chahiye. B1 par www.contoso.com ke liye free managed certificate chalta hai, aur Basic par regional VNet integration available hai. Is liye B1 TLS aur network requirements poori karta hai, lekin staging ya autoscale nahi."
+ },
+ "D3-241": {
+  "q": "Aap nayi VMs ki encryption design kar rahe hain jo 2028 ke baad bhi chalengi. Temp disks aur caches bhi encrypt hone chahiye. Microsoft kaun sa option recommend karta hai?",
+  "opts": [
+   "Key encryption key ke sath Azure Disk Encryption",
+   "Encryption at host",
+   "Sirf platform-managed keys wali server-side encryption",
+   "Storage account par infrastructure encryption"
+  ],
+  "exp": "Encryption at host temp disks, caches aur storage tak data flow ko cover karta hai, aur Microsoft nayi VMs ke liye yehi recommend karta hai. Azure Disk Encryption 15 September 2028 ko retire hoga, jis ke baad encrypted disks reboot par unlock nahi hongi. Akeli server-side encryption temp disks ya caches cover nahi karti."
+ },
+ "D3-242": {
+  "q": "VM1 (Windows) Azure Disk Encryption use karti hai. Aap isay encryption at host par kaise le jayenge?",
+  "opts": [
+   "ADE on rehte hue hi encryption at host on kar dein",
+   "az vm encryption migrate chalayen aur VM restart karein",
+   "Key vault ki access setting EncryptionAtHost kar dein",
+   "ADE band karein, upload se nayi disks banayen, phir nayi VM banayen"
+  ],
+  "exp": "Mojooda VM par seedha conversion nahi hota. Aap ADE band karte hain aur confirm karte hain ke disks poori decrypt ho gayi hain, upload method se nayi managed disks banate hain (snapshots aur disk copies ADE ka flag rakhti hain), aur un se encryption at host wali nayi VM banate hain. Is dauran VM ka downtime hota hai."
+ },
+ "D3-243": {
+  "q": "Azure Disk Encryption ke muqable mein encryption at host ke kaun se DO faide hain?",
+  "opts": [
+   "Yeh VM ka CPU use nahi karta",
+   "Yeh disks ko VM delete hone ke baad hi encrypt karta hai",
+   "Yeh custom Linux images ke sath kaam karta hai",
+   "Is se managed disks ki zaroorat khatam ho jati hai"
+  ],
+  "exp": "Encryption at host host par chalta hai, is liye VM ka CPU use nahi karta, aur custom images ke sath kaam karta hai. Azure Disk Encryption guest ke andar chalta hai, VM ka CPU use karta hai aur custom Linux images support nahi karta. Dono VM chalte hue disks ko mehfooz rakhte hain."
+ },
+ "D3-244": {
+  "q": "RG1 mein maujood resources ki Bicep file chahiye. Steps ko tarteeb dein.",
+  "items": [
+   "Bani hui Bicep file dekhein aur theek karein",
+   "az bicep decompile --file main.json chalayen",
+   "az group export --name RG1 > main.json chalayen",
+   "az deployment group create se Bicep file deploy karein"
+  ],
+  "exp": "Pehle resource group ko ARM JSON template mein export karein, phir us JSON ko Bicep mein decompile karein. Decompile koshish ki had tak conversion hai, poori mapping ki guarantee nahi, is liye deploy se pehle file dekh kar theek karein."
+ },
+ "D3-245": {
+  "q": "Aap ek bare ARM template par az bicep decompile chalate hain. Nateeje ke bare mein kaun sa statement sahi hai?",
+  "opts": [
+   "Woh hamesha insaan ki likhi file jaisa hota hai",
+   "Woh bante hi Azure par deploy ho jata hai",
+   "Yeh koshish ki had tak conversion hai jisay dekhna chahiye",
+   "Woh template ke apne resource group mein save hota hai"
+  ],
+  "exp": "Decompile ARM JSON ko Bicep mein badalne ki koshish karta hai, lekin poori mapping ki guarantee nahi, is liye warnings ya errors theek karne aur naam saaf karne par sakte hain. Yeh .bicep file JSON wale folder mein likhta hai. Azure par kuch deploy nahi karta."
+ },
+ "D3-246": {
+  "q": "Azure Container Instances ke ek chalte container group ko zyada memory chahiye. Aap ko kya karna hoga?",
+  "opts": [
+   "Container group delete kar ke nayi value ke sath dobara deploy karein",
+   "Group chalte hue portal mein memory badal dein",
+   "Group ke memory metric par autoscale rule lagayen",
+   "Azure CLI mein --memory parameter ke sath group restart karein"
+  ],
+  "exp": "Container group ki CPU, memory aur GPU requests chalte hue update nahi ho sakti. Aap group delete kar ke nayi values ke sath dobara deploy karte hain. Restart purani values rakhta hai, aur Container Instances mein autoscale rules nahi."
+ },
+ "D3-247": {
+  "q": "Container group mein do containers hain. Ek 1 CPU aur 1.5 GB mangta hai, doosra 1 CPU aur 2 GB. Azure group ko kitna allocate karta hai?",
+  "opts": [
+   "1 CPU aur 2 GB",
+   "2 CPU aur 3.5 GB",
+   "2 CPU aur 2 GB",
+   "1 CPU aur 3.5 GB"
+  ],
+  "exp": "Container group ko us ke tamam containers ki requests ka majmua milta hai: 1 + 1 = 2 CPU aur 1.5 + 2 = 3.5 GB memory. Containers group ke resources share karte hain, aur aap group ko allocate hui miqdar ka paisa dete hain."
+ },
+ "D3-248": {
+  "q": "Aap ingress enabled wala container app banate hain aur koi scale rule define nahi karte. Default scale settings kya hain?",
+  "opts": [
+   "CPU rule, 1 se 10 replicas",
+   "HTTP rule, 1 se 30 replicas",
+   "HTTP rule, 0 se 10 replicas",
+   "Memory rule, 0 se 30 replicas"
+  ],
+  "exp": "Koi rule na ho to Container Apps HTTP scale rule use karta hai, kam se kam 0 aur zyada se zyada 10 replicas ke sath. Kam se kam 0 hone par traffic na ho to app zero tak scale hota hai, aur zero par usage charges nahi lagte."
+ },
+ "D3-249": {
+  "q": "Azure Container Apps ki scaling ke bare mein kaun se DO statements sahi hain?",
+  "opts": [
+   "Replicas ki zyada se zyada tadaad 1,000 tak set ho sakti hai",
+   "Memory khatam hone par container app vertically scale hota hai",
+   "Replicas ki default kam se kam tadaad 0 hai",
+   "Scale rules sirf HTTP requests use kar sakte hain"
+  ],
+  "exp": "Kam se kam replicas ka default 0 aur zyada se zyada ka 10 hai, aur zyada se zyada 1,000 tak barhaya ja sakta hai. Container Apps replicas barha kar horizontally scale hota hai: vertical scaling supported nahi. Rules HTTP, TCP ya custom (KEDA-based) triggers, jaise queue length ya CPU, use kar sakte hain."
+ },
+ "D3-250": {
+  "q": "App Service backups support karne wali sab se choti pricing tier kaun si hai?",
+  "opts": [
+   "Free",
+   "Shared",
+   "Basic",
+   "Standard"
+  ],
+  "exp": "App Service backups, automatic aur custom dono, ko Basic, Standard, Premium ya Isolated tier chahiye, is liye sab se choti Basic hai. Basic mein sirf production slot ka backup ho sakta hai. Free aur Shared backups support nahi karte."
+ },
+ "D3-251": {
+  "q": "Aap ko aise App Service backups chahiye jo download ho saken aur 30 din se zyada rakhe ja saken. Aap kya use karenge?",
+  "opts": [
+   "Lambi retention wale automatic backups",
+   "Storage account mein custom backups",
+   "Recovery Services vault ki policy",
+   "Auto swap wale deployment slots"
+  ],
+  "exp": "Custom backups aap ke chune hue storage account mein likhe jate hain, is liye aap unhein download kar sakte hain aur jitna chahein rakh sakte hain. Automatic backups har ghante hote hain aur 30 din rehte hain: un ki retention nahi badalti aur woh download nahi hote. Recovery Services vaults App Service apps ka backup nahi lete."
+ },
+ "D3-252": {
+  "q": "App Service backups ke bare mein Haan ya Nahi mein jawab dein:",
+  "stmts": [
+   "Automatic backups ko storage account chahiye",
+   "Automatic backups 30 din rakhe jate hain",
+   "Custom backup 10 GB tak ho sakta hai",
+   "Custom backups din mein zyada se zyada 12 dafa chal sakte hain"
+  ],
+  "exp": "Automatic backups ko na storage account chahiye na setup, woh har ghante hote hain aur 30 din rehte hain. Custom backups ko storage account chahiye, har ek 10 GB tak ho sakta hai, aur woh kam se kam 2 ghante ke waqfe par, yani din mein 12 tak, chal sakte hain."
  }
 }

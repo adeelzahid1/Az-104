@@ -906,5 +906,229 @@
   ],
   "exp": "Basic B1 doesn't support deployment slots or rule-based autoscale — both need Standard or higher. A free managed certificate does work for www.contoso.com on B1, and regional VNet integration is available on Basic. So B1 meets the TLS and network requirements, but not staging or autoscale.",
   "link": "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+ },
+ {
+  "id": "D3-241",
+  "sub": "Disk encryption",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You are designing encryption for new VMs that must run past 2028. Temp disks and caches must be encrypted too. Which option does Microsoft recommend?",
+  "opts": [
+   "Azure Disk Encryption with a key encryption key",
+   "Encryption at host",
+   "Server-side encryption with platform-managed keys only",
+   "Infrastructure encryption on a storage account"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Encryption at host covers temp disks, caches and the data flow to storage, and Microsoft recommends it for new VMs. Azure Disk Encryption is scheduled for retirement on 15 September 2028, after which encrypted disks fail to unlock on reboot. Server-side encryption alone doesn't cover temp disks or caches.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
+ },
+ {
+  "id": "D3-242",
+  "sub": "Disk encryption",
+  "type": "mcq",
+  "diff": 3,
+  "q": "VM1 (Windows) uses Azure Disk Encryption. How do you move it to encryption at host?",
+  "opts": [
+   "Turn on encryption at host while ADE is still enabled",
+   "Run az vm encryption migrate and restart the VM",
+   "Change the key vault's access setting to EncryptionAtHost",
+   "Disable ADE, create new disks by upload, then create a new VM"
+  ],
+  "ans": [
+   3
+  ],
+  "exp": "There's no in-place conversion. You disable ADE and confirm the disks are fully decrypted, create new managed disks with the upload method (snapshots and disk copies keep the ADE flag), and create a new VM from them with encryption at host on. The VM has downtime during the move.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-migrate"
+ },
+ {
+  "id": "D3-243",
+  "sub": "Disk encryption",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO are advantages of encryption at host over Azure Disk Encryption?",
+  "opts": [
+   "It doesn't use the VM's CPU",
+   "It encrypts disks only after the VM is deleted",
+   "It works with custom Linux images",
+   "It removes the need for managed disks"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Encryption at host runs on the host, so it doesn't use the VM's CPU, and it works with custom images. Azure Disk Encryption runs inside the guest, uses the VM's CPU and doesn't support custom Linux images. Both protect the disks while the VM is in use.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
+ },
+ {
+  "id": "D3-244",
+  "sub": "Bicep",
+  "type": "order",
+  "diff": 2,
+  "q": "You want a Bicep file for the resources that already exist in RG1. Put the steps in order.",
+  "items": [
+   "Review and fix the generated Bicep file",
+   "Run az bicep decompile --file main.json",
+   "Run az group export --name RG1 > main.json",
+   "Deploy the Bicep file with az deployment group create"
+  ],
+  "ans": [
+   2,
+   1,
+   0,
+   3
+  ],
+  "exp": "First export the resource group to an ARM JSON template, then decompile that JSON to Bicep. Decompiling is a best-effort conversion with no guaranteed mapping, so review and fix the file before you deploy it.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/decompile"
+ },
+ {
+  "id": "D3-245",
+  "sub": "Bicep",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You run az bicep decompile on a large ARM template. Which statement is true about the result?",
+  "opts": [
+   "It is always identical to what a person would write",
+   "It is deployed to Azure as soon as it has been created",
+   "It is a best-effort conversion that you should review",
+   "It is stored in the template's own resource group"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Decompile tries to convert ARM JSON to Bicep, but there's no guaranteed mapping, so you may need to fix warnings or errors and tidy names. It writes a .bicep file to the same folder as the JSON. It doesn't deploy anything to Azure.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/decompile"
+ },
+ {
+  "id": "D3-246",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 3,
+  "q": "A running container group in Azure Container Instances needs more memory. What must you do?",
+  "opts": [
+   "Delete the container group and deploy it again with the new value",
+   "Change the memory in the portal while the group keeps running",
+   "Add an autoscale rule that uses the group's memory metric",
+   "Restart the group with the --memory parameter in Azure CLI"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "CPU, memory and GPU requests of a container group can't be updated in place. You delete the group and deploy it again with the new values. A restart keeps the old values, and Container Instances has no autoscale rules.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-update"
+ },
+ {
+  "id": "D3-247",
+  "sub": "ACI",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A container group has two containers. One requests 1 CPU and 1.5 GB, and the other requests 1 CPU and 2 GB. How much does Azure allocate to the group?",
+  "opts": [
+   "1 CPU and 2 GB",
+   "2 CPU and 3.5 GB",
+   "2 CPU and 2 GB",
+   "1 CPU and 3.5 GB"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "A container group gets the sum of the requests of all its containers: 1 + 1 = 2 CPU and 1.5 + 2 = 3.5 GB of memory. The containers share the group's resources, and you pay for what the group was allocated.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-instances/container-instances-container-groups"
+ },
+ {
+  "id": "D3-248",
+  "sub": "Container Apps",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You create a container app with ingress enabled and define no scale rule. What are the default scale settings?",
+  "opts": [
+   "CPU rule, 1 to 10 replicas",
+   "HTTP rule, 1 to 30 replicas",
+   "HTTP rule, 0 to 10 replicas",
+   "Memory rule, 0 to 30 replicas"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "When you define no rule, Container Apps uses an HTTP scale rule with a minimum of 0 and a maximum of 10 replicas. With a minimum of 0, the app can scale to zero when there's no traffic, and you pay no usage charges while it's at zero.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/scale-app"
+ },
+ {
+  "id": "D3-249",
+  "sub": "Container Apps",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO statements about scaling in Azure Container Apps are true?",
+  "opts": [
+   "The maximum number of replicas can be set up to 1,000",
+   "A container app scales vertically when it runs out of memory",
+   "The default minimum number of replicas is 0",
+   "Scale rules can only use HTTP requests"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Minimum replicas default to 0 and maximum replicas default to 10, and the maximum can be raised to 1,000. Container Apps scales horizontally by adding replicas: vertical scaling isn't supported. Rules can use HTTP, TCP or custom (KEDA-based) triggers such as queue length or CPU.",
+  "link": "https://learn.microsoft.com/en-us/azure/container-apps/scale-app"
+ },
+ {
+  "id": "D3-250",
+  "sub": "App Service backup",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Which pricing tier is the lowest that supports App Service backups?",
+  "opts": [
+   "Free",
+   "Shared",
+   "Basic",
+   "Standard"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "App Service backups, both automatic and custom, need the Basic, Standard, Premium or Isolated tier, so Basic is the lowest. In Basic you can back up only the production slot. Free and Shared don't support backups.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-backup"
+ },
+ {
+  "id": "D3-251",
+  "sub": "App Service backup",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You need App Service backups that you can download and keep for longer than 30 days. What do you use?",
+  "opts": [
+   "Automatic backups with a longer retention",
+   "Custom backups to a storage account",
+   "A Recovery Services vault policy",
+   "Deployment slots with auto swap"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Custom backups are written to a storage account that you choose, so you can download them and keep them for as long as you like. Automatic backups run hourly and are kept for 30 days: the retention can't be changed and they can't be downloaded. Recovery Services vaults don't back up App Service apps.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-backup"
+ },
+ {
+  "id": "D3-252",
+  "sub": "App Service backup",
+  "type": "yesno",
+  "diff": 3,
+  "q": "Answer Yes or No about App Service backups:",
+  "stmts": [
+   "Automatic backups need a storage account",
+   "Automatic backups are kept for 30 days",
+   "A custom backup can be up to 10 GB",
+   "Custom backups can run at most 12 times a day"
+  ],
+  "ans": [
+   false,
+   true,
+   true,
+   true
+  ],
+  "exp": "Automatic backups need no storage account and no setup, run hourly, and are kept for 30 days. Custom backups need a storage account, can be up to 10 GB each, and can run every 2 hours at most, which gives up to 12 backups a day.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/manage-backup"
  }
 ]

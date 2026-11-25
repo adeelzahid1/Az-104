@@ -1,10 +1,10 @@
 # AZ-104 Prep
 
-An Angular study app for the **AZ-104 Microsoft Azure Administrator** exam: 1,200 original practice
+An Angular study app for the **AZ-104 Microsoft Azure Administrator** exam: 1,222 original practice
 questions in real exam formats, timed mock exams weighted like the real exam, and weak-area tracking.
 
 Questions are written from Microsoft Learn documentation against the official skills outline
-(skills measured as of October 26, 2023). They are not exam dumps. Every answer has an
+(skills measured as of April 17, 2026). They are not exam dumps. Every answer has an
 explanation and a Microsoft Learn link.
 
 ## Features
@@ -57,13 +57,13 @@ npm run validate:bank
 
 | Path | Contents |
 |---|---|
-| `src/app/data/` | Question bank as JSON (240 per domain), case studies (`cases.json`) and the `schema.ts` data model |
+| `src/app/data/` | Question bank as JSON (240+ per domain), case studies (`cases.json`) and the `schema.ts` data model |
 | `scripts/validate-bank.mjs` | Structural checks for the question bank |
 | `src/app/core/` | Question loading, quiz engine, scoring and progress tracking |
 | `src/app/shared/question-view.*` | Renders all four question types and the answer feedback |
 | `src/app/features/` | Dashboard, practice/mock setup, quiz, results and weak-areas pages |
 | `study-notes/` | Exam cheat sheets for each domain |
-| `question-bank/` | The original 250 questions as readable markdown with answer keys |
+| `question-bank/` | The original 250 questions as readable markdown (October 2023 outline, not updated since) |
 
 ## Exam domains
 

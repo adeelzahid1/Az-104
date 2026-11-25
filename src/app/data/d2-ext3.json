@@ -916,5 +916,100 @@
   ],
   "exp": "Azure File Sync keeps one central Azure file share in sync with servers at each branch. Cloud tiering keeps frequently used files on small local disks and tiers the rest to Azure, so local reads stay fast. NTFS ACLs, and so on-premises AD permissions, are kept. Blob replication, separate GRS accounts and DFS-R alone can't do all of this.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/file-sync/file-sync-introduction"
+ },
+ {
+  "id": "D2-241",
+  "sub": "Access tiers",
+  "type": "mcq",
+  "diff": 2,
+  "q": "A standard GPv2 account uses ZRS. Access patterns for new blobs are unpredictable, and you want Azure to move each blob between hot, cool and cold by itself, with no rules to maintain. What do you configure?",
+  "opts": [
+   "A lifecycle policy with a last-access condition for every container",
+   "Smart as the account's default access tier",
+   "Cold as the account's default access tier",
+   "Object replication to an account in the cool tier"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Smart tier moves blobs between hot, cool and cold automatically, based on how they're used, and needs no rules. You turn it on by setting the account's default access tier to Smart. A lifecycle policy can tier data too, but you have to write and maintain the rules. Replication copies data and doesn't tier it.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-smart"
+ },
+ {
+  "id": "D2-242",
+  "sub": "Access tiers",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO statements about smart tier for Blob storage are true?",
+  "opts": [
+   "It requires a zone-redundant account (ZRS, GZRS or RA-GZRS)",
+   "It moves blobs to archive after 180 days without access",
+   "Reading a blob in the cool part of smart tier moves it back to hot",
+   "It works on premium block blob accounts"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Smart tier is available on standard GPv2 accounts with zone redundancy (ZRS, GZRS or RA-GZRS). A blob moves to cool after 30 days without access and to cold after 90, and any access moves it back to hot. Archive isn't part of smart tier, and premium accounts aren't supported.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-smart"
+ },
+ {
+  "id": "D2-243",
+  "sub": "Access tiers",
+  "type": "yesno",
+  "diff": 3,
+  "q": "An account's default access tier is Smart. Answer Yes or No:",
+  "stmts": [
+   "A lifecycle rule can delete blobs that are in smart tier",
+   "A lifecycle rule can move smart tier blobs to archive",
+   "A 50-KiB blob in smart tier is moved to cool after 30 days",
+   "A blob that had an explicit tier before the change moves into smart tier"
+  ],
+  "ans": [
+   true,
+   false,
+   false,
+   false
+  ],
+  "exp": "Lifecycle management can't tier blobs that are in smart tier, but its delete actions still apply. Objects smaller than 128 KiB stay in hot. Blobs that had no explicit tier move into smart tier when the default changes, while blobs with an explicit tier stay where they are.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/blobs/access-tiers-smart"
+ },
+ {
+  "id": "D2-244",
+  "sub": "Azure Files",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO statements about soft delete for classic Azure file shares are true?",
+  "opts": [
+   "It is configured for the whole storage account",
+   "It restores a single file that a user deleted from the share",
+   "The retention period can be 1 to 365 days",
+   "It needs a Recovery Services vault"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Soft delete for file shares is set at the storage account level, with a retention of 1 to 365 days (7 by default). It works only for whole shares: to get back a single file, use a share snapshot or an Azure Files backup. No vault is needed for soft delete itself.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-prevent-file-share-deletion"
+ },
+ {
+  "id": "D2-245",
+  "sub": "Azure Files",
+  "type": "mcq",
+  "diff": 2,
+  "q": "Soft delete for file shares is enabled. A user deletes one spreadsheet from a share, but the share itself still exists. Which feature can bring the file back?",
+  "opts": [
+   "Soft delete for file shares",
+   "Soft delete for blobs",
+   "A share snapshot taken before the deletion",
+   "Versioning for blobs on the same account"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "Soft delete for Azure Files protects only whole shares, so it doesn't help when one file is deleted. A share snapshot (or an Azure Files backup) taken before the deletion still holds the file, and you can copy it back. Blob soft delete and versioning don't apply to file shares.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-prevent-file-share-deletion"
  }
 ]

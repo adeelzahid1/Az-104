@@ -292,7 +292,7 @@
   "sub": "Public IPs",
   "type": "mcq",
   "diff": 2,
-  "q": "Microsoft has been retiring default outbound access for VMs. What's the recommended explicit outbound method?",
+  "q": "Subnets in new VNets are private by default (API versions released after 31 March 2026), so VMs get no default outbound IP. What's the recommended explicit outbound method?",
   "opts": [
    "A NAT Gateway on the subnet",
    "Rely on implicit default outbound IPs",
@@ -302,7 +302,7 @@
   "ans": [
    0
   ],
-  "exp": "Microsoft is retiring default (implicit) outbound internet access for VMs, so new deployments should use an explicit method: a NAT Gateway (recommended), a load balancer outbound rule, or a public IP on the VM. Subnets can also be created as private subnets. Service endpoints and private DNS don't provide internet access.",
+  "exp": "With API versions released after 31 March 2026, new VNets use private subnets by default, so VMs have no implicit outbound access (existing VNets are unchanged). Use an explicit method: a NAT gateway is recommended for most scenarios. Load balancer outbound rules, a Standard public IP on the NIC, or a firewall with a route also work. Service endpoints and private DNS don't provide internet access.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"
  },
  {

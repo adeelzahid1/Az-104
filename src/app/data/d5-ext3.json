@@ -838,7 +838,7 @@
   "ans": [
    0
   ],
-  "exp": "Azure Backup supports VMs encrypted with Azure Disk Encryption on both Windows and Linux. The Backup service needs permissions on the Key Vault so it can back up the keys and secrets along with the encrypted disks. MARS isn't needed.",
+  "exp": "Azure Backup supports VMs encrypted with Azure Disk Encryption on both Windows and Linux. The Backup service needs permissions on the Key Vault so it can back up the keys and secrets along with the encrypted disks. MARS isn't needed. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-vms-encryption"
  },
  {
@@ -917,5 +917,42 @@
   ],
   "exp": "An alert processing rule only suppresses actions, so the 02:00 CPU spike still creates a fired alert, but AG-Ops doesn't send email during the window. Backup job failures can be alerted on with a log alert in Log Analytics, which depends on the vault's diagnostic settings — remove them and the backup alert gets no data.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
+ },
+ {
+  "id": "D5-241",
+  "sub": "Backup security",
+  "type": "mcq",
+  "diff": 2,
+  "q": "What is true about soft delete for Azure Backup vaults in public Azure regions?",
+  "opts": [
+   "It is off until an administrator enables it",
+   "It can't be disabled, and retention is 14 to 180 days",
+   "It keeps data for 7 days and can be disabled",
+   "It costs extra from the first day after deletion"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Soft delete is on by default for Recovery Services vaults and Backup vaults in public regions, and it can't be disabled. Retention is 14 days by default and can be set from 14 to 180 days. The first 14 days are free, and you pay for days beyond that.",
+  "link": "https://learn.microsoft.com/en-us/azure/backup/secure-by-default"
+ },
+ {
+  "id": "D5-242",
+  "sub": "VM insights",
+  "type": "multi",
+  "diff": 3,
+  "q": "Which TWO VM signals need an agent in the guest OS?",
+  "opts": [
+   "Free space on a logical disk",
+   "Percentage CPU",
+   "Windows event logs",
+   "Network In Total"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "Host metrics such as Percentage CPU and Network In Total are platform metrics, collected automatically at no cost. Free disk space and Windows event logs exist only inside the guest OS, so they need the Azure Monitor Agent with a data collection rule.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/reference/supported-metrics/microsoft-compute-virtualmachines-metrics"
  }
 ]

@@ -28,6 +28,8 @@ interface Section {
   en: string;
   ro: string;
   subs: string[];
+  /** Sub-skills of the official outline (April 17, 2026) that this section covers. */
+  skills: string[];
 }
 
 type Filter = 'all' | 'todo' | 'bookmarked' | 'due' | 'mistakes';
@@ -126,6 +128,8 @@ export class Study {
     const section = SECTIONS.find((s) => s.id === id);
     return section ? `${section.id} ${this.isRoman() ? section.ro : section.en}` : '';
   });
+
+  protected readonly skills = computed(() => SECTIONS.find((s) => s.id === this.selected())?.skills ?? []);
 
   protected readonly filtered = computed(() => {
     const term = this.search().trim().toLowerCase();

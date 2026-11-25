@@ -716,7 +716,7 @@
   "sub": "Troubleshooting",
   "type": "mcq",
   "diff": 2,
-  "q": "Which NSG flow log destination is used for analysis with Traffic Analytics?",
+  "q": "Where are virtual network flow logs written, and how does Traffic Analytics use them?",
   "opts": [
    "A storage account, processed into a Log Analytics workspace",
    "An Event Hub, streamed into a Microsoft Sentinel workspace",
@@ -726,7 +726,7 @@
   "ans": [
    0
   ],
-  "exp": "Flow logs are written to a storage account. Traffic Analytics then processes them into a Log Analytics workspace, which provides the maps and dashboards. Event Hub isn't the destination for Traffic Analytics, and flow logs aren't stored in the NSG or DNS.",
+  "exp": "Flow logs are written to a storage account. Traffic Analytics then processes them into a Log Analytics workspace, which provides the maps and dashboards. Event Hub isn't the destination for Traffic Analytics, and flow logs aren't stored in the NSG or DNS. New NSG flow logs can't be created any more, and existing ones retire on 30 September 2027.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/traffic-analytics"
  },
  {
@@ -744,7 +744,7 @@
   "ans": [
    0
   ],
-  "exp": "Microsoft is retiring NSG flow logs in favour of virtual network flow logs, which are enabled on a whole VNet (or subnet or NIC) and also capture traffic that NSGs don't see. Packet capture, the Activity log and Connection Monitor do different jobs.",
+  "exp": "Microsoft is retiring NSG flow logs in favour of virtual network flow logs, which are enabled on a whole VNet (or subnet or NIC) and also capture traffic that NSGs don't see. Packet capture, the Activity log and Connection Monitor do different jobs. NSG flow logs retire on 30 September 2027, and new ones can no longer be created.",
   "link": "https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview"
  },
  {

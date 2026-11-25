@@ -513,7 +513,7 @@
   "diff": 2,
   "q": "Which load balancer distributes traffic across regions at Layer 4 using a global frontend IP?",
   "opts": [
-   "Cross-region (global) load balancer",
+   "Global load balancer (formerly cross-region)",
    "Internal load balancer with global peering",
    "Application Gateway",
    "NAT Gateway"
@@ -521,7 +521,7 @@
   "ans": [
    0
   ],
-  "exp": "The cross-region (global) load balancer has a global anycast frontend IP and spreads Layer 4 traffic across regional Standard load balancers, failing over between regions. Internal load balancers are private to one region, Application Gateway is regional Layer 7, and NAT Gateway only handles outbound traffic.",
+  "exp": "The global load balancer (formerly cross-region) has a global anycast frontend IP and spreads Layer 4 traffic across regional Standard load balancers, failing over between regions. Internal load balancers are private to one region, Application Gateway is regional Layer 7, and NAT Gateway only handles outbound traffic.",
   "link": "https://learn.microsoft.com/en-us/azure/load-balancer/cross-region-overview"
  },
  {
@@ -916,5 +916,60 @@
   ],
   "exp": "An alias tracks the referenced resource's IP changes, but replacing the resource with a NEW one means updating the alias target; healthy backends serve traffic; CNAMEs can't be at the apex; all-down probes mean no delivery.",
   "link": "https://learn.microsoft.com/en-us/azure/dns/dns-alias"
+ },
+ {
+  "id": "D4-241",
+  "sub": "Subnets",
+  "type": "mcq",
+  "diff": 3,
+  "q": "You create a new VNet with a template that uses an API version released after 31 March 2026. A VM in it has no public IP, NAT gateway or load balancer, and can't reach the internet. Why?",
+  "opts": [
+   "New VNets block all outbound traffic with a default NSG rule",
+   "The VNet needs a service endpoint for internet traffic",
+   "Subnets in new VNets are private by default, so there is no default outbound IP",
+   "The VM size doesn't support outbound connections without accelerated networking"
+  ],
+  "ans": [
+   2
+  ],
+  "exp": "With API versions released after 31 March 2026, subnets in new VNets are private by default, so VMs get no default outbound IP. Add an explicit method: a NAT gateway (recommended), load balancer outbound rules, a Standard public IP on the NIC, or a firewall with a route. Existing VNets aren't changed.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"
+ },
+ {
+  "id": "D4-242",
+  "sub": "Subnets",
+  "type": "multi",
+  "diff": 2,
+  "q": "Which TWO give a VM in a private subnet outbound internet access?",
+  "opts": [
+   "A NAT gateway associated with the subnet",
+   "A private endpoint in the subnet",
+   "A Standard public IP on the VM's NIC",
+   "A private DNS zone linked to the VNet"
+  ],
+  "ans": [
+   0,
+   2
+  ],
+  "exp": "A private subnet has no default outbound access, so a VM needs an explicit method, such as a NAT gateway on the subnet or a Standard public IP on its NIC. Load balancer outbound rules or a firewall with a route also work. Private endpoints and private DNS zones don't give internet access.",
+  "link": "https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/default-outbound-access"
+ },
+ {
+  "id": "D4-243",
+  "sub": "Network Watcher",
+  "type": "mcq",
+  "diff": 2,
+  "q": "You must start recording IP traffic for a VNet, including traffic through its VPN gateway. What do you enable?",
+  "opts": [
+   "NSG flow logs on every subnet",
+   "Virtual network flow logs",
+   "Packet capture on the gateway",
+   "The VNet's Activity log"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Virtual network flow logs record traffic for the workloads in the VNet, including VPN gateways. New NSG flow logs can no longer be created, and they retire on 30 September 2027. Packet capture is for short, detailed traces on VMs, and the Activity log records management operations.",
+  "link": "https://learn.microsoft.com/en-us/azure/network-watcher/vnet-flow-logs-overview"
  }
 ]

@@ -64,6 +64,17 @@
     <h1>{{ title() }}</h1>
     <p class="howto"><strong>{{ ts.howToLabel }}</strong> {{ ts.howTo }}</p>
 
+    @if (skills().length) {
+      <details class="card skills">
+        <summary>{{ ts.skillsTitle }}</summary>
+        <ul>
+          @for (skill of skills(); track skill) {
+            <li>{{ skill }}</li>
+          }
+        </ul>
+      </details>
+    }
+
     <div class="toolbar">
       <input
         #box

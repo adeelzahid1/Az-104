@@ -131,6 +131,15 @@
   color: var(--ok);
 }
 
+.skills summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.skills ul {
+  margin: 8px 0 0;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;

@@ -1053,14 +1053,14 @@
   "exp": "NAT Gateway doosre outbound tareeqon, instance-level public IPs aur load balancer outbound rules samet, par tarjeeh leta hai. VM ka public IP phir bhi inbound traffic ke liye use hota hai."
  },
  "D4-067": {
-  "q": "Microsoft VMs ka default outbound access retire kar raha hai. Recommended explicit outbound tareeqa kya hai?",
+  "q": "Naye VNets ke subnets default mein private hain (31 March 2026 ke baad wale API versions), is liye VMs ko default outbound IP nahi milta. Recommended explicit outbound tareeqa kya hai?",
   "opts": [
    "Subnet par NAT Gateway",
    "Implicit default outbound IPs par bharosa karein",
    "Service endpoints",
    "Private DNS"
   ],
-  "exp": "Microsoft VMs ka default (implicit) outbound internet access retire kar raha hai, is liye naye deployments ko explicit tareeqa use karna chahiye: NAT Gateway (recommended), load balancer outbound rule, ya VM par public IP. Subnets private subnets ke taur par bhi ban sakte hain. Service endpoints aur private DNS internet access nahi dete."
+  "exp": "31 March 2026 ke baad wale API versions mein naye VNets default mein private subnets use karte hain, is liye VMs ka implicit outbound access nahi hota (mojooda VNets nahi badalte). Explicit tareeqa use karein: zyada tar scenarios mein NAT gateway recommended hai. Load balancer outbound rules, NIC par Standard public IP, ya route ke sath firewall bhi kaam karte hain. Service endpoints aur private DNS internet access nahi dete."
  },
  "D4-068": {
   "q": "Kaun si CLI command VNet1 se VNet2 tak peering ki ek taraf banati hai?",
@@ -1784,14 +1784,14 @@
   "exp": "Effective security rules (aur effective routes) chalte network interface se parhe jate hain, is liye VM chal rahi honi chahiye. Agar stopped ya deallocated ho to view khali ya unavailable hota hai. Yeh Linux aur Windows dono ke liye chalta hai, Bastion use ho ya nahi."
  },
  "D4-140": {
-  "q": "Traffic Analytics ke sath analysis ke liye kaun sa NSG flow log destination use hota hai?",
+  "q": "Virtual network flow logs kahan likhe jate hain, aur Traffic Analytics unhein kaise use karta hai?",
   "opts": [
    "Storage account, jo Log Analytics workspace mein process hota hai",
    "Event Hub, jo Microsoft Sentinel workspace mein stream ho",
    "Khud NSG",
    "Azure DNS"
   ],
-  "exp": "Flow logs storage account mein likhe jate hain. Phir Traffic Analytics unhein Log Analytics workspace mein process karta hai, jo maps aur dashboards deta hai. Event Hub Traffic Analytics ka destination nahi, aur flow logs NSG ya DNS mein store nahi hote."
+  "exp": "Flow logs storage account mein likhe jate hain. Phir Traffic Analytics unhein Log Analytics workspace mein process karta hai, jo maps aur dashboards deta hai. Event Hub Traffic Analytics ka destination nahi, aur flow logs NSG ya DNS mein store nahi hote. Naye NSG flow logs ab nahi ban sakte, aur mojooda 30 September 2027 ko retire honge."
  },
  "D4-141": {
   "q": "Microsoft NSG flow logs retire kar raha hai. Recommended replacement kya hai?",
@@ -1801,7 +1801,7 @@
    "Activity log",
    "Connection monitor"
   ],
-  "exp": "Microsoft NSG flow logs ko virtual network flow logs ke haq mein retire kar raha hai, jo poore VNet (ya subnet ya NIC) par enable hote hain aur woh traffic bhi capture karte hain jo NSGs nahi dekhte. Packet capture, Activity log aur Connection Monitor alag kaam karte hain."
+  "exp": "Microsoft NSG flow logs ko virtual network flow logs ke haq mein retire kar raha hai, jo poore VNet (ya subnet ya NIC) par enable hote hain aur woh traffic bhi capture karte hain jo NSGs nahi dekhte. Packet capture, Activity log aur Connection Monitor alag kaam karte hain. NSG flow logs 30 September 2027 ko retire honge, aur naye ab nahi ban sakte."
  },
  "D4-142": {
   "ctx": "Subnet Web par nsg-web hai: priority 100 Internet se TCP 443 Allow; priority 200 203.0.113.0/24 se TCP 443 Deny. VM1 ke NIC par koi NSG nahi.",
@@ -2178,12 +2178,12 @@
  "D4-179": {
   "q": "Kaun sa load balancer global frontend IP use kar ke regions ke darmiyan Layer 4 par traffic baantta hai?",
   "opts": [
-   "Cross-region (global) load balancer",
+   "Global load balancer (pehle cross-region)",
    "Global peering wala internal load balancer",
    "Application Gateway",
    "NAT Gateway"
   ],
-  "exp": "Cross-region (global) load balancer ka global anycast frontend IP hota hai aur yeh Layer 4 traffic ko regional Standard load balancers mein baantta hai, regions ke darmiyan failover karte hue. Internal load balancers ek region ke liye private hain, Application Gateway regional Layer 7 hai, aur NAT Gateway sirf outbound traffic handle karta hai."
+  "exp": "Global load balancer (pehle cross-region) ka global anycast frontend IP hota hai aur yeh Layer 4 traffic ko regional Standard load balancers mein baantta hai, regions ke darmiyan failover karte hue. Internal load balancers ek region ke liye private hain, Application Gateway regional Layer 7 hai, aur NAT Gateway sirf outbound traffic handle karta hai."
  },
  "D4-180": {
   "q": "Public Standard LB se do VMs par web traffic load-balance karne ke steps tarteeb mein lagayen:",
@@ -2396,5 +2396,35 @@
    "Agar tamam VMs par /health 500 de to traffic phir bhi deliver hota hai"
   ],
   "exp": "Alias referenced resource ke IP changes track karta hai, lekin resource ko NAYE resource se badalne ka matlab alias target update karna hai; healthy backends traffic serve karte hain; CNAMEs apex par nahi ho sakte; tamam probes down hon to delivery nahi hoti."
+ },
+ "D4-241": {
+  "q": "Aap aise template se naya VNet banate hain jo 31 March 2026 ke baad wala API version use karta hai. Us ki VM ke paas na public IP hai, na NAT gateway, na load balancer, aur woh internet tak nahi pahunchti. Kyun?",
+  "opts": [
+   "Naye VNets default NSG rule se tamam outbound traffic block karte hain",
+   "VNet ko internet traffic ke liye service endpoint chahiye",
+   "Naye VNets ke subnets default mein private hain, is liye default outbound IP nahi",
+   "VM size accelerated networking ke baghair outbound connections support nahi karta"
+  ],
+  "exp": "31 March 2026 ke baad wale API versions mein naye VNets ke subnets default mein private hote hain, is liye VMs ko default outbound IP nahi milta. Explicit tareeqa lagayen: NAT gateway (recommended), load balancer outbound rules, NIC par Standard public IP, ya route ke sath firewall. Mojooda VNets nahi badalte."
+ },
+ "D4-242": {
+  "q": "Private subnet ki VM ko outbound internet access kaun si DO cheezein deti hain?",
+  "opts": [
+   "Subnet se jura NAT gateway",
+   "Subnet mein private endpoint",
+   "VM ke NIC par Standard public IP",
+   "VNet se linked private DNS zone"
+  ],
+  "exp": "Private subnet mein default outbound access nahi hota, is liye VM ko explicit tareeqa chahiye, jaise subnet par NAT gateway ya NIC par Standard public IP. Load balancer outbound rules ya route ke sath firewall bhi kaam karte hain. Private endpoints aur private DNS zones internet access nahi dete."
+ },
+ "D4-243": {
+  "q": "Aap ko ek VNet ka IP traffic record karna shuru karna hai, us ke VPN gateway ka traffic bhi. Aap kya enable karenge?",
+  "opts": [
+   "Har subnet par NSG flow logs",
+   "Virtual network flow logs",
+   "Gateway par packet capture",
+   "VNet ka Activity log"
+  ],
+  "exp": "Virtual network flow logs VNet ke workloads ka traffic record karte hain, VPN gateways samet. Naye NSG flow logs ab nahi ban sakte, aur woh 30 September 2027 ko retire honge. Packet capture VMs par mukhtasar, tafseeli traces ke liye hai, aur Activity log management operations record karta hai."
  }
 }

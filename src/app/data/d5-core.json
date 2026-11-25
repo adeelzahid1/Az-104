@@ -277,14 +277,14 @@
   "q": "VM insights provides:",
   "opts": [
    "Billing data",
-   "Performance charts and a dependency map of processes and connections for monitored VMs",
+   "Performance charts and guest OS monitoring data for VMs",
    "RBAC reports and a map of the users and groups that can sign in to monitored VMs",
    "Patching"
   ],
   "ans": [
    1
   ],
-  "exp": "VM insights gives ready-made performance charts (CPU, memory, disk, network) for your VMs and a Map that shows the processes on each VM and its network connections to other machines. It doesn't handle billing, RBAC reports or patching.",
+  "exp": "VM insights adds guest OS monitoring to the host metrics Azure collects by itself: it installs the Azure Monitor Agent and gives ready-made performance charts (CPU, memory, disk, network). Its older Map feature, based on the Dependency agent, retires on 30 June 2028. It doesn't handle billing, RBAC reports or patching.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/vm/vminsights-overview"
  },
  {
@@ -622,7 +622,7 @@
   "sub": "Backup security",
   "type": "mcq",
   "diff": 2,
-  "q": "With soft delete for Azure Backup, deleted backup data is kept for:",
+  "q": "With the default soft delete setting for Azure Backup, deleted backup data is kept for:",
   "opts": [
    "14 more days at no cost, so it can be recovered",
    "90 more days at the archive rate, so it can be restored",
@@ -632,7 +632,7 @@
   "ans": [
    0
   ],
-  "exp": "Soft delete for Azure Backup keeps backup data for 14 more days after someone deletes it, at no extra cost, so you can undelete it — for example after an accident or an attack. It doesn't stop anyone deleting the VM itself.",
+  "exp": "Soft delete for Azure Backup keeps backup data for 14 more days after someone deletes it, at no extra cost, so you can undelete it — for example after an accident or an attack. It doesn't stop anyone deleting the VM itself. You can set retention from 14 to 180 days (days beyond 14 are charged), and soft delete can't be turned off in public regions.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-azure-security-feature-cloud"
  },
  {
@@ -697,14 +697,14 @@
   "q": "To manage and monitor backups across many vaults and subscriptions from one place, use:",
   "opts": [
    "Each vault separately",
-   "Backup center (Business Continuity Center)",
+   "Resiliency (Azure Business Continuity Center)",
    "Azure Advisor (Reliability category)",
    "Cost Management"
   ],
   "ans": [
    1
   ],
-  "exp": "Backup center — now part of Azure Business Continuity Center — gives one place to monitor, manage and report on backups across many vaults, subscriptions and regions. Opening each vault separately doesn't scale, and Advisor and Cost Management don't manage backups.",
+  "exp": "Azure Business Continuity Center, which you open in the portal by searching for Resiliency, gives one place to monitor, manage and report on protection across many vaults, subscriptions and regions. It replaces Backup center, which is now a legacy experience. Opening each vault separately doesn't scale, and Advisor and Cost Management don't manage backups.",
   "link": "https://learn.microsoft.com/en-us/azure/backup/backup-center-overview"
  },
  {

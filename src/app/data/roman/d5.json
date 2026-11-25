@@ -153,11 +153,11 @@
   "q": "VM insights kya deta hai?",
   "opts": [
    "Billing data",
-   "Monitored VMs ke performance charts aur processes aur connections ka dependency map",
+   "VMs ke performance charts aur guest OS monitoring data",
    "RBAC reports aur un users aur groups ka map jo monitored VMs mein sign in kar sakte hain",
    "Patching"
   ],
-  "exp": "VM insights aap ki VMs ke ready-made performance charts (CPU, memory, disk, network) aur Map deta hai jo har VM ke processes aur doosri machines se us ke network connections dikhata hai. Yeh billing, RBAC reports ya patching handle nahi karta."
+  "exp": "VM insights Azure ke khud collect kiye host metrics mein guest OS monitoring ka izafa karta hai: Azure Monitor Agent install karta hai aur ready-made performance charts (CPU, memory, disk, network) deta hai. Us ka purana Map feature, jo Dependency agent par tha, 30 June 2028 ko retire hoga. Yeh billing, RBAC reports ya patching handle nahi karta."
  },
  "D5-017": {
   "q": "Perf | where CounterName == \"% Processor Time\" | summarize avg(CounterValue) by Computer, bin(TimeGenerated, 1h) mein bin() kya karta hai?",
@@ -340,14 +340,14 @@
   "exp": "Instant restore backup snapshots ko VM ki disks ke pas locally Standard policy mein 1 se 5 din (default 2; Enhanced policy zyada deti hai) rakhta hai. In snapshots se restore vault se restore ke muqable kahin tez hota hai."
  },
  "D5-035": {
-  "q": "Azure Backup ke soft delete ke sath delete hua backup data kitna arse rakha jata hai?",
+  "q": "Azure Backup ki default soft delete setting ke sath delete hua backup data kitna arse rakha jata hai?",
   "opts": [
    "Baghair cost ke mazeed 14 din, taa ke wapas mil sake",
    "Archive rate par 90 din aur, taa ke restore ho sake",
    "24 ghante",
    "Yeh khud VM delete hone se rokta hai"
   ],
-  "exp": "Azure Backup ka soft delete kisi ke delete karne ke baad backup data ko mazeed 14 din, baghair extra cost ke, rakhta hai, taa ke aap usay undelete kar sakein — maslan ghalti ya attack ke baad. Yeh kisi ko khud VM delete karne se nahi rokta."
+  "exp": "Azure Backup ka soft delete kisi ke delete karne ke baad backup data ko mazeed 14 din, baghair extra cost ke, rakhta hai, taa ke aap usay undelete kar sakein — maslan ghalti ya attack ke baad. Yeh kisi ko khud VM delete karne se nahi rokta. Retention 14 se 180 din tak set ho sakti hai (14 se zyada dinon ka paisa lagta hai), aur public regions mein soft delete band nahi ho sakta."
  },
  "D5-036": {
   "q": "Ek user ne backup hui Azure VM ke andar ek file delete kar di. Sab se tez recovery?",
@@ -383,11 +383,11 @@
   "q": "Kai vaults aur subscriptions ke backups ek jagah se manage aur monitor karne ke liye kya use karein?",
   "opts": [
    "Har vault alag",
-   "Backup center (Business Continuity Center)",
+   "Resiliency (Azure Business Continuity Center)",
    "Azure Advisor (Reliability category)",
    "Cost Management"
   ],
-  "exp": "Backup center — ab Azure Business Continuity Center ka hissa — kai vaults, subscriptions aur regions ke backups monitor, manage aur report karne ki ek jagah deta hai. Har vault alag kholna scale nahi hota, aur Advisor aur Cost Management backups manage nahi karte."
+  "exp": "Azure Business Continuity Center, jo portal mein Resiliency search karne se khulta hai, kai vaults, subscriptions aur regions ki protection monitor, manage aur report karne ki ek jagah deta hai. Yeh Backup center ki jagah leta hai, jo ab legacy hai. Har vault alag kholna scale nahi hota, aur Advisor aur Cost Management backups manage nahi karte."
  },
  "D5-040": {
   "q": "Recovery Services vault delete karna fail hota hai. Aap ko kya karna hoga?",
@@ -958,14 +958,14 @@
   "exp": "Azure Monitor Workbooks text, KQL queries, metrics aur parameters ko interactive reports mein milate hain jinhein log filter aur drill down kar sakte hain. Action groups notifications bhejte hain, alert processing rules alert actions badalte hain, aur DCRs data collection define karte hain."
  },
  "D5-058": {
-  "q": "Kya agent ke baghair guest OS performance counters (jaise available memory) metrics ke taur par collect ho sakte hain?",
+  "q": "Kya agent ke baghair guest OS ka data, jaise disk ki khaali jagah ya Windows events, collect ho sakta hai?",
   "opts": [
    "Nahi — guest OS data ke liye Azure Monitor Agent chahiye",
-   "Haan — platform metrics mein hamesha guest counters hote hain",
+   "Haan — platform metrics mein tamam guest OS data hota hai",
    "Sirf Linux ke liye",
    "Sirf Premium SSD ke sath"
   ],
-  "exp": "Platform metrics sirf woh cover karte hain jo host VM ke bahar se dekh sakta hai, jaise CPU, disk aur network. Available memory jaise guest OS counters ko data collection rule ke sath Azure Monitor Agent chahiye. Windows aur Linux dono ke liye yahi hai, disk type chahe kuch bhi ho."
+  "exp": "Platform metrics woh cover karte hain jo Azure VM ke liye khud collect karta hai, jaise CPU, network, disk operations aur available memory. Disk ki khaali jagah ya Windows events jaise guest OS data ko data collection rule ke sath Azure Monitor Agent chahiye. Windows aur Linux dono ke liye yahi hai, disk type chahe kuch bhi ho."
  },
  "D5-059": {
   "q": "Log Analytics workspace kya hai?",
@@ -1245,17 +1245,17 @@
    "Disk encryption on karta hai aur us ke key logs workspace ko bhejta hai",
    "Public IP add hota hai"
   ],
-  "exp": "VM insights enable karne se Azure Monitor Agent (aur Map feature ke liye optionally Dependency agent) install hota hai aur aisi data collection rule banti hai jo performance data Log Analytics workspace mein bheje. Yeh backup ya encryption on nahi karta ya public IP add nahi karta."
+  "exp": "VM insights enable karne se Azure Monitor Agent install hota hai (purana Dependency agent aur Map feature deprecated hain) aur aisi data collection rule banti hai jo performance data Log Analytics workspace mein bheje. Yeh backup ya encryption on nahi karta ya public IP add nahi karta."
  },
  "D5-087": {
-  "q": "Kaun sa VM insights feature dikhata hai ke VM kin servers se connect hoti hai aur kaun se processes kin ports par sunte hain?",
+  "q": "Ek mojooda deployment deprecated Dependency agent use karta hai. Kaun sa VM insights feature dikhata hai ke VM kin servers se connect hoti hai aur kaun se processes kin ports par sunte hain?",
   "opts": [
    "Map (dependency agent)",
    "Performance",
    "Health",
    "Sirf Workbooks"
   ],
-  "exp": "VM insights ka Map feature, jo Dependency agent use karta hai, har VM par chalne wale processes, un ke sune jane wale ports, aur doosri machines se inbound aur outbound connections dikhata hai. Performance sirf charts dikhata hai, aur workbooks reports hain."
+  "exp": "VM insights ka Map feature, jo Dependency agent use karta hai, har VM par chalne wale processes, un ke sune jane wale ports, aur doosri machines se inbound aur outbound connections dikhata hai. Performance sirf charts dikhata hai, aur workbooks reports hain. Map aur Dependency agent 30 June 2028 ko retire honge, is liye naye deployments mein enable na karein."
  },
  "D5-088": {
   "q": "Kaun sa experience subscriptions ke aar paar network health, connectivity, traffic aur topology ek jagah dikhata hai?",
@@ -1599,14 +1599,14 @@
   "exp": "az backup protection backup-now protected item ka schedule se bahar on-demand backup leti hai, aur --retain-until set karta hai ke woh recovery point kitne arse rakha jaye. Baqi commands mojood nahi."
  },
  "D5-122": {
-  "q": "Kaun sa vault security feature soft delete disable karne jaise critical operations se pehle doosre user ki approval (Resource Guard ke zariye) mangta hai?",
+  "q": "Kaun sa vault security feature protection rok kar backup data delete karne jaise critical operations se pehle doosre user ki approval (Resource Guard ke zariye) mangta hai?",
   "opts": [
    "Multi-user authorization",
    "Soft delete",
    "Immutable vault",
    "Private endpoints"
   ],
-  "exp": "Multi-user authorization (MUA) Resource Guard use karta hai, jo aam tor par alag team ya tenant ki milkiyat hota hai, is liye critical vault operations — jaise soft delete disable karna ya retention kam karna — ko us doosre shakhs ki approval chahiye. Soft delete delete hua data 14 din rakhta hai, immutability waqt se pehle deletion rokti hai, aur private endpoints network access mehfooz karte hain."
+  "exp": "Multi-user authorization (MUA) Resource Guard use karta hai, jo aam tor par alag team ya tenant ki milkiyat hota hai, is liye critical vault operations — jaise backup data delete karna ya retention kam karna — ko us doosre shakhs ki approval chahiye. Soft delete delete hua data 14 din rakhta hai, immutability waqt se pehle deletion rokti hai, aur private endpoints network access mehfooz karte hain."
  },
  "D5-123": {
   "q": "Kaun si vault setting kisi ko bhi, admins samet, recovery points expire hone se pehle delete karne se rokti hai (ransomware ke khilaf)?",
@@ -1856,7 +1856,7 @@
    "Metrics explorer",
    "VM insights"
   ],
-  "exp": "Har vault ka Backup jobs page completed, failed aur chalte jobs dikhata hai, aur Backup center (Business Continuity Center) tamam vaults ke jobs dikhata hai. Activity log Azure operations dikhata hai, job details nahi, aur metrics aur VM insights backup jobs track nahi karte."
+  "exp": "Har vault ka Backup jobs page completed, failed aur chalte jobs dikhata hai, aur Resiliency (Azure Business Continuity Center) tamam vaults ke jobs dikhata hai. Activity log Azure operations dikhata hai, job details nahi, aur metrics aur VM insights backup jobs track nahi karte."
  },
  "D5-148": {
   "q": "VM backup policy kaun si DO cheezein define kar sakti hai?",
@@ -2347,7 +2347,7 @@
    "Sirf Linux",
    "Sirf MARS ke sath"
   ],
-  "exp": "Azure Backup Windows aur Linux dono par Azure Disk Encryption se encrypted VMs support karta hai. Backup service ko Key Vault par permissions chahiye taa ke woh encrypted disks ke sath keys aur secrets ka bhi backup le sake. MARS ki zaroorat nahi."
+  "exp": "Azure Backup Windows aur Linux dono par Azure Disk Encryption se encrypted VMs support karta hai. Backup service ko Key Vault par permissions chahiye taa ke woh encrypted disks ke sath keys aur secrets ka bhi backup le sake. MARS ki zaroorat nahi. Azure Disk Encryption 15 September 2028 ko retire hoga: nayi VMs ke liye encryption at host use karein."
  },
  "D5-197": {
   "q": "VM ka backup 'UserErrorGuestAgentStatusUnavailable' ke sath fail hota hai. Pehle kya check karenge?",
@@ -2390,5 +2390,25 @@
    "Vault diagnostic settings hatane se backup log alert toot jayega"
   ],
   "exp": "Alert processing rule sirf actions suppress karta hai, is liye 02:00 ka CPU spike phir bhi fired alert banata hai, lekin window ke dauran AG-Ops email nahi bhejta. Backup job failures par Log Analytics mein log alert lagaya ja sakta hai, jo vault ki diagnostic settings par depend karta hai — unhein hatayen to backup alert ko data nahi milta."
+ },
+ "D5-241": {
+  "q": "Public Azure regions mein Azure Backup vaults ke soft delete ke bare mein kya sahi hai?",
+  "opts": [
+   "Admin ke enable karne tak band rehta hai",
+   "Yeh disable nahi ho sakta, aur retention 14 se 180 din hai",
+   "Yeh data 7 din rakhta hai aur disable ho sakta hai",
+   "Deletion ke pehle din se hi extra paisa lagta hai"
+  ],
+  "exp": "Public regions mein Recovery Services vaults aur Backup vaults par soft delete default mein on hai aur disable nahi ho sakta. Retention default 14 din hai aur 14 se 180 din tak set ho sakti hai. Pehle 14 din free hain, us se zyada dinon ka paisa lagta hai."
+ },
+ "D5-242": {
+  "q": "VM ke kaun se DO signals ke liye guest OS mein agent chahiye?",
+  "opts": [
+   "Logical disk ki khaali jagah",
+   "Percentage CPU",
+   "Windows event logs",
+   "Network In Total"
+  ],
+  "exp": "Percentage CPU aur Network In Total jaise host metrics platform metrics hain, jo khud ba khud aur free collect hote hain. Disk ki khaali jagah aur Windows event logs sirf guest OS ke andar hote hain, is liye unhein data collection rule ke sath Azure Monitor Agent chahiye."
  }
 }

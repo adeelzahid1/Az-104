@@ -609,7 +609,7 @@
    "A storage account name must be globally unique, 3–24 characters, lowercase letters and numbers only",
    "You can change LRS to GRS on a standard GPv2 account without recreating it",
    "A storage account can be moved to another resource group",
-   "The account's default access tier (hot/cool) applies to Azure file shares"
+   "The account's default access tier applies to Azure file shares"
   ],
   "ans": [
    true,

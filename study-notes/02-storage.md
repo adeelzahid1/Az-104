@@ -57,7 +57,8 @@ Exam-focused cheat sheet. Pair with `question-bank/02-storage.md`.
 
 - Blob types: **Block** (objects/files) · **Append** (logs) · **Page** (VHD/disks).
 - **Access tiers:** Hot · Cool (30-day min) · Cold (90-day min) · **Archive** (offline!, 180-day min, blob-level only).
-  - Account default tier: **hot or cool only**.
+  - Account default tier: hot, cool, cold, or **Smart** (archive is never the default).
+  - **Smart tier:** GPv2 + zone redundancy (ZRS/GZRS/RA-GZRS); hot → cool at 30 days → cold at 90 days without access; any access returns to hot; no archive; objects < 128 KiB stay hot.
   - Archive rehydration: Standard **up to 15 h**; High priority <1 h (<10 GB). Or "copy out" to a new blob.
 - **Lifecycle management:** rules on last-modified/created/accessed → tierToCool/tierToCold/tierToArchive/delete; applies to base blobs/snapshots/versions. First run can take **24–48 h**.
 - **Versioning** (automatic on every write/delete) vs **snapshots** (manual). Versioning is the modern answer.

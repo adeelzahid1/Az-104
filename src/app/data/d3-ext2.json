@@ -539,7 +539,7 @@
   "ans": [
    0
   ],
-  "exp": "Azure Disk Encryption needs the key vault's 'Azure Disk Encryption for volume encryption' access setting (enabledForDiskEncryption) turned on, so the Azure platform can store and read the BitLocker or dm-crypt secrets. Template deployment, purge protection and network settings are separate options.",
+  "exp": "Azure Disk Encryption needs the key vault's 'Azure Disk Encryption for volume encryption' access setting (enabledForDiskEncryption) turned on, so the Azure platform can store and read the BitLocker or dm-crypt secrets. Template deployment, purge protection and network settings are separate options. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-key-vault"
  },
  {
@@ -557,7 +557,7 @@
   "ans": [
    0
   ],
-  "exp": "az vm encryption enable turns on Azure Disk Encryption for a VM, with --disk-encryption-keyvault pointing to the vault (and optionally --key-encryption-key for a KEK). It installs the encryption extension, which runs BitLocker or dm-crypt. The other commands don't exist.",
+  "exp": "az vm encryption enable turns on Azure Disk Encryption for a VM, with --disk-encryption-keyvault pointing to the vault (and optionally --key-encryption-key for a KEK). It installs the encryption extension, which runs BitLocker or dm-crypt. The other commands don't exist. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/disk-encryption-cli-quickstart"
  },
  {
@@ -576,7 +576,7 @@
    0,
    1
   ],
-  "exp": "Encryption at host encrypts the temp disk and caches on the VM's host. Azure Disk Encryption with the volume type set to All encrypts the temp disk inside the guest OS. Server-side encryption only covers disks stored in Azure storage, and encryption scopes are for blobs.",
+  "exp": "Encryption at host encrypts the temp disk and caches on the VM's host. Azure Disk Encryption with the volume type set to All encrypts the temp disk inside the guest OS. Server-side encryption only covers disks stored in Azure storage, and encryption scopes are for blobs. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {
@@ -834,7 +834,7 @@
   "ans": [
    0
   ],
-  "exp": "A VM using Azure Disk Encryption needs its keys and secrets in a key vault in the same region as the VM. To move it to another region, you need a key vault in the target region and must copy the encryption keys and secrets there as part of the move. Encrypted VMs can be moved, but encryption isn't removed automatically.",
+  "exp": "A VM using Azure Disk Encryption needs its keys and secrets in a key vault in the same region as the VM. To move it to another region, you need a key vault in the target region and must copy the encryption keys and secrets there as part of the move. Encrypted VMs can be moved, but encryption isn't removed automatically. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/resource-mover/tutorial-move-region-encrypted-virtual-machines"
  },
  {
@@ -910,7 +910,7 @@
    true,
    false
   ],
-  "exp": "Zone placement needs recreation; a Standard public IP is static, so it keeps its address after deallocation; resizing within an availability set may require stopping all VMs; the ADE vault must be in the same region.",
+  "exp": "Zone placement needs recreation; a Standard public IP is static, so it keeps its address after deallocation; resizing within an availability set may require stopping all VMs; the ADE vault must be in the same region. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/availability"
  }
 ]

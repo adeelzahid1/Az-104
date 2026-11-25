@@ -341,7 +341,7 @@
   "ans": [
    1
   ],
-  "exp": "Azure Disk Encryption works inside the VM: on Windows it uses BitLocker and on Linux it uses dm-crypt, with keys stored in Azure Key Vault. SSE is the platform encryption done by the storage service, TDE is for SQL databases, and Always Encrypted is a SQL feature.",
+  "exp": "Azure Disk Encryption works inside the VM: on Windows it uses BitLocker and on Linux it uses dm-crypt, with keys stored in Azure Key Vault. SSE is the platform encryption done by the storage service, TDE is for SQL databases, and Always Encrypted is a SQL feature. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {
@@ -359,7 +359,7 @@
   "ans": [
    1
   ],
-  "exp": "Azure Disk Encryption stores its keys and secrets in Azure Key Vault. The vault must be in the same region and subscription as the VM, and its access policy must have 'Azure Disk Encryption for volume encryption' enabled. Storage accounts, Log Analytics and on-premises HSMs aren't used for this.",
+  "exp": "Azure Disk Encryption stores its keys and secrets in Azure Key Vault. The vault must be in the same region and subscription as the VM, and its access policy must have 'Azure Disk Encryption for volume encryption' enabled. Storage accounts, Log Analytics and on-premises HSMs aren't used for this. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption-overview"
  },
  {
@@ -377,7 +377,7 @@
   "ans": [
    0
   ],
-  "exp": "Encryption at host encrypts data on the physical host that runs the VM — including temp disks and OS and data disk caches — before it reaches storage. Nothing runs inside the VM. Azure Disk Encryption, by contrast, runs BitLocker or dm-crypt inside the guest OS. Encryption at host works for Windows and Linux with managed disks.",
+  "exp": "Encryption at host encrypts data on the physical host that runs the VM — including temp disks and OS and data disk caches — before it reaches storage. Nothing runs inside the VM. Azure Disk Encryption, by contrast, runs BitLocker or dm-crypt inside the guest OS. Encryption at host works for Windows and Linux with managed disks. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
  },
  {
@@ -545,7 +545,7 @@
    3,
    0
   ],
-  "exp": "First create the key vault with 'enabled for disk encryption', because the encryption extension stores secrets there. Then create the key encryption key (KEK) in that vault. With the target VM ready, run Set-AzVMDiskEncryptionExtension, pointing at the vault and KEK, to turn on BitLocker or dm-crypt.",
+  "exp": "First create the key vault with 'enabled for disk encryption', because the encryption extension stores secrets there. Then create the key encryption key (KEK) in that vault. With the target VM ready, run Set-AzVMDiskEncryptionExtension, pointing at the vault and KEK, to turn on BitLocker or dm-crypt. Azure Disk Encryption retires on 15 September 2028: use encryption at host for new VMs.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/disk-encryption-windows"
  },
  {
