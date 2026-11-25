@@ -11,7 +11,7 @@ export const EN = {
   skip: 'Skip to content',
   footer:
     'Original practice questions written from Microsoft Learn documentation. Not affiliated with Microsoft. Your progress is saved only in this browser.',
-  nav: { dashboard: 'Dashboard', plan: 'Plan', study: 'Study', labs: 'Labs', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Weak areas' },
+  nav: { dashboard: 'Dashboard', plan: 'Plan', notes: 'Notes', study: 'Study', labs: 'Labs', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Weak areas' },
   domains: {
     1: 'Manage Azure identities and governance',
     2: 'Implement and manage storage',
@@ -181,6 +181,7 @@ export const EN = {
   },
 
   study: {
+    toNotes: 'Read the notes of this section first',
     allSections: 'All sections',
     allQuestions: 'All questions',
     title: 'Study',
@@ -298,6 +299,30 @@ export const EN = {
     checklist: 'Skills checklist →',
   },
 
+  notes: {
+    title: 'Notes',
+    lead: (read: number, total: number) => `${read} of ${total} sections read. Read the notes first, then answer the questions of the section.`,
+    sections: 'Sections',
+    readMark: 'read',
+    search: 'Search all notes (e.g. SAS, peering, slot)',
+    found: (n: number) => (n === 1 ? '1 place found' : `${n} places found`),
+    intro: 'Introduction',
+    print: 'Print / save as PDF',
+    minutes: (n: number) => `${n} min read`,
+    onPage: 'On this page',
+    boxes: { e: '💡 Example', t: '⚠️ Exam trap', w: '📍 Where in the portal' } as Record<string, string>,
+    check: 'Check yourself',
+    checkHint: 'Answer in your own words first, then look.',
+    show: 'Show answer',
+    hide: 'Hide answer',
+    markRead: 'I have read this section',
+    markHint: "Also ticks \"Read\" for this section's skills in your Plan.",
+    study: 'Questions of this section →',
+    practice: 'Practise this section',
+    cards: 'Tables and commands to remember',
+    loading: 'Loading notes…',
+  },
+
   cheat: {
     title: 'Cheat sheet',
     lead: 'Everything to remember for AZ-104 on one page: traps, keywords, comparisons, numbers and commands. Skills measured as of April 17, 2026.',
@@ -374,7 +399,7 @@ export const ROMAN: UiText = {
   skip: 'Content par jayen',
   footer:
     'Yeh original practice sawal Microsoft Learn documentation se likhe gaye hain. Microsoft se koi taluq nahi. Aap ki progress sirf isi browser mein save hoti hai.',
-  nav: { dashboard: 'Dashboard', plan: 'Plan', study: 'Study', labs: 'Labs', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Kamzor areas' },
+  nav: { dashboard: 'Dashboard', plan: 'Plan', notes: 'Notes', study: 'Study', labs: 'Labs', cheat: 'Cheat sheet', practice: 'Practice', mock: 'Mock exam', weak: 'Kamzor areas' },
   domains: {
     1: 'Azure identities aur governance manage karna',
     2: 'Storage implement aur manage karna',
@@ -546,6 +571,7 @@ export const ROMAN: UiText = {
   },
 
   study: {
+    toNotes: 'Pehle is section ke notes parhein',
     allSections: 'Tamam sections',
     allQuestions: 'Tamam sawal',
     title: 'Study',
@@ -661,6 +687,30 @@ export const ROMAN: UiText = {
     cleanupNote: 'Aakhir mein karein. Sirf is lab ki banayi cheezein delete hoti hain. Portal mein dekhein ke resource group khatam ho gaya.',
     remember: 'Exam ke liye',
     checklist: 'Skills ki checklist →',
+  },
+
+  notes: {
+    title: 'Notes',
+    lead: (read: number, total: number) => `${total} mein se ${read} sections parh liye. Pehle notes parhein, phir usi section ke sawal karein.`,
+    sections: 'Sections',
+    readMark: 'parh liya',
+    search: 'Tamam notes mein dhoondein (maslan SAS, peering, slot)',
+    found: (n: number) => `${n} jagah mila`,
+    intro: 'Shuruat',
+    print: 'Print / PDF save karein',
+    minutes: (n: number) => `${n} minute`,
+    onPage: 'Is page par',
+    boxes: { e: '💡 Misaal', t: '⚠️ Exam ka jaal', w: '📍 Portal mein kahan' },
+    check: 'Khud ko parkhein',
+    checkHint: 'Pehle apne lafzon mein jawab dein, phir dekhein.',
+    show: 'Jawab dekhein',
+    hide: 'Jawab chhupayen',
+    markRead: 'Maine yeh section parh liya',
+    markHint: 'Plan mein bhi is section ki skills par "Parh liya" lag jata hai.',
+    study: 'Is section ke sawal →',
+    practice: 'Is section ki practice',
+    cards: 'Yaad rakhne wali tables aur commands',
+    loading: 'Notes load ho rahe hain…',
   },
 
   cheat: {

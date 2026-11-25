@@ -220,6 +220,24 @@ labs.forEach((l, i) => {
   if (!l.cleanup.includes('az group delete -n $RG')) fail('cleanup must delete the resource group');
 });
 
+// Notes: every section has bilingual notes with headings, an example, a trap and self-check questions.
+let noteWords = 0;
+for (const d of [1, 2, 3, 4, 5]) {
+  const notes = JSON.parse(readFileSync(join(DATA, 'notes', `d${d}.json`), 'utf8'));
+  const wanted = sections.filter((s) => s.domain === d).map((s) => s.id);
+  if (Object.keys(notes).join() !== wanted.join()) errors.push(`notes d${d}: sections must be ${wanted}`);
+  for (const [id, blocks] of Object.entries(notes)) {
+    const fail = (msg) => errors.push(`notes ${id}: ${msg}`);
+    const texts = blocks.flatMap((b) => (b.k === 'l' ? b.items : b.k === 'q' ? [b.t, b.a] : [b.t]));
+    if (!blocks.every((b) => ['h', 'p', 'e', 't', 'w', 'l', 'q'].includes(b.k))) fail('unknown block');
+    if (!texts.length || !texts.every(pair)) fail('text must be [English, Roman]');
+    for (const [k, min] of [['h', 2], ['e', 1], ['t', 1], ['w', 1], ['q', 3]]) {
+      if (blocks.filter((b) => b.k === k).length < min) fail(`needs at least ${min} of "${k}"`);
+    }
+    noteWords += texts.reduce((n, x) => n + x[0].split(/\s+/).length, 0);
+  }
+}
+
 // The correct option must not be recognisable by its length, in English or in Roman Urdu.
 const MAX_STANDOUT_SHARE = 0.12;
 const romanById = Object.assign(
@@ -256,6 +274,7 @@ console.log('Roman Urdu translated:', romanDone, `cases ${Object.keys(romanCases
 console.log('Study sections (excluding case studies):', sectionSizes);
 console.log(`Cheat sheet: ${cheat.reduce((n, g) => n + g.cards.length, 0)} cards, ${cheatFacts} entries`);
 console.log(`Labs: ${labs.length}, practising ${labSkills.size} of ${allSkills.size} official skills`);
+console.log(`Notes: ${sections.length} sections, ${noteWords} words in English`);
 console.log('Correct option noticeably longest:', standout);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);

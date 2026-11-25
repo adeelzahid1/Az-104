@@ -75,6 +75,7 @@
       @for (s of d.sections; track s.id) {
         <h3>
           <a routerLink="/study" [queryParams]="{ s: s.id }">{{ s.id }} {{ s.name }}</a>
+          <a class="lab" routerLink="/notes" [queryParams]="{ s: s.id }">{{ t().nav.notes }}</a>
           @for (id of s.labs; track id) {
             <a class="lab" routerLink="/labs" [queryParams]="{ lab: id }">{{ tp.lab(id) }}</a>
           }

@@ -49,54 +49,9 @@
     <h2>{{ g.title }}</h2>
     <div class="cards">
       @for (c of g.cards; track c.id) {
-        <article class="card">
-          <h3>{{ c.title }}</h3>
-          @if (c.rows.length) {
-            <div class="scroll">
-              <table>
-                <thead>
-                  <tr>
-                    @for (h of c.head; track $index) {
-                      <th scope="col">{{ h }}</th>
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (row of c.rows; track $index) {
-                    <tr>
-                      @for (cell of row; track $index) {
-                        <td><app-rich-text [text]="cell" /></td>
-                      }
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-          @if (c.code.length) {
-            <dl>
-              @for (x of c.code; track x.command) {
-                <dt>{{ x.note }}</dt>
-                <dd>
-                  <code>{{ x.command }}</code>
-                </dd>
-              }
-            </dl>
-          }
-          @if (c.list.length) {
-            <ul>
-              @for (x of c.list; track $index) {
-                <li><app-rich-text [text]="x" /></li>
-              }
-            </ul>
-          }
-          <p class="links no-print">
-            <a routerLink="/study" [queryParams]="{ s: c.section }">{{ tc.practise(c.section) }}</a>
-            @if (c.link) {
-              <a [href]="c.link" target="_blank" rel="noopener">{{ tc.learn }}</a>
-            }
-          </p>
-        </article>
+        <app-cheat-card [card]="c">
+          <a routerLink="/study" [queryParams]="{ s: c.section }">{{ tc.practise(c.section) }}</a>
+        </app-cheat-card>
       }
     </div>
   </section>

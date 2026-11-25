@@ -26,6 +26,13 @@
   z-index: 5;
 }
 
+/* On a phone the menu takes several lines: it must not cover the page. */
+@media (max-width: 860px) {
+  .topbar {
+    position: static;
+  }
+}
+
 .topbar-inner {
   margin: 0 auto;
   padding: 10px clamp(16px, 3vw, 40px);

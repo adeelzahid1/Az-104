@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSign
 import { Router, RouterLink } from '@angular/router';
 import cheatsheetJson from '../../data/cheatsheet.json';
 import { Language } from '../../i18n/language';
-import { RichText } from '../../shared/rich-text';
+import { CheatCardView } from '../../shared/cheat-card';
 import { CheatGroup, filterGroups } from './cheatsheet-data';
 
 const GROUPS = cheatsheetJson as unknown as CheatGroup[];
@@ -11,7 +11,7 @@ const GROUPS = cheatsheetJson as unknown as CheatGroup[];
 @Component({
   selector: 'app-cheatsheet',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RichText],
+  imports: [RouterLink, CheatCardView],
   templateUrl: './cheatsheet.html',
   styleUrl: './cheatsheet.css',
 })

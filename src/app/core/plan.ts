@@ -196,6 +196,21 @@ export class Plan {
     });
   }
 
+  /** Sets or clears "read" for these skills. */
+  markRead(names: readonly string[], read: boolean): void {
+    this.update((s) => {
+      const skills = { ...s.skills };
+      for (const name of names) {
+        const marks = { ...skills[name] };
+        if (read) marks.read = true;
+        else delete marks.read;
+        if (Object.keys(marks).length) skills[name] = marks;
+        else delete skills[name];
+      }
+      return { ...s, skills };
+    });
+  }
+
   /** Ticks "lab done" for these skills. */
   markLab(names: readonly string[]): void {
     this.update((s) => {

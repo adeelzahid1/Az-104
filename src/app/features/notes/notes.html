@@ -1,0 +1,181 @@
+@let tx = t();
+@let tn = tx.notes;
+
+<div class="layout">
+  <nav class="side no-print" [attr.aria-label]="tn.sections">
+    @for (d of domains(); track d.id) {
+      <p class="side-head">{{ d.id }}. {{ tx.domains[d.id] }}</p>
+      @for (x of d.sections; track x.id) {
+        <a
+          routerLink="/notes"
+          [queryParams]="{ s: x.id }"
+          [class.active]="x.id === section().id"
+          [attr.aria-current]="x.id === section().id ? 'page' : null"
+          (click)="search.set('')"
+        >
+          <span class="num">{{ x.id }}</span>
+          <span>{{ x.name }}</span>
+          @if (x.read) {
+            <span class="tick" role="img" [attr.aria-label]="tn.readMark">✓</span>
+          }
+        </a>
+      }
+    }
+  </nav>
+
+  <div class="main">
+    <header class="top">
+      <div>
+        <h1>{{ tn.title }}</h1>
+        <p class="muted no-print">{{ tn.lead(read().size, total) }}</p>
+      </div>
+      <button type="button" class="btn no-print" (click)="print()">{{ tn.print }}</button>
+    </header>
+
+    <div class="tools no-print">
+      <input
+        #box
+        type="search"
+        [placeholder]="tn.search"
+        [attr.aria-label]="tn.search"
+        [value]="search()"
+        (input)="search.set(box.value)"
+      />
+      <label class="pick">
+        <span class="sr-only">{{ tn.sections }}</span>
+        <select #pick (change)="choose(pick.value)">
+          @for (d of domains(); track d.id) {
+            <optgroup [label]="d.id + '. ' + tx.domains[d.id]">
+              @for (x of d.sections; track x.id) {
+                <option [value]="x.id" [selected]="x.id === section().id">
+                  {{ x.read ? '✓ ' : '' }}{{ x.id }} {{ x.name }}
+                </option>
+              }
+            </optgroup>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (failed()) {
+      <app-load-error />
+    }
+    @if (term()) {
+      <p class="muted" role="status">{{ tn.found(hitCount()) }}</p>
+      @for (r of results(); track r.id) {
+        <section class="card">
+          <h2>{{ r.id }} {{ r.name }}</h2>
+          <ul class="hits">
+            @for (h of r.hits; track h.part) {
+              <li>
+                <a routerLink="/notes" [queryParams]="{ s: r.id, p: h.part || null }" (click)="search.set('')">{{
+                  h.title || tn.intro
+                }}</a>
+                <span>{{ h.excerpt }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    } @else if (note(); as n) {
+      <article class="card note">
+        <header>
+          <p class="eyebrow">{{ tx.domainN(section().domain) }} · {{ tn.minutes(n.minutes) }}</p>
+          <h2 class="name">{{ section().id }} {{ name() }}</h2>
+        </header>
+
+        <nav class="toc no-print" [attr.aria-label]="tn.onPage">
+          @for (p of n.parts; track $index) {
+            @if (p.title) {
+              <button type="button" class="link" (click)="goTo($index)">{{ p.title }}</button>
+            }
+          }
+          <button type="button" class="link" (click)="goTo(n.parts.length)">{{ tn.check }}</button>
+        </nav>
+
+        @for (p of n.parts; track $index) {
+          @if (p.title) {
+            <h3 [id]="'part-' + $index" tabindex="-1">{{ p.title }}</h3>
+          }
+          @for (b of p.blocks; track $index) {
+            @switch (b.kind) {
+              @case ('l') {
+                <ul>
+                  @for (x of b.items; track $index) {
+                    <li><app-rich-text [text]="x" /></li>
+                  }
+                </ul>
+              }
+              @case ('p') {
+                <p><app-rich-text [text]="b.text" /></p>
+              }
+              @default {
+                <div class="box {{ b.kind }}">
+                  <strong class="label">{{ tn.boxes[b.kind] }}</strong>
+                  <app-rich-text [text]="b.text" />
+                </div>
+              }
+            }
+          }
+        }
+
+        <h3 [id]="'part-' + n.parts.length" tabindex="-1">{{ tn.check }}</h3>
+        <p class="muted">{{ tn.checkHint }}</p>
+        <ol>
+          @for (c of n.checks; track $index) {
+            <li>
+              <app-rich-text [text]="c.question" />
+              @if (open().has($index)) {
+                <p class="answer"><app-rich-text [text]="c.answer" /></p>
+              }
+              <div class="no-print">
+                <button type="button" class="link" [attr.aria-expanded]="open().has($index)" (click)="toggle($index)">
+                  {{ open().has($index) ? tn.hide : tn.show }}
+                </button>
+              </div>
+            </li>
+          }
+        </ol>
+
+        <div class="after no-print">
+          <label class="done">
+            <input #readBox type="checkbox" [checked]="isRead()" (change)="setRead(readBox.checked)" />
+            {{ tn.markRead }}
+          </label>
+          <p class="muted">{{ tn.markHint }}</p>
+          <div class="row">
+            <a class="btn primary" routerLink="/study" [queryParams]="{ s: section().id }">{{ tn.study }}</a>
+            <a class="btn" routerLink="/practice" [queryParams]="{ domain: section().domain, section: section().id }">{{
+              tn.practice
+            }}</a>
+            @for (l of labs(); track l.id) {
+              <a class="btn" routerLink="/labs" [queryParams]="{ lab: l.id }">{{ l.id }} {{ l.title }}</a>
+            }
+          </div>
+        </div>
+      </article>
+
+      @if (cards().length) {
+        <section>
+          <h2>{{ tn.cards }}</h2>
+          <div class="cards">
+            @for (c of cards(); track c.id) {
+              <app-cheat-card [card]="c" />
+            }
+          </div>
+        </section>
+      }
+
+      <div class="steps no-print">
+        @if (prev(); as x) {
+          <a class="btn" routerLink="/notes" [queryParams]="{ s: x.id }">← {{ x.id }} {{ x.name }}</a>
+        }
+        @if (next(); as x) {
+          <a class="btn primary" routerLink="/notes" [queryParams]="{ s: x.id }">{{ x.id }} {{ x.name }} →</a>
+        }
+      </div>
+    } @else if (!failed()) {
+      <p class="card">{{ tn.loading }}</p>
+    }
+  </div>
+</div>

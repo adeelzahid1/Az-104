@@ -18,6 +18,7 @@ export class App {
   protected readonly links = [
     { path: '/', key: 'dashboard', exact: true },
     { path: '/plan', key: 'plan', exact: false },
+    { path: '/notes', key: 'notes', exact: false },
     { path: '/study', key: 'study', exact: false },
     { path: '/labs', key: 'labs', exact: false },
     { path: '/cheat-sheet', key: 'cheat', exact: false },
