@@ -17,7 +17,12 @@ export interface MockResult {
   t: number;
   total: number;
   correct: number;
+  /** Share of the points, 0 to 1; missing on exams from older versions. */
+  score?: number;
 }
+
+/** Share of the exam that was right, 0 to 1. */
+export const mockShare = (m: MockResult): number => m.score ?? m.correct / m.total;
 
 export interface Readiness {
   /** 0 to 100, or null while a domain has too few answers. */
@@ -72,7 +77,7 @@ export function readiness(
     .sort((a, b) => b.t - a.t)
     .slice(0, RECENT_MOCKS);
   const mockAverage = recent.length
-    ? recent.reduce((sum, m) => sum + m.correct / m.total, 0) / recent.length
+    ? recent.reduce((sum, m) => sum + mockShare(m), 0) / recent.length
     : null;
   if (rows.some((r) => r.value === null)) {
     return { overall: null, domains: rows, mocks: mockAverage === null ? null : percent(mockAverage) };

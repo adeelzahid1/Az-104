@@ -2696,5 +2696,14 @@
    "vm1 resize karta hai lekin band chhorta hai"
   ],
   "exp": "Stop-AzVM VM ko deallocate karta hai, script VM object mein size badalta hai, Update-AzVM lagu karta hai, aur Start-AzVM VM start karta hai. Kuch delete ya copy nahi hota. Pehle deallocate karne se woh sizes bhi milte hain jo mojooda hardware par nahi."
+ },
+ "D3-272": {
+  "ctx": "Ek web app Basic (B1) tier ke App Service plan par chalti hai. Naye versions baghair downtime release karne hain aur pichle version par jaldi wapas aana hai.",
+  "q": "Hal: Aap plan ko Premium v3 par scale up karte hain, naye versions auto swap wale staging slot mein deploy karte hain, aur wapsi ke liye dobara swap karte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Premium mein bhi slots hain. Auto swap mein app staging slot mein warm up ho kar baghair downtime production mein swap hoti hai. Pichla version phir staging slot mein hota hai, is liye ek aur swap usay jaldi wapas lata hai."
  }
 }

@@ -26,6 +26,8 @@ export interface Question {
   code?: string;
   /** Tests understanding of a concept rather than recall (the d*-concept.json files). */
   concept?: true;
+  /** Problem-solution set: the same problem (ctx) with different solutions, three per set. */
+  set?: string;
   /** Case study this question belongs to (see cases.json). Parts of a case are served together. */
   caseId?: string;
   /** mcq/multi options. */

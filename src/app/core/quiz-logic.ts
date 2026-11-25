@@ -26,7 +26,7 @@ export interface QuizConfig {
   subs?: string[];
 }
 
-/** Mock exams of at least this many questions include one case study, like the real exam. */
+/** Mock exams of at least this many questions include one case study and one problem-solution set. */
 export const CASE_STUDY_MIN_EXAM_SIZE = 30;
 
 export const domainOf = (q: Question): number => Number(q.id.charAt(1));
@@ -139,10 +139,19 @@ export function pickQuestions(
   config: QuizConfig,
   mistakes: ReadonlySet<string>,
   rnd: () => number = Math.random,
-  /** Questions answered before; practice by subtopic shows the others first. */
+  /** Questions answered before; mock exams and practice by subtopic take the others first. */
   answered: ReadonlySet<string> = new Set(),
 ): Question[] {
   const inDomains = (q: Question) => config.domains.includes(domainOf(q));
+  const newFirst = (list: Question[]) => [
+    ...list.filter((q) => !answered.has(q.id)),
+    ...list.filter((q) => answered.has(q.id)),
+  ];
+  /** A random group; one that has no answered question yet when there is one. */
+  const newestGroup = (groups: Question[][]): Question[] | undefined => {
+    const mixed = shuffle(groups, rnd);
+    return mixed.find((g) => g.every((q) => !answered.has(q.id))) ?? mixed[0];
+  };
   const diffOk = (q: Question) => config.diff === 0 || q.diff === config.diff;
 
   if (config.mistakesOnly) {
@@ -167,11 +176,7 @@ export function pickQuestions(
         subs.includes(q.sub) &&
         matchesType(q, config.type),
     );
-    const mixed = shuffle(matching, rnd);
-    return [...mixed.filter((q) => !answered.has(q.id)), ...mixed.filter((q) => answered.has(q.id))].slice(
-      0,
-      config.count,
-    );
+    return newFirst(shuffle(matching, rnd)).slice(0, config.count);
   }
 
   const units = toUnits(pool).filter((u) => u.every(inDomains));
@@ -188,18 +193,21 @@ export function pickQuestions(
     return fill(shuffle(candidates, rnd), config.count);
   }
 
-  const caseUnit =
-    config.type === 'all' && config.count >= CASE_STUDY_MIN_EXAM_SIZE
-      ? shuffle(caseUnits, rnd)[0]
-      : undefined;
-  const quotas = domainQuotas(config.domains, config.count - (caseUnit?.length ?? 0));
+  const large = config.type === 'all' && config.count >= CASE_STUDY_MIN_EXAM_SIZE;
+  const sets = new Map<string, Question[]>();
+  for (const q of singles) if (q.set) sets.set(q.set, [...(sets.get(q.set) ?? []), q]);
+  const set = (large && newestGroup([...sets.values()])) || [];
+  const caseUnit = (large && newestGroup(caseUnits)) || [];
+  const quotas = domainQuotas(config.domains, config.count - caseUnit.length - set.length);
   const picked = config.domains.flatMap((d) =>
-    shuffle(
-      singles.filter((q) => domainOf(q) === d),
-      rnd,
+    newFirst(
+      shuffle(
+        singles.filter((q) => !q.set && domainOf(q) === d),
+        rnd,
+      ),
     ).slice(0, quotas.get(d) ?? 0),
   );
-  return [...shuffle(picked, rnd), ...(caseUnit ?? [])];
+  return [...shuffle(picked, rnd), ...set, ...caseUnit];
 }
 
 /**

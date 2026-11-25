@@ -258,6 +258,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S3",
   "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
   "q": "Solution: You scale the plan up to Standard, create a staging slot, deploy to it and swap. Does this meet the goal?",
   "opts": [
@@ -276,6 +277,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S3",
   "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
   "q": "Solution: You keep the Basic plan, scale out to three instances and deploy to the app directly. Does this meet the goal?",
   "opts": [
@@ -370,5 +372,24 @@
   ],
   "exp": "Stop-AzVM deallocates the VM, the script changes the size in the VM object, Update-AzVM applies it, and Start-AzVM starts the VM. Nothing is deleted or copied. Deallocating first allows sizes that the current hardware doesn't offer.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/resize-vm"
+ },
+ {
+  "id": "D3-272",
+  "sub": "Deployment slots",
+  "type": "mcq",
+  "diff": 2,
+  "concept": true,
+  "set": "S3",
+  "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
+  "q": "Solution: You scale the plan up to Premium v3, deploy new versions to a staging slot with auto swap enabled, and swap again to go back. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   0
+  ],
+  "exp": "Premium supports slots as well. With auto swap, the app is warmed up in the staging slot and then swapped into production without downtime. The previous version is then in the staging slot, so another swap brings it back quickly.",
+  "link": "https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots"
  }
 ]

@@ -745,6 +745,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S1",
   "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
   "q": "Solution: You put a ReadOnly lock on the subscription. Does this meet the goal?",
   "opts": [
@@ -763,6 +764,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S1",
   "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
   "q": "Solution: You assign the built-in policy \"Allowed virtual machine size SKUs\" to the subscription with the approved sizes. Does this meet the goal?",
   "opts": [
@@ -781,6 +783,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S1",
   "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
   "q": "Solution: You create a custom role for the developers that allows VM creation and assign it on the subscription. Does this meet the goal?",
   "opts": [

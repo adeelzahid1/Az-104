@@ -13,7 +13,7 @@
     <div class="card stat">
       <p class="muted">{{ tr.correct }}</p>
       <p class="big">{{ r.correct }}<span>/{{ r.total }}</span></p>
-      <p class="muted">{{ pct(r.correct, r.total) }}%</p>
+      <p class="muted">{{ pct(r.correct, r.total) }}% · {{ tr.points(r.points, r.maxPoints) }}</p>
     </div>
     <div class="card stat">
       <p class="muted">{{ tr.time }}</p>
@@ -71,7 +71,12 @@
 
     @for (item of reviewItems(); track item.q.id) {
       <article class="card review-item">
-        <p class="muted q-num">{{ tr.questionLabel(item.n, item.q.id) }}</p>
+        <p class="muted q-num">
+          {{ tr.questionLabel(item.n, item.q.id) }} · {{ tr.points(item.points, item.maxPoints) }}
+          @if (item.ms > 0) {
+            · <span [class.weak]="item.ms > slowMs">{{ spent(item.ms) }}</span>
+          }
+        </p>
         @if (item.caseStudy; as cs) {
           <app-case-panel [caseStudy]="cs" [open]="false" />
         }

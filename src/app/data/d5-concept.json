@@ -302,6 +302,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S5",
   "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
   "q": "Solution: You create an alert processing rule scoped to RG-Prod that suppresses notifications on a monthly schedule. Does this meet the goal?",
   "opts": [
@@ -320,6 +321,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S5",
   "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
   "q": "Solution: You run a script that disables all alert rules in RG-Prod during the window and enables them afterwards. Does this meet the goal?",
   "opts": [
@@ -394,5 +396,24 @@
   ],
   "exp": "summarize counts errors for each computer and one-hour bucket, and the last line keeps only buckets with more than 5 errors. It doesn't pick a top five: that would need top 5 by Errors.",
   "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/get-started-queries"
+ },
+ {
+  "id": "D5-263",
+  "sub": "Alerts",
+  "type": "mcq",
+  "diff": 2,
+  "concept": true,
+  "set": "S5",
+  "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
+  "q": "Solution: You remove the action group from every alert rule in RG-Prod before the window and add it again afterwards. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "Removing action groups would stop the notifications, but it changes every alert rule, which the goal forbids, and it is easy to forget one afterwards. An alert processing rule with a schedule needs no change to the rules.",
+  "link": "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules"
  }
 ]

@@ -669,6 +669,7 @@
   "type": "mcq",
   "diff": 3,
   "concept": true,
+  "set": "S4",
   "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
   "q": "Solution: You add UDRs on both spoke subnets that send the other spoke's range to 10.0.1.4, and allow forwarded traffic on the peerings. Does this meet the goal?",
   "opts": [
@@ -687,6 +688,7 @@
   "type": "mcq",
   "diff": 3,
   "concept": true,
+  "set": "S4",
   "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
   "q": "Solution: You enable \"Allow gateway transit\" on the hub peerings and \"Use remote gateways\" on the spoke peerings. Does this meet the goal?",
   "opts": [
@@ -705,6 +707,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S4",
   "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
   "q": "Solution: You create a VNet peering directly between Spoke1 and Spoke2, in both directions. Their address spaces don't overlap. Does this meet the goal?",
   "opts": [

@@ -22,6 +22,8 @@ import { CASE_STUDY_MIN_EXAM_SIZE, TypeFilter, domainQuotas } from '../../core/q
 
 /** Every case study in the bank has this many questions (checked by the bank validation script). */
 const CASE_STUDY_PARTS = 5;
+/** So has every problem-solution set. */
+const SET_SIZE = 3;
 
 @Component({
   selector: 'app-setup',
@@ -86,7 +88,7 @@ export class Setup implements OnInit {
     this.mode() === 'exam' ? [10, 20, 40, 50, 60] : [5, 10, 20, 30, 50],
   );
 
-  /** Questions per domain id; id 0 is the case study section. */
+  /** Questions per domain id; id 0 is the case study, id -1 the problem-solution set. */
   protected readonly distribution = signal<{ id: number; n: number }[]>([]);
 
   ngOnInit(): void {
@@ -115,14 +117,14 @@ export class Setup implements OnInit {
   private updateDistribution(): void {
     if (this.mode() !== 'exam') return;
     const count = this.form.controls.count.value;
-    const caseSize = count >= CASE_STUDY_MIN_EXAM_SIZE ? CASE_STUDY_PARTS : 0;
-    const quotas = domainQuotas(this.selectedDomains(), count - caseSize);
+    const large = count >= CASE_STUDY_MIN_EXAM_SIZE;
+    const quotas = domainQuotas(this.selectedDomains(), large ? count - CASE_STUDY_PARTS - SET_SIZE : count);
     const rows = DOMAINS.filter((d) => quotas.has(d.id)).map((d) => ({
       id: d.id,
       n: quotas.get(d.id) ?? 0,
     }));
     this.distribution.set(
-      caseSize ? [...rows, { id: 0, n: caseSize }] : rows,
+      large ? [...rows, { id: -1, n: SET_SIZE }, { id: 0, n: CASE_STUDY_PARTS }] : rows,
     );
   }
 

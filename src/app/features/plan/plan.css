@@ -71,6 +71,21 @@
   overflow: hidden;
 }
 
+/* The line marks the 70% pass mark. */
+.meter.pass {
+  position: relative;
+}
+
+.meter.pass::after {
+  content: '';
+  position: absolute;
+  left: 70%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: var(--bad);
+}
+
 .meter span {
   display: block;
   height: 100%;

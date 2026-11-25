@@ -451,6 +451,7 @@
   "type": "mcq",
   "diff": 2,
   "concept": true,
+  "set": "S2",
   "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
   "q": "Solution: You enable the Microsoft.Storage service endpoint on the VMs' subnet and add a VNet rule to st1. Does this meet the goal?",
   "opts": [
@@ -469,6 +470,7 @@
   "type": "mcq",
   "diff": 3,
   "concept": true,
+  "set": "S2",
   "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
   "q": "Solution: You create a private endpoint for st1 in VNet1, link the privatelink DNS zone to VNet1, and forward on-premises DNS queries for the zone to a DNS Private Resolver. Does this meet the goal?",
   "opts": [
@@ -503,5 +505,24 @@
   ],
   "exp": "SubnetA has a VNet rule and the service endpoint. SubnetB has no rule, so its VMs are blocked. 203.0.113.25 is inside the allowed range 203.0.113.0/24. The trusted services exception lets services such as Azure Backup through. Callers still need authorization.",
   "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security"
+ },
+ {
+  "id": "D2-272",
+  "sub": "Private endpoints",
+  "type": "mcq",
+  "diff": 2,
+  "concept": true,
+  "set": "S2",
+  "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
+  "q": "Solution: You enable the firewall of st1 and add the public IP addresses of the VMs and of the on-premises router to its IP rules. Does this meet the goal?",
+  "opts": [
+   "Yes",
+   "No"
+  ],
+  "ans": [
+   1
+  ],
+  "exp": "IP rules only decide which public addresses may use the public endpoint of st1. The traffic still goes to a public IP address, and the goal asks for a private one. A private endpoint with DNS does that.",
+  "link": "https://learn.microsoft.com/en-us/azure/storage/common/storage-private-endpoints"
  }
 ]

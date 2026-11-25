@@ -21,6 +21,8 @@ export class Results {
 
   protected readonly result = this.quiz.result;
   protected readonly passMark = PASS_MARK;
+  /** Questions that took longer stand out: the exam allows about two minutes each. */
+  protected readonly slowMs = 180_000;
   protected readonly onlyWrong = signal(true);
   protected readonly busy = signal(false);
   protected readonly loadFailed = signal(false);
@@ -49,6 +51,11 @@ export class Results {
     if (!r || !r.total) return '';
     return this.t().results.perQuestion(Math.round(r.durationMs / r.total / 1000));
   });
+
+  /** Time spent on one question, e.g. "1 min 20 s". */
+  protected spent(ms: number): string {
+    return this.t().results.duration(Math.floor(ms / 60000), Math.floor((ms % 60000) / 1000));
+  }
 
   protected pct(correct: number, total: number): number {
     return total ? Math.round((correct / total) * 100) : 0;

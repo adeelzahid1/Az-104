@@ -82,9 +82,10 @@
         <p class="muted">{{ ts.perDomain }}</p>
         <ul>
           @for (d of distribution(); track d.id) {
-            <li><span>{{ d.id ? tx.domains[d.id] : ts.caseSection }}</span><strong>{{ d.n }}</strong></li>
+            <li><span>{{ d.id > 0 ? tx.domains[d.id] : d.id < 0 ? ts.setSection : ts.caseSection }}</span><strong>{{ d.n }}</strong></li>
           }
         </ul>
+        <p class="muted">{{ ts.partsNote }}</p>
       </div>
     }
   } @else {

@@ -5,6 +5,7 @@ import { join } from 'node:path';
 
 const DATA = join(import.meta.dirname, '..', 'src', 'app', 'data');
 const CASE_PARTS = 5;
+const SET_SIZE = 3;
 
 const cases = JSON.parse(readFileSync(join(DATA, 'cases.json'), 'utf8'));
 const caseIds = new Set(cases.map((c) => c.id));
@@ -86,6 +87,18 @@ for (const file of readdirSync(DATA).filter((f) => /^d\d-.+\.json$/.test(f))) {
     counts.byType[q.type] = (counts.byType[q.type] ?? 0) + 1;
     counts.byDomain[domain] = (counts.byDomain[domain] ?? 0) + 1;
   });
+}
+
+const setsById = new Map();
+for (const q of byId.values()) if (q.set) setsById.set(q.set, [...(setsById.get(q.set) ?? []), q]);
+for (const [id, qs] of setsById) {
+  if (qs.length !== SET_SIZE) errors.push(`set ${id}: has ${qs.length} questions, expected ${SET_SIZE}`);
+  if (new Set(qs.map((q) => q.ctx)).size !== 1 || !qs[0].ctx) errors.push(`set ${id}: questions must share the same ctx`);
+  if (new Set(qs.map((q) => q.id.charAt(1))).size !== 1) errors.push(`set ${id}: questions must be in one domain`);
+  if (qs.some((q) => q.type !== 'mcq' || q.opts.length !== 2)) errors.push(`set ${id}: questions must be Yes/No`);
+}
+for (const d of [1, 2, 3, 4, 5]) {
+  if (![...setsById.values()].some((qs) => qs[0].id.charAt(1) === String(d))) errors.push(`domain ${d}: has no problem-solution set`);
 }
 
 for (const [id, parts] of partsPerCase) {

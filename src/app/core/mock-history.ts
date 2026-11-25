@@ -11,7 +11,12 @@ function valid(value: unknown): MockResult[] {
       (m): m is MockResult =>
         Number.isFinite(m?.t) && Number.isInteger(m?.total) && m.total > 0 && Number.isInteger(m?.correct),
     )
-    .map(({ t, total, correct }) => ({ t, total, correct: Math.min(Math.max(correct, 0), total) }))
+    .map(({ t, total, correct, score }) => ({
+      t,
+      total,
+      correct: Math.min(Math.max(correct, 0), total),
+      ...(typeof score === 'number' && score >= 0 && score <= 1 ? { score } : {}),
+    }))
     .sort((a, b) => a.t - b.t)
     .slice(-KEEP);
 }

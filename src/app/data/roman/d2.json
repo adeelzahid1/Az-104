@@ -2702,5 +2702,14 @@
    "Azure Backup ko firewall rokta hai"
   ],
   "exp": "SubnetA ka VNet rule aur service endpoint hai. SubnetB ka rule nahi, is liye us ki VMs block hain. 203.0.113.25 allowed range 203.0.113.0/24 mein hai. Trusted services exception Azure Backup jaisi services ko guzarne deta hai. Caller ko authorization phir bhi chahiye."
+ },
+ "D2-272": {
+  "ctx": "VNet1 ki VMs aur on-premises servers (site-to-site VPN se jure) ko storage account st1 tak private IP par pahunchna hai.",
+  "q": "Hal: Aap st1 ka firewall on karte hain aur VMs aur on-premises router ke public IP addresses us ke IP rules mein dalte hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "IP rules sirf tay karte hain ke kaun se public addresses st1 ka public endpoint use karein. Traffic phir bhi public IP par jata hai, aur maqsad mein private IP mangi gayi hai. DNS ke sath private endpoint yeh karta hai."
  }
 }

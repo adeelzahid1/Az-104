@@ -54,7 +54,7 @@
       @for (m of mocks(); track m.t) {
         <li>
           <span>{{ m.day }} · {{ tp.mockSize(m.correct, m.total) }}</span>
-          <span class="meter" aria-hidden="true"><span [style.width.%]="m.pct"></span></span>
+          <span class="meter pass" aria-hidden="true"><span [style.width.%]="m.pct"></span></span>
           <strong>{{ m.pct }}%</strong>
         </li>
       }

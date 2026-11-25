@@ -6,6 +6,7 @@ import {
   computed,
   effect,
   inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
@@ -14,11 +15,12 @@ import { Answer, domainOf, isAnswered } from '../../core/quiz-logic';
 import { CasePanel } from '../../shared/case-panel';
 import { QuestionView } from '../../shared/question-view';
 import { Language } from '../../i18n/language';
+import { ExamReview, ReviewRow } from './exam-review';
 
 @Component({
   selector: 'app-quiz',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionView, CasePanel, RouterLink],
+  imports: [QuestionView, CasePanel, ExamReview, RouterLink],
   templateUrl: './quiz.html',
   styleUrl: './quiz.css',
 })
@@ -72,6 +74,31 @@ export class Quiz {
     const t = this.t();
     return `${t.domainN(domainOf(q))} · ${q.sub} · ${t.diff[q.diff]}`;
   });
+  protected readonly part = computed(() => {
+    const s = this.session();
+    return s ? s.parts[s.part] : null;
+  });
+  protected readonly partNumber = computed(() => (this.session()?.part ?? 0) + 1);
+  protected readonly partCount = computed(() => this.session()?.parts.length ?? 1);
+  protected readonly lastPart = computed(() => this.partNumber() === this.partCount());
+  protected readonly atEnd = computed(() => this.index() === (this.part()?.end ?? 1) - 1);
+  protected readonly flagged = computed(() => {
+    const s = this.session();
+    return s ? s.flagged[s.current] : false;
+  });
+  /** The review screen of the current part is open. */
+  protected readonly reviewing = linkedSignal({ source: this.partNumber, computation: () => false });
+  protected readonly confirmSubmit = signal(false);
+  /** Questions of the current part. */
+  protected readonly rows = computed<ReviewRow[]>(() => {
+    const s = this.session();
+    const p = this.part();
+    if (!s || !p) return [];
+    return s.questions
+      .map((q, index) => ({ index, answered: isAnswered(q, s.answers[index]), flagged: s.flagged[index] }))
+      .slice(p.start, p.end);
+  });
+
   protected readonly remainingMs = computed(() => {
     const deadline = this.session()?.deadline;
     return deadline ? Math.max(0, deadline - this.now()) : null;
@@ -109,7 +136,31 @@ export class Quiz {
   }
 
   protected goTo(i: number): void {
+    this.reviewing.set(false);
+    this.confirmSubmit.set(false);
     this.quiz.goTo(i);
+  }
+
+  protected toggleFlag(): void {
+    this.quiz.toggleFlag();
+  }
+
+  /** Exam: the next question, the review screen, or the next part. */
+  protected next(): void {
+    if (!this.atEnd()) this.goTo(this.index() + 1);
+    else if (this.part()?.kind === 'series' && !this.lastPart()) this.proceed();
+    else this.reviewing.set(true);
+  }
+
+  /** Leaves the current part: opens the next one, or submits the exam. */
+  protected proceed(): void {
+    if (this.lastPart()) this.finish();
+    else this.quiz.nextPart();
+  }
+
+  protected submitNow(): void {
+    if (this.confirmSubmit()) this.finish();
+    else this.confirmSubmit.set(true);
   }
 
   protected finish(): void {

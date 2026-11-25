@@ -2612,5 +2612,14 @@
    "Woh ghante jin mein koi error nahi hua"
   ],
   "exp": "summarize har computer aur ek ghante ke hisse ke errors ginta hai, aur aakhri line sirf 5 se zyada errors wale hisse rakhti hai. Yeh top five nahi chunta: us ke liye top 5 by Errors chahiye."
+ },
+ "D5-263": {
+  "ctx": "Mahana maintenance window mein RG-Prod ki tamam VMs ke alert notifications band hon. Alerts record hote rahein, aur koi alert rule na badle.",
+  "q": "Hal: Aap window se pehle RG-Prod ke har alert rule se action group hatate hain aur baad mein wapas lagate hain. Kya yeh maqsad poora karta hai?",
+  "opts": [
+   "Haan",
+   "Nahi"
+  ],
+  "exp": "Action groups hatane se notifications to ruk jayenge, lekin har alert rule badalta hai, jo mana hai, aur baad mein koi rule bhoolna aasan hai. Schedule wale alert processing rule mein rules badalne ki zaroorat nahi."
  }
 }

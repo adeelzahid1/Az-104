@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { CaseStudy, DOMAINS, Question } from '../data/schema';
+import { ExamPart, earnedPoints, examParts, maxPoints } from './exam';
 import { MockHistory } from './mock-history';
 import { Progress } from './progress';
 import { QuestionBank } from './question-bank';
@@ -22,6 +23,15 @@ export interface Session {
   /** Practice mode: answer already checked (feedback shown and recorded). */
   checked: boolean[];
   current: number;
+  /** Exam parts; practice has one. */
+  parts: ExamPart[];
+  part: number;
+  /** Marked for review. */
+  flagged: boolean[];
+  /** Milliseconds spent on each question so far. */
+  times: number[];
+  /** When the current question was opened. */
+  enteredAt: number;
   startedAt: number;
   deadline: number | null;
   finishedAt: number | null;
@@ -31,17 +41,33 @@ export interface QuizResult {
   mode: QuizConfig['mode'];
   total: number;
   correct: number;
-  /** Simple percentage scaled to 1000; the real exam uses a non-linear scale. */
+  /** Points with partial credit. */
+  points: number;
+  maxPoints: number;
+  /** Share of the points scaled to 1000; the real exam uses a non-linear scale. */
   score: number;
   passed: boolean;
   durationMs: number;
   byDomain: { id: number; name: string; total: number; correct: number }[];
-  items: { q: Question; answer: Answer | null; correct: boolean }[];
+  items: {
+    q: Question;
+    answer: Answer | null;
+    correct: boolean;
+    points: number;
+    maxPoints: number;
+    ms: number;
+  }[];
 }
 
 /** The real exam allows roughly 100 minutes for about 50 questions. */
 const SECONDS_PER_QUESTION = 120;
 export const PASS_MARK = 700;
+
+/** Adds the time since the current question was opened to that question. */
+function withTime(s: Session, now = Date.now()): Session {
+  const spent = Math.max(0, now - s.enteredAt);
+  return { ...s, enteredAt: now, times: s.times.map((t, i) => (i === s.current ? t + spent : t)) };
+}
 
 @Injectable({ providedIn: 'root' })
 export class QuizService {
@@ -69,9 +95,14 @@ export class QuizService {
       q,
       answer: s.answers[i],
       correct: isCorrect(q, s.answers[i]),
+      points: earnedPoints(q, s.answers[i]),
+      maxPoints: maxPoints(q),
+      ms: s.times[i],
     }));
     const correct = items.filter((i) => i.correct).length;
-    const score = Math.round((correct / items.length) * 1000);
+    const points = items.reduce((sum, i) => sum + i.points, 0);
+    const max = items.reduce((sum, i) => sum + i.maxPoints, 0);
+    const score = Math.round((points / max) * 1000);
     const byDomain = DOMAINS.map((d) => {
       const inDomain = items.filter((i) => domainOf(i.q) === d.id);
       return {
@@ -85,6 +116,8 @@ export class QuizService {
       mode: s.config.mode,
       total: items.length,
       correct,
+      points,
+      maxPoints: max,
       score,
       passed: score >= PASS_MARK,
       durationMs: s.finishedAt - s.startedAt,
@@ -116,6 +149,14 @@ export class QuizService {
       answers: questions.map((q) => initialAnswer(q)),
       checked: questions.map(() => false),
       current: 0,
+      parts:
+        config.mode === 'exam'
+          ? examParts(questions)
+          : [{ kind: 'main', start: 0, end: questions.length }],
+      part: 0,
+      flagged: questions.map(() => false),
+      times: questions.map(() => 0),
+      enteredAt: now,
       startedAt: now,
       deadline:
         config.mode === 'exam' && config.timed
@@ -136,7 +177,29 @@ export class QuizService {
   }
 
   goTo(index: number): void {
-    this.patch((s) => ({ ...s, current: Math.min(Math.max(index, 0), s.questions.length - 1) }));
+    this.patch((s) => {
+      const part = s.parts[s.part];
+      let next = Math.min(Math.max(index, part.start), part.end - 1);
+      // In a series there is no way back.
+      if (part.kind === 'series') next = Math.max(next, s.current);
+      return { ...withTime(s), current: next };
+    });
+  }
+
+  /** Closes the current exam part for good and opens the next one. */
+  nextPart(): void {
+    this.patch((s) => {
+      const next = s.parts[s.part + 1];
+      return next ? { ...withTime(s), part: s.part + 1, current: next.start } : s;
+    });
+  }
+
+  /** Marks the current question for review, or removes the mark. */
+  toggleFlag(): void {
+    this.patch((s) => ({
+      ...s,
+      flagged: s.flagged.map((f, i) => (i === s.current ? !f : f)),
+    }));
   }
 
   /** Practice mode: reveal the answer for the current question and record the attempt. */
@@ -162,12 +225,14 @@ export class QuizService {
     this.progress.record(unrecorded.map((x) => ({ q: x.q, correct: isCorrect(x.q, x.a) })));
     // When the time ran out while the page was closed, the exam ended at the deadline.
     const finishedAt = Math.min(Date.now(), s.deadline ?? Infinity);
-    this.patch((cur) => ({ ...cur, finishedAt }));
+    this.patch((cur) => ({ ...withTime(cur, finishedAt), finishedAt }));
     const answered = s.questions.filter((q, i) => isAnswered(q, s.answers[i])).length;
     // An exam that was mostly skipped says nothing about the learner.
     if (s.config.mode === 'exam' && answered * 2 >= s.questions.length) {
-      const correct = s.questions.filter((q, i) => isCorrect(q, s.answers[i])).length;
-      this.mocks.add({ t: finishedAt, total: s.questions.length, correct });
+      const r = this.result();
+      if (r) {
+        this.mocks.add({ t: finishedAt, total: r.total, correct: r.correct, score: r.points / r.maxPoints });
+      }
     }
   }
 

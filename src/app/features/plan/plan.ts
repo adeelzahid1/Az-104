@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MockHistory } from '../../core/mock-history';
 import { Plan as PlanService, SkillMarks } from '../../core/plan';
 import { Minutes, dayKey } from '../../core/plan-logic';
-import { MIN_MOCK } from '../../core/readiness';
+import { MIN_MOCK, mockShare } from '../../core/readiness';
 import { SECTIONS } from '../../core/sections';
 import { DOMAINS } from '../../data/schema';
 import { Language } from '../../i18n/language';
@@ -39,7 +39,7 @@ export class Plan {
       .results()
       .slice(-SHOWN_MOCKS)
       .reverse()
-      .map((m) => ({ ...m, day: dayKey(m.t), pct: Math.round((m.correct / m.total) * 100) })),
+      .map((m) => ({ ...m, day: dayKey(m.t), pct: Math.round(mockShare(m) * 100) })),
   );
 
   protected readonly checklist = computed(() => {

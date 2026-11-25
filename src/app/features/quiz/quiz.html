@@ -22,8 +22,14 @@
   <div class="quiz-head">
     <div>
       <p class="eyebrow">{{ isExam() ? tq.mock : tq.practice }}</p>
-      <h1>{{ tq.questionN }} {{ index() + 1 }} <span class="muted">{{ tq.of(total()) }}</span></h1>
-      <p class="muted meta">{{ meta() }}</p>
+      <h1>
+        {{ tq.questionN }} {{ index() + 1 }} <span class="muted">{{ tq.of(total()) }}</span>
+      </h1>
+      @if (!isExam()) {
+        <p class="muted meta">{{ meta() }}</p>
+      } @else if (partCount() > 1) {
+        <p class="muted meta">{{ t().exam.part(partNumber(), partCount()) }}</p>
+      }
     </div>
     @if (remainingLabel()) {
       <div class="timer" [class.low]="lowTime()" role="timer" [attr.aria-label]="tq.timeLeft">
@@ -36,71 +42,116 @@
     <span [style.width.%]="((index() + 1) / total()) * 100"></span>
   </div>
 
-  @if (caseStudy(); as cs) {
-    <app-case-panel [caseStudy]="cs" [partLabel]="casePart()" />
-  }
-
-  @if (question(); as q) {
-    <section class="card">
-      <app-question-view
-        [question]="q"
-        [answer]="currentAnswer()"
-        [reveal]="!isExam() && checked()"
-        (answerChange)="onAnswer($event)"
-      />
-    </section>
-  }
-
-  <div class="actions">
-    <button type="button" class="btn" [disabled]="index() === 0" (click)="goTo(index() - 1)">
-      {{ tq.previous }}
-    </button>
-
-    @if (!isExam() && !checked()) {
-      <button type="button" class="btn primary" [disabled]="!canCheck()" (click)="check()">
-        {{ tq.check }}
-      </button>
-    }
-
-    @if (index() < total() - 1) {
-      <button
-        type="button"
-        class="btn"
-        [class.primary]="isExam() || checked()"
-        (click)="goTo(index() + 1)"
-      >
-        {{ tq.next }}
-      </button>
-    } @else {
-      <button type="button" class="btn primary" (click)="finish()">
-        {{ isExam() ? tq.submitExam : tq.finish }}
-      </button>
-    }
-  </div>
-
-  @if (isExam()) {
-    <section class="palette-wrap">
-      <p class="muted">
-        {{ tq.answeredOf(answeredCount(), total()) }}
-      </p>
-      <nav class="palette" [attr.aria-label]="tq.navigator">
-        @for (done of answered(); track $index) {
-          <button
-            type="button"
-            [class.done]="done"
-            [class.current]="$index === index()"
-            [attr.aria-current]="$index === index() ? 'step' : null"
-            (click)="goTo($index)"
-          >
-            {{ $index + 1 }}
-          </button>
-        }
-      </nav>
-      <button type="button" class="btn finish-early" (click)="finish()">{{ tq.submitNow }}</button>
-    </section>
+  @if (isExam() && reviewing()) {
+    <app-exam-review
+      [rows]="rows()"
+      [last]="lastPart()"
+      (jump)="goTo($event)"
+      (proceed)="proceed()"
+    />
   } @else {
-    <p class="muted end-link">
-      <button type="button" class="link" (click)="finish()">{{ tq.endPractice }}</button>
-    </p>
+    @if (isExam() && part()?.kind === 'series') {
+      <p class="notice">{{ t().exam.seriesNote }}</p>
+    } @else if (isExam() && part()?.kind === 'case') {
+      <p class="notice">{{ t().exam.caseNote }}</p>
+    }
+    @if (caseStudy(); as cs) {
+      <app-case-panel [caseStudy]="cs" [partLabel]="casePart()" />
+    }
+
+    @if (question(); as q) {
+      <section class="card">
+        <app-question-view
+          [question]="q"
+          [answer]="currentAnswer()"
+          [reveal]="!isExam() && checked()"
+          (answerChange)="onAnswer($event)"
+        />
+      </section>
+    }
+
+    <div class="actions">
+      @if (part()?.kind !== 'series') {
+        <button
+          type="button"
+          class="btn"
+          [disabled]="index() === part()?.start"
+          (click)="goTo(index() - 1)"
+        >
+          {{ tq.previous }}
+        </button>
+      }
+
+      @if (isExam() && part()?.kind !== 'series') {
+        <button type="button" class="btn" [attr.aria-pressed]="flagged()" (click)="toggleFlag()">
+          {{ flagged() ? '⚑ ' + t().exam.unflag : '⚐ ' + t().exam.flag }}
+        </button>
+      }
+
+      @if (!isExam() && !checked()) {
+        <button type="button" class="btn primary" [disabled]="!canCheck()" (click)="check()">
+          {{ tq.check }}
+        </button>
+      }
+
+      @if (isExam()) {
+        <button type="button" class="btn primary" (click)="next()">
+          {{
+            atEnd()
+              ? part()?.kind === 'series' && !lastPart()
+                ? t().exam.nextPart
+                : t().exam.toReview
+              : tq.next
+          }}
+        </button>
+      } @else if (index() < total() - 1) {
+        <button type="button" class="btn" [class.primary]="checked()" (click)="goTo(index() + 1)">
+          {{ tq.next }}
+        </button>
+      } @else {
+        <button type="button" class="btn primary" (click)="finish()">
+          {{ tq.finish }}
+        </button>
+      }
+    </div>
+
+    @if (isExam()) {
+      <section class="palette-wrap">
+        @if (part()?.kind !== 'series') {
+          <p class="muted">
+            {{ tq.answeredOf(answeredCount(), total()) }}
+          </p>
+          <nav class="palette" [attr.aria-label]="tq.navigator">
+            @for (r of rows(); track r.index) {
+              <button
+                type="button"
+                [class.done]="r.answered"
+                [class.current]="r.index === index()"
+                [attr.aria-current]="r.index === index() ? 'step' : null"
+                [attr.aria-label]="r.flagged ? r.index + 1 + ' ' + t().exam.flagged : null"
+                (click)="goTo(r.index)"
+              >
+                {{ r.index + 1 }}{{ r.flagged ? '⚑' : '' }}
+              </button>
+            }
+          </nav>
+        }
+        @if (confirmSubmit()) {
+          <p>{{ t().exam.confirm(total() - answeredCount()) }}</p>
+        }
+        <button
+          type="button"
+          class="btn finish-early"
+          [class.danger]="confirmSubmit()"
+          (click)="submitNow()"
+        >
+          {{ confirmSubmit() ? t().exam.confirmYes : tq.submitNow }}
+        </button>
+      </section>
+    } @else {
+      <p class="muted end-link">
+        <button type="button" class="link" (click)="finish()">{{ tq.endPractice }}</button>
+      </p>
+    }
   }
 }
