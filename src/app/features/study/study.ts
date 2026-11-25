@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,10 +17,12 @@ import { QuestionBank } from '../../core/question-bank';
 import { domainOf, shuffleOptions } from '../../core/quiz-logic';
 import { Rating, nextInterval } from '../../core/srs';
 import { SECTIONS, sectionOf } from '../../core/sections';
+import { Shortcut, registerShortcuts } from '../../core/shortcuts';
 import { StudyProgress } from '../../core/study-progress';
 import { Language } from '../../i18n/language';
 import { RomanContent } from '../../i18n/roman-content';
 import { CasePanel } from '../../shared/case-panel';
+import { FullScreenButton } from '../../shared/full-screen-button';
 import { LoadError } from '../../shared/load-error';
 import { QuestionView } from '../../shared/question-view';
 
@@ -39,7 +42,7 @@ const asFilter = (value: string | undefined): Filter =>
 @Component({
   selector: 'app-study',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionView, CasePanel, LoadError, RouterLink],
+  imports: [QuestionView, CasePanel, FullScreenButton, LoadError, RouterLink],
   templateUrl: './study.html',
   styleUrl: './study.css',
 })
@@ -57,6 +60,7 @@ export class Study {
   private readonly progress = inject(Progress);
   private readonly roman = inject(RomanContent);
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
   private readonly language = inject(Language);
   protected readonly study = inject(StudyProgress);
 
@@ -193,6 +197,9 @@ export class Study {
   protected readonly pos = linkedSignal({ source: this.view, computation: () => 0 });
   protected readonly flipped = linkedSignal({ source: this.pos, computation: () => false });
 
+  /** Study list: the question the keyboard acts on. */
+  protected readonly current = linkedSignal({ source: this.view, computation: () => -1 });
+
   private readonly byId = computed(() => new Map((this.all() ?? []).map((q) => [q.id, q])));
   protected readonly cardQuestion = computed(() => this.byId().get(this.queue()[this.pos()] ?? '') ?? null);
   protected readonly cardCase = computed(() => {
@@ -201,6 +208,10 @@ export class Study {
   });
 
   constructor() {
+    registerShortcuts(
+      () => (this.mode() === 'cards' ? this.t().study.cards : this.t().study.list),
+      () => (this.mode() === 'cards' ? this.cardKeys() : this.listKeys()),
+    );
     afterNextRender(async () => {
       try {
         const [questions, cases] = await Promise.all([
@@ -213,6 +224,99 @@ export class Study {
         this.loadFailed.set(true);
       }
     });
+  }
+
+  private cardKeys(): Shortcut[] {
+    const ts = this.t().study;
+    const tk = this.t().keys;
+    const open = () => !!this.cardQuestion();
+    const rating = (keys: string[], label: string, value: Rating): Shortcut => ({
+      keys,
+      label,
+      run: () => this.rate(this.cardQuestion()?.id ?? '', value),
+      when: () => open() && this.flipped(),
+    });
+    return [
+      { keys: ['ArrowRight'], label: tk.nextCard, run: () => this.step(1), when: open },
+      { keys: ['ArrowLeft'], label: tk.prevCard, run: () => this.step(-1), when: () => this.pos() > 0 },
+      { keys: ['Space', 'Enter'], label: tk.flip, run: () => this.flipped.update((on) => !on), when: open },
+      rating(['1'], ts.again, 'again'),
+      rating(['2'], ts.hard, 'hard'),
+      rating(['3'], ts.good, 'good'),
+      { keys: ['b'], label: ts.bookmark, run: () => this.study.toggleBookmark(this.cardQuestion()?.id ?? ''), when: open },
+      { keys: ['u'], label: ts.understood, run: () => this.study.toggleUnderstood(this.cardQuestion()?.id ?? ''), when: open },
+      { keys: ['s'], label: tk.shuffle, run: () => this.shuffle(), when: () => this.queue().length > 1 },
+      { keys: ['r'], label: ts.restart, run: () => this.restart() },
+      { keys: ['v'], label: ts.list, run: () => this.setMode('list') },
+    ];
+  }
+
+  private listKeys(): Shortcut[] {
+    const ts = this.t().study;
+    const tk = this.t().keys;
+    const onCurrent = (act: (id: string) => void) => () => {
+      const i = Math.max(0, this.current());
+      const q = this.filtered()[i];
+      if (!q) return;
+      if (this.current() < 0) this.move(1);
+      act(q.id);
+    };
+    const any = () => this.filtered().length > 0;
+    return [
+      { keys: ['ArrowRight', 'j'], label: tk.nextQuestion, run: () => this.move(1), when: any },
+      { keys: ['ArrowLeft', 'k'], label: tk.prevQuestion, run: () => this.move(-1), when: any },
+      { keys: ['Enter', 'a'], label: tk.answerToggle, run: onCurrent((id) => this.toggleReveal(id)), when: any },
+      { keys: ['b'], label: ts.bookmark, run: onCurrent((id) => this.study.toggleBookmark(id)), when: any },
+      { keys: ['u'], label: ts.understood, run: onCurrent((id) => this.study.toggleUnderstood(id)), when: any },
+      { keys: ['v'], label: ts.cards, run: () => this.setMode('cards') },
+    ];
+  }
+
+  /** Study list: moves to another question and brings it into view. */
+  private move(delta: 1 | -1): void {
+    const next = Math.min(this.filtered().length - 1, Math.max(0, this.current() + delta));
+    this.current.set(next);
+    if (next >= this.limit()) this.limit.set(next + PAGE);
+    const id = this.filtered()[next]?.id;
+    this.document.defaultView?.setTimeout(() => {
+      const card = this.document.getElementById(`q-${id}`);
+      card?.focus({ preventScroll: true });
+      card?.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  /** Flashcards: the next or previous card, without rating it. */
+  protected step(delta: 1 | -1): void {
+    this.pos.update((p) => Math.min(this.queue().length, Math.max(0, p + delta)));
+  }
+
+  protected shuffle(): void {
+    const ids = [...this.queue()];
+    for (let i = ids.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+    }
+    this.queue.set(ids);
+    this.pos.set(0);
+    this.flipped.set(false);
+  }
+
+  private swipeStart: { x: number; y: number } | null = null;
+
+  protected touchStart(event: TouchEvent): void {
+    const t = event.changedTouches[0];
+    const scrolls = event.target instanceof Element && event.target.closest('pre, select, .scroll');
+    this.swipeStart = event.touches.length === 1 && !scrolls ? { x: t.clientX, y: t.clientY } : null;
+  }
+
+  /** A swipe to the left shows the next card, to the right the previous one. */
+  protected touchEnd(event: TouchEvent): void {
+    const start = this.swipeStart;
+    this.swipeStart = null;
+    if (!start) return;
+    const t = event.changedTouches[0];
+    const dx = t.clientX - start.x;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > 2 * Math.abs(t.clientY - start.y)) this.step(dx < 0 ? 1 : -1);
   }
 
   protected sectionIdOf(q: Question): string {
@@ -288,6 +392,7 @@ export class Study {
     this.now.set(Date.now());
     this.queue.set(this.filtered().map((q) => q.id));
     this.pos.set(0);
+    this.flipped.set(false);
   }
 
   /** Text searched for a question, in the language currently shown. */

@@ -22,7 +22,7 @@
   <div class="quiz-head">
     <div>
       <p class="eyebrow">{{ isExam() ? tq.mock : tq.practice }}</p>
-      <h1>
+      <h1 #heading tabindex="-1">
         {{ tq.questionN }} {{ index() + 1 }} <span class="muted">{{ tq.of(total()) }}</span>
       </h1>
       @if (!isExam()) {
@@ -31,11 +31,14 @@
         <p class="muted meta">{{ t().exam.part(partNumber(), partCount()) }}</p>
       }
     </div>
-    @if (remainingLabel()) {
-      <div class="timer" [class.low]="lowTime()" role="timer" [attr.aria-label]="tq.timeLeft">
-        {{ remainingLabel() }}
-      </div>
-    }
+    <div class="head-right">
+      <app-full-screen-button class="full-hide" />
+      @if (remainingLabel()) {
+        <div class="timer" [class.low]="lowTime()" role="timer" [attr.aria-label]="tq.timeLeft">
+          {{ remainingLabel() }}
+        </div>
+      }
+    </div>
   </div>
 
   <div class="progress-bar" aria-hidden="true">
@@ -65,11 +68,13 @@
           [question]="q"
           [answer]="currentAnswer()"
           [reveal]="!isExam() && checked()"
+          [keys]="true"
           (answerChange)="onAnswer($event)"
         />
       </section>
     }
 
+    <p class="muted hints keys">{{ t().keys.quizHint }}</p>
     <div class="actions">
       @if (part()?.kind !== 'series') {
         <button
@@ -90,7 +95,7 @@
 
       @if (!isExam() && !checked()) {
         <button type="button" class="btn primary" [disabled]="!canCheck()" (click)="check()">
-          {{ tq.check }}
+          {{ tq.check }} <kbd>Enter</kbd>
         </button>
       }
 

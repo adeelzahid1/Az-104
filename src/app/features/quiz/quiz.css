@@ -9,6 +9,14 @@
   margin: 0;
 }
 
+.head-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .meta {
   margin: 4px 0 0;
   font-size: 0.9rem;

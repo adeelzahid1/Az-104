@@ -97,14 +97,16 @@
       </select>
     </label>
 
-    <h1>{{ title() }}</h1>
+    <h1 [class.full-hide]="mode() === 'cards'">{{ title() }}</h1>
     @if (skills().length) {
-      <p><a routerLink="/notes" [queryParams]="{ s: selected() }">📖 {{ ts.toNotes }}</a></p>
+      <p [class.full-hide]="mode() === 'cards'"><a routerLink="/notes" [queryParams]="{ s: selected() }">📖 {{ ts.toNotes }}</a></p>
     }
-    <p class="howto"><strong>{{ ts.howToLabel }}</strong> {{ ts.howTo }}</p>
+    @if (mode() === 'list') {
+      <p class="howto full-hide"><strong>{{ ts.howToLabel }}</strong> {{ ts.howTo }}</p>
+    }
 
     @if (skills().length) {
-      <details class="card skills">
+      <details class="card skills" [class.full-hide]="mode() === 'cards'">
         <summary>{{ ts.skillsTitle }}</summary>
         <ul>
           @for (skill of skills(); track skill) {
@@ -114,7 +116,7 @@
       </details>
     }
 
-    <div class="toolbar">
+    <div class="toolbar" [class.full-hide]="mode() === 'cards'">
       <input
         #box
         type="search"
@@ -157,13 +159,19 @@
       <p class="card">{{ ts.loading }}</p>
     } @else if (mode() === 'list') {
       <p class="muted count">{{ ts.count(visible().length, filtered().length) }}</p>
-      @for (item of visible(); track item.q.id) {
+      @for (item of visible(); track item.q.id; let i = $index) {
         @let q = item.q;
         @let shown = revealed().has(q.id);
         @if (item.caseStudy; as cs) {
           <app-case-panel [caseStudy]="cs" [open]="false" />
         }
-        <article class="card qcard" [class.done]="study.isUnderstood(q.id)">
+        <article
+          class="card qcard"
+          [id]="'q-' + q.id"
+          tabindex="-1"
+          [class.done]="study.isUnderstood(q.id)"
+          [class.current]="current() === i"
+        >
           <header class="qhead">
             <span class="muted small">{{ sectionIdOf(q) === cases ? 'C' : sectionIdOf(q) }} · {{ q.id }} · {{ ts.levels[q.diff] }}</span>
             <button
@@ -197,11 +205,15 @@
       }
     } @else {
       @if (cardQuestion(); as q) {
-        <p class="muted count">{{ ts.cardOf(pos() + 1, queue().length) }}</p>
+        <div class="qhead full-row">
+          <p class="muted count" role="status">{{ ts.cardOf(pos() + 1, queue().length) }}</p>
+          <app-full-screen-button class="full-hide" />
+        </div>
+        <progress class="bar" [value]="pos() + 1" [max]="queue().length" aria-hidden="true"></progress>
         @if (cardCase(); as cs) {
           <app-case-panel [caseStudy]="cs" [open]="false" />
         }
-        <article class="card qcard flash">
+        <article class="card qcard flash" (touchstart)="touchStart($event)" (touchend)="touchEnd($event)">
           <header class="qhead">
             <span class="muted small">{{ q.id }} · {{ ts.levels[q.diff] }}</span>
             <button
@@ -218,22 +230,30 @@
           <app-question-view [question]="q" [answer]="flipped() ? q.ans : null" [reveal]="flipped()" [study]="true" />
           <footer class="qfoot">
             @if (!flipped()) {
-              <button type="button" class="btn primary" (click)="flipped.set(true)">{{ ts.showAnswer }}</button>
+              <button type="button" class="btn primary" (click)="flipped.set(true)">
+                {{ ts.showAnswer }} <kbd>Space</kbd>
+              </button>
             } @else {
               <div class="rates">
                 <button type="button" class="btn rate again" (click)="rate(q.id, 'again')">
-                  {{ ts.again }} <span>{{ intervalLabel(q.id, 'again') }}</span>
+                  {{ ts.again }} <kbd>1</kbd> <span>{{ intervalLabel(q.id, 'again') }}</span>
                 </button>
                 <button type="button" class="btn rate hard" (click)="rate(q.id, 'hard')">
-                  {{ ts.hard }} <span>{{ intervalLabel(q.id, 'hard') }}</span>
+                  {{ ts.hard }} <kbd>2</kbd> <span>{{ intervalLabel(q.id, 'hard') }}</span>
                 </button>
                 <button type="button" class="btn rate good" (click)="rate(q.id, 'good')">
-                  {{ ts.good }} <span>{{ intervalLabel(q.id, 'good') }}</span>
+                  {{ ts.good }} <kbd>3</kbd> <span>{{ intervalLabel(q.id, 'good') }}</span>
                 </button>
               </div>
             }
           </footer>
         </article>
+        <div class="row center">
+          <button type="button" class="btn" [disabled]="pos() === 0" (click)="step(-1)">← {{ t().keys.prevCard }}</button>
+          <button type="button" class="btn" (click)="shuffle()">{{ t().keys.shuffle }} <kbd>S</kbd></button>
+          <button type="button" class="btn" (click)="step(1)">{{ t().keys.nextCard }} →</button>
+        </div>
+        <p class="muted hints">{{ t().keys.cardHint }}</p>
       } @else if (queue().length === 0) {
         <p class="card">{{ ts.empty }}</p>
       } @else {

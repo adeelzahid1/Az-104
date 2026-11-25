@@ -7,7 +7,7 @@
       <span>AZ-104 Prep</span>
     </a>
     <div class="topbar-right">
-      <nav aria-label="Main">
+      <nav #menu aria-label="Main">
         @for (link of links; track link.path) {
           <a
             [routerLink]="link.path"
@@ -19,6 +19,21 @@
           </a>
         }
       </nav>
+      <div class="tools">
+        <app-full-screen-button [compact]="true" />
+        <button type="button" class="icon" [title]="tx.keys.theme" [attr.aria-label]="tx.keys.theme" (click)="display.toggleTheme()">
+          ◐
+        </button>
+        <button
+          type="button"
+          class="icon hint"
+          [title]="tx.keys.title + ' (?)'"
+          [attr.aria-label]="tx.keys.title"
+          (click)="shortcuts.helpOpen.set(true)"
+        >
+          ⌨
+        </button>
+      </div>
       <div class="lang" role="group" [attr.aria-label]="tx.langSwitch">
         <button type="button" [class.on]="lang() === 'en'" [attr.aria-pressed]="lang() === 'en'" (click)="setLang('en')">
           EN
@@ -42,3 +57,13 @@
 </main>
 
 <footer class="footer">{{ tx.footer }}</footer>
+
+@if (display.fullScreen()) {
+  <app-full-screen-button class="float-exit" />
+}
+@if (scrolled()) {
+  <button type="button" class="btn to-top no-print" [attr.aria-label]="tx.keys.top" [title]="tx.keys.top" (click)="toTop()">
+    ↑
+  </button>
+}
+<app-shortcut-help />

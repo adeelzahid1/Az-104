@@ -14,6 +14,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { Plan } from '../../core/plan';
 import { SECTIONS } from '../../core/sections';
+import { registerShortcuts } from '../../core/shortcuts';
 import cheatsheetJson from '../../data/cheatsheet.json';
 import labsJson from '../../data/labs.json';
 import { DOMAINS } from '../../data/schema';
@@ -26,6 +27,24 @@ import { NotesContent } from './notes-content';
 import { searchNote, toNote } from './notes-data';
 
 const GROUPS = cheatsheetJson as unknown as CheatGroup[];
+
+const LAST_KEY = 'az104-notes-last';
+
+function readLast(): string | null {
+  try {
+    return typeof localStorage === 'undefined' ? null : localStorage.getItem(LAST_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function saveLast(id: string): void {
+  try {
+    if (typeof localStorage !== 'undefined') localStorage.setItem(LAST_KEY, id);
+  } catch {
+    // Storage unavailable: the notes open at the first section next time.
+  }
+}
 
 @Component({
   selector: 'app-notes',
@@ -52,7 +71,10 @@ export class Notes {
   protected readonly search = signal('');
   private readonly lang = computed(() => (this.isRoman() ? 1 : 0));
 
-  protected readonly section = computed(() => SECTIONS.find((x) => x.id === this.s()) ?? SECTIONS[0]);
+  /** Without a section in the URL, the one that was open last. */
+  protected readonly section = computed(
+    () => SECTIONS.find((x) => x.id === this.s()) ?? SECTIONS.find((x) => x.id === readLast()) ?? SECTIONS[0],
+  );
 
   protected readonly note = computed(() => {
     const raw = this.content.notes()[this.section().id];
@@ -120,9 +142,27 @@ export class Notes {
     computation: () => new Set<number>(),
   });
 
+  protected readonly allOpen = computed(() => this.open().size === (this.note()?.checks.length ?? 0));
+
   constructor() {
+    registerShortcuts(
+      () => this.t().notes.title,
+      () => {
+        const tn = this.t().notes;
+        const tk = this.t().keys;
+        const next = this.next();
+        const prev = this.prev();
+        return [
+          { keys: ['ArrowRight'], label: tk.nextSection, run: () => next && this.choose(next.id), when: () => !!next && !this.term() },
+          { keys: ['ArrowLeft'], label: tk.prevSection, run: () => prev && this.choose(prev.id), when: () => !!prev && !this.term() },
+          { keys: ['a'], label: tn.showAll, run: () => this.toggleAll() },
+          { keys: ['r'], label: tn.markRead, run: () => this.setRead(!this.isRead()) },
+        ];
+      },
+    );
     effect(() => {
-      const { domain } = this.section();
+      const { id, domain } = this.section();
+      saveLast(id);
       untracked(() => this.content.load(domain));
     });
     effect(() => {
@@ -135,7 +175,7 @@ export class Notes {
       if (!this.shown() || this.term()) return;
       this.document.querySelector('.side a.active')?.scrollIntoView({ block: 'nearest' });
       if (part) untracked(() => this.goTo(Number(part)));
-      else this.document.defaultView?.scrollTo({ top: 0 });
+      else this.document.defaultView?.scrollTo({ top: 0, behavior: 'instant' });
     });
   }
 
@@ -156,6 +196,11 @@ export class Notes {
       if (!next.delete(i)) next.add(i);
       return next;
     });
+  }
+
+  protected toggleAll(): void {
+    const count = this.note()?.checks.length ?? 0;
+    this.open.set(new Set(this.allOpen() ? [] : Array.from({ length: count }, (_, i) => i)));
   }
 
   protected setRead(read: boolean): void {

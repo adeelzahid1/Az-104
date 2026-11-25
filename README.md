@@ -14,6 +14,7 @@ explanation and a Microsoft Learn link.
 - **Plan** — exam date, daily tasks, readiness estimate, mock history and the official skills checklist.
 - **Notes** — detailed notes for all 29 sections in English and Roman Urdu, with examples, portal paths, traps,
   self-check questions, search and print.
+- **Keyboard** — arrow keys, answer keys and page shortcuts (press `?`), full screen (`F`), light/dark theme, swipe on phones.
 - **Labs** — 14 hands-on labs for Azure Cloud Shell, each with its own resource group and cleanup.
 - **Cheat sheet** — traps, keywords, comparisons, numbers and commands on one searchable, printable page.
 - **Mock exam** — 10–60 questions split across domains by the official weights, optional timer

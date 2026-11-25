@@ -17,7 +17,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #111418;
     --surface: #1a1f25;
     --surface-2: #232a32;
@@ -33,6 +33,29 @@
     --warn: #f0b354;
     --warn-soft: #3a2a10;
   }
+}
+
+/* The same colours, chosen with the theme button. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #111418;
+  --surface: #1a1f25;
+  --surface-2: #232a32;
+  --text: #e8ebef;
+  --muted: #9aa5b1;
+  --border: #2f3842;
+  --accent: #4ca3f5;
+  --accent-soft: #15324d;
+  --ok: #4cc38a;
+  --ok-soft: #13301f;
+  --bad: #f07186;
+  --bad-soft: #3a1820;
+  --warn: #f0b354;
+  --warn-soft: #3a2a10;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
 }
 
 *,
@@ -223,6 +246,80 @@ th {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0 5px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font: 600 0.75rem/1.5 inherit;
+  font-family: inherit;
+  text-align: center;
+}
+
+.bar {
+  width: 100%;
+  height: 6px;
+  margin-bottom: 10px;
+  accent-color: var(--accent);
+}
+
+.hints {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+}
+
+.qcard {
+  scroll-margin-top: 76px;
+}
+
+.qcard.current {
+  outline: 2px solid var(--accent);
+}
+
+/* Key hints are for people with a keyboard. */
+@media (hover: none) {
+  .btn kbd,
+  .hints.keys {
+    display: none;
+  }
+}
+
+/* Full screen: only the page itself. */
+html.full-screen .topbar,
+html.full-screen .footer,
+html.full-screen .side,
+html.full-screen .full-hide {
+  display: none;
+}
+
+html.full-screen .study,
+html.full-screen .layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+html.full-screen .mobile-pick,
+html.full-screen .pick {
+  display: grid;
+}
+
+html.full-screen .page {
+  padding-top: 56px;
+}
+
+html.full-screen .qcard,
+html.full-screen .note {
+  font-size: 1.15rem;
+}
+
+/* Headings take the focus when the page changes under them; they aren't controls. */
+:is(h1, h3)[tabindex='-1']:focus-visible {
+  outline: none;
 }
 
 @media print {

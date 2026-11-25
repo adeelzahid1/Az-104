@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { Question } from '../data/schema';
 import { Answer, isCorrect } from '../core/quiz-logic';
+import { Shortcut, registerShortcuts } from '../core/shortcuts';
 import { Language } from '../i18n/language';
 import { RomanContent } from '../i18n/roman-content';
 
@@ -26,6 +27,8 @@ export class QuestionView {
   readonly reveal = input(false);
   /** Study mode: the answer passed in is the correct one, so no Correct/Incorrect verdict is shown. */
   readonly study = input(false);
+  /** Answer with the keyboard: letters or numbers for options, Y and N for statements. */
+  readonly keys = input(false);
   readonly answerChange = output<Answer>();
 
   protected readonly letters = LETTERS;
@@ -108,6 +111,39 @@ export class QuestionView {
   protected readonly correctOrder = computed(() =>
     this.expectedIndices().map((i) => this.shown().items?.[i] ?? ''),
   );
+
+  constructor() {
+    registerShortcuts(
+      () => this.t().keys.answer,
+      () => (this.keys() && !this.reveal() ? this.answerKeys() : []),
+    );
+  }
+
+  private answerKeys(): Shortcut[] {
+    const tk = this.t().keys;
+    const q = this.shown();
+    if (q.type === 'mcq' || q.type === 'multi') {
+      return (q.opts ?? []).map((_, i) => ({
+        keys: [LETTERS[i].toLowerCase(), String(i + 1)],
+        label: tk.option(LETTERS[i]),
+        run: () => this.choose(i),
+      }));
+    }
+    if (q.type === 'yesno') {
+      return [
+        { keys: ['y'], label: tk.yes, run: () => this.setNextYesNo(true) },
+        { keys: ['n'], label: tk.no, run: () => this.setNextYesNo(false) },
+      ];
+    }
+    return [];
+  }
+
+  /** Answers the first open statement; when all are answered, starts again at the first one. */
+  private setNextYesNo(value: boolean): void {
+    const open = this.yesNo().indexOf(null);
+    if (open >= 0) this.setYesNo(open, value);
+    else this.commit(this.yesNo().map((_, i) => (i === 0 ? value : null)));
+  }
 
   protected optionState(i: number): 'correct' | 'wrong' | 'missed' | '' {
     if (!this.reveal()) return '';

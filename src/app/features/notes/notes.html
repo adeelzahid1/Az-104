@@ -121,6 +121,9 @@
 
         <h3 [id]="'part-' + n.parts.length" tabindex="-1">{{ tn.check }}</h3>
         <p class="muted">{{ tn.checkHint }}</p>
+        <p class="no-print">
+          <button type="button" class="btn small" (click)="toggleAll()">{{ allOpen() ? tn.hideAll : tn.showAll }} <kbd>A</kbd></button>
+        </p>
         <ol>
           @for (c of n.checks; track $index) {
             <li>

@@ -2,17 +2,22 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   afterNextRender,
   computed,
   effect,
   inject,
   linkedSignal,
   signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { QuizService } from '../../core/quiz';
 import { Answer, domainOf, isAnswered } from '../../core/quiz-logic';
+import { registerShortcuts } from '../../core/shortcuts';
 import { CasePanel } from '../../shared/case-panel';
+import { FullScreenButton } from '../../shared/full-screen-button';
 import { QuestionView } from '../../shared/question-view';
 import { Language } from '../../i18n/language';
 import { ExamReview, ReviewRow } from './exam-review';
@@ -20,7 +25,7 @@ import { ExamReview, ReviewRow } from './exam-review';
 @Component({
   selector: 'app-quiz',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionView, CasePanel, ExamReview, RouterLink],
+  imports: [QuestionView, CasePanel, ExamReview, FullScreenButton, RouterLink],
   templateUrl: './quiz.html',
   styleUrl: './quiz.css',
 })
@@ -116,7 +121,53 @@ export class Quiz {
     return ms !== null && ms < 5 * 60 * 1000;
   });
 
+  private readonly heading = viewChild<ElementRef<HTMLElement>>('heading');
+  private shownIndex = -1;
+
   constructor() {
+    registerShortcuts(
+      () => this.t().keys.quiz,
+      () => {
+        const tk = this.t().keys;
+        const te = this.t().exam;
+        const tq = this.t().quiz;
+        const series = () => this.part()?.kind === 'series';
+        return [
+          {
+            keys: ['Enter'],
+            label: this.isExam() ? tq.next : tk.checkNext,
+            run: () => this.enter(),
+            // In a problem-solution set the next question can't be undone: only with an answer.
+            when: () => this.active() && !this.reviewing() && (!series() || this.canCheck()),
+          },
+          {
+            keys: ['ArrowRight'],
+            label: tq.next,
+            run: () => (this.isExam() ? this.next() : this.goTo(this.index() + 1)),
+            when: () => this.active() && !series() && !this.reviewing() && (this.isExam() || this.index() < this.total() - 1),
+          },
+          {
+            keys: ['ArrowLeft'],
+            label: tq.previous,
+            run: () => this.goTo(this.reviewing() ? this.index() : this.index() - 1),
+            when: () => this.active() && !series() && (this.reviewing() || this.index() > (this.part()?.start ?? 0)),
+          },
+          ...(this.isExam()
+            ? [{ keys: ['m'], label: te.flag, run: () => this.toggleFlag(), when: () => this.active() && !series() }]
+            : []),
+        ];
+      },
+    );
+    // A new question takes the focus, so that Enter checks it instead of pressing the last button again.
+    effect(() => {
+      const index = this.index();
+      const heading = this.heading()?.nativeElement;
+      if (!heading) return;
+      untracked(() => {
+        if (this.shownIndex !== -1 && this.shownIndex !== index) heading.focus();
+        this.shownIndex = index;
+      });
+    });
     const destroyRef = inject(DestroyRef);
     afterNextRender(() => {
       const timer = setInterval(() => this.now.set(Date.now()), 1000);
@@ -127,7 +178,24 @@ export class Quiz {
     });
   }
 
+  private readonly touched = linkedSignal({ source: this.index, computation: () => false });
+
+  private active(): boolean {
+    return this.session()?.finishedAt === null;
+  }
+
+  /** Enter: check the answer, then go on. */
+  private enter(): void {
+    if (this.isExam()) this.next();
+    else if (!this.checked()) {
+      // Ordering questions start filled in: Enter must not check an order nobody touched.
+      if (this.canCheck() && (this.question()?.type !== 'order' || this.touched())) this.check();
+    } else if (this.index() < this.total() - 1) this.goTo(this.index() + 1);
+    else this.finish();
+  }
+
   protected onAnswer(value: Answer): void {
+    this.touched.set(true);
     this.quiz.answer(value);
   }
 
