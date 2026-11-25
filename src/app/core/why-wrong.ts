@@ -11,6 +11,10 @@ const asFile = (m: { default: unknown }) => m.default as WhyFile;
 
 const LOADERS: Record<number, () => Promise<WhyFile>> = {
   1: () => import('../data/why/d1.json').then(asFile),
+  2: () => import('../data/why/d2.json').then(asFile),
+  3: () => import('../data/why/d3.json').then(asFile),
+  4: () => import('../data/why/d4.json').then(asFile),
+  5: () => import('../data/why/d5.json').then(asFile),
 };
 
 /** The reasons in the order in which the options are shown; '' where there is none. */

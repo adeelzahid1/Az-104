@@ -720,7 +720,7 @@
   "ans": [
    0
   ],
-  "exp": "When you create a scale set, you can specify zones 1, 2 and 3, and Azure spreads the instances across those zones so the set survives a zone failure. Zones can't be added to a scale set afterwards. Fault domain count spreads instances across racks, not zones.",
+  "exp": "When you create a scale set, you can specify zones 1, 2 and 3, and Azure spreads the instances across those zones so the set survives a zone failure. Fault domain count spreads instances across racks, not zones.",
   "link": "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-use-availability-zones"
  },
  {

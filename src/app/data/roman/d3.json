@@ -1785,7 +1785,7 @@
    "Proximity placement",
    "Overprovisioning"
   ],
-  "exp": "Scale set banate waqt aap zones 1, 2 aur 3 specify kar sakte hain, aur Azure instances ko un zones mein phailata hai taa ke set zone failure se bach jaye. Zones baad mein scale set mein add nahi ho sakte. Fault domain count instances ko racks mein phailata hai, zones mein nahi."
+  "exp": "Scale set banate waqt aap zones 1, 2 aur 3 specify kar sakte hain, aur Azure instances ko un zones mein phailata hai taa ke set zone failure se bach jaye. Fault domain count instances ko racks mein phailata hai, zones mein nahi."
  },
  "D3-141": {
   "q": "Scale set ke autoscale evaluation logic ko tarteeb mein lagayen:",
