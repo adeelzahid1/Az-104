@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { CardState, Rating, isDue, schedule } from './srs';
+import { AGAIN_DELAY, CardState, DAY, Rating, isDue, schedule } from './srs';
 
 /** Study state for one question. Missing fields mean "not set". */
 interface StudyEntry {
@@ -64,6 +64,13 @@ export class StudyProgress {
   /** Number of flashcards due at the given time. */
   dueCount(now: number): number {
     return Object.values(this.state()).filter((e) => isDue(e.c, now)).length;
+  }
+
+  /** Number of flashcards whose last rating was at or after the given time. */
+  ratedSince(time: number): number {
+    return Object.values(this.state()).filter(
+      ({ c }) => c && c.due - (c.ivl === 0 ? AGAIN_DELAY : c.ivl * DAY) >= time,
+    ).length;
   }
 
   toggleUnderstood(id: string): void {

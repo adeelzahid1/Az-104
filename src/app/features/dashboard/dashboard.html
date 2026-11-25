@@ -19,6 +19,12 @@
   </section>
 }
 
+@if (showPlan()) {
+  <app-today-card>
+    <a routerLink="/plan">{{ tx.plan.open }}</a>
+  </app-today-card>
+}
+
 <section class="summary">
   <div class="card stat">
     <p class="muted">{{ td.bank }}</p>

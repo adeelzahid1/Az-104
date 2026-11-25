@@ -1,5 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { CaseStudy, DOMAINS, Question } from '../data/schema';
+import { MockHistory } from './mock-history';
 import { Progress } from './progress';
 import { QuestionBank } from './question-bank';
 import { readSession, writeSession } from './session-store';
@@ -46,6 +47,7 @@ export const PASS_MARK = 700;
 export class QuizService {
   private readonly bank = inject(QuestionBank);
   private readonly progress = inject(Progress);
+  private readonly mocks = inject(MockHistory);
   private readonly saved = readSession();
   private readonly state = signal<Session | null>(this.saved?.session ?? null);
   private readonly caseStudies = signal<Record<string, CaseStudy>>(this.saved?.cases ?? {});
@@ -97,9 +99,13 @@ export class QuizService {
       this.bank.domains(config.domains),
       this.bank.cases(),
     ]);
-    const questions = pickQuestions(pool, config, new Set(this.progress.mistakeIds())).map((q) =>
-      shuffleOptions(q),
-    );
+    const questions = pickQuestions(
+      pool,
+      config,
+      new Set(this.progress.mistakeIds()),
+      Math.random,
+      new Set(Object.keys(this.progress.stats())),
+    ).map((q) => shuffleOptions(q));
     if (!questions.length) return 0;
     const used = new Set(questions.map((q) => q.caseId));
     this.caseStudies.set(Object.fromEntries(Object.entries(cases).filter(([id]) => used.has(id))));
@@ -157,6 +163,12 @@ export class QuizService {
     // When the time ran out while the page was closed, the exam ended at the deadline.
     const finishedAt = Math.min(Date.now(), s.deadline ?? Infinity);
     this.patch((cur) => ({ ...cur, finishedAt }));
+    const answered = s.questions.filter((q, i) => isAnswered(q, s.answers[i])).length;
+    // An exam that was mostly skipped says nothing about the learner.
+    if (s.config.mode === 'exam' && answered * 2 >= s.questions.length) {
+      const correct = s.questions.filter((q, i) => isCorrect(q, s.answers[i])).length;
+      this.mocks.add({ t: finishedAt, total: s.questions.length, correct });
+    }
   }
 
   private patch(fn: (s: Session) => Session): void {

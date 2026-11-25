@@ -1,0 +1,132 @@
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+}
+
+.field input,
+.field select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.big {
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 800;
+}
+
+.big.good {
+  color: var(--ok);
+}
+
+.big.close {
+  color: var(--warn);
+}
+
+.big.low {
+  color: var(--bad);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.bars {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.bars li {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(60px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.bars a {
+  grid-column: 2 / -1;
+}
+
+.meter {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+details {
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+h3 {
+  margin: 16px 0 6px;
+  font-size: 1rem;
+}
+
+.strong {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  color: var(--ok);
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+th:first-child {
+  width: 100%;
+  min-width: 180px;
+  text-align: left;
+}
+
+tbody th {
+  font-weight: 400;
+}
+
+td input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ok);
+}

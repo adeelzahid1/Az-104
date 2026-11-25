@@ -7,6 +7,8 @@ interface QuestionStat {
   correct: number;
   /** Result of the most recent attempt; false keeps the question in the mistakes pool. */
   last: boolean;
+  /** When it was last answered; missing on answers from older versions. */
+  t?: number;
 }
 
 type ProgressState = Record<string, QuestionStat>;
@@ -58,6 +60,9 @@ function addTo(row: AccuracyRow, stat: QuestionStat): void {
 export class Progress {
   private readonly state = signal<ProgressState>(readStorage());
 
+  /** Every answered question, by question id. */
+  readonly stats = this.state.asReadonly();
+
   readonly mistakeIds = computed(() =>
     Object.entries(this.state())
       .filter(([, s]) => !s.last)
@@ -97,6 +102,7 @@ export class Progress {
 
   record(entries: { q: Question; correct: boolean }[]): void {
     if (!entries.length) return;
+    const t = Date.now();
     this.state.update((prev) => {
       const next = { ...prev };
       for (const { q, correct } of entries) {
@@ -106,6 +112,7 @@ export class Progress {
           seen: (old?.seen ?? 0) + 1,
           correct: (old?.correct ?? 0) + (correct ? 1 : 0),
           last: correct,
+          t,
         };
       }
       writeStorage(next);
@@ -130,6 +137,7 @@ export class Progress {
         typeof s.last === 'boolean'
       ) {
         next[id] = { sub: s.sub, seen: s.seen!, correct: s.correct!, last: s.last };
+        if (Number.isFinite(s.t)) next[id].t = s.t;
       }
     }
     this.state.set(next);

@@ -1,0 +1,114 @@
+@let tp = t().plan;
+@let r = plan.readiness();
+
+<h1>{{ tp.title }}</h1>
+
+<app-today-card>
+  <div class="settings">
+    <label class="field">
+      <span>{{ tp.examDate }}</span>
+      <input #exam type="date" [value]="plan.exam()" (change)="plan.setExam(exam.value)" />
+    </label>
+    <label class="field">
+      <span>{{ tp.minutes }}</span>
+      <select #min (change)="plan.setMinutes(minutesOptions[min.selectedIndex])">
+        @for (m of minutesOptions; track m) {
+          <option [selected]="plan.minutes() === m">{{ tp.minutesOption(m) }}</option>
+        }
+      </select>
+    </label>
+    <button type="button" class="btn" (click)="plan.renew()">{{ tp.renew }}</button>
+  </div>
+</app-today-card>
+
+<section class="card">
+  <h2>{{ tp.readyTitle }}</h2>
+  @if (r.overall !== null) {
+    <p class="big" [class]="'big ' + band()">{{ r.overall }}%</p>
+    <p>{{ tp.bands[band()] }}</p>
+  } @else {
+    <p>
+      <strong>{{ tp.notEnough }}</strong>
+    </p>
+  }
+  <ul class="bars">
+    @for (d of r.domains; track d.id) {
+      <li>
+        <span>{{ domainName(d.id) }}</span>
+        @if (d.value !== null) {
+          <span class="meter" aria-hidden="true"><span [style.width.%]="d.value"></span></span>
+          <strong>{{ d.value }}%</strong>
+        } @else {
+          <a routerLink="/practice" [queryParams]="{ domain: d.id }">{{ tp.needMore(d.missing) }}</a>
+        }
+      </li>
+    }
+  </ul>
+  <p class="muted small">{{ tp.readyNote }}</p>
+</section>
+
+<section class="card">
+  <h2>{{ tp.mocksTitle }}</h2>
+  @if (mocks().length) {
+    <ul class="bars">
+      @for (m of mocks(); track m.t) {
+        <li>
+          <span>{{ m.day }} · {{ tp.mockSize(m.correct, m.total) }}</span>
+          <span class="meter" aria-hidden="true"><span [style.width.%]="m.pct"></span></span>
+          <strong>{{ m.pct }}%</strong>
+        </li>
+      }
+    </ul>
+    <p class="muted small">{{ tp.mocksNote(minMock) }}</p>
+  } @else {
+    <p>{{ tp.noMocks }}</p>
+    <a class="btn" routerLink="/mock">{{ t().nav.mock }}</a>
+  }
+</section>
+
+<section class="card">
+  <h2>{{ tp.checklistTitle }}</h2>
+  <p class="muted">{{ tp.checklistLead(skillsDone(), skillsTotal()) }}</p>
+  @for (d of checklist(); track d.id) {
+    <details>
+      <summary>{{ domainName(d.id) }} · {{ d.done }}/{{ d.total }}</summary>
+      @for (s of d.sections; track s.id) {
+        <h3>
+          <a routerLink="/study" [queryParams]="{ s: s.id }">{{ s.id }} {{ s.name }}</a>
+          @if (s.strong) {
+            <span class="strong">✓ {{ tp.strong }}</span>
+          }
+        </h3>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">{{ tp.skill }}</th>
+                @for (m of marks; track m) {
+                  <th scope="col">{{ tp.marks[m] }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (x of s.skills; track x.name) {
+                <tr>
+                  <th scope="row">{{ x.name }}</th>
+                  @for (m of marks; track m) {
+                    <td>
+                      <input
+                        type="checkbox"
+                        [checked]="!!x.marks[m]"
+                        [attr.aria-label]="tp.marks[m] + ': ' + x.name"
+                        (change)="plan.toggleSkill(x.name, m)"
+                      />
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </details>
+  }
+</section>

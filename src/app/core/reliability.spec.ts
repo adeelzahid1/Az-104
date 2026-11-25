@@ -54,7 +54,7 @@ describe('withRetry', () => {
 describe('subtopic practice', () => {
   it('picks only the chosen subtopic, including case study parts', () => {
     const pool = [question('D1-001', 'RBAC'), question('D1-002', 'Locks'), question('D1-003', 'RBAC', 'C1')];
-    const ids = pickQuestions(pool, { ...config, sub: 'RBAC' }, new Set()).map((q) => q.id);
+    const ids = pickQuestions(pool, { ...config, subs: ['RBAC'] }, new Set()).map((q) => q.id);
     expect(ids.sort()).toEqual(['D1-001', 'D1-003']);
   });
 });

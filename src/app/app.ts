@@ -17,6 +17,7 @@ export class App {
   protected readonly lang = this.language.lang;
   protected readonly links = [
     { path: '/', key: 'dashboard', exact: true },
+    { path: '/plan', key: 'plan', exact: false },
     { path: '/study', key: 'study', exact: false },
     { path: '/cheat-sheet', key: 'cheat', exact: false },
     { path: '/practice', key: 'practice', exact: false },

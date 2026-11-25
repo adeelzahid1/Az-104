@@ -10,12 +10,12 @@ import {
   untracked,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import sectionsJson from '../../data/study-sections.json';
 import { CaseStudy, DOMAINS, Question } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuestionBank } from '../../core/question-bank';
 import { domainOf, shuffleOptions } from '../../core/quiz-logic';
 import { Rating, nextInterval } from '../../core/srs';
+import { SECTIONS, sectionOf } from '../../core/sections';
 import { StudyProgress } from '../../core/study-progress';
 import { Language } from '../../i18n/language';
 import { RomanContent } from '../../i18n/roman-content';
@@ -23,20 +23,9 @@ import { CasePanel } from '../../shared/case-panel';
 import { LoadError } from '../../shared/load-error';
 import { QuestionView } from '../../shared/question-view';
 
-interface Section {
-  id: string;
-  domain: number;
-  en: string;
-  ro: string;
-  subs: string[];
-  /** Sub-skills of the official outline (April 17, 2026) that this section covers. */
-  skills: string[];
-}
-
 type Filter = 'all' | 'todo' | 'bookmarked' | 'due' | 'mistakes';
 type Level = 0 | 1 | 2 | 3;
 
-const SECTIONS = sectionsJson as Section[];
 /** Id of the sidebar entry that lists every case study. */
 export const CASES = 'cases';
 /** Id of the sidebar entry that covers every section. */
@@ -83,10 +72,6 @@ export class Study {
     ...d,
     sections: SECTIONS.filter((s) => s.domain === d.id),
   }));
-
-  private readonly sectionOf = new Map(
-    SECTIONS.flatMap((s) => s.subs.map((sub) => [`${s.domain}|${sub}`, s.id] as const)),
-  );
 
   /** All questions, options shuffled once per visit; null while loading. */
   protected readonly all = signal<Question[] | null>(null);
@@ -231,7 +216,7 @@ export class Study {
   }
 
   protected sectionIdOf(q: Question): string {
-    return q.caseId ? CASES : (this.sectionOf.get(`${domainOf(q)}|${q.sub}`) ?? '');
+    return q.caseId ? CASES : sectionOf(domainOf(q), q.sub);
   }
 
   /** Opens a section. The filter stays when moving between sections, but not when leaving a shortcut. */

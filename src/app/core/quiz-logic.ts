@@ -22,8 +22,8 @@ export interface QuizConfig {
   type: TypeFilter;
   mistakesOnly: boolean;
   timed: boolean;
-  /** Practice only: a single subtopic of the chosen domains. */
-  sub?: string;
+  /** Practice only: the subtopics of the chosen domains to pick from. */
+  subs?: string[];
 }
 
 /** Mock exams of at least this many questions include one case study, like the real exam. */
@@ -139,6 +139,8 @@ export function pickQuestions(
   config: QuizConfig,
   mistakes: ReadonlySet<string>,
   rnd: () => number = Math.random,
+  /** Questions answered before; practice by subtopic shows the others first. */
+  answered: ReadonlySet<string> = new Set(),
 ): Question[] {
   const inDomains = (q: Question) => config.domains.includes(domainOf(q));
   const diffOk = (q: Question) => config.diff === 0 || q.diff === config.diff;
@@ -149,22 +151,27 @@ export function pickQuestions(
         inDomains(q) &&
         diffOk(q) &&
         mistakes.has(q.id) &&
-        (!config.sub || q.sub === config.sub) &&
+        (!config.subs || config.subs.includes(q.sub)) &&
         matchesType(q, config.type),
     );
     return shuffle(missed, rnd).slice(0, config.count);
   }
 
-  if (config.sub) {
+  if (config.subs) {
+    const subs = config.subs;
     // Case study parts stand alone here; the case text is shown with each of them.
     const matching = pool.filter(
       (q) =>
         inDomains(q) &&
         diffOk(q) &&
-        q.sub === config.sub &&
+        subs.includes(q.sub) &&
         matchesType(q, config.type),
     );
-    return shuffle(matching, rnd).slice(0, config.count);
+    const mixed = shuffle(matching, rnd);
+    return [...mixed.filter((q) => !answered.has(q.id)), ...mixed.filter((q) => answered.has(q.id))].slice(
+      0,
+      config.count,
+    );
   }
 
   const units = toUnits(pool).filter((u) => u.every(inDomains));

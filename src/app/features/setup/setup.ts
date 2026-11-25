@@ -15,6 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 import { DOMAINS, Difficulty } from '../../data/schema';
 import { Progress } from '../../core/progress';
 import { QuizService } from '../../core/quiz';
+import { SECTIONS } from '../../core/sections';
 import { Language } from '../../i18n/language';
 import { LoadError } from '../../shared/load-error';
 import { CASE_STUDY_MIN_EXAM_SIZE, TypeFilter, domainQuotas } from '../../core/quiz-logic';
@@ -38,6 +39,10 @@ export class Setup implements OnInit {
   readonly mistakes = input<string>();
   /** Optional ?sub=RBAC query parameter: practise one subtopic of the chosen domain. */
   readonly sub = input<string>();
+  /** Optional ?section=1.3 query parameter: practise one study section. */
+  readonly section = input<string>();
+  /** Optional ?count=20 query parameter. */
+  readonly count = input<string>();
 
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly quiz = inject(QuizService);
@@ -50,8 +55,22 @@ export class Setup implements OnInit {
   protected readonly busy = signal(false);
   protected readonly loadFailed = signal(false);
   protected readonly unfinished = this.quiz.unfinished;
-  protected readonly subtopic = linkedSignal(() => (this.mode() === 'practice' ? (this.sub() ?? '') : ''));
-  protected readonly t = inject(Language).t;
+  private readonly language = inject(Language);
+  protected readonly t = this.language.t;
+  /** Subtopics to practise, or null for all of them. */
+  protected readonly focus = linkedSignal(() => {
+    if (this.mode() !== 'practice') return null;
+    const section = SECTIONS.find((s) => s.id === this.section());
+    if (section) return { section, subs: section.subs };
+    const sub = this.sub();
+    return sub ? { section: null, subs: [sub] } : null;
+  });
+  protected readonly focusLabel = computed(() => {
+    const f = this.focus();
+    if (!f) return '';
+    if (!f.section) return this.t().setup.subtopic(f.subs[0]);
+    return this.t().setup.section(`${f.section.id} ${this.language.isRoman() ? f.section.ro : f.section.en}`);
+  });
   protected readonly error = signal<'' | 'noDomain' | 'noMistakes' | 'noMatch'>('');
 
   protected readonly form = this.fb.group({
@@ -72,6 +91,8 @@ export class Setup implements OnInit {
 
   ngOnInit(): void {
     if (this.mode() === 'exam') this.form.patchValue({ count: 50 });
+    const count = Number(this.count());
+    if (this.countOptions().includes(count)) this.form.patchValue({ count });
     const preselect = Number(this.domain());
     if (preselect >= 1 && preselect <= 5) {
       for (const d of DOMAINS) {
@@ -124,7 +145,7 @@ export class Setup implements OnInit {
         type: v.type,
         mistakesOnly: this.mode() === 'practice' && v.mistakesOnly,
         timed: this.mode() === 'exam' && v.timed,
-        sub: this.subtopic() || undefined,
+        subs: this.focus()?.subs,
       });
       if (count === 0) {
         this.error.set(

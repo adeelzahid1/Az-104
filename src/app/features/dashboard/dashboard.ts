@@ -13,12 +13,13 @@ import { QuestionBank } from '../../core/question-bank';
 import { StudyProgress } from '../../core/study-progress';
 import { QuizService } from '../../core/quiz';
 import { Language } from '../../i18n/language';
+import { TodayCard } from '../plan/today-card';
 import { BackupPanel } from './backup-panel';
 
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, BackupPanel],
+  imports: [RouterLink, BackupPanel, TodayCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -28,6 +29,7 @@ export class Dashboard {
   private readonly quiz = inject(QuizService);
   /** False on the server and during hydration, where saved data isn't known. */
   private readonly inBrowser = signal(false);
+  protected readonly showPlan = this.inBrowser.asReadonly();
   protected readonly unfinished = computed(() => (this.inBrowser() ? this.quiz.unfinished() : null));
   private readonly sizes = signal<Record<number, number>>({});
 

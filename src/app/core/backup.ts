@@ -1,4 +1,6 @@
 import { Injectable, inject } from '@angular/core';
+import { MockHistory } from './mock-history';
+import { Plan } from './plan';
 import { Progress } from './progress';
 import { StudyProgress } from './study-progress';
 
@@ -10,6 +12,9 @@ export interface Backup {
   exportedAt: string;
   progress: Record<string, unknown>;
   study: Record<string, unknown>;
+  /** Missing in backups made before these existed. */
+  plan?: unknown;
+  mocks?: unknown;
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
@@ -32,6 +37,8 @@ export function parseBackup(text: string): Backup | null {
 export class BackupService {
   private readonly progress = inject(Progress);
   private readonly study = inject(StudyProgress);
+  private readonly plan = inject(Plan);
+  private readonly mocks = inject(MockHistory);
 
   create(now = new Date()): Backup {
     return {
@@ -40,6 +47,8 @@ export class BackupService {
       exportedAt: now.toISOString(),
       progress: this.progress.snapshot(),
       study: this.study.snapshot(),
+      plan: this.plan.snapshot(),
+      mocks: this.mocks.results(),
     };
   }
 
@@ -47,5 +56,7 @@ export class BackupService {
   restore(backup: Backup): void {
     this.progress.restore(backup.progress);
     this.study.restore(backup.study);
+    if (backup.mocks) this.mocks.replace(backup.mocks);
+    if (backup.plan) this.plan.restore(backup.plan);
   }
 }

@@ -26,10 +26,10 @@
     }
   </fieldset>
 
-  @if (subtopic()) {
+  @if (focus()) {
     <p class="row">
-      <strong>{{ ts.subtopic(subtopic()) }}</strong>
-      <button type="button" class="btn small" (click)="subtopic.set('')">{{ ts.clearSubtopic }}</button>
+      <strong>{{ focusLabel() }}</strong>
+      <button type="button" class="btn small" (click)="focus.set(null)">{{ ts.clearSubtopic }}</button>
     </p>
   }
 
