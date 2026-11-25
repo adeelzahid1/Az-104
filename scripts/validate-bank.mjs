@@ -238,6 +238,28 @@ for (const d of [1, 2, 3, 4, 5]) {
   }
 }
 
+// Reasons why options are wrong (Study): only on wrong options, short, in both languages.
+const MAX_REASON = 130;
+let whyQuestions = 0;
+let whyReasons = 0;
+for (const file of readdirSync(join(DATA, 'why'))) {
+  for (const [id, reasons] of Object.entries(JSON.parse(readFileSync(join(DATA, 'why', file), 'utf8')))) {
+    const q = byId.get(id);
+    const fail = (msg) => errors.push(`why ${id}: ${msg}`);
+    whyQuestions++;
+    if (!q?.opts || file !== `d${id.charAt(1)}.json`) {
+      fail('no such question with options in this domain');
+      continue;
+    }
+    for (const [index, reason] of Object.entries(reasons)) {
+      whyReasons++;
+      const i = Number(index);
+      if (!(i in q.opts) || q.ans.includes(i)) fail(`option ${index} is not a wrong option`);
+      if (!pair(reason) || reason.some((s) => s.length > MAX_REASON)) fail(`option ${index}: [English, Roman], ${MAX_REASON} characters at most`);
+    }
+  }
+}
+
 // The correct option must not be recognisable by its length, in English or in Roman Urdu.
 const MAX_STANDOUT_SHARE = 0.12;
 const romanById = Object.assign(
@@ -275,6 +297,7 @@ console.log('Study sections (excluding case studies):', sectionSizes);
 console.log(`Cheat sheet: ${cheat.reduce((n, g) => n + g.cards.length, 0)} cards, ${cheatFacts} entries`);
 console.log(`Labs: ${labs.length}, practising ${labSkills.size} of ${allSkills.size} official skills`);
 console.log(`Notes: ${sections.length} sections, ${noteWords} words in English`);
+console.log(`Why wrong: ${whyReasons} reasons on ${whyQuestions} questions`);
 console.log('Correct option noticeably longest:', standout);
 console.log('By domain:', counts.byDomain);
 console.log('By type:  ', counts.byType);

@@ -68,7 +68,12 @@
             (change)="choose($index)"
           />
           <span class="letter">{{ letters[$index] }}</span>
-          <span>{{ opt }}</span>
+          <span>
+            {{ opt }}
+            @if (reasons()[$index]; as reason) {
+              <span class="why-not">✗ <app-rich-text [text]="reason" /></span>
+            }
+          </span>
         </label>
       }
     </div>
@@ -85,7 +90,12 @@
             (change)="choose($index)"
           />
           <span class="letter">{{ letters[$index] }}</span>
-          <span>{{ opt }}</span>
+          <span>
+            {{ opt }}
+            @if (reasons()[$index]; as reason) {
+              <span class="why-not">✗ <app-rich-text [text]="reason" /></span>
+            }
+          </span>
         </label>
       }
     </div>

@@ -10,14 +10,17 @@ import {
 import { Question } from '../data/schema';
 import { Answer, isCorrect } from '../core/quiz-logic';
 import { Shortcut, registerShortcuts } from '../core/shortcuts';
+import { WhyWrong } from '../core/why-wrong';
 import { Language } from '../i18n/language';
 import { RomanContent } from '../i18n/roman-content';
+import { RichText } from './rich-text';
 
 const LETTERS = 'ABCDEFGHIJ';
 
 @Component({
   selector: 'app-question-view',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RichText],
   templateUrl: './question-view.html',
   styleUrl: './question-view.css',
 })
@@ -34,6 +37,7 @@ export class QuestionView {
   protected readonly letters = LETTERS;
   protected readonly t = inject(Language).t;
   private readonly roman = inject(RomanContent);
+  private readonly why = inject(WhyWrong);
 
   /** The question in the chosen language. Answers and keys are the same in every language. */
   protected readonly shown = computed(() => this.roman.question(this.question()));
@@ -85,6 +89,11 @@ export class QuestionView {
     const ans = q.ans as number[];
     return (q.items ?? []).map((item, i) => ({ item, target: q.targets?.[ans[i]] ?? '' }));
   });
+
+  /** Study: why the options are wrong, in the order shown. Not every question has reasons. */
+  protected readonly reasons = computed(() =>
+    this.study() && this.reveal() ? this.why.reasons(this.question()) : [],
+  );
 
   protected readonly expectedIndices = computed(() => this.shown().ans as number[]);
   protected readonly expectedYesNo = computed(() => this.shown().ans as boolean[]);

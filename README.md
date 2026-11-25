@@ -9,6 +9,7 @@ explanation and a Microsoft Learn link.
 
 ## Features
 
+- **Study** — every question by section, with flashcards; many show why each wrong option is wrong.
 - **Practice** — filter by domain, difficulty and question type; each answer is checked immediately
   with an explanation.
 - **Plan** — exam date, daily tasks, readiness estimate, mock history and the official skills checklist.
