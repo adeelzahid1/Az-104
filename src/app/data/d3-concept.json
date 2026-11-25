@@ -4,6 +4,7 @@
   "sub": "VM sizing",
   "type": "mcq",
   "diff": 1,
+  "concept": true,
   "q": "A database VM needs more memory. You change its size from D4s_v5 to E8s_v5. What kind of scaling is this?",
   "opts": [
    "Horizontal scaling (out)",
@@ -22,6 +23,7 @@
   "sub": "VMSS",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A stateless web tier has unpredictable peaks, and users must not notice when capacity changes. Which approach fits best?",
   "opts": [
    "Scale up one large VM during peaks",
@@ -40,6 +42,7 @@
   "sub": "VM operations",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Test VMs are used on weekdays from 08:00 to 18:00. You want to cut their cost with the least effort and keep their disks and settings. What do you do?",
   "opts": [
    "Delete them every evening and recreate them every morning with a template",
@@ -58,6 +61,7 @@
   "sub": "App Service",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A small public website needs a custom domain with TLS and no autoscale or slots. Which App Service tier is the cheapest that fits?",
   "opts": [
    "Free",
@@ -76,6 +80,7 @@
   "sub": "Containers",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A container processes queue messages that arrive a few times a day. It should cost nothing when idle, and you don't want to manage servers. What do you use?",
   "opts": [
    "A VM scale set with a minimum of one instance",
@@ -94,6 +99,7 @@
   "sub": "Bicep",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "What does a deployment stack add compared with a normal Bicep deployment?",
   "opts": [
    "It deploys resources faster by running all of them in parallel, without dependencies",
@@ -112,6 +118,7 @@
   "sub": "Bicep",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You remove a storage account from a Bicep file and update its deployment stack with --action-on-unmanage detachAll. What happens to the account?",
   "opts": [
    "It is deleted with its data",
@@ -130,6 +137,7 @@
   "sub": "Bicep",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A deployment stack must let administrators change its resources but stop them from deleting them. Which deny settings mode do you use?",
   "opts": [
    "none",
@@ -148,6 +156,7 @@
   "sub": "Bicep",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "A deployment stack uses denyWriteAndDelete. It manages storage account st1. Answer Yes or No:",
   "stmts": [
    "An Owner who isn't an excluded principal can delete st1 in the portal",
@@ -169,6 +178,7 @@
   "sub": "VM creation",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "What is the default security type for a new Generation 2 VM created in the portal from an image that supports it?",
   "opts": [
    "Standard",
@@ -187,6 +197,7 @@
   "sub": "VM sizing",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A Trusted launch VM must be resized to a family that doesn't support Trusted launch. The resize isn't offered. What is the reason?",
   "opts": [
    "Resizing needs an availability set",
@@ -205,6 +216,7 @@
   "sub": "VM availability",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A company must be sure that 20 VMs of one size can be started in a region at any time, even when capacity is tight. What do you create?",
   "opts": [
    "A reserved VM instance for three years",
@@ -223,6 +235,7 @@
   "sub": "VM availability",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "Answer Yes or No about on-demand capacity reservations:",
   "stmts": [
    "You pay for the reserved capacity even when no VM uses it",
@@ -244,6 +257,7 @@
   "sub": "Deployment slots",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
   "q": "Solution: You scale the plan up to Standard, create a staging slot, deploy to it and swap. Does this meet the goal?",
   "opts": [
@@ -261,6 +275,7 @@
   "sub": "Deployment slots",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "A web app runs on an App Service plan in the Basic (B1) tier. You must release new versions with no downtime and be able to return quickly to the previous version.",
   "q": "Solution: You keep the Basic plan, scale out to three instances and deploy to the app directly. Does this meet the goal?",
   "opts": [
@@ -278,6 +293,7 @@
   "sub": "VMSS",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Profile: Weekdays (Mon-Fri)    min 2   max 10   default 4\n  Scale out: avg CPU > 75% for 10 min   -> increase count by 2\n  Scale in:  avg CPU < 25% for 10 min   -> decrease count by 1\nProfile: Weekend (Sat-Sun)     min 1   max 3    default 1",
   "q": "Review the autoscale settings of a VM scale set. It has 4 instances now, and today is a Tuesday. Answer Yes or No:",
   "stmts": [
@@ -300,6 +316,7 @@
   "sub": "Bicep",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "code": "@allowed(['test', 'prod'])\nparam env string\n\nresource st 'Microsoft.Storage/storageAccounts@2023-05-01' = {\n  name: 'st${uniqueString(resourceGroup().id)}'\n  location: resourceGroup().location\n  kind: 'StorageV2'\n  sku: { name: env == 'prod' ? 'Standard_GRS' : 'Standard_LRS' }\n}",
   "q": "What does this Bicep file deploy when it's run with env = 'test'?",
   "opts": [
@@ -319,6 +336,7 @@
   "sub": "Bicep",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "code": "resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {\n  name: 'vm1'\n  location: location\n  properties: {\n    // ...\n    networkProfile: { networkInterfaces: [ { id: nic.id } ] }\n  }\n}\n\nresource nic 'Microsoft.Network/networkInterfaces@2024-05-01' = {\n  name: 'vm1-nic'\n  // ...\n}",
   "q": "How does this Bicep file make sure the NIC is created before the VM?",
   "opts": [
@@ -338,6 +356,7 @@
   "sub": "VM operations",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "code": "Stop-AzVM -ResourceGroupName RG1 -Name vm1 -Force\n$vm = Get-AzVM -ResourceGroupName RG1 -Name vm1\n$vm.HardwareProfile.VmSize = 'Standard_E8s_v5'\nUpdate-AzVM -ResourceGroupName RG1 -VM $vm\nStart-AzVM -ResourceGroupName RG1 -Name vm1",
   "q": "What does this PowerShell script do?",
   "opts": [

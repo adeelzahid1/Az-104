@@ -4,6 +4,7 @@
   "sub": "Backup policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A VM is backed up once a day at 23:00. Its disk is corrupted at 20:00 the next day. How much data can be lost with the backup alone?",
   "opts": [
    "Up to 3 hours",
@@ -22,6 +23,7 @@
   "sub": "Backup policy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A VM needs an RPO of 4 hours with Azure Backup. Which policy do you use?",
   "opts": [
    "A Standard policy with a daily schedule",
@@ -40,6 +42,7 @@
   "sub": "Backup vs ASR",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "An app may lose at most 15 minutes of data and must run again within 1 hour after a regional outage. Which solution fits?",
   "opts": [
    "A daily VM backup in a GRS vault with cross-region restore",
@@ -58,6 +61,7 @@
   "sub": "Backup policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Daily backups are kept 30 days and monthly backups 12 months. Today you need a file as it was exactly 45 days ago. What can you restore?",
   "opts": [
    "The daily backup from exactly 45 days ago",
@@ -76,6 +80,7 @@
   "sub": "Restore",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A VM must be restored fast after a bad update this morning. The last backup ran 8 hours ago, and instant restore is set to 2 days. Why is the restore quick?",
   "opts": [
    "It uses the snapshot that is still kept with the disks",
@@ -94,6 +99,7 @@
   "sub": "Site Recovery",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "After a ransomware attack at 09:00, you notice at 13:00 that all replicated VMs are encrypted in both regions. Site Recovery keeps recovery points for 24 hours. What is the best option there?",
   "opts": [
    "Fail over to the Latest recovery point",
@@ -112,6 +118,7 @@
   "sub": "Backup and ASR",
   "type": "match",
   "diff": 2,
+  "concept": true,
   "q": "Match each requirement to the term.",
   "items": [
    "The app must run again within 2 hours",
@@ -136,6 +143,7 @@
   "sub": "Backup vaults",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "A Recovery Services vault in West Europe is GRS with cross-region restore. VM1 (West Europe) was backed up last night. The whole region fails at noon. Answer Yes or No:",
   "stmts": [
    "VM1 can be restored in North Europe, the paired region",
@@ -157,6 +165,7 @@
   "sub": "Log Analytics",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You change a Log Analytics table from the Analytics plan to the Auxiliary plan. What happens to alert rules that use the table?",
   "opts": [
    "They keep working but cost more for every query",
@@ -175,6 +184,7 @@
   "sub": "Log Analytics",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "How often can you switch the plan of one Log Analytics table?",
   "opts": [
    "Once per hour",
@@ -193,6 +203,7 @@
   "sub": "Log Analytics",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A table with 90 days of analytics retention is switched to the Basic plan. Total retention stays the same. What happens to data that is older than 30 days?",
   "opts": [
    "It is deleted at once",
@@ -211,6 +222,7 @@
   "sub": "Azure Files backup",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Snapshots of an Azure file share must survive even if someone deletes the storage account. Which kind of backup do you configure?",
   "opts": [
    "Snapshot backup only",
@@ -229,6 +241,7 @@
   "sub": "Azure Files backup",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "Answer Yes or No about backups of Azure file shares:",
   "stmts": [
    "With snapshot backup, the data is copied to the vault",
@@ -250,6 +263,7 @@
   "sub": "Alerts",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "40 VMs in RG1, and any VM added later, must raise an alert at 90% CPU. Which option needs the least administrative effort?",
   "opts": [
    "One metric alert rule per VM, created by a script",
@@ -268,6 +282,7 @@
   "sub": "Backup",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Every new VM with the tag backup=yes must be protected automatically, in every subscription. Which option needs the least administrative effort?",
   "opts": [
    "A weekly compliance report and manual backup configuration",
@@ -286,6 +301,7 @@
   "sub": "Alerts",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
   "q": "Solution: You create an alert processing rule scoped to RG-Prod that suppresses notifications on a monthly schedule. Does this meet the goal?",
   "opts": [
@@ -303,6 +319,7 @@
   "sub": "Alerts",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "During a monthly maintenance window, alert notifications from all VMs in RG-Prod must stop. Alerts must still be recorded, and no alert rule may be changed.",
   "q": "Solution: You run a script that disables all alert rules in RG-Prod during the window and enables them afterwards. Does this meet the goal?",
   "opts": [
@@ -320,6 +337,7 @@
   "sub": "Backup policy",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Frequency:        Every 4 hours, start 08:00, duration 12 hours\nInstant restore:  keep snapshots 3 days\nDaily:            30 days\nWeekly:           Sunday, 12 weeks\nMonthly:          First Sunday, 12 months",
   "q": "Review the backup policy of vm1. Answer Yes or No:",
   "stmts": [
@@ -342,6 +360,7 @@
   "sub": "KQL",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "code": "Heartbeat\n| where TimeGenerated > ago(24h)\n| summarize LastSeen = max(TimeGenerated) by Computer\n| where LastSeen < ago(10m)",
   "q": "What does this query return?",
   "opts": [
@@ -361,6 +380,7 @@
   "sub": "KQL",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "code": "Event\n| where EventLevelName == \"Error\"\n| summarize Errors = count() by Computer, bin(TimeGenerated, 1h)\n| where Errors > 5",
   "q": "What does the result of this query show?",
   "opts": [

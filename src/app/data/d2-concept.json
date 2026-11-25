@@ -4,6 +4,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "An account must use the archive tier and let an app read from a second region at any time. Which redundancy do you choose?",
   "opts": [
    "RA-GZRS",
@@ -22,6 +23,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "One account must survive a zone outage without failover, be readable in a second region, and store blobs in the archive tier. What do you tell the team?",
   "opts": [
    "RA-GZRS meets all three needs",
@@ -40,6 +42,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "By law, data may not leave one Azure region, but the account must keep working when one availability zone fails. Which redundancy do you choose?",
   "opts": [
    "LRS",
@@ -58,6 +61,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 1,
+  "concept": true,
   "q": "Build servers write temporary files that can be recreated at any time. Cost matters most. Which redundancy do you choose?",
   "opts": [
    "LRS",
@@ -76,6 +80,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "You start an unplanned customer-managed failover of a GRS account. What is true after it completes?",
   "opts": [
    "The account is GRS and the original region is the new secondary",
@@ -94,6 +99,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "The primary region of a GRS account fails at 10:30. The account's Last Sync Time is 10:12. Which writes could be lost after an unplanned failover?",
   "opts": [
    "Writes before 10:12",
@@ -112,6 +118,7 @@
   "sub": "Storage design",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "An app needs very low latency for block blobs and must survive a zone outage in its region. Which account do you create?",
   "opts": [
    "Standard GPv2 with GRS",
@@ -130,6 +137,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "An account with GZRS holds an Azure file share. Users ask to read the share from the secondary region during normal operation. What do you answer?",
   "opts": [
    "Change the account to RA-GZRS, which makes the share readable",
@@ -148,6 +156,7 @@
   "sub": "Redundancy",
   "type": "yesno",
   "diff": 2,
+  "concept": true,
   "q": "Answer Yes or No about storage redundancy:",
   "stmts": [
    "RA-GRS lets an app read the secondary without a failover",
@@ -169,6 +178,7 @@
   "sub": "Access tiers",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "You upload a blob straight to archive and delete it 100 days later. What do you pay on top of the storage used?",
   "opts": [
    "Nothing, because archive has no minimum",
@@ -187,6 +197,7 @@
   "sub": "Storage pricing",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Scans are read once a month at most, must open within seconds, and are kept for 120 days. Which tier costs least?",
   "opts": [
    "Hot",
@@ -205,6 +216,7 @@
   "sub": "SAS",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A partner needs to read one blob for 24 hours. You must not use an account key, and the access must be as small as possible. What do you give them?",
   "opts": [
    "An account SAS for the blob service with read and list permissions",
@@ -223,6 +235,7 @@
   "sub": "File Sync",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A branch file server is running out of disk. Users must keep the same UNC path and fast access to recent files, and you want little ongoing work. What do you do?",
   "opts": [
    "Copy old files to Blob storage with AzCopy every month",
@@ -241,6 +254,7 @@
   "sub": "Azure Files identity",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "How many identity sources can one storage account use for identity-based access to Azure Files?",
   "opts": [
    "One",
@@ -259,6 +273,7 @@
   "sub": "Azure Files identity",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A company has only cloud-only Microsoft Entra users and no Active Directory. They must sign in to an Azure file share over SMB with their own identity. What do you enable?",
   "opts": [
    "AD DS authentication",
@@ -277,6 +292,7 @@
   "sub": "Azure Files identity",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You enabled Microsoft Entra Kerberos for a file share. Users with the right roles still can't connect. A Conditional Access policy requires MFA for all cloud apps. What do you do?",
   "opts": [
    "Exclude the storage account's Entra app from the MFA policy",
@@ -295,6 +311,7 @@
   "sub": "Azure Files",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You raised the provisioned IOPS of a provisioned v2 file share at 09:00 and want to lower it again. What applies?",
   "opts": [
    "You can lower it at once, as often as you like, at no extra cost",
@@ -313,6 +330,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "For a disaster recovery drill you must fail over a GZRS account without losing data and keep its geo-redundancy. Both regions are healthy. What do you use?",
   "opts": [
    "Unplanned failover",
@@ -331,6 +349,7 @@
   "sub": "Redundancy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "The primary region of a GRS account has been down for hours. Why can't you use a planned failover?",
   "opts": [
    "It works only for premium accounts",
@@ -349,6 +368,7 @@
   "sub": "Redundancy",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "Answer Yes or No about a planned customer-managed failover of a GZRS account:",
   "stmts": [
    "Clients can write to the account during the failover",
@@ -370,6 +390,7 @@
   "sub": "Storage network",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A storage account and a key vault are associated with a network security perimeter in Transition mode. Security wants public traffic that no rule allows to be blocked. What do you do?",
   "opts": [
    "Delete all private endpoints of both resources",
@@ -388,6 +409,7 @@
   "sub": "Storage network",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "What is the main purpose of a network security perimeter?",
   "opts": [
    "To filter traffic between the subnets of a virtual network",
@@ -406,6 +428,7 @@
   "sub": "Storage network",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "A storage account is in a network security perimeter in Enforced mode. Answer Yes or No:",
   "stmts": [
    "Traffic through a private endpoint needs an inbound access rule",
@@ -427,6 +450,7 @@
   "sub": "Private endpoints",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
   "q": "Solution: You enable the Microsoft.Storage service endpoint on the VMs' subnet and add a VNet rule to st1. Does this meet the goal?",
   "opts": [
@@ -444,6 +468,7 @@
   "sub": "Private endpoints",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "ctx": "VMs in VNet1 and on-premises servers (connected over a site-to-site VPN) must reach storage account st1 on a private IP address.",
   "q": "Solution: You create a private endpoint for st1 in VNet1, link the privatelink DNS zone to VNet1, and forward on-premises DNS queries for the zone to a DNS Private Resolver. Does this meet the goal?",
   "opts": [
@@ -461,6 +486,7 @@
   "sub": "Storage firewall",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Public network access:   Enabled from selected networks\nVirtual networks:        VNet1/SubnetA\nIP rules:                203.0.113.0/24\nExceptions:              [x] Allow trusted Microsoft services\nPrivate endpoints:       none",
   "q": "Review the networking settings of storage account st1. Answer Yes or No:",
   "stmts": [

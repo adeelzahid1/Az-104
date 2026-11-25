@@ -24,6 +24,8 @@ export interface Question {
   q: string;
   /** Code, command or output shown with the question (Bicep, JSON, KQL, CLI, tables). */
   code?: string;
+  /** Tests understanding of a concept rather than recall (the d*-concept.json files). */
+  concept?: true;
   /** Case study this question belongs to (see cases.json). Parts of a case are served together. */
   caseId?: string;
   /** mcq/multi options. */

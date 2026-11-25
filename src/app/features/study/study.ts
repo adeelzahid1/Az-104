@@ -61,6 +61,8 @@ export class Study {
   readonly f = input<string>();
   /** Optional ?m=cards query parameter: start with flashcards. */
   readonly m = input<string>();
+  /** Optional ?c=1 query parameter: only concept questions. */
+  readonly c = input<string>();
 
   private readonly bank = inject(QuestionBank);
   private readonly progress = inject(Progress);
@@ -99,6 +101,7 @@ export class Study {
   protected readonly search = signal('');
   protected readonly level = signal<Level>(0);
   protected readonly filter = linkedSignal<Filter>(() => asFilter(this.f()));
+  protected readonly conceptOnly = linkedSignal(() => this.c() === '1');
   protected readonly mode = linkedSignal<'list' | 'cards'>(() => (this.m() === 'cards' ? 'cards' : 'list'));
 
   private readonly view = computed(() => ({
@@ -106,6 +109,7 @@ export class Study {
     search: this.search(),
     level: this.level(),
     filter: this.filter(),
+    concept: this.conceptOnly(),
     mode: this.mode(),
     loaded: this.all() !== null,
   }));
@@ -144,6 +148,7 @@ export class Study {
     const bookmarked = this.study.bookmarkedIds();
     const now = this.now();
     return {
+      concept: all.filter((q) => q.concept).length,
       due: all.filter((q) => this.study.isDue(q.id, now)).length,
       bookmarked: all.filter((q) => bookmarked.has(q.id)).length,
       mistakes: all.filter((q) => mistakes.has(q.id)).length,
@@ -164,6 +169,7 @@ export class Study {
     const term = this.search().trim().toLowerCase();
     const level = this.level();
     const filter = this.filter();
+    const conceptOnly = this.conceptOnly();
     const now = this.now();
     const understood = this.study.understoodIds();
     const bookmarked = this.study.bookmarkedIds();
@@ -171,6 +177,7 @@ export class Study {
     return (this.bySection().get(this.selected()) ?? []).filter(
       (q) =>
         (level === 0 || q.diff === level) &&
+        (!conceptOnly || !!q.concept) &&
         (filter === 'all' ||
           (filter === 'todo' && !understood.has(q.id)) ||
           (filter === 'bookmarked' && bookmarked.has(q.id)) ||
@@ -231,16 +238,23 @@ export class Study {
   protected choose(
     id: string,
     filter: Filter = this.selected() === ALL && id !== ALL ? 'all' : this.filter(),
+    conceptOnly = this.conceptOnly(),
   ): void {
     this.now.set(Date.now());
     this.selected.set(id);
     this.filter.set(filter);
+    this.conceptOnly.set(conceptOnly);
     this.syncUrl();
   }
 
   protected setFilter(value: string): void {
     this.now.set(Date.now());
     this.filter.set(asFilter(value));
+    this.syncUrl();
+  }
+
+  protected toggleConcept(): void {
+    this.conceptOnly.update((on) => !on);
     this.syncUrl();
   }
 
@@ -256,6 +270,7 @@ export class Study {
         s: this.selected(),
         f: this.filter() === 'all' ? null : this.filter(),
         m: this.mode() === 'cards' ? 'cards' : null,
+        c: this.conceptOnly() ? 1 : null,
       },
       replaceUrl: true,
     });

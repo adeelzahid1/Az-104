@@ -26,6 +26,22 @@ function seeded(seed: number): () => number {
   };
 }
 
+describe('concept filter', () => {
+  it('picks only concept questions', () => {
+    const pool: Question[] = [mcq, { ...mcq, id: 'D1-002', concept: true }];
+    const config: QuizConfig = {
+      mode: 'practice',
+      domains: [1],
+      count: 5,
+      diff: 0,
+      type: 'concept',
+      mistakesOnly: false,
+      timed: false,
+    };
+    expect(pickQuestions(pool, config, new Set()).map((q) => q.id)).toEqual(['D1-002']);
+  });
+});
+
 describe('isCorrect', () => {
   it('checks single-answer questions', () => {
     expect(isCorrect(mcq, [1])).toBeTrue();

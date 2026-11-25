@@ -14,19 +14,29 @@
       <button
         type="button"
         class="side-item"
-        [class.active]="selected() === allSections && filter() === 'all'"
-        (click)="choose(allSections, 'all')"
+        [class.active]="selected() === allSections && filter() === 'all' && !conceptOnly()"
+        (click)="choose(allSections, 'all', false)"
       >
         <span class="num">∗</span>
         <span class="name">{{ ts.allQuestions }}</span>
         <span class="badge">{{ stats().get(allSections) ?? '…' }}</span>
       </button>
+      <button
+        type="button"
+        class="side-item"
+        [class.active]="selected() === allSections && filter() === 'all' && conceptOnly()"
+        (click)="choose(allSections, 'all', true)"
+      >
+        <span class="num">∗</span>
+        <span class="name">{{ ts.conceptOnly }}</span>
+        <span class="badge">{{ quickCounts()?.concept ?? '…' }}</span>
+      </button>
       @for (name of quickFilters; track name) {
         <button
           type="button"
           class="side-item"
-          [class.active]="selected() === allSections && filter() === name"
-          (click)="choose(allSections, name)"
+          [class.active]="selected() === allSections && filter() === name && !conceptOnly()"
+          (click)="choose(allSections, name, false)"
         >
           <span class="num">∗</span>
           <span class="name">{{ ts.filters[name] }}</span>
@@ -123,6 +133,11 @@
           <option [value]="name" [selected]="filter() === name">{{ ts.filters[name] }}</option>
         }
       </select>
+      <div class="seg">
+        <button type="button" [class.on]="conceptOnly()" [attr.aria-pressed]="conceptOnly()" (click)="toggleConcept()">
+          {{ conceptOnly() ? '✓ ' : '' }}{{ ts.conceptOnly }}
+        </button>
+      </div>
       <div class="seg" role="group" [attr.aria-label]="ts.modeLabel">
         <button type="button" [class.on]="mode() === 'list'" [attr.aria-pressed]="mode() === 'list'" (click)="setMode('list')">
           {{ ts.list }}

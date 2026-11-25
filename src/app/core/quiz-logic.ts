@@ -7,8 +7,11 @@ import { DOMAINS, Difficulty, Question, QuestionType } from '../data/schema';
  */
 export type Answer = (number | null)[] | (boolean | null)[];
 
-/** 'case' selects whole case studies; a question type selects standalone questions of that type. */
-export type TypeFilter = 'all' | 'case' | QuestionType;
+/**
+ * 'case' selects whole case studies, 'concept' the concept questions; a question type selects
+ * standalone questions of that type.
+ */
+export type TypeFilter = 'all' | 'case' | 'concept' | QuestionType;
 
 export interface QuizConfig {
   mode: 'practice' | 'exam';
@@ -27,6 +30,19 @@ export interface QuizConfig {
 export const CASE_STUDY_MIN_EXAM_SIZE = 30;
 
 export const domainOf = (q: Question): number => Number(q.id.charAt(1));
+
+function matchesType(q: Question, type: TypeFilter): boolean {
+  switch (type) {
+    case 'all':
+      return true;
+    case 'case':
+      return !!q.caseId;
+    case 'concept':
+      return !!q.concept;
+    default:
+      return q.type === type;
+  }
+}
 
 /** Number of separate answers a question needs, or undefined when one selection is enough. */
 function slotCount(q: Question): number | undefined {
@@ -134,8 +150,7 @@ export function pickQuestions(
         diffOk(q) &&
         mistakes.has(q.id) &&
         (!config.sub || q.sub === config.sub) &&
-        (config.type === 'all' ||
-          (config.type === 'case' ? !!q.caseId : q.type === config.type)),
+        matchesType(q, config.type),
     );
     return shuffle(missed, rnd).slice(0, config.count);
   }
@@ -147,7 +162,7 @@ export function pickQuestions(
         inDomains(q) &&
         diffOk(q) &&
         q.sub === config.sub &&
-        (config.type === 'all' || (config.type === 'case' ? !!q.caseId : q.type === config.type)),
+        matchesType(q, config.type),
     );
     return shuffle(matching, rnd).slice(0, config.count);
   }
@@ -157,7 +172,7 @@ export function pickQuestions(
   const singles = units
     .filter((u) => !u[0]?.caseId)
     .map((u) => u[0])
-    .filter((q) => diffOk(q) && (config.type === 'all' || q.type === config.type));
+    .filter((q) => diffOk(q) && matchesType(q, config.type));
 
   if (config.mode === 'practice') {
     if (config.type === 'case') return fill(shuffle(caseUnits, rnd), config.count);

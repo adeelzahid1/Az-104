@@ -4,6 +4,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "User1 has Contributor on RG1. VM1 in RG1 has a ReadOnly lock. Can User1 restart VM1?",
   "opts": [
    "Yes, because Contributor includes the restart action",
@@ -22,6 +23,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "User1 is Owner of RG1. A deployment stack has created a deny assignment on VM1 in RG1 that covers write actions. User1 tries to resize VM1. What happens?",
   "opts": [
    "The resize works, because Owner overrides deny assignments",
@@ -40,6 +42,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "User1 has a custom role on RG1 with Actions \"Microsoft.Compute/*\" and NotActions \"Microsoft.Compute/virtualMachines/delete\". User1 also has Virtual Machine Contributor on the subscription. Can User1 delete VM1 in RG1?",
   "opts": [
    "No, because NotActions at the closer scope wins",
@@ -58,6 +61,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "User1 must upload blobs to one container in the Azure portal by signing in with Entra ID. Which assignments does User1 need?",
   "opts": [
    "Contributor on the storage account",
@@ -76,6 +80,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "GroupA has Contributor on management group MG1. User1 is in GroupA and also has Reader directly on RG1, which is under MG1. User1 is removed from GroupA. What access is left?",
   "opts": [
    "Contributor on RG1 only",
@@ -94,6 +99,7 @@
   "sub": "RBAC",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "User1 has exactly these assignments: Reader on Sub1, and Virtual Machine Contributor on RG1 (in Sub1). Answer Yes or No:",
   "stmts": [
    "User1 can start a VM in RG1",
@@ -115,6 +121,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A Global Administrator with no Azure roles turns on \"Access management for Azure resources\". What can they do right away in every subscription?",
   "opts": [
    "Create and delete any resource",
@@ -133,6 +140,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "GroupA has Reader on RG1. GroupB is a member of GroupA. User1 is a member of GroupB only. What can User1 do?",
   "opts": [
    "View the resources in RG1, because role assignments are transitive for groups",
@@ -151,6 +159,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Storage account key access (shared key) is disabled on st1. User1 has Contributor on st1 and opens a container in the portal. What happens?",
   "opts": [
    "The blobs are listed with the account key",
@@ -169,6 +178,7 @@
   "sub": "RBAC",
   "type": "multi",
   "diff": 2,
+  "concept": true,
   "q": "VM1 is in RG1, RG1 is in Sub1, and Sub1 is under MG1. Which TWO assignments on their own let User1 restart VM1?",
   "opts": [
    "Virtual Machine Contributor on MG1",
@@ -188,6 +198,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "At which scope can you NOT create an eligible Azure role assignment with PIM?",
   "opts": [
    "Management group",
@@ -206,6 +217,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "An automation service principal and an administrator both need Contributor on RG1. The administrator should have it only when needed. What do you create?",
   "opts": [
    "An eligible assignment for both",
@@ -224,6 +236,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "User1 has an eligible Contributor assignment on RG1 and no other roles. User1 tries to stop a VM in RG1 and gets an authorization error. Why?",
   "opts": [
    "Eligible users can only read resources",
@@ -242,6 +255,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Users may read only blobs that have the blob index tag Project=Alpha. What do you use?",
   "opts": [
    "An Azure Policy with the Audit effect",
@@ -260,6 +274,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "User1 has Storage Blob Data Reader on st1 with a condition that allows only Project=Alpha blobs. User1 also gets Storage Blob Data Reader on st1 without a condition. What can User1 read?",
   "opts": [
    "Only the Project=Alpha blobs, because the condition wins",
@@ -278,6 +293,7 @@
   "sub": "RBAC",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "To which of these role assignments can you add an ABAC condition?",
   "opts": [
    "Virtual Machine Contributor on RG1",
@@ -296,6 +312,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "In every subscription, resources tagged env=prod must not be deleted by anyone, but administrators must still be able to change them. What fits best with the least effort?",
   "opts": [
    "A CanNotDelete lock on every subscription",
@@ -314,6 +331,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A policy with the denyAction effect protects VM1. An Owner deletes VM1 with Azure CLI. What is the result?",
   "opts": [
    "VM1 is deleted and marked non-compliant",
@@ -332,6 +350,7 @@
   "sub": "Policy",
   "type": "multi",
   "diff": 3,
+  "concept": true,
   "q": "Which TWO statements about the denyAction policy effect are true?",
   "opts": [
    "Delete is the only action it can block",
@@ -351,6 +370,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Management group MG1 has an Allowed locations policy (Deny, West Europe only) with RG1 excluded. An Owner deploys a storage account to RG1 in East US. What happens?",
   "opts": [
    "The deployment succeeds, because RG1 is excluded",
@@ -369,6 +389,7 @@
   "sub": "Locks",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "RG1 has a ReadOnly lock. A remediation task of a Modify policy must add a tag to the resources in RG1. What happens?",
   "opts": [
    "The tags are added, because policy runs outside locks",
@@ -387,6 +408,7 @@
   "sub": "Tags",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Today you assign the policy \"Inherit a tag from the resource group\" (Modify). VM1 already exists in RG1 without the tag. RG1 has the tag. When does VM1 get it?",
   "opts": [
    "At once, when the policy is assigned",
@@ -405,6 +427,7 @@
   "sub": "Locks",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "VM1 in RG1 has a CanNotDelete lock. RG1 itself has no lock. An Owner deletes RG1. What happens?",
   "opts": [
    "RG1 and everything in it is deleted",
@@ -423,6 +446,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Two policies are assigned to Sub1: a Modify policy that adds the tag costcenter=100, and a Deny policy that requires the costcenter tag. A user creates a VM without the tag. What happens?",
   "opts": [
    "The creation is denied, because Deny runs first",
@@ -441,6 +465,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A policy exemption for VM1 reaches its expiration date. The policy has the Audit effect. What happens to VM1?",
   "opts": [
    "It is deleted at the next evaluation",
@@ -459,6 +484,7 @@
   "sub": "Policy",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "Sub1 has a policy that denies public IP addresses, with RG1 excluded. A public IP already exists in RG2. Answer Yes or No:",
   "stmts": [
    "A Contributor can create a public IP in RG1",
@@ -480,6 +506,7 @@
   "sub": "Locks",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You move VM1 from RG1 to RG2. RG1 has a ReadOnly lock. You are Owner of both groups. What happens?",
   "opts": [
    "The move succeeds, because you are Owner of both",
@@ -498,6 +525,7 @@
   "sub": "Locks",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Storage account st1 has a ReadOnly lock. User1 has Storage Blob Data Contributor and uploads a blob with Entra ID sign-in. What happens?",
   "opts": [
    "The upload fails, because the lock blocks writes",
@@ -516,6 +544,7 @@
   "sub": "Management groups",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "MG1 has a Deny policy and a Reader assignment for GroupA. MG2 has neither. You move Sub1 from MG1 to MG2. What is true afterwards?",
   "opts": [
    "The policy and the Reader access stay with Sub1",
@@ -534,6 +563,7 @@
   "sub": "Entra users",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "You move legacy apps to Azure VMs. They need domain join, LDAP and Kerberos. You don't want to run or patch domain controllers. What do you use?",
   "opts": [
    "Microsoft Entra ID with Entra join",
@@ -552,6 +582,7 @@
   "sub": "Entra users",
   "type": "multi",
   "diff": 2,
+  "concept": true,
   "q": "Which TWO are limits of Microsoft Entra Domain Services compared with self-managed AD DS?",
   "opts": [
    "You can't extend the schema",
@@ -571,6 +602,7 @@
   "sub": "Entra users",
   "type": "match",
   "diff": 2,
+  "concept": true,
   "q": "Match each description to the identity service.",
   "items": [
    "You deploy and patch the domain controllers yourself",
@@ -595,6 +627,7 @@
   "sub": "Entra users",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Employees have accounts in on-premises AD DS. They must use the same identity for Microsoft 365, and accounts must still be created on-premises. What do you set up?",
   "opts": [
    "A second set of cloud-only accounts",
@@ -613,6 +646,7 @@
   "sub": "Entra users",
   "type": "yesno",
   "diff": 2,
+  "concept": true,
   "q": "Answer Yes or No about Microsoft Entra ID:",
   "stmts": [
    "It uses organizational units (OUs) and group policy like AD DS",
@@ -634,6 +668,7 @@
   "sub": "Management groups",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "60 subscriptions, and every future one, must allow only approved VM sizes. Which option needs the least administrative effort?",
   "opts": [
    "Assign the policy to each subscription with a script",
@@ -652,6 +687,7 @@
   "sub": "Custom roles",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Helpdesk staff must be able to view and restart the VMs in RG1, and nothing more. Which assignment follows least privilege?",
   "opts": [
    "Virtual Machine Contributor on RG1",
@@ -670,6 +706,7 @@
   "sub": "Licenses",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Licenses must follow users as they join and leave the Sales department. Which option needs the least administrative effort?",
   "opts": [
    "Assign licenses to a dynamic group with a department rule",
@@ -688,6 +725,7 @@
   "sub": "Cost management",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "When spending on the development subscription reaches 100% of its budget, its VMs must be deallocated automatically. Which option needs the least administrative effort?",
   "opts": [
    "A budget alone, because it stops all resources when spending reaches 100%",
@@ -706,6 +744,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
   "q": "Solution: You put a ReadOnly lock on the subscription. Does this meet the goal?",
   "opts": [
@@ -723,6 +762,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
   "q": "Solution: You assign the built-in policy \"Allowed virtual machine size SKUs\" to the subscription with the approved sizes. Does this meet the goal?",
   "opts": [
@@ -740,6 +780,7 @@
   "sub": "Policy",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "Your subscription has development VMs. Nobody, including subscription Owners, may create a VM larger than Standard_B2ms.",
   "q": "Solution: You create a custom role for the developers that allows VM creation and assign it on the subscription. Does this meet the goal?",
   "opts": [
@@ -757,6 +798,7 @@
   "sub": "RBAC",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Principal                Role                          Scope\n-----------------------  ----------------------------  -----\nGroupOps (Ali, Sara)     Virtual Machine Contributor   RG1\nAli                      Reader                        Sub1\nSara                     User Access Administrator     RG2",
   "q": "Review the role assignments. RG1 and RG2 are in Sub1. Answer Yes or No:",
   "stmts": [
@@ -779,6 +821,7 @@
   "sub": "Policy",
   "type": "yesno",
   "diff": 2,
+  "concept": true,
   "code": "Assignment:   Require tag \"env\"\nEffect:       Deny\nScope:        Sub1\nExclusions:   Sub1/RG-Lab\nCompliance:   40 of 50 resources compliant",
   "q": "Review the policy compliance page. Answer Yes or No:",
   "stmts": [
@@ -801,6 +844,7 @@
   "sub": "Locks",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Scope     Lock name   Type\n--------  ----------  ------------\nRG1       keep-all    CanNotDelete\nRG1/vm1   freeze-vm1  ReadOnly",
   "q": "vm1 and vm2 are in RG1. Review the locks. Answer Yes or No:",
   "stmts": [

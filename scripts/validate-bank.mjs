@@ -33,6 +33,7 @@ for (const file of readdirSync(DATA).filter((f) => /^d\d-.+\.json$/.test(f))) {
     if (!/^https:\/\/(learn\.microsoft\.com|azure\.microsoft\.com|www\.microsoft\.com)\//.test(q.link ?? '')) {
       fail('link must point to Microsoft documentation');
     }
+    if ((q.concept === true) !== file.includes('-concept')) fail('concept: true belongs on every question of the concept files');
     if (![1, 2, 3].includes(q.diff)) fail('diff must be 1, 2 or 3');
 
     switch (q.type) {

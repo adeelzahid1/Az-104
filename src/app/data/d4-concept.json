@@ -4,6 +4,7 @@
   "sub": "Subnets",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A subnet must hold 60 VMs. What is the smallest prefix that works?",
   "opts": [
    "/24",
@@ -22,6 +23,7 @@
   "sub": "IP addressing",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "How many /24 subnets fit in the VNet address space 10.0.0.0/22?",
   "opts": [
    "2",
@@ -40,6 +42,7 @@
   "sub": "Subnets",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You split 10.1.0.0/24 into four equal subnets, each of which must hold 50 VMs. Which prefix do you use?",
   "opts": [
    "/25",
@@ -58,6 +61,7 @@
   "sub": "IP addressing",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "What is the first IP address Azure can assign to a VM in the subnet 10.0.5.64/26?",
   "opts": [
    "10.0.5.64",
@@ -76,6 +80,7 @@
   "sub": "VNet peering",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "VNet1 uses 10.0.0.0/16. Which VNet can be peered with it?",
   "opts": [
    "VNet2: 10.0.128.0/17",
@@ -94,6 +99,7 @@
   "sub": "IP addressing",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A VNet has subnets Web (10.0.1.0/25), App (10.0.1.128/26) and Db (10.0.1.192/26). In which subnet is the address 10.0.1.200?",
   "opts": [
    "Web",
@@ -112,6 +118,7 @@
   "sub": "Routing",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A subnet has these routes: 10.0.0.0/8 → VPN gateway, 10.2.0.0/16 → VNet peering, 10.2.3.0/24 → virtual appliance. Where does traffic to 10.2.3.9 go?",
   "opts": [
    "VPN gateway",
@@ -130,6 +137,7 @@
   "sub": "Routing",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A subnet has these routes: 10.0.0.0/8 → VPN gateway, 10.2.0.0/16 → VNet peering, 0.0.0.0/0 → Internet. Where does traffic to 10.9.1.1 go?",
   "opts": [
    "VPN gateway",
@@ -148,6 +156,7 @@
   "sub": "Subnets",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "q": "VNet 10.0.0.0/24 has AzureBastionSubnet 10.0.0.0/26, GatewaySubnet 10.0.0.64/27 and App 10.0.0.128/25. Answer Yes or No:",
   "stmts": [
    "The App subnet has 123 usable addresses",
@@ -169,6 +178,7 @@
   "sub": "Subnets",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "You need a subnet for exactly 3 VMs and want to waste as few addresses as possible. Which prefix do you use?",
   "opts": [
    "/28",
@@ -187,6 +197,7 @@
   "sub": "NSG",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A subnet's NSG allows inbound TCP 443 from the internet. The VM's NIC has no NSG. The VM has a Standard public IP. Can internet clients reach the VM on 443?",
   "opts": [
    "No, because a NIC without an NSG denies everything",
@@ -205,6 +216,7 @@
   "sub": "Routing",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "VM1 is behind a public load balancer. You add the UDR 0.0.0.0/0 → firewall 10.0.1.4 to its subnet. Clients can no longer connect, although the NSG and probe are fine. Why?",
   "opts": [
    "The load balancer stops sending traffic to subnets that have a route table",
@@ -223,6 +235,7 @@
   "sub": "Routing",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Spoke A and Spoke B are peered with a hub that has an NVA. Spoke A's subnet has a UDR to Spoke B through the NVA. Spoke B has no route table. Packets from A reach B, but connections fail. What is missing?",
   "opts": [
    "A UDR on Spoke B back to Spoke A through the NVA",
@@ -241,6 +254,7 @@
   "sub": "NSG",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "A new VM has a Standard public IP. There is no NSG on its NIC or subnet. Can you connect with SSH from the internet?",
   "opts": [
    "Yes, because traffic isn't filtered when there is no NSG at all",
@@ -259,6 +273,7 @@
   "sub": "NSG",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "Outbound NSG rules on a subnet: priority 300 allow to service tag Storage on 443, priority 4000 deny to service tag Internet. Can VMs reach a public endpoint of Azure Storage on 443?",
   "opts": [
    "Yes, because the rule with priority 300 matches first",
@@ -277,6 +292,7 @@
   "sub": "NSG",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "VNet1 and VNet2 are peered. VM2 in VNet2 has an NSG with only default rules. Can VM1 in VNet1 connect to VM2 on TCP 1433?",
   "opts": [
    "Yes, because AllowVnetInBound includes peered address spaces",
@@ -295,6 +311,7 @@
   "sub": "Routing",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "VNet1 is peered with VNet2 (10.5.0.0/16). You add a UDR for 10.5.0.0/16 with next hop None to a subnet in VNet1. What happens to traffic from that subnet to VNet2?",
   "opts": [
    "It still uses the peering, because system routes win",
@@ -313,6 +330,7 @@
   "sub": "Troubleshooting",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "VM1 can't reach 10.4.0.10. IP flow verify says the traffic is allowed. Next hop returns None. What is the cause?",
   "opts": [
    "An NSG rule on the NIC or the subnet of VM1",
@@ -331,6 +349,7 @@
   "sub": "Troubleshoot LB",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "A public Standard load balancer shows healthy probes, but internet clients time out. The backend NSG has one custom inbound rule: allow TCP 80 from AzureLoadBalancer. What do you add?",
   "opts": [
    "An allow rule for TCP 80 from the Internet tag",
@@ -349,6 +368,7 @@
   "sub": "Troubleshooting",
   "type": "order",
   "diff": 2,
+  "concept": true,
   "q": "An internet client connects to a web server behind a public load balancer. Put the checks in the order in which the packet meets them.",
   "items": [
    "Subnet NSG",
@@ -370,6 +390,7 @@
   "sub": "NAT Gateway",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "What is the main availability difference between a Standard and a StandardV2 NAT gateway?",
   "opts": [
    "StandardV2 is zone-redundant by default, and Standard is zonal",
@@ -388,6 +409,7 @@
   "sub": "NAT Gateway",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "You want to replace a Standard NAT gateway with StandardV2. What do you do?",
   "opts": [
    "Change the SKU in place and keep the public IP",
@@ -406,6 +428,7 @@
   "sub": "NAT Gateway",
   "type": "yesno",
   "diff": 2,
+  "concept": true,
   "q": "Answer Yes or No about NAT gateways:",
   "stmts": [
    "A NAT gateway lets internet clients start connections to VMs",
@@ -427,6 +450,7 @@
   "sub": "Application Gateway",
   "type": "match",
   "diff": 2,
+  "concept": true,
   "q": "Match each job to the Application Gateway component.",
   "items": [
    "Receives requests on a port and protocol",
@@ -454,6 +478,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "One Application Gateway must send /images/* to one pool and /api/* to another for the same host name. Which rule type do you use?",
   "opts": [
    "Basic",
@@ -472,6 +497,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "One Application Gateway must serve shop.contoso.com and blog.contoso.com from different backend pools on the same port. What do you configure?",
   "opts": [
    "Two frontend ports",
@@ -490,6 +516,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "With the default Application Gateway probe, a backend answers with HTTP 302. How is it treated?",
   "opts": [
    "Healthy, because 200 to 399 counts as healthy",
@@ -508,6 +535,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "q": "After you add an NSG to the subnet of an Application Gateway v2, its management fails. Which inbound rule is missing?",
   "opts": [
    "TCP 22 from VirtualNetwork",
@@ -526,6 +554,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Traffic must be encrypted from the client to Application Gateway and from the gateway to the backend servers. What do you configure?",
   "opts": [
    "TLS termination with HTTP backend settings",
@@ -544,6 +573,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Users get 502 Bad Gateway from an Application Gateway after the health probe path was changed to a page that doesn't exist. Why?",
   "opts": [
    "The listener's certificate expired at the moment the probe path was changed",
@@ -562,6 +592,7 @@
   "sub": "Application Gateway",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "You plan the subnet for an Application Gateway v2 that must be able to scale to its maximum. What applies?",
   "opts": [
    "A shared subnet with the web VMs, at least /28",
@@ -580,6 +611,7 @@
   "sub": "Bastion",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Admins need RDP and SSH to 100 VMs in five VNets that are all peered with a hub. No VM may have a public IP. Which option needs the least administrative effort?",
   "opts": [
    "One Azure Bastion in each VNet",
@@ -598,6 +630,7 @@
   "sub": "Private DNS",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "VMs are created and deleted every day in three peered VNets. They must resolve each other's names with the least administrative effort. What do you do?",
   "opts": [
    "Add A records to a public DNS zone with a script that runs every hour",
@@ -616,6 +649,7 @@
   "sub": "ASG",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "q": "Web VMs are added and removed often. Only web VMs may reach the database VMs on 1433. Which option needs the least administrative effort?",
   "opts": [
    "One NSG rule per web VM's IP address, updated whenever a VM is added",
@@ -634,6 +668,7 @@
   "sub": "VNet peering",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
   "q": "Solution: You add UDRs on both spoke subnets that send the other spoke's range to 10.0.1.4, and allow forwarded traffic on the peerings. Does this meet the goal?",
   "opts": [
@@ -651,6 +686,7 @@
   "sub": "VNet peering",
   "type": "mcq",
   "diff": 3,
+  "concept": true,
   "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
   "q": "Solution: You enable \"Allow gateway transit\" on the hub peerings and \"Use remote gateways\" on the spoke peerings. Does this meet the goal?",
   "opts": [
@@ -668,6 +704,7 @@
   "sub": "VNet peering",
   "type": "mcq",
   "diff": 2,
+  "concept": true,
   "ctx": "Spoke1 and Spoke2 are each peered with Hub. Hub has a firewall VM (NVA) at 10.0.1.4 with IP forwarding enabled. VMs in Spoke1 must reach VMs in Spoke2.",
   "q": "Solution: You create a VNet peering directly between Spoke1 and Spoke2, in both directions. Their address spaces don't overlap. Does this meet the goal?",
   "opts": [
@@ -685,6 +722,7 @@
   "sub": "Routing",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Source                  State    Prefix          Next hop type            Next hop IP\n----------------------  -------  --------------  -----------------------  -----------\nDefault                 Active   10.1.0.0/16     Virtual network          -\nDefault                 Invalid  10.2.0.0/16     VNet peering             -\nUser                    Active   10.2.0.0/16     Virtual appliance        10.0.1.4\nVirtual network gateway Active   192.168.0.0/16  Virtual network gateway  -\nUser                    Active   0.0.0.0/0       Virtual appliance        10.0.1.4\nDefault                 Invalid  0.0.0.0/0       Internet                 -",
   "q": "Review the effective routes of a NIC. Answer Yes or No:",
   "stmts": [
@@ -707,6 +745,7 @@
   "sub": "NSG",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Priority  Name                   Port  Source            Action\n--------  ---------------------  ----  ----------------  ------\n100       DenyBadHost            443   198.51.100.0/24   Deny\n200       AllowHttps             443   Internet          Allow\n300       AllowSsh               22    198.51.100.7      Allow\n65000     AllowVnetInBound       Any   VirtualNetwork    Allow\n65001     AllowAzureLBInBound    Any   AzureLoadBalancer Allow\n65500     DenyAllInBound         Any   Any               Deny",
   "q": "These are all the inbound rules of the only NSG on a web VM. Answer Yes or No:",
   "stmts": [
@@ -729,6 +768,7 @@
   "sub": "Load balancer",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Frontend:     10.0.2.10 (private)\nRule:         TCP 80 -> TCP 80, session persistence: None\nProbe:        HTTP /health on port 80\nBackend pool: vm1  probe: 200  up\n              vm2  probe: 200  up\n              vm3  probe: 503  down",
   "q": "Review this internal Standard load balancer. The NSGs allow the traffic. Answer Yes or No:",
   "stmts": [
@@ -751,6 +791,7 @@
   "sub": "Application Gateway",
   "type": "yesno",
   "diff": 3,
+  "concept": true,
   "code": "Listener:  HTTPS 443, host shop.contoso.com\nRule:      path-based\n  /images/*   -> pool-static   (HTTPS 443)\n  /api/*      -> pool-api      (HTTPS 443)\n  default     -> pool-web      (HTTP 80)",
   "q": "Review the Application Gateway configuration. Answer Yes or No:",
   "stmts": [

@@ -89,6 +89,7 @@ export const EN = {
       order: 'Ordering',
       dropdown: 'Drop-down (hot area)',
       match: 'Matching (drag and drop)',
+      concept: 'Concept questions',
       case: 'Case studies',
     },
     timed: "Timed (2 minutes per question, like the real exam's ~100 minutes for ~50)",
@@ -172,6 +173,7 @@ export const EN = {
     search: 'Search (e.g. RBAC, SAS, peering)',
     levels: { 0: 'All', 1: 'Basic', 2: 'Inter', 3: 'Adv' } as Record<number, string>,
     levelLabel: 'Level',
+    conceptOnly: 'Concept questions',
     filterLabel: 'Show',
     filters: {
       all: 'All',
@@ -359,6 +361,7 @@ export const ROMAN: UiText = {
       order: 'Tarteeb (ordering)',
       dropdown: 'Drop-down (hot area)',
       match: 'Matching (drag and drop)',
+      concept: 'Concept wale sawal',
       case: 'Case studies',
     },
     timed: 'Timed (har sawal ke 2 minute, jaise asal exam mein ~50 sawalon ke ~100 minute)',
@@ -443,6 +446,7 @@ export const ROMAN: UiText = {
     search: 'Search karein (maslan RBAC, SAS, peering)',
     levels: { 0: 'Tamam', 1: 'Basic', 2: 'Inter', 3: 'Adv' },
     levelLabel: 'Level',
+    conceptOnly: 'Concept wale sawal',
     filterLabel: 'Dikhayen',
     filters: {
       all: 'Tamam',
