@@ -1,13 +1,25 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
+import { Busy } from './core/busy';
 import { Display } from './core/display';
 import { Shortcuts, registerShortcuts } from './core/shortcuts';
 import { Language } from './i18n/language';
 import { Lang } from './i18n/ui-text';
 import { FullScreenButton } from './shared/full-screen-button';
 import { ShortcutHelp } from './shared/shortcut-help';
+
+const pathOf = (url: string): string => url.split(/[?#]/)[0];
 
 @Component({
   selector: 'app-root',
@@ -43,15 +55,33 @@ export class App {
     { path: '/weak-areas', key: 'weak', exact: false, keys: 'g w' },
   ] as const;
 
+  private readonly busy = inject(Busy);
+  /** Path of the page that is being opened, or null. */
+  protected readonly opening = signal<string | null>(null);
+  protected readonly loading = computed(() => this.opening() !== null || this.busy.active());
+
   /** Far enough down a long page to offer the way back to the top. */
   protected readonly scrolled = signal(false);
 
   private readonly menu = viewChild<ElementRef<HTMLElement>>('menu');
 
   constructor() {
-    // On a phone the menu scrolls sideways: keep the current page in sight.
+    let back = false;
     this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
-      if (event instanceof NavigationEnd) this.document.defaultView?.setTimeout(() => this.showActiveLink());
+      if (event instanceof NavigationStart) {
+        back = event.navigationTrigger === 'popstate';
+        // Filters and sections change only the query: the page itself stays.
+        const path = pathOf(event.url);
+        if (path !== pathOf(this.router.url) || !this.router.navigated) this.opening.set(path);
+      } else if (event instanceof NavigationEnd) {
+        // A new page starts at its top, unless the browser brings back an earlier position.
+        if (this.opening() !== null && !back) this.toTop();
+        this.opening.set(null);
+        // On a phone the menu scrolls sideways: keep the current page in sight.
+        this.document.defaultView?.setTimeout(() => this.showActiveLink());
+      } else if (event instanceof NavigationCancel || event instanceof NavigationError) {
+        this.opening.set(null);
+      }
     });
     registerShortcuts(
       () => this.t().keys.goTo,
@@ -94,7 +124,7 @@ export class App {
   }
 
   protected toTop(): void {
-    this.document.defaultView?.scrollTo({ top: 0 });
+    this.document.defaultView?.scrollTo?.({ top: 0 });
   }
 
   protected setLang(lang: Lang): void {

@@ -43,6 +43,8 @@ export const EN = {
     caseStudy: 'Case study',
   },
 
+  pageLoading: 'Loading…',
+
   loadError: {
     text: "The questions couldn't be downloaded. Check your connection and try again. Your progress is safe.",
     retry: 'Try again',
@@ -464,6 +466,8 @@ export const ROMAN: UiText = {
     moveDown: (n: number) => `Step ${n} ko neeche le jayen`,
     caseStudy: 'Case study',
   },
+
+  pageLoading: 'Load ho raha hai…',
 
   loadError: {
     text: 'Sawal download nahi ho sake. Apna connection check kar ke dobara koshish karein. Aap ki progress mehfooz hai.',

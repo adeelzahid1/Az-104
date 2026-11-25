@@ -156,7 +156,7 @@
     @if (loadFailed()) {
       <app-load-error />
     } @else if (all() === null) {
-      <p class="card">{{ ts.loading }}</p>
+      <app-loader [text]="ts.loading" />
     } @else if (mode() === 'list') {
       <p class="muted count">{{ ts.count(visible().length, filtered().length) }}</p>
       @for (item of visible(); track item.q.id; let i = $index) {

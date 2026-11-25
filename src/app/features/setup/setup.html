@@ -105,6 +105,9 @@
 
   <div class="row end">
     <button type="submit" class="btn primary" [disabled]="busy()">
+      @if (busy()) {
+        <span class="spinner" aria-hidden="true"></span>
+      }
       {{ busy() ? ts.loading : exam ? ts.startExam : ts.startPractice }}
     </button>
   </div>

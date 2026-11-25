@@ -1,4 +1,6 @@
 @let tx = t();
+<div class="load-bar" [class.on]="loading()" aria-hidden="true"></div>
+<p class="sr-only" role="status">{{ loading() ? tx.pageLoading : '' }}</p>
 <a class="skip" href="#main">{{ tx.skip }}</a>
 <header class="topbar">
   <div class="topbar-inner">
@@ -14,8 +16,12 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: link.exact }"
             ariaCurrentWhenActive="page"
+            [class.opening]="opening() === link.path"
           >
             {{ tx.nav[link.key] }}
+            @if (opening() === link.path) {
+              <span class="spinner" aria-hidden="true"></span>
+            }
           </a>
         }
       </nav>
@@ -52,7 +58,10 @@
   </div>
 </header>
 
-<main id="main" class="page">
+@if (opening() !== null) {
+  <div class="wait" aria-hidden="true"><span class="spinner"></span> {{ tx.pageLoading }}</div>
+}
+<main id="main" class="page" [class.leaving]="opening() !== null" [attr.aria-busy]="loading()">
   <router-outlet />
 </main>
 

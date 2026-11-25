@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CaseStudy, Question } from '../data/schema';
+import { Busy } from './busy';
 import { withRetry } from './retry';
 
 type JsonModule = { default: unknown };
@@ -58,6 +59,7 @@ const LOADERS: Record<number, () => Promise<Question[]>> = {
 /** Lazily loads the question bank, one chunk per exam domain. */
 @Injectable({ providedIn: 'root' })
 export class QuestionBank {
+  private readonly busy = inject(Busy);
   private readonly cache = new Map<number, Promise<Question[]>>();
   private casesPromise: Promise<Record<string, CaseStudy>> | null = null;
 
@@ -65,7 +67,7 @@ export class QuestionBank {
     let pending = this.cache.get(id);
     if (!pending) {
       const loader = LOADERS[id];
-      pending = loader ? withRetry(loader) : Promise.resolve([]);
+      pending = loader ? this.busy.track(withRetry(loader)) : Promise.resolve([]);
       this.cache.set(id, pending);
       // A failed download must not be remembered, so the next call can try again.
       pending.catch(() => this.cache.delete(id));
@@ -81,7 +83,7 @@ export class QuestionBank {
   /** Case study texts, keyed by id. */
   cases(): Promise<Record<string, CaseStudy>> {
     if (!this.casesPromise) {
-      this.casesPromise = withRetry(() => import('../data/cases.json')).then((m) =>
+      this.casesPromise = this.busy.track(withRetry(() => import('../data/cases.json'))).then((m) =>
         Object.fromEntries((m.default as CaseStudy[]).map((c) => [c.id, c])),
       );
       this.casesPromise.catch(() => (this.casesPromise = null));

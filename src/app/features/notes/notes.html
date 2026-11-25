@@ -178,7 +178,7 @@
         }
       </div>
     } @else if (!failed()) {
-      <p class="card">{{ tn.loading }}</p>
+      <app-loader [text]="tn.loading" />
     }
   </div>
 </div>

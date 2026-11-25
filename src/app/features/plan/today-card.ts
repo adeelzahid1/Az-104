@@ -21,7 +21,7 @@ import { Language } from '../../i18n/language';
       @if (failed()) {
         <p class="muted">{{ t().loadError.text }}</p>
       } @else if (!plan.ready()) {
-        <p class="muted">{{ tp.loading }}</p>
+        <p class="muted"><span class="spinner" aria-hidden="true"></span> {{ tp.loading }}</p>
       } @else {
         <p class="muted">{{ tp.phases[plan.phase()] }}</p>
         <ul>

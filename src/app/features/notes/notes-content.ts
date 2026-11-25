@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { Busy } from '../../core/busy';
+import { mayPreload } from '../../core/preload';
 import { withRetry } from '../../core/retry';
 import { NotesFile } from './notes-data';
 
@@ -13,6 +15,7 @@ const LOADERS: Record<number, () => Promise<{ default: unknown }>> = {
 /** The study notes, downloaded per domain when they are needed. */
 @Injectable({ providedIn: 'root' })
 export class NotesContent {
+  private readonly busy = inject(Busy);
   private readonly loaded = signal<NotesFile>({});
   private readonly failure = signal(false);
   private readonly pending = new Map<number, Promise<void>>();
@@ -21,22 +24,29 @@ export class NotesContent {
   readonly notes = this.loaded.asReadonly();
   readonly failed = this.failure.asReadonly();
 
-  load(domain: number): Promise<void> {
+  /** Quiet: in the background, without the loading bar and without an error message. */
+  load(domain: number, quiet = false): Promise<void> {
     let pending = this.pending.get(domain);
     if (!pending) {
-      pending = withRetry(LOADERS[domain]).then(
+      const download = withRetry(LOADERS[domain]);
+      if (!quiet) this.busy.track(download);
+      pending = download.then(
         (m) => this.loaded.update((all) => ({ ...all, ...(m.default as NotesFile) })),
         () => {
           this.pending.delete(domain);
-          this.failure.set(true);
+          if (!quiet) this.failure.set(true);
         },
       );
       this.pending.set(domain, pending);
+    } else if (!quiet) {
+      // It may have started in the background and fail silently there: then try again for the reader.
+      return pending.then(() => (this.pending.has(domain) ? undefined : this.load(domain)));
     }
     return pending;
   }
 
-  async loadAll(): Promise<void> {
-    await Promise.all(Object.keys(LOADERS).map((d) => this.load(Number(d))));
+  async loadAll(quiet = false): Promise<void> {
+    if (quiet && !mayPreload()) return;
+    await Promise.all(Object.keys(LOADERS).map((d) => this.load(Number(d), quiet)));
   }
 }

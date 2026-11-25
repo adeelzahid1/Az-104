@@ -248,6 +248,29 @@ th {
   outline-offset: 2px;
 }
 
+.spinner {
+  display: inline-block;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  vertical-align: -0.12em;
+  animation: spin 0.7s linear infinite;
+}
+
+.btn .spinner {
+  border-color: currentColor;
+  border-top-color: transparent;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 kbd {
   display: inline-block;
   min-width: 1.5em;

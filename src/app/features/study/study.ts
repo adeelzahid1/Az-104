@@ -24,6 +24,7 @@ import { RomanContent } from '../../i18n/roman-content';
 import { CasePanel } from '../../shared/case-panel';
 import { FullScreenButton } from '../../shared/full-screen-button';
 import { LoadError } from '../../shared/load-error';
+import { Loader } from '../../shared/loader';
 import { QuestionView } from '../../shared/question-view';
 
 type Filter = 'all' | 'todo' | 'bookmarked' | 'due' | 'mistakes';
@@ -42,7 +43,7 @@ const asFilter = (value: string | undefined): Filter =>
 @Component({
   selector: 'app-study',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [QuestionView, CasePanel, FullScreenButton, LoadError, RouterLink],
+  imports: [QuestionView, CasePanel, FullScreenButton, Loader, LoadError, RouterLink],
   templateUrl: './study.html',
   styleUrl: './study.css',
 })

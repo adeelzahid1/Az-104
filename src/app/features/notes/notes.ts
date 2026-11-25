@@ -21,6 +21,7 @@ import { DOMAINS } from '../../data/schema';
 import { Language } from '../../i18n/language';
 import { CheatCardView } from '../../shared/cheat-card';
 import { LoadError } from '../../shared/load-error';
+import { Loader } from '../../shared/loader';
 import { RichText } from '../../shared/rich-text';
 import { CheatGroup, filterGroups } from '../cheatsheet/cheatsheet-data';
 import { NotesContent } from './notes-content';
@@ -49,7 +50,7 @@ function saveLast(id: string): void {
 @Component({
   selector: 'app-notes',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RichText, CheatCardView, LoadError],
+  imports: [RouterLink, RichText, CheatCardView, Loader, LoadError],
   templateUrl: './notes.html',
   styleUrl: './notes.css',
 })
@@ -163,7 +164,8 @@ export class Notes {
     effect(() => {
       const { id, domain } = this.section();
       saveLast(id);
-      untracked(() => this.content.load(domain));
+      // The other domains follow in the background, so that the next section opens at once.
+      untracked(() => this.content.load(domain).then(() => this.content.loadAll(true)));
     });
     effect(() => {
       if (this.term()) untracked(() => this.content.loadAll());

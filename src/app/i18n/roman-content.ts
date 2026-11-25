@@ -1,6 +1,7 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { CaseStudy, Question } from '../data/schema';
 import { QuizService } from '../core/quiz';
+import { Busy } from '../core/busy';
 import { withRetry } from '../core/retry';
 import { domainOf } from '../core/quiz-logic';
 import { Language } from './language';
@@ -62,6 +63,7 @@ export function localizeQuestion(q: Question, ro: RomanQuestion | undefined): Qu
 export class RomanContent {
   private readonly language = inject(Language);
   private readonly quiz = inject(QuizService);
+  private readonly busy = inject(Busy);
   private readonly texts = signal<RomanSet>({});
   private readonly caseTexts = signal<Record<string, RomanCase>>({});
   private readonly requested = new Set<number | 'cases'>();
@@ -96,7 +98,7 @@ export class RomanContent {
     const loader = LOADERS[domain];
     if (!loader || this.requested.has(domain)) return;
     this.requested.add(domain);
-    withRetry(loader).then(
+    this.busy.track(withRetry(loader)).then(
       (set) => this.texts.update((all) => ({ ...all, ...set })),
       () => this.requested.delete(domain),
     );
@@ -105,7 +107,7 @@ export class RomanContent {
   private loadCases(): void {
     if (this.requested.has('cases')) return;
     this.requested.add('cases');
-    withRetry(() => import('../data/roman/cases.json')).then(
+    this.busy.track(withRetry(() => import('../data/roman/cases.json'))).then(
       (m) => this.caseTexts.set(m.default as Record<string, RomanCase>),
       () => this.requested.delete('cases'),
     );

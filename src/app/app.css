@@ -104,6 +104,80 @@ nav a.active {
   flex-wrap: wrap;
 }
 
+nav a.opening {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.load-bar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 20;
+  height: 4px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.load-bar.on {
+  opacity: 1;
+}
+
+.load-bar::before {
+  content: '';
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--accent);
+}
+
+.load-bar.on::before {
+  animation: slide 1.1s ease-in-out infinite;
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(250%);
+  }
+}
+
+.page {
+  transition: opacity 0.15s;
+}
+
+.page.leaving {
+  opacity: 0.45;
+}
+
+/* Only when the page takes more than a moment. */
+.wait {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 600;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  transform: translateX(-50%);
+  animation: appear 0.15s 0.25s both;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+}
+
 .tools {
   display: flex;
   gap: 6px;
